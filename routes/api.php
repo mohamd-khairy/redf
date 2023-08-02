@@ -59,4 +59,26 @@ Route::group(['prefix' => 'v1'], function () {
         Route::get('notifications', [NotificationController::class, 'index']);
         Route::post('notifications', [NotificationController::class, 'update']);
     });
+
+
+    Route::group(['middleware' => ['auth:sanctum'], 'prefix' => 'forms'], function () {
+        // all
+        Route::get('get/all', [FormsController::class, 'all']);
+        // index
+        Route::get('/', [FormsController::class, 'index']);
+        // change notifications
+        Route::put('{userForm}/changeNotifications', [FormsController::class, 'changeNotifications']);
+        // Get form with filled data for reviewing
+        Route::get('{userForm}/get', [FormsController::class, 'get']);
+        // review store
+        Route::put('{userForm}/review', [FormsController::class, 'review']);
+        // delete
+        Route::delete('{userForm}', [FormsController::class, 'destroy']);
+        // export
+        Route::get('export/{id}', [FormsController::class, 'export']);
+        // export form pdf
+        Route::get('exportPDF/{userForm}', [FormsController::class, 'exportPDF']);
+        // export form word
+        Route::get('exportWord/{userForm}', [FormsController::class, 'exportWord']);
+    });
 });

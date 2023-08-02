@@ -6,7 +6,7 @@ export default {
       key: "menu.dashboard",
       text: "dashboard",
       link: "/dashboard/analytics",
-      permission: "read-drone",
+      permission: "read-role",
       items: []
     },
     {

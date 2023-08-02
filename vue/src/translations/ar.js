@@ -99,6 +99,7 @@ export default {
   },
   login: {
     title: "تسجيل الدخول",
+    message: "سجل الدخول الي حسابك",
     email: "البريد الإلكتروني",
     password: "كلمه السر",
     button: "تسجيل الدخول",
@@ -159,6 +160,10 @@ export default {
     search: "بحث (اضغط على 'ctrl + /' للتركيز)",
     dashboard: "الرئيسية",
     logout: "تسجيل خروج",
+    login: "تسجيل الدخول",
+    signup: "تسجيل حساب جديد",
+    verify_email: "تفعيل البريد الإلكتروني",
+    forget_password: "إعادة تعيين كلمة المرور",
     profile: "الملف الشخصي",
     blank: "صفحة فارغة",
     pages: "الصفحات",
@@ -647,5 +652,8 @@ export default {
     editPinned: "تعديل التقرير المثبت",
     draftedReports: " التقارير المسودة",
     editDraft: "تعديل التقرير المسود"
+  },
+  messages: {
+    welcome: "مرحبا"
   }
 };

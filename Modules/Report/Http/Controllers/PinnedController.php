@@ -260,10 +260,6 @@ class PinnedController extends Controller
                 return responseFail('no active pinned');
             }
 
-            // if ($pinned->user_id != auth()->user()->id) {
-            //     return responseFail('not belong to you');
-            // }
-
             if ($pinned->global_date) {
                 if ($pinned->time_type == 'dynamic') {
                     $date = getStartEndDate($pinned->time_range);
@@ -273,13 +269,12 @@ class PinnedController extends Controller
             }
 
             $report = ReportService::handlePinned($pinned);
-
-            return responseSuccess([
-                'title' => __('dashboard.show_title', ['title' => $pinned->title]),
-                'report' => $report
-            ]);
         } catch (\Exception $e) {
-            return responseFail('failed');
+            // return responseFail('failed');
         }
+        return responseSuccess([
+            'title' => __('dashboard.show_title', ['title' => $pinned->title ?? '']),
+            'report' => $report ?? null
+        ]);
     }
 }

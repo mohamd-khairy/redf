@@ -1,7 +1,7 @@
 import Vue from "vue";
 import App from "./App.vue";
 import axios from "@/plugins/axios";
-import  "@/plugins/socketio";
+import "@/plugins/socketio";
 
 // VUEX - https://vuex.vuejs.org/
 import store from "./store";

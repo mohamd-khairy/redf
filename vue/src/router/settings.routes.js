@@ -4,9 +4,9 @@ export default [
     name: "",
     meta: {
       auth: true,
-      permissions: "read-setting"
+      permissions: "read-setting",
+      title: ""
     },
-
     component: () =>
       import(
         /* webpackChunkName: "settings-general" */ "@/pages/settings/general/GeneralSettingsPage.vue"
@@ -22,7 +22,10 @@ export default [
         component: () =>
           import(
             /* webpackChunkName: "settings-general" */ "@/pages/settings/general/InformationPage.vue"
-          )
+          ),
+        meta: {
+          title: ""
+        }
       },
       {
         path: "theme",
@@ -30,7 +33,10 @@ export default [
         component: () =>
           import(
             /* webpackChunkName: "settings-colors */ "@/pages/settings/general/ThemePage.vue"
-          )
+          ),
+        meta: {
+          title: ""
+        }
       },
       {
         path: "properties",
@@ -38,7 +44,10 @@ export default [
         component: () =>
           import(
             /* webpackChunkName: "settings-properties" */ "@/pages/settings/general/PropertiesPage.vue"
-          )
+          ),
+        meta: {
+          title: ""
+        }
       }
     ]
   },
@@ -53,7 +62,10 @@ export default [
     component: () =>
       import(
         /* webpackChunkName: "settings-mail-template */ "@/pages/settings/mail/MailTemplatePage.vue"
-      )
+      ),
+    meta: {
+      title: ""
+    }
   },
   {
     path: "/settings/mail-server",
@@ -65,7 +77,10 @@ export default [
     component: () =>
       import(
         /* webpackChunkName: "settings-mail */ "@/pages/settings/mail/MailServerPage.vue"
-      )
+      ),
+    meta: {
+      title: ""
+    }
   },
   {
     path: "/settings/sms",
@@ -77,7 +92,10 @@ export default [
     component: () =>
       import(
         /* webpackChunkName: "settings-sms */ "@/pages/settings/sms/SMSPage.vue"
-      )
+      ),
+    meta: {
+      title: ""
+    }
   },
   {
     path: "/settings/stations",
@@ -89,7 +107,10 @@ export default [
     component: () =>
       import(
         /* webpackChunkName: "settings-stations */ "@/pages/settings/stations/StationsPage.vue"
-      )
+      ),
+    meta: {
+      title: ""
+    }
   },
   {
     path: "/settings/stations/edit/:id",
@@ -101,7 +122,10 @@ export default [
     component: () =>
       import(
         /* webpackChunkName: "settings-stations-edit */ "@/pages/settings/stations/EditPage.vue"
-      )
+      ),
+    meta: {
+      title: ""
+    }
   },
   {
     path: "/settings/detection-types",
@@ -113,7 +137,10 @@ export default [
     component: () =>
       import(
         /* webpackChunkName: "settings-types */ "@/pages/settings/detection-types/DetectionTypesPage"
-      )
+      ),
+    meta: {
+      title: ""
+    }
   },
   {
     path: "/settings/detection-types/create",
@@ -125,7 +152,10 @@ export default [
     component: () =>
       import(
         /* webpackChunkName: "settings-types-create" */ "@/pages/settings/detection-types/CreateDetectionType"
-      )
+      ),
+    meta: {
+      title: ""
+    }
   },
   {
     path: "/settings/detection-types/edit/:id",
@@ -137,7 +167,10 @@ export default [
     component: () =>
       import(
         /* webpackChunkName: "settings-types-edit */ "@/pages/settings/detection-types/EditDetectionType"
-      )
+      ),
+    meta: {
+      title: ""
+    }
   },
   {
     path: "/settings/drones",
@@ -149,7 +182,10 @@ export default [
     component: () =>
       import(
         /* webpackChunkName: "settings-drones */ "@/pages/settings/drones/DronesPage.vue"
-      )
+      ),
+    meta: {
+      title: ""
+    }
   },
   {
     path: "/settings/logs",
@@ -161,6 +197,9 @@ export default [
     component: () =>
       import(
         /* webpackChunkName: "settings-drones */ "@/pages/settings/logs/index.vue"
-      )
+      ),
+    meta: {
+      title: ""
+    }
   }
 ];

@@ -4,7 +4,8 @@ export default [
     name: "reports-builder",
     meta: {
       auth: true,
-      permissions: 'read-setting'
+      permissions: 'read-setting',
+      title: "builder"
     },
     component: () =>
       import(/* webpackChunkName: "reports-builder" */ "@/pages/reports/builder/Builder.vue")
@@ -14,7 +15,8 @@ export default [
     name: "reports-show-builder",
     meta: {
       auth: true,
-      permissions: 'read-setting'
+      permissions: 'read-setting',
+      title: "dashboard"
     },
     props: true,
     component: () =>
@@ -25,7 +27,8 @@ export default [
     name: "reports-drafted",
     meta: {
       auth: true,
-      permissions: 'read-setting'
+      permissions: 'read-setting',
+      title: "dashboard"
     },
     component: () =>
       import(/* webpackChunkName: "reports-drafted" */ "@/pages/reports/draft/Drafted.vue"),
@@ -36,7 +39,8 @@ export default [
     name: "show-drafted",
     meta: {
       auth: true,
-      permissions: 'read-setting'
+      permissions: 'read-setting',
+      title: "dashboard"
     },
     component: () =>
       import(/* webpackChunkName: "reports-draft" */ "@/pages/reports/draft/ShowDrafted.vue")
@@ -46,19 +50,21 @@ export default [
     name: "reports-drafted-edit",
     meta: {
       auth: true,
-      permissions: 'read-setting'
+      permissions: 'read-setting',
+      title: "dashboard"
     },
     component: () =>
       import(
         /* webpackChunkName: "draft-edit" */ "@/pages/reports/draft/EditDraft"
-        )
+      )
   },
   {
     path: "/reports/pinned",
     name: "reports-pinned",
     meta: {
       auth: true,
-      permissions: 'read-setting'
+      permissions: 'read-setting',
+      title: "dashboard"
     },
     component: () =>
       import(/* webpackChunkName: "reports-pinned" */ "@/pages/reports/pinned/Pinned.vue"),
@@ -68,19 +74,21 @@ export default [
     name: "reports-pinned-edit",
     meta: {
       auth: true,
-      permissions: 'read-setting'
+      permissions: 'read-setting',
+      title: "dashboard"
     },
     component: () =>
       import(
         /* webpackChunkName: "draft-edit" */ "@/pages/reports/pinned/EditPin"
-        )
+      )
   },
   {
     path: "/reports/pinned/show/:id",
     name: "report-pinned-show",
     meta: {
       auth: true,
-      permissions: 'read-setting'
+      permissions: 'read-setting',
+      title: "dashboard"
     },
     component: () =>
       import(/* webpackChunkName: "show-pinned-report" */ "@/pages/reports/pinned/ShowPinned.vue")
