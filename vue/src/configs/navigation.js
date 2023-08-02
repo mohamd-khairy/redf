@@ -10,6 +10,70 @@ export default {
       items: []
     },
     {
+      icon: "mdi-animation",
+      text: "projects",
+      key: "menu.projects",
+      link: "/projects",
+      permission: "read-event",
+      items: []
+    },
+    {
+      icon: "mdi-gavel",
+      text: "cases",
+      key: "menu.cases",
+      link: "/cases",
+      permission: "read-event",
+      items: []
+    },
+    {
+      icon: "mdi-scale-balance",
+      text: "legal_advice",
+      key: "menu.legal_advice",
+      link: "/legal_advice",
+      permission: "read-event",
+      items: []
+    },
+    {
+      icon: "mdi-file-document",
+      text: "tasks",
+      key: "menu.tasks",
+      link: "/tasks",
+      permission: "read-event",
+      items: []
+    },
+    {
+      icon: "mdi-file-document-outline",
+      text: "documents",
+      key: "menu.documents",
+      link: "/documents",
+      permission: "read-event",
+      items: []
+    },
+    {
+      icon: "mdi-hand-coin-outline",
+      text: "beneficiaries",
+      key: "menu.beneficiaries",
+      link: "/beneficiaries",
+      permission: "read-event",
+      items: []
+    },
+    {
+      icon: "mdi-history",
+      text: "log",
+      key: "menu.log",
+      link: "/log",
+      permission: "read-event",
+      items: []
+    },
+    {
+      icon: "mdi-file-document-edit-outline",
+      text: "review_and_audit",
+      key: "menu.review_and_audit",
+      link: "/review_and_audit",
+      permission: "read-event",
+      items: []
+    },
+    {
       icon: "mdi-form-textbox",
       text: "models",
       key: "menu.pipesModel",
@@ -17,8 +81,9 @@ export default {
       permission: "read-event",
       items: []
     },
+
     {
-      icon: "mdi-file-cog-outline",
+      icon: "mdi-chart-line",
       text: "reports",
       key: "menu.reports",
       // link: "/reports",
@@ -46,29 +111,29 @@ export default {
         }
       ]
     },
-    {
-      icon: "mdi-airplane",
-      text: "flights",
-      key: "menu.flights",
+    // {
+    //   icon: "mdi-airplane",
+    //   text: "flights",
+    //   key: "menu.flights",
 
-      permission: "read-flight",
-      items: [
-        {
-          icon: "mdi-account-multiple-outline",
-          text: "flights table",
-          key: "menu.flights_table",
-          permission: "read-flight",
-          link: "/flights",
-        },
-        {
-          icon: "mdi-account-multiple-outline",
-          text: "flights table",
-          key: "menu.live_stream",
-          permission: "read-flight",
-          link: "/flights/locations",
-        },
-      ]
-    },
+    //   permission: "read-flight",
+    //   items: [
+    //     {
+    //       icon: "mdi-account-multiple-outline",
+    //       text: "flights table",
+    //       key: "menu.flights_table",
+    //       permission: "read-flight",
+    //       link: "/flights",
+    //     },
+    //     {
+    //       icon: "mdi-account-multiple-outline",
+    //       text: "flights table",
+    //       key: "menu.live_stream",
+    //       permission: "read-flight",
+    //       link: "/flights/locations",
+    //     },
+    //   ]
+    // },
     {
       icon: "mdi-account-multiple-outline",
       text: "Users Management",

@@ -16,7 +16,7 @@ export default {
 
   // application is right to left
   isRTL: true,
-  primaryColor: '#0096c7',
+  primaryColor: '#014c4f',
 
   // dark theme colors
   dark: {
@@ -35,7 +35,7 @@ export default {
   light: {
     background: '#ffffff',
     surface: '#f2f5f8',
-    primary: '#0096c7',
+    primary: '#014c4f',
     secondary: '#a0b9c8',
     accent: '#048ba8',
     error: '#ef476f',

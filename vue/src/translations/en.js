@@ -222,7 +222,16 @@ export default {
     logs: "Logs",
     live_stream: "Live stream",
     flights_table: "Flight table",
-    flights_location: "Flight locations"
+    flights_location: "Flight locations",
+    projects: 'Projects',
+    cases: "Cases",
+    legal_advice: "Legal Advice",
+    tasks: "Tasks",
+    documents: "Documents",
+    beneficiaries: "Beneficiaries",
+    log: "Log",
+    review_and_audit: "Review and audit"
+
   },
   breadcrumbs: {
     pipesList: "Pipes List",
