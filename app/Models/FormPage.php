@@ -14,4 +14,14 @@ class FormPage extends Model
         'title',
         'form_id'
     ];
+
+    public function form()
+    {
+        return $this->belongsTo(Form::class);
+    }
+
+    public function items()
+    {
+        return $this->hasMany(FormPageItem::class, 'form_page_id');
+    }
 }
