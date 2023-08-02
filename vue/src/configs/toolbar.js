@@ -1,26 +1,29 @@
 export default {
   // apps quickmenu
-  apps: [{
-    icon: 'mdi-view-dashboard-outline',
-    text: 'Email',
-    key: 'menu.dashboard',
-    link: '/dashboard/analytics'
-  }, {
-    icon: 'mdi-form-textbox',
-    title: 'Modesl',
-    key: 'menu.pipesModel',
-    link: '/pipes'
-  }, {
-    icon: 'mdi-message-outline',
-    title: 'Stations',
-    key: 'menu.stations',
-    link: '/settings/stations'
-  }, {
-    icon: 'mdi-view-column-outline',
-    title: 'Board',
-    key: 'menu.drones',
-    link: '/settings/drones'
-  }],
+  apps: [
+    {
+      icon: 'mdi-view-dashboard-outline',
+      text: 'Email',
+      key: 'menu.dashboard',
+      link: '/dashboard/analytics'
+    },
+    // {
+    //   icon: 'mdi-form-textbox',
+    //   title: 'Modesl',
+    //   key: 'menu.pipesModel',
+    //   link: '/pipes'
+    // }, {
+    //   icon: 'mdi-message-outline',
+    //   title: 'Stations',
+    //   key: 'menu.stations',
+    //   link: '/settings/stations'
+    // }, {
+    //   icon: 'mdi-view-column-outline',
+    //   title: 'Board',
+    //   key: 'menu.drones',
+    //   link: '/settings/drones'
+    // }
+  ],
 
   // user dropdown menu
   user: [

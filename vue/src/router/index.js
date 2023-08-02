@@ -14,6 +14,7 @@ import PipesRoutes from "./pipes.routes";
 import FlightsRoutes from "./flights.routes";
 import ReportsRoutes from "./reports.routes";
 import store from "@/store";
+import i18n from "../plugins/vue-i18n";
 
 Vue.use(Router);
 
@@ -28,7 +29,10 @@ export const routes = [
     component: () =>
       import(
         /* webpackChunkName: "dashboard" */ "@/pages/dashboard/DashboardPage.vue"
-      )
+      ),
+    meta: {
+      title: "dashboard"
+    }
   },
   ...AppsRoutes,
   ...UIRoutes,
@@ -46,7 +50,10 @@ export const routes = [
     path: "/blank",
     name: "blank",
     component: () =>
-      import(/* webpackChunkName: "blank" */ "@/pages/BlankPage.vue")
+      import(/* webpackChunkName: "blank" */ "@/pages/BlankPage.vue"),
+    meta: {
+      title: "blank"
+    }
   },
   {
     path: "*",
@@ -54,7 +61,8 @@ export const routes = [
     component: () =>
       import(/* webpackChunkName: "error" */ "@/pages/error/NotFoundPage.vue"),
     meta: {
-      layout: "error"
+      layout: "error",
+      title: "errorNotFound"
     }
   }
 ];
@@ -83,15 +91,15 @@ router.beforeEach((to, from, next) => {
 
   if (to.meta.permissions && to.meta.permissions.length > 0) {
     let isAllowed = localStorage.getItem('user_permissions').includes(to.meta.permissions)
-    if (! isAllowed) return next('auth-signin')
+    if (!isAllowed) return next('auth-signin')
   }
-
+  document.title = i18n.t(`menu.${to.meta.title}`)
   return next();
 });
 
 /**
  * After each route update
  */
-router.afterEach((to, from) => {});
+router.afterEach((to, from) => { });
 
 export default router;

@@ -4,7 +4,8 @@ export default [
     redirect: "users-list",
     meta: {
       auth: true,
-      permissions: 'read-user'
+      permissions: 'read-user',
+      title: "dashboard"
     }
   },
   {
@@ -12,7 +13,8 @@ export default [
     name: "users-list",
     meta: {
       auth: true,
-      permissions: 'read-user'
+      permissions: 'read-user',
+      title: "dashboard"
     },
     component: () =>
       import(/* webpackChunkName: "users-list" */ "@/pages/users/UsersPage.vue")
@@ -22,35 +24,38 @@ export default [
     name: "users-edit",
     meta: {
       auth: true,
-      permissions: 'update-user'
+      permissions: 'update-user',
+      title: "dashboard"
     },
     component: () =>
       import(
         /* webpackChunkName: "users-edit" */ "@/pages/users/EditUserPage.vue"
-        )
+      )
   },
   {
     path: "/users/edit/:id",
     name: "users-list-edit",
     meta: {
       auth: true,
-      permissions: 'update-user'
+      permissions: 'update-user',
+      title: "dashboard"
     },
     component: () =>
       import(
         /* webpackChunkName: "users-edit" */ "@/pages/users/EditUserListPage.vue"
-        )
+      )
   },
   {
     path: "/users/create",
     name: "users-create",
     meta: {
       auth: true,
-      permissions: 'create-user'
+      permissions: 'create-user',
+      title: "dashboard"
     },
     component: () =>
       import(
         /* webpackChunkName: "users-create" */ "@/pages/users/CreateUserPage.vue"
-        )
+      )
   }
 ];

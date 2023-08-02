@@ -1,50 +1,23 @@
 <template>
   <div>
     <v-card class="text-center pa-1">
-      <v-card-title class="justify-center display-1 mb-2">Welcome</v-card-title>
-      <v-card-subtitle>Sign in to your account</v-card-subtitle>
+      <v-card-title class="justify-center display-1 mb-2">{{ $t("messages.welcome") }}</v-card-title>
+      <v-card-subtitle>{{ $t('login.message') }}</v-card-subtitle>
 
       <!-- sign in form -->
       <v-card-text>
         <v-form ref="form" v-model="isFormValid" lazy-validation>
-          <v-text-field
-            v-model="email"
-            :rules="[rules.required]"
-            :validate-on-blur="false"
-            :error="error"
-            :label="$t('login.email')"
-            name="email"
-            outlined
-            autocomplete="off"
-            @keyup.enter="submit"
-            @change="resetErrors"
-          ></v-text-field>
+          <v-text-field v-model="email" :rules="[rules.required]" :validate-on-blur="false" :error="error"
+            :label="$t('login.email')" name="email" outlined autocomplete="off" @keyup.enter="submit"
+            @change="resetErrors"></v-text-field>
 
-          <v-text-field
-            v-model="password"
-            autocomplete="off"
-            :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
-            :rules="[rules.required]"
-            :type="showPassword ? 'text' : 'password'"
-            :error="error"
-            :error-messages="errorMessages"
-            :label="$t('login.password')"
-            name="password"
-            outlined
-            @change="resetErrors"
-            @keyup.enter="submit"
-            @click:append="showPassword = !showPassword"
-          ></v-text-field>
+          <v-text-field v-model="password" autocomplete="off" :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
+            :rules="[rules.required]" :type="showPassword ? 'text' : 'password'" :error="error"
+            :error-messages="errorMessages" :label="$t('login.password')" name="password" outlined @change="resetErrors"
+            @keyup.enter="submit" @click:append="showPassword = !showPassword"></v-text-field>
 
-          <v-btn
-            :loading="isLoading"
-            :disabled="isSignInDisabled"
-            block
-            x-large
-            color="primary"
-            @click="submit"
-            >{{ $t("login.button") }}</v-btn
-          >
+          <v-btn :loading="isLoading" :disabled="isSignInDisabled" block x-large color="primary" @click="submit">{{
+            $t("login.button") }}</v-btn>
 
           <!--          <div class="caption font-weight-bold text-uppercase my-3">{{ $t('login.orsign') }}</div>-->
 
@@ -169,7 +142,7 @@ export default {
           }
         });
     },
-    signInProvider(provider) {},
+    signInProvider(provider) { },
     resetErrors() {
       this.error = false;
       this.errorMessages = "";

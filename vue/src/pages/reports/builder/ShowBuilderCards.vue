@@ -3,7 +3,7 @@
     <v-row dense>
       <v-col cols="12">
         <v-card class="general-stats-card">
-          <v-card-title>
+          <v-card-title class="mb-1">
             {{ $t("general.statistics") }}
           </v-card-title>
           <v-card-text>
@@ -13,24 +13,10 @@
               </v-col>
             </v-row> -->
             <v-row>
-              <v-col
-                cols="6"
-                md="2"
-                lg="2"
-                v-for="(card, key) in cards"
-                :key="key"
-              >
+              <v-col cols="6" md="2" lg="2" v-for="(card, key) in cards" :key="key">
                 <div class="d-flex " :id="key">
-                  <v-avatar
-                    size="42"
-                    class="me-3 v-avatar--variant-tonal "
-                    :class="getColor(key)"
-                    variant="tonal"
-                  >
-                    <component
-                      :is="key === 'count' ? 'total' : key"
-                      v-if="isComponentRegistered(key)"
-                    ></component>
+                  <v-avatar size="42" class="me-3 v-avatar--variant-tonal " :class="getColor(key)" variant="tonal">
+                    <component :is="key === 'count' ? 'total' : key" v-if="isComponentRegistered(key)"></component>
                   </v-avatar>
                   <div class="d-flex flex-column">
                     <span class="text-h5 font-weight-medium">{{ card }}</span>
@@ -139,10 +125,12 @@ export default {
 .v-avatar--variant-tonal .v-icon {
   color: inherit;
 }
+
 .v-avatar--variant-tonal svg {
   width: 30px;
   height: 30px;
 }
+
 .v-application .text-caption {
   font-family: "Cairo", sans-serif !important;
 }

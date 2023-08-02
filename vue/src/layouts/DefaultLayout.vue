@@ -1,33 +1,17 @@
 <template>
-  <div
-    v-shortkey="['ctrl', '/']"
-    class="d-flex flex-grow-1"
-    @shortkey="onKeyup"
-  >
+  <div v-shortkey="['ctrl', '/']" class="d-flex flex-grow-1" @shortkey="onKeyup">
     <!-- Navigation -->
-    <v-navigation-drawer
-      v-model="drawer"
-      app
-      floating
-      class="elevation-0 navigation-cont"
-      :right="$vuetify.rtl"
-      :light="menuTheme === 'light'"
-      :dark="menuTheme === 'dark'"
-    >
+    <v-navigation-drawer v-model="drawer" app floating class="elevation-0 navigation-cont" :right="$vuetify.rtl"
+      :light="menuTheme === 'light'" :dark="menuTheme === 'dark'">
       <!-- Navigation menu info -->
       <template v-slot:prepend>
         <div class="px-2 pt-2" style="height: 80px">
-          <div
-            class="title font-weight-bold text-center text-uppercase primary--text "
-            style="height: 100%;"
-          >
+          <div class="title font-weight-bold text-center text-uppercase " style="height: 100%;">
             <!--            {{ product.name }}-->
-            <img
-              :class="!websiteLogo ? 'd-none' : ''"
-              :src="websiteLogo"
-              :alt="websiteName"
-              style="max-width: 85%; height: auto;max-height: 90%; object-fit: contain;"
-            />
+            <img :class="!websiteLogo ? 'd-none' : ''" :src="websiteLogo" :alt="websiteName"
+              style="width: 100%;max-width: 100%; height: auto;max-height: 100%; object-fit: cover;" />
+            <!-- <img src="../assets/images/logo.png" alt=""
+              style="width: 100%;max-width: 100%; height: auto;max-height: 100%; object-fit: cover;"> -->
           </div>
           <!--          <div class="overline grey&#45;&#45;text">{{ product.version }}</div>-->
         </div>
@@ -40,14 +24,8 @@
       <template v-slot:append>
         <!-- Footer navigation links -->
         <div class="pa-1 text-center">
-          <v-btn
-            v-for="(item, index) in navigation.footer"
-            :key="index"
-            :href="item.href"
-            :target="item.target"
-            small
-            text
-          >
+          <v-btn v-for="(item, index) in navigation.footer" :key="index" :href="item.href" :target="item.target" small
+            text>
             {{ item.key ? $t(item.key) : item.text }}
           </v-btn>
         </div>
@@ -55,27 +33,13 @@
     </v-navigation-drawer>
 
     <!-- Toolbar -->
-    <v-app-bar
-      app
-      flat
-      outlined
-      prominent
-      shrink-on-scroll
-      :color="isToolbarDetached ? 'surface' : undefined"
-      :light="toolbarTheme === 'light'"
-      :dark="toolbarTheme === 'dark'"
-      :height="breadcrumbs.length > 1 ? 40 : 90"
-    >
-      <v-card
-        class="flex-grow-1 d-flex fill-height"
-        :class="[isToolbarDetached ? 'pa-1 mt-3 mx-1' : 'pa-0 ma-0']"
-        :flat="!isToolbarDetached"
-      >
+    <v-app-bar app flat outlined prominent shrink-on-scroll :color="isToolbarDetached ? 'surface' : undefined"
+      :light="toolbarTheme === 'light'" :dark="toolbarTheme === 'dark'" :height="breadcrumbs.length > 1 ? 40 : 90">
+      <v-card class="flex-grow-1 d-flex fill-height" :class="[isToolbarDetached ? 'pa-1 mt-3 mx-1' : 'pa-0 ma-0']"
+        :flat="!isToolbarDetached">
         <div class="d-flex flex-grow-1 align-center">
           <div class="d-flex flex-grow-1 align-start fill-height">
-            <v-app-bar-nav-icon
-              @click.stop="drawer = !drawer"
-            ></v-app-bar-nav-icon>
+            <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
             <v-app-bar-title>{{ pageTitle }}</v-app-bar-title>
 
             <!-- <v-spacer class="d-none d-lg-block"></v-spacer>
@@ -111,12 +75,7 @@
         <v-spacer></v-spacer>
         <div class="overline">
           Built with <v-icon small color="pink">mdi-heart</v-icon>
-          <a
-            class="text-decoration-none"
-            href="https://wakeb.tech"
-            target="_blank"
-            >Wakeb</a
-          >
+          <a class="text-decoration-none" href="https://wakeb.tech" target="_blank"> Wakeb</a>
         </div>
       </v-footer>
     </v-main>
@@ -149,7 +108,7 @@ export default {
       showSearch: false,
       // pinnedReports: [],
       navigation: config.navigation,
-      logo: "/images/swcc.png"
+      logo: "/images/logo.svg"
     };
   },
   created() {
@@ -171,19 +130,10 @@ export default {
     ]),
     ...mapState("app", {
       websiteLogo: state => {
-        if (!state.websiteLogoLarge) {
-          return "/images/swcc.png";
+        if (!state.websiteLoginIcon) {
+          return "/images/logo.svg";
         }
-        return state.websiteLogoLarge;
-        // const result = state.generalSettings.filter(
-        //   setting => setting.key === "website_logo_large"
-        // );
-        // if (result.length > 0) {
-        //   return result[0]["full_url"]
-        //     ? result[0]["full_url"]
-        //     : "/images/swcc.png";
-        // }
-        // return "";
+        return state.websiteLoginIcon;
       },
       websitefavIcon: state => {
         const result = state.generalSettings.filter(
@@ -193,7 +143,7 @@ export default {
         if (result.length > 0) {
           return result[0]["full_url"];
         }
-        return "/images/swcc.png";
+        return "/images/logo.svg";
       },
       websiteName: state => {
         if (!state.websiteName) {
@@ -248,8 +198,69 @@ export default {
 };
 </script>
 
-<style scoped>
+<style>
 .buy-button {
   box-shadow: 1px 1px 18px #ee44aa;
+}
+
+.v-navigation-drawer {
+  /* background: color-mix(in srgb, #009390, #9cacac 40%) !important; */
+  background: #014c4f !important;
+}
+
+.v-navigation-drawer__prepend .title img {
+  /* filter: brightness(0) invert(1); */
+  /* background: #fff; */
+}
+
+.v-navigation-drawer__content {
+  background: none !important;
+}
+
+.v-menu__content .theme--light.v-list-item:not(.v-list-item--active):not(.v-list-item--disabled) {
+  color: #000 !important;
+}
+
+.theme--light.v-list-item:not(.v-list-item--active):not(.v-list-item--disabled) {
+  color: #fff !important;
+}
+
+.navigation-cont .v-list--dense .v-list-item .v-icon::before {
+  color: #fff !important;
+}
+
+.navigation-cont .v-list--dense .v-list-item.active--text {
+  background: #fff;
+  color: #014c4f !important;
+}
+
+/* .v-list-group--active .v-list-item--active {} */
+
+.navigation-cont .v-list-group--active .v-list-item--active {
+  background: #fff;
+}
+
+.navigation-cont .v-list-group--active .v-list-item--active .v-icon::before {
+
+  color: #014c4f !important;
+}
+
+.navigation-cont .v-list-group--active .v-list-item--active .v-list-item {
+  background: transparent !important;
+  color: #014c4f !important;
+}
+
+.navigation-cont .v-list--dense .v-list-item.active--text .v-icon::before {
+  color: #014c4f !important;
+}
+
+.v-list-group--sub-group .v-list-group__header {
+  margin-top: 5px;
+}
+
+.navigation-cont .v-list-group.v-list-group--active .v-list-group__items .v-list-item--active:not(.v-list-group__header) {
+  border-color: transparent !important;
+  margin-top: 5px;
+  color: #014c4f !important;
 }
 </style>

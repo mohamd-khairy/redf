@@ -1,4 +1,5 @@
 /node_modules
+/vue/node_modules
 /node/node_modules
 /node/iisnode
 /public/build

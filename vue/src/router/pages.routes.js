@@ -7,7 +7,8 @@ export default [
         /* webpackChunkName: "auth-signin" */ "@/pages/auth/SigninPage.vue"
       ),
     meta: {
-      layout: "auth"
+      layout: "auth",
+      title: "login"
     }
   },
   {
@@ -18,7 +19,8 @@ export default [
         /* webpackChunkName: "auth-signup" */ "@/pages/auth/SignupPage.vue"
       ),
     meta: {
-      layout: "auth"
+      layout: "auth",
+      title: "signup"
     }
   },
   {
@@ -29,7 +31,8 @@ export default [
         /* webpackChunkName: "auth-verify-email" */ "@/pages/auth/VerifyEmailPage.vue"
       ),
     meta: {
-      layout: "auth"
+      layout: "auth",
+      title: "verify_email"
     }
   },
   {
@@ -40,7 +43,8 @@ export default [
         /* webpackChunkName: "auth-forgot" */ "@/pages/auth/ForgotPage.vue"
       ),
     meta: {
-      layout: "auth"
+      layout: "auth",
+      title: "forget_password"
     }
   },
   {
@@ -49,7 +53,8 @@ export default [
     component: () =>
       import(/* webpackChunkName: "auth-reset" */ "@/pages/auth/ResetPage.vue"),
     meta: {
-      layout: "auth"
+      layout: "auth",
+      title: "dashboard"
     }
   },
   {

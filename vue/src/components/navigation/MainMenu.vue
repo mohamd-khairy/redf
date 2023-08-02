@@ -1,23 +1,15 @@
 <template>
   <v-list dense>
     <div v-for="(item, index) in menu" :key="index">
-      <v-list-item
-        link
-        v-if="item.items.length === 0"
-        :to="item.link ? item.link : undefined"
-        active-class="primary--text"
-      >
+      <v-list-item link v-if="item.items.length === 0" :to="item.link ? item.link : undefined"
+        active-class="active--text">
         <v-list-item-icon>
           <v-icon>{{ item.icon }}</v-icon>
         </v-list-item-icon>
         <v-list-item-title>{{ $t(item.key) }}</v-list-item-title>
       </v-list-item>
-      <v-list-group
-        v-else-if="item.text === 'reports'"
-        no-action
-        exact-active-class="primary--text"
-        class="reports-group-cont"
-      >
+      <v-list-group v-else-if="item.text === 'reports'" no-action exact-active-class="primary--text"
+        class="reports-group-cont">
         <template v-slot:activator>
           <v-list-item class="pa-0">
             <v-list-item-icon>
@@ -34,24 +26,15 @@
               }}</v-list-item-title>
             </v-list-item>
           </template>
-          <v-list-item
-            v-for="(subItem, subIndex) in item.items"
-            :key="subIndex"
-            exact
-            :to="subItem.link ? subItem.link : undefined"
-          >
+          <v-list-item v-for="(subItem, subIndex) in item.items" :key="subIndex" exact
+            :to="subItem.link ? subItem.link : undefined">
             <v-list-item-icon>
               <v-icon>mdi-circle-small</v-icon>
             </v-list-item-icon>
             <v-list-item-title>{{ $t(subItem.key) }}</v-list-item-title>
           </v-list-item>
         </v-list-group>
-        <v-list-item
-          v-for="(pin, i) in pinned"
-          :key="i"
-          exact
-          :to="`/reports/pinned/show/${pin.id}`"
-        >
+        <v-list-item v-for="(pin, i) in pinned" :key="i" exact :to="`/reports/pinned/show/${pin.id}`">
           <v-list-item-icon>
             <v-icon small>mdi-pin</v-icon>
           </v-list-item-icon>
@@ -67,12 +50,8 @@
             <v-list-item-title>{{ $t(item.key) }}</v-list-item-title>
           </v-list-item>
         </template>
-        <v-list-item
-          v-for="(subItem, subIndex) in item.items"
-          :key="subIndex"
-          :to="subItem.link ? subItem.link : undefined"
-          exact
-        >
+        <v-list-item v-for="(subItem, subIndex) in item.items" :key="subIndex"
+          :to="subItem.link ? subItem.link : undefined" exact>
           <v-list-item-icon>
             <v-icon>mdi-circle-small</v-icon>
           </v-list-item-icon>
@@ -183,7 +162,7 @@ export default {
   },
   computed: {},
   methods: {},
-  created() {}
+  created() { }
 };
 </script>
 <style>
@@ -191,24 +170,19 @@ export default {
   background-color: var(--v-primary-base);
   color: var(--v-background-base);
 } */
-.v-application--is-rtl
-  .v-list-group--no-action
-  > .v-list-group__items
-  > .v-list-item {
+.v-application--is-rtl .v-list-group--no-action>.v-list-group__items>.v-list-item {
   padding-right: 34px;
 }
-.v-application .v-list-group--no-action > .v-list-group__items > .v-list-item {
+
+.v-application .v-list-group--no-action>.v-list-group__items>.v-list-item {
   padding-left: 34px;
 }
-.reports-group-cont > .v-list-group__items > .v-list-item {
+
+.reports-group-cont>.v-list-group__items>.v-list-item {
   padding: 0 24px !important;
 }
 
-.reports-group-cont
-  > .v-list-group__items
-  .v-list-group--sub-group
-  .v-list-group__items
-  > .v-list-item {
+.reports-group-cont>.v-list-group__items .v-list-group--sub-group .v-list-group__items>.v-list-item {
   padding: 0 40px !important;
 }
 </style>
