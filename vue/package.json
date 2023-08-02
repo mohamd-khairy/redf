@@ -17,6 +17,7 @@
     "@fontsource/cairo": "^4.5.13",
     "@highcharts/map-collection": "^2.1.0",
     "@indielayer/vue-live-demo": "^1.1.2",
+    "@mdi/font": "^7.2.96",
     "animate.css": "^4.1.0",
     "apexcharts": "^3.41.1",
     "axios": "^1.4.0",
