@@ -1,0 +1,1 @@
+(window["webpackJsonp"]=window["webpackJsonp"]||[]).push([["apps-email-sent"],{dca9:function(e,n,t){"use strict";t.r(n);var a=function(){var e=this,n=e.$createElement,t=e._self._c||n;return t("email-list")},l=[],s=t("681c"),c={components:{EmailList:s["a"]}},i=c,o=t("2877"),p=Object(o["a"])(i,a,l,!1,null,null,null);n["default"]=p.exports}}]);
