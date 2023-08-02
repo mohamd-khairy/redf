@@ -8,8 +8,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Organization extends Model
 {
+    use SoftDeletes, HasFactory;
 
-    use SoftDeletes , HasFactory;
-
-    protected $fillable = ['name','description'];
+    protected $fillable = ['name', 'description'];
 }
