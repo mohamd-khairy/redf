@@ -34,7 +34,7 @@
 
     <!-- Toolbar -->
     <v-app-bar app flat outlined prominent shrink-on-scroll :color="isToolbarDetached ? 'surface' : undefined"
-      :light="toolbarTheme === 'light'" :dark="toolbarTheme === 'dark'" :height="breadcrumbs.length > 1 ? 40 : 90">
+      :light="toolbarTheme === 'light'" :dark="toolbarTheme === 'dark'" :height="breadcrumbs.length > 1 ? 40 : 60">
       <v-card class="flex-grow-1 d-flex fill-height" :class="[isToolbarDetached ? 'pa-1 mt-3 mx-1' : 'pa-0 ma-0']"
         :flat="!isToolbarDetached">
         <div class="d-flex flex-grow-1 align-center">
@@ -213,8 +213,8 @@ export default {
   /* background: #fff; */
 }
 
-.v-navigation-drawer__content {
-  background: none !important;
+.navigation-cont .v-navigation-drawer__content {
+  background: #014c4f !important;
 }
 
 .v-menu__content .theme--light.v-list-item:not(.v-list-item--active):not(.v-list-item--disabled) {

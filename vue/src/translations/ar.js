@@ -159,6 +159,8 @@ export default {
   menu: {
     search: "بحث (اضغط على 'ctrl + /' للتركيز)",
     dashboard: "الرئيسية",
+    departments: "الإدارات",
+    organizations: "المنظمات",
     logout: "تسجيل خروج",
     login: "تسجيل الدخول",
     signup: "تسجيل حساب جديد",

@@ -3,6 +3,7 @@ import Router from "vue-router";
 
 // Routes
 import AppsRoutes from "./apps.routes";
+import GlobalRoutes from "./global.routes";
 import UIRoutes from "./ui.routes";
 import PagesRoutes from "./pages.routes";
 import UsersRoutes from "./users.routes";
@@ -35,6 +36,7 @@ export const routes = [
     }
   },
   ...AppsRoutes,
+  ...GlobalRoutes,
   ...UIRoutes,
   ...PagesRoutes,
   ...UsersRoutes,

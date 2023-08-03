@@ -10,6 +10,22 @@ export default {
       items: []
     },
     {
+      icon: "mdi-list-box",
+      text: "departments",
+      key: "menu.departments",
+      link: "/departments",
+      permission: "read-role",
+      items: []
+    },
+    {
+      icon: "mdi-office-building",
+      text: "orgnaizations",
+      key: "menu.organizations",
+      link: "/organizations",
+      permission: "read-role",
+      items: []
+    },
+    {
       icon: "mdi-animation",
       text: "projects",
       key: "menu.projects",
