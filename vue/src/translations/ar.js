@@ -235,7 +235,8 @@ export default {
     documents: "المستندات",
     beneficiaries: "المستفيدون",
     log: "سجل الحركة",
-    review_and_audit: "المراجعة والتدقيق"
+    review_and_audit: "المراجعة والتدقيق",
+    organizations: "المنظمات"
   },
   breadcrumbs: {
     pipesList: "قائمة النماذج",
@@ -481,7 +482,8 @@ export default {
     lastSignIn: "آخر تسجيل دخول",
     disabled: "التفعيل",
     download: "تحميل الملف",
-    location: "الموقع"
+    location: "الموقع",
+    description: 'الوصف'
   },
   texts: {
     editor: "محرر",
@@ -614,7 +616,8 @@ export default {
     selectAtLeastOnePineed:
       "حدد تقريرًا مثبتًا واحدا على الأقل أو أضف مثبت جديدا",
     statistics: "الاحصائيات",
-    no_data_available: "لا يوجد بيانات"
+    no_data_available: "لا يوجد بيانات",
+    update: 'تحديث'
   },
   reports: {
     buildReport: "انشاء تقرير",
@@ -663,5 +666,16 @@ export default {
   },
   messages: {
     welcome: "مرحبا"
+  },
+  organizations: {
+    organizationsList: "قائمة المنظمات",
+    organizationsManagement: 'ادارة المنظمات',
+    createOrganizer: "انشاء منظمة ",
+    orgName: "اسم المنظمة",
+    orgDesc: "وصف المنظمة",
+    createOrg: "انشاء منظمة",
+    confirmDeleteOrg: "هل انت متأكد من حذف هذه المنظمة ؟",
+    confirmDeleteSelectedOrg: "هل انت متأكد من حذف المنظمات المحددة ؟",
+    editOrg: "تحديث منظمة",
   }
 };

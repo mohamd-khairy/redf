@@ -74,6 +74,14 @@ export default {
       items: []
     },
     {
+      icon: "mdi-file-document-edit-outline",
+      text: "Organizations",
+      key: "menu.organizations",
+      link: "/organizations",
+      permission: "read-role",
+      items: []
+    },
+    {
       icon: "mdi-form-textbox",
       text: "models",
       key: "menu.pipesModel",

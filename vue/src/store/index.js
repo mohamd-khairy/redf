@@ -13,6 +13,7 @@ import Events from "./events";
 import Reports from "./reports";
 import drones from "./drones";
 import Flights from "./flights";
+import Organizations from "./organizations";
 
 // Example Apps
 import BoardModule from '../apps/board/store'
@@ -47,6 +48,7 @@ const store = new Vuex.Store({
     reports: Reports,
     drones: drones,
     flights: Flights,
+    organizations: Organizations,
     auth: Auth
   }
 })
