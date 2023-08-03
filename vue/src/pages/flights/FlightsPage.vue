@@ -1,10 +1,6 @@
 <template>
   <div class="d-flex flex-grow-1 flex-column">
-    <img
-      :src="image"
-      style="width: fit-content; align-self: center; max-width: 50%;"
-      alt=""
-    />
+    <img :src="image" style="width: fit-content; align-self: center; max-width: 50%;" alt="" />
 
     <div class="d-flex align-center py-3">
       <!-- <div class="d-flex align-baseline">
@@ -16,11 +12,7 @@
         <template>
           <div class="date-picker position-relative">
             <i aria-hidden="true" class="v-icon mdi mdi-calendar"></i>
-            <date-range-picker
-              v-model="dateRange"
-              direction="rtl"
-              @update="changeDatePicker()"
-            >
+            <date-range-picker v-model="dateRange" direction="rtl" @update="changeDatePicker()">
             </date-range-picker>
           </div>
         </template>
@@ -119,35 +111,17 @@
               </v-menu>
             </v-col>
             <v-col cols="6" class="d-flex text-right align-center">
-              <v-text-field
-                v-model="searchQuery"
-                append-icon="mdi-magnify"
-                class="flex-grow-1 mr-md-2 mx-1"
-                hide-details
-                dense
-                solo
-                clearable
-                :placeholder="$t('general.search')"
-              ></v-text-field>
+              <v-text-field v-model="searchQuery" append-icon="mdi-magnify" class="flex-grow-1 mr-md-2 mx-1" hide-details
+                dense solo clearable :placeholder="$t('general.search')"></v-text-field>
               <v-btn :loading="isLoading" icon small class="mx-1" @click>
                 <v-icon>mdi-refresh</v-icon>
               </v-btn>
             </v-col>
           </v-row>
 
-          <v-data-table
-            v-model="selected"
-            show-select
-            :headers="headers"
-            :items="items"
-            :search="searchQuery"
-            class="flex-grow-1 cursor-pointer"
-            :options.sync="options"
-            :loading="isLoading"
-            :page="page"
-            :pageCount="numberOfPages"
-            :server-items-length="total"
-          >
+          <v-data-table v-model="selected" show-select :headers="headers" :items="items" :search="searchQuery"
+            class="flex-grow-1 cursor-pointer" :options.sync="options" :loading="isLoading" :page="page"
+            :pageCount="numberOfPages" :server-items-length="total">
             <template v-slot:item.id="{ item }">
               <div class="font-weight-bold">{{ item.id }}</div>
             </template>
@@ -166,12 +140,7 @@
 
             <template v-slot:item.action="{ item }">
               <div class="actions">
-                <v-btn
-                  text
-                  @click="open(item)"
-                  to="/flights/show"
-                  target="_blank"
-                >
+                <v-btn text @click="open(item)" to="/flights/show" target="_blank">
                   <span class="primary--text">{{ $t("tables.view") }}</span>
                 </v-btn>
               </div>
@@ -205,10 +174,10 @@ import emptyDataSvg from "@/assets/images/illustrations/empty-data.svg";
 
 export default {
   sockets: {
-    connect: function() {
+    connect: function () {
       console.log("socket connected");
     },
-    itemAdded: function(data) {
+    itemAdded: function (data) {
       console.log(`item added ${data}`);
       this.image = data.image;
     }
@@ -289,7 +258,7 @@ export default {
         endDate: ""
       },
       breadcrumbs: [
-      {
+        {
           text: this.$t("menu.flights"),
           disabled: false,
           href: "#"
@@ -308,7 +277,7 @@ export default {
     });
   },
   watch: {
-    selected(val) {},
+    selected(val) { },
     options: {
       handler() {
         this.open();

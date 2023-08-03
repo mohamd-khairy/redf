@@ -1,19 +1,23 @@
 <?php
 
+use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AI\AIController;
 use App\Http\Controllers\API\AuthController;
-use App\Http\Controllers\API\DetectionTypeController;
+use App\Http\Controllers\API\RoleController;
+use App\Http\Controllers\API\UserController;
 use App\Http\Controllers\API\DroneController;
 use App\Http\Controllers\API\EventController;
+use App\Http\Controllers\API\FormsController;
 use App\Http\Controllers\API\FlightController;
-use App\Http\Controllers\API\LocationController;
-use App\Http\Controllers\API\NotificationController;
-use App\Http\Controllers\API\PermissionController;
-use App\Http\Controllers\API\UserController;
-use App\Http\Controllers\API\RoleController;
 use App\Http\Controllers\API\SettingController;
+use App\Http\Controllers\API\LocationController;
+use App\Http\Controllers\Api\TemplateController;
+use App\Http\Controllers\Api\DepartmentController;
+use App\Http\Controllers\API\PermissionController;
+use App\Http\Controllers\API\NotificationController;
+use App\Http\Controllers\Api\OrganizationController;
 use App\Http\Controllers\API\VerificationController;
-use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\API\DetectionTypeController;
 
 Route::group(['prefix' => 'v1'], function () {
 
@@ -60,12 +64,13 @@ Route::group(['prefix' => 'v1'], function () {
         Route::post('notifications', [NotificationController::class, 'update']);
     });
 
+    /*********************Forms***************** */
+    Route::group(['middleware' => ['auth:sanctum'], 'prefix' => 'forms'], function (){
 
-    Route::group(['middleware' => ['auth:sanctum'], 'prefix' => 'forms'], function () {
+         // index
+         Route::get('/', [FormsController::class, 'index']);
         // all
-        Route::get('get/all', [FormsController::class, 'all']);
-        // index
-        Route::get('/', [FormsController::class, 'index']);
+        Route::get('all', [FormsController::class, 'all']);
         // change notifications
         Route::put('{userForm}/changeNotifications', [FormsController::class, 'changeNotifications']);
         // Get form with filled data for reviewing
@@ -81,4 +86,20 @@ Route::group(['prefix' => 'v1'], function () {
         // export form word
         Route::get('exportWord/{userForm}', [FormsController::class, 'exportWord']);
     });
+
+    /*********************DepartmentController***************** */
+    Route::group(['middleware' => 'auth:sanctum'], function () {
+        Route::apiResource('departments', DepartmentController::class);
+    });
+
+    /*********************OrganizationController***************** */
+    Route::group(['middleware' => 'auth:sanctum'], function () {
+        Route::apiResource('organizations', OrganizationController::class);
+    });
+
+    /*********************OrganizationController***************** */
+    Route::group(['middleware' => 'auth:sanctum'], function () {
+        Route::apiResource('templates', TemplateController::class);
+    });
+
 });

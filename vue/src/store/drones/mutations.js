@@ -1,5 +1,5 @@
 const mutations = {
-  SET_DRONES(state, value) {
+  SET_drones(state, value) {
     state.drones = value
   },
   SET_statistics(state, value) {

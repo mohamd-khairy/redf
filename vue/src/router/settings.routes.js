@@ -181,7 +181,7 @@ export default [
     },
     component: () =>
       import(
-        /* webpackChunkName: "settings-drones */ "@/pages/settings/drones/DronesPage.vue"
+        /* webpackChunkName: "settings-drones */ "@/pages/settings/drones/dronesPage.vue"
       ),
     meta: {
       title: ""

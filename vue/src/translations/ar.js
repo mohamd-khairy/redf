@@ -587,7 +587,7 @@ export default {
     mail_port: " رقم منفذ الخادم",
     mailTemplateContent: "محتويات قالب البريد",
     search: "بحث",
-    DronesInEachStation: "الطائرات في كل موقع",
+    dronesInEachStation: "الطائرات في كل موقع",
     filterWithDat: "بحث بالتاريخ",
     calenderHeader: "Calender",
     calenderFooter: "Selected Date",

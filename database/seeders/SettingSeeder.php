@@ -20,7 +20,7 @@ class SettingSeeder extends Seeder
 
             [
                 'key' => 'company_name',
-                'value' => 'Drones',
+                'value' => 'drones',
                 'group' => 'site'
             ],
             [
@@ -30,7 +30,7 @@ class SettingSeeder extends Seeder
             ],
             [
                 'key' => 'website_name',
-                'value' => 'Drones',
+                'value' => 'drones',
                 'group' => 'site'
             ],
             [
@@ -39,11 +39,11 @@ class SettingSeeder extends Seeder
                 'group' => 'site'
             ], [
                 'key' => 'website_description',
-                'value' => 'Drones',
+                'value' => 'drones',
                 'group' => 'site'
             ], [
                 'key' => 'website_meta_description',
-                'value' => 'Drones',
+                'value' => 'drones',
                 'group' => 'site'
             ],
 

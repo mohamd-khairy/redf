@@ -1,11 +1,6 @@
 <template>
   <div v-if="showChart">
-    <apexchart
-      type="bar"
-      height="488"
-      :options="chartOptions"
-      :series="series"
-    ></apexchart>
+    <apexchart type="bar" height="488" :options="chartOptions" :series="series"></apexchart>
   </div>
 </template>
 
@@ -75,7 +70,7 @@ export default {
           // categories: [this.$t('charts.drone1'), this.$t('charts.drone2'), this.$t('charts.drone3'), this.$t('charts.drone4'),
           //   this.$t('charts.drone5'), this.$t('charts.drone6'), this.$t('charts.drone7'), this.$t('charts.drone8')]
           // title: {
-          //   text: 'Drones'
+          //   text: 'drones'
           // }
         },
         yaxis: {
@@ -88,7 +83,7 @@ export default {
         },
         tooltip: {
           y: {
-            formatter: function(val) {
+            formatter: function (val) {
               return +val + " Screenshots";
             }
           }
