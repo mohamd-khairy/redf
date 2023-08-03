@@ -227,7 +227,15 @@ export default {
     logs: "السجلات",
     live_stream: "البث المباشر",
     flights_table: "جدول الرحلات",
-    flights_location: "موقع الرحلات"
+    flights_location: "موقع الرحلات",
+    projects: 'المشاريع',
+    cases: "القضايا",
+    legal_advice: "الاستشارات القانونية",
+    tasks: "المهام",
+    documents: "المستندات",
+    beneficiaries: "المستفيدون",
+    log: "سجل الحركة",
+    review_and_audit: "المراجعة والتدقيق"
   },
   breadcrumbs: {
     pipesList: "قائمة النماذج",

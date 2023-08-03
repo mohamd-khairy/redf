@@ -78,13 +78,16 @@ Route::group(['prefix' => 'v1'], function () {
         // review store
         Route::put('{userForm}/review', [FormsController::class, 'review']);
         // delete
-        Route::delete('{userForm}', [FormsController::class, 'destroy']);
-        // export
-        Route::get('export/{id}', [FormsController::class, 'export']);
-        // export form pdf
-        Route::get('exportPDF/{userForm}', [FormsController::class, 'exportPDF']);
-        // export form word
-        Route::get('exportWord/{userForm}', [FormsController::class, 'exportWord']);
+        Route::delete('{ids?}', [FormsController::class, 'destroy']);
+        // get
+        Route::get('get/users/{q?}', [FormsController::class, 'getUsers']);
+        Route::get('get/users/{q?}', [FormsController::class, 'getUsers']);
+        // assign users
+        Route::post('{template}/assignUsers', [FormsController::class, 'assignUsers']);
+        Route::post('restore/{ids?}', [FormsController::class, 'restore']);
+        Route::post('assign', [FormsController::class, 'assign']);
+        Route::get('getUserOrganization', [FormsController::class, 'getUserOrganization']);
+        Route::get('getUserTemplates', [FormsController::class, 'getUserTemplates']);
     });
 
     /*********************DepartmentController***************** */
