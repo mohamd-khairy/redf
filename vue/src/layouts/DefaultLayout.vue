@@ -160,12 +160,12 @@ export default {
       this.navigation.menu.forEach(nav => {
         let isAllowed = localStorage
           .getItem("user_permissions")
-          .includes(nav.permission);
+          ?.includes(nav.permission);
         if (nav.items.length > 0) {
           items = nav.items.filter(item => {
             let allowed = localStorage
               .getItem("user_permissions")
-              .includes(item.permission);
+              ?.includes(item.permission);
             if (allowed) return item;
           });
           nav.items = items;
