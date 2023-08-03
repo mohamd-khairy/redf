@@ -60,6 +60,20 @@ return [
     */
 
     'providers' => [
+        'ldap' => [
+            'driver' => 'ldap',
+            'model' => LdapRecord\Models\OpenLDAP\User::class,
+            //'model' => LdapRecord\Models\ActiveDirectory\User::class,
+            'database' => [
+                'model' => App\Models\User::class,
+                'sync_passwords' => false,
+                'sync_attributes' => [
+                    'name' => 'cn',
+                    'email' => 'mail',
+                    'deleted_at' => null
+                ],
+            ],
+        ],
         'users' => [
             'driver' => 'eloquent',
             'model' => App\Models\User::class,

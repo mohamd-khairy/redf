@@ -22,6 +22,8 @@ return new class extends Migration
             $table->string('password');
             $table->foreignId('organization_id')->nullable()->constrained();
             $table->foreignId('department_id')->nullable()->constrained();
+            $table->string('guid')->unique()->nullable();
+            $table->string('domain')->nullable();
             $table->timestamp('last_login')->nullable();
             $table->timestamp('email_verified_at')->nullable();
             $table->rememberToken();
