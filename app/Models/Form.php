@@ -17,4 +17,19 @@ class Form extends Model
         'user_id',
         'template_id'
     ];
+
+    public function organization()
+    {
+        return $this->belongsTo(Organization::class);
+    }
+
+    public function pages()
+    {
+        return $this->hasMany(FormPage::class);
+    }
+
+    public function form_requests()
+    {
+        return $this->hasMany(FormRequest::class);
+    }
 }
