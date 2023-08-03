@@ -14,7 +14,7 @@ export default {
       text: "projects",
       key: "menu.projects",
       link: "/projects",
-      permission: "read-event",
+      permission: "read-role",
       items: []
     },
     {
@@ -22,7 +22,7 @@ export default {
       text: "cases",
       key: "menu.cases",
       link: "/cases",
-      permission: "read-event",
+      permission: "read-role",
       items: []
     },
     {
@@ -30,7 +30,7 @@ export default {
       text: "legal_advice",
       key: "menu.legal_advice",
       link: "/legal_advice",
-      permission: "read-event",
+      permission: "read-role",
       items: []
     },
     {
@@ -38,7 +38,7 @@ export default {
       text: "tasks",
       key: "menu.tasks",
       link: "/tasks",
-      permission: "read-event",
+      permission: "read-role",
       items: []
     },
     {
@@ -46,7 +46,7 @@ export default {
       text: "documents",
       key: "menu.documents",
       link: "/documents",
-      permission: "read-event",
+      permission: "read-role",
       items: []
     },
     {
@@ -54,7 +54,7 @@ export default {
       text: "beneficiaries",
       key: "menu.beneficiaries",
       link: "/beneficiaries",
-      permission: "read-event",
+      permission: "read-role",
       items: []
     },
     {
@@ -62,7 +62,7 @@ export default {
       text: "log",
       key: "menu.log",
       link: "/log",
-      permission: "read-event",
+      permission: "read-role",
       items: []
     },
     {
@@ -70,7 +70,7 @@ export default {
       text: "review_and_audit",
       key: "menu.review_and_audit",
       link: "/review_and_audit",
-      permission: "read-event",
+      permission: "read-role",
       items: []
     },
     {
@@ -78,7 +78,7 @@ export default {
       text: "models",
       key: "menu.pipesModel",
       link: "/models",
-      permission: "read-event",
+      permission: "read-role",
       items: []
     },
 
