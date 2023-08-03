@@ -1,7 +1,7 @@
 import axios from "@/plugins/axios";
 
 const actions = {
-  async getDrones({ commit }, data) {
+  async getdrones({ commit }, data) {
     const response = await axios.get("drones", {
       params: {
         search: data.search,
@@ -11,7 +11,7 @@ const actions = {
     });
     const drones = response?.data.data.data;
     const statistics = response?.data.data.statistics;
-    commit("SET_DRONES", drones);
+    commit("SET_drones", drones);
     commit("SET_statistics", statistics);
   },
 };

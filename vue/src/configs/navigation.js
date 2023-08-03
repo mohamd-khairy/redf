@@ -193,7 +193,7 @@ export default {
         },
         {
           key: "menu.drones",
-          text: "Drones",
+          text: "drones",
           link: "/settings/drones",
           permission: "read-drone"
         },

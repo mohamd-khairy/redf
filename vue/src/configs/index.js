@@ -11,7 +11,7 @@ import navigation from './navigation'
 export default {
   // product display information
   product: {
-    // name: 'SWCC Drones',
+    // name: 'SWCC drones',
     name: '',
     version: '1.4.1'
   },

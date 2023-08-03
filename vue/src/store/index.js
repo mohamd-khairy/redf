@@ -11,7 +11,7 @@ import Locations from "./locations";
 import Types from "./types";
 import Events from "./events";
 import Reports from "./reports";
-import Drones from "./drones";
+import drones from "./drones";
 import Flights from "./flights";
 
 // Example Apps
@@ -45,7 +45,7 @@ const store = new Vuex.Store({
     types: Types,
     events: Events,
     reports: Reports,
-    drones: Drones,
+    drones: drones,
     flights: Flights,
     auth: Auth
   }

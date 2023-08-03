@@ -6,68 +6,30 @@
           <v-card-title>
             <v-row dense class=" align-center">
               <v-col cols="3" class="d-flex text-right align-center">
-                <v-select
-                  :disabled="files.length === 0"
-                  class=" mx-1"
-                  :label="$t('general.types')"
-                  dense
-                  :items="files"
-                  item-text="name"
-                  item-value="identifier"
-                  hide-details
-                  v-model="selectedFile"
-                  return-object
-                  @change="getLogsData"
-                  solo
-                ></v-select>
+                <v-select :disabled="files.length === 0" class=" mx-1" :label="$t('general.types')" dense :items="files"
+                  item-text="name" item-value="identifier" hide-details v-model="selectedFile" return-object
+                  @change="getLogsData" solo></v-select>
               </v-col>
               <v-col cols="4">
-                <v-text-field
-                  :disabled="items.length === 0"
-                  v-model="searchQuery"
-                  append-icon="mdi-magnify"
-                  class="flex-grow-1  mx-1"
-                  hide-details
-                  dense
-                  solo
-                  clearable
-                  :placeholder="$t('general.search')"
-                  @keyup.enter="getLogsData(searchQuery)"
-                ></v-text-field>
+                <v-text-field :disabled="items.length === 0" v-model="searchQuery" append-icon="mdi-magnify"
+                  class="flex-grow-1  mx-1" hide-details dense solo clearable :placeholder="$t('general.search')"
+                  @keyup.enter="getLogsData(searchQuery)"></v-text-field>
               </v-col>
 
               <v-spacer></v-spacer>
               <v-col cols="1" class="d-flex justify-end">
-                <v-btn
-                  :loading="isLoading"
-                  icon
-                  small
-                  class="mx-1"
-                  @click.prevent="getLogsData()"
-                >
+                <v-btn :loading="isLoading" icon small class="mx-1" @click.prevent="getLogsData()">
                   <v-icon>mdi-refresh</v-icon>
                 </v-btn>
               </v-col>
             </v-row>
           </v-card-title>
           <v-card-text>
-            <v-data-table
-              v-model="logsData"
-              show-select
-              :headers="headers"
-              :items="items"
-              item-key="index"
-              show-expand
-              :single-expand="true"
-              class="flex-grow-1 cursor-pointer"
-              :page="page"
-              :pageCount="numberOfPages"
-              :server-items-length="total"
-              :show-select="false"
-              :footer-props="{
+            <v-data-table v-model="logsData" show-select :headers="headers" :items="items" item-key="index" show-expand
+              :single-expand="true" class="flex-grow-1 cursor-pointer" :page="page" :pageCount="numberOfPages"
+              :server-items-length="total" :show-select="false" :footer-props="{
                 'items-per-page-options': [10, 25, 50]
-              }"
-            >
+              }">
               <template v-slot:item.id="{ item }">
                 <div class="font-weight-bold">{{ item.id }}</div>
               </template>
@@ -80,12 +42,7 @@
               </template>
 
               <template v-slot:item.level="{ item }">
-                <v-chip
-                  class="ma-1"
-                  :color="item.level === 'error' ? 'red' : 'blue'"
-                  text-color="white"
-                  small
-                >
+                <v-chip class="ma-1" :color="item.level === 'error' ? 'red' : 'blue'" text-color="white" small>
                   {{ item.level }}
                 </v-chip>
               </template>
@@ -177,7 +134,7 @@ export default {
   },
   watch: {},
   computed: {},
-  mounted() {},
+  mounted() { },
   methods: {
     ...mapActions("app", ["setBreadCrumb"]),
     getFiles() {

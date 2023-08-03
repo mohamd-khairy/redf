@@ -13,13 +13,8 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('departments', function (Blueprint $table) {
-            $table->id();
-            $table->string('name')->unique();
-            $table->text('description')->nullable();
-            $table->timestamps();
-            $table->softDeletes();
-
+        Schema::table('templates', function (Blueprint $table) {
+            $table->dropColumn('type');
         });
     }
 
@@ -30,6 +25,8 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('departments');
+        Schema::table('templates', function (Blueprint $table) {
+            $table->enum('type', ['form', 'application'])->default('form');
+        });
     }
 };

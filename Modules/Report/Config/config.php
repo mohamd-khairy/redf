@@ -24,7 +24,7 @@ return [
                 'value' => 'Detection',
             ], [
                 'key'   => 'Drone',
-                'value' => 'Drones',
+                'value' => 'drones',
             ]
         ],
         'report_types' => [
