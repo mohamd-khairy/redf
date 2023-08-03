@@ -71,7 +71,7 @@
           <v-menu offset-y left>
             <template v-slot:activator="{ on }">
               <transition name="slide-fade" mode="out-in">
-                <v-btn v-show="selectedDrones.length > 0" v-on="on">
+                <v-btn v-show="selecteddrones.length > 0" v-on="on">
                   {{ $t("general.actions") }}
                   <v-icon right>mdi-menu-down</v-icon>
                 </v-btn>
@@ -98,43 +98,18 @@
           </v-menu>
         </v-col>
         <v-col cols="6" class="d-flex text-right align-center">
-          <v-text-field
-            v-model="searchQuery"
-            append-icon="mdi-magnify"
-            class="flex-grow-1 mr-md-2"
-            solo
-            hide-details
-            dense
-            clearable
-            :placeholder="$t('general.search')"
-          ></v-text-field>
-          <v-btn
-            :loading="isLoading"
-            icon
-            small
-            class="ml-2"
-            @click.prevent="open()"
-          >
+          <v-text-field v-model="searchQuery" append-icon="mdi-magnify" class="flex-grow-1 mr-md-2" solo hide-details
+            dense clearable :placeholder="$t('general.search')"></v-text-field>
+          <v-btn :loading="isLoading" icon small class="ml-2" @click.prevent="open()">
             <v-icon>mdi-refresh</v-icon>
           </v-btn>
         </v-col>
       </v-row>
-      <v-data-table
-        v-model="selectedDrones"
-        :headers="headers"
-        :items="items"
-        :options.sync="options"
-        :sort-by.sync="sortBy"
-        :sort-desc.sync="sortDesc"
-        :search="searchQuery"
-        class="flex-grow-1 cursor-pointer"
-        :page="page"
-        :pageCount="numberOfPages"
-        :server-items-length="total"
-        :footer-props="{
+      <v-data-table v-model="selecteddrones" :headers="headers" :items="items" :options.sync="options"
+        :sort-by.sync="sortBy" :sort-desc.sync="sortDesc" :search="searchQuery" class="flex-grow-1 cursor-pointer"
+        :page="page" :pageCount="numberOfPages" :server-items-length="total" :footer-props="{
           'items-per-page-options': [5, 10, 15],
-        }"
-      >
+        }">
         <template v-slot:item.serial="{ item }">
           <div>{{ item.number }}</div>
         </template>
@@ -230,7 +205,7 @@ export default {
           text: this.$t("menu.drones"),
         },
       ],
-      selectedDrones: [],
+      selecteddrones: [],
       headers: [
         { text: this.$t("tables.serial"), align: "start", value: "serial" },
         { text: this.$t("tables.id"), value: "id" },
@@ -276,9 +251,9 @@ export default {
     ...mapState("drones", ["drones"]),
   },
   methods: {
-    ...mapActions("drones", ["getDrones"]),
+    ...mapActions("drones", ["getdrones"]),
     ...mapActions("app", ["setBreadCrumb"]),
-    searchRole() {},
+    searchRole() { },
     open() {
       this.isLoading = true;
       let { page, itemsPerPage } = this.options;
@@ -287,7 +262,7 @@ export default {
         pageSize: itemsPerPage,
         pageNumber: page,
       };
-      this.getDrones(data)
+      this.getdrones(data)
         .then(() => {
           this.isLoading = false;
           if (itemsPerPage != -1) {

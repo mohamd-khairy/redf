@@ -32,7 +32,7 @@ export const routes = [
         /* webpackChunkName: "dashboard" */ "@/pages/dashboard/DashboardPage.vue"
       ),
     meta: {
-      title: "dashboard"
+      title: "menu.dashboard"
     }
   },
   ...AppsRoutes,
@@ -95,7 +95,7 @@ router.beforeEach((to, from, next) => {
     let isAllowed = localStorage.getItem('user_permissions').includes(to.meta.permissions)
     if (!isAllowed) return next('auth-signin')
   }
-  document.title = i18n.t(`menu.${to.meta.title}`)
+  document.title = i18n.t(`${to.meta.title}`)
   return next();
 });
 

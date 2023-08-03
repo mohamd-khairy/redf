@@ -158,6 +158,8 @@ export default {
   menu: {
     search: 'Search (press "ctrl + /" to focus)',
     dashboard: "Dashboard",
+    departments: "Departments",
+    organizations: "Organizations",
     logout: "Logout",
     profile: "Profile",
     blank: "Blank Page",
@@ -206,7 +208,7 @@ export default {
     mailTemplate: "Mail Template",
     sms: "SMS",
     stations: "Stations",
-    drones: "Drones",
+    drones: "drones",
     flights: "Flights",
     maintenance: "Maintenance",
     help: "Help",
@@ -363,9 +365,14 @@ export default {
     editDetectionType: "Edit detection type"
   },
   drones: {
-    dronesSettings: "Drones Settings",
+    dronesSettings: "drones Settings",
     valid: "Valid",
     invalid: "Invalid"
+  },
+  departments: {
+    departmentsList: "Departments List",
+    createDepartment: "Create Department",
+    updateDepartment: "Update Department",
   },
   users: {
     rolesList: "Roles List",
@@ -494,7 +501,7 @@ export default {
     body: "body",
     administratorAccess: "Administrator Access ",
     Stations: "Stations",
-    drones: "Drones",
+    drones: "drones",
     archiveFile: "ArchiveFile",
     auditLog: "AuditLog",
     config: "Config",
@@ -563,7 +570,7 @@ export default {
     capturedImages: "Captured Images",
     capturedImage: "Captured Image",
     risky: "Risky",
-    drones: "Drones",
+    drones: "drones",
     stations: "Stations",
     changeStatus: "Change Status",
     actions: "Actions",
@@ -588,7 +595,7 @@ export default {
     mailTemplateContent: "Mail Template Contents",
     search: "Search",
     status: "Status",
-    DronesInEachStation: "Drones In Each Station",
+    dronesInEachStation: "drones In Each Station",
     filterWithDate: "Filter With Date",
     calenderHeader: "Calender",
     calenderFooter: "Selected Date",

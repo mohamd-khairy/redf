@@ -18,6 +18,10 @@
 }
 
 // Text Overrides
+.v-application a {
+  color: #014c4f !important;
+}
+
 .v-application p {
   margin-bottom: 20px;
 }
@@ -697,8 +701,18 @@
   background: #f9f9f9 !important;
 }
 
+.theme--light.v-data-table>.v-data-table__wrapper>table>thead>tr>th,
+.theme--light.v-data-table>.v-data-table__wrapper>table>thead>tr>th .theme--light.v-icon {
+  color: #fff !important;
+}
+
 .theme--light .v-data-table__wrapper thead {
-  background: #f3f3f3;
+  background: #014c4f;
+  color     : #fff;
+}
+
+.theme--light.v-btn.v-btn--has-bg {
+  color: #fff !important;
 }
 
 .theme--light .v-card__title {

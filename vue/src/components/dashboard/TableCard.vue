@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-data-table :headers="table.headers" :items="table.table" :class="!table.table.length ? 'empty-dt' : ''"
+    <v-data-table :headers="headers" :items="tableData" :class="!tableData.length ? 'empty-dt' : ''"
       hseriale-default-footer>
       <template v-slot:no-data>
         <div class="text-center my-2 primary--text" color="primary">
@@ -22,7 +22,8 @@ export default {
     emptyDataSvg
   },
   props: {
-    table: Object
+    tableData: Array,
+    headers: Array
   },
   data() {
     return {};
@@ -37,9 +38,6 @@ export default {
 
   methods: {
     open(item) { }
-  },
-  mounted() {
-    console.log(this.table);
   },
 };
 </script>

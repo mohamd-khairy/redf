@@ -437,6 +437,12 @@ export default {
     Female: "انثى",
     Other: "آخرى"
   },
+
+  departments: {
+    departmentsList: "قائمة الإدارات",
+    createDepartment: "إضافة إدارة",
+    updateDepartment: "تعديل إدارة",
+  },
   charts: {
     Station1: "موقع 1",
     Station2: "موقع 2",
@@ -483,7 +489,8 @@ export default {
     lastSignIn: "آخر تسجيل دخول",
     disabled: "التفعيل",
     download: "تحميل الملف",
-    location: "الموقع"
+    location: "الموقع",
+    description: "الوصف"
   },
   texts: {
     editor: "محرر",
@@ -597,7 +604,7 @@ export default {
     mail_port: " رقم منفذ الخادم",
     mailTemplateContent: "محتويات قالب البريد",
     search: "بحث",
-    DronesInEachStation: "الطائرات في كل موقع",
+    dronesInEachStation: "الطائرات في كل موقع",
     filterWithDat: "بحث بالتاريخ",
     calenderHeader: "Calender",
     calenderFooter: "Selected Date",
