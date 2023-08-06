@@ -17,6 +17,7 @@ const actions = {
   async getOrganization({ commit }, id) {
     const response = await axios.get(`organizations/${id}`)
     const organization = response?.data.data
+    
     commit('SET_ORGANIZATION', organization)
   },
   async deleteOrganization({ commit, dispatch }, id) {
@@ -33,9 +34,8 @@ const actions = {
     });
   },
   async updateOrganization({ state }, form) {
-    // const { id } = state?.organization ?? {}
-    
-    return await axios.post(`organizations/${id}`, form)
+    const { id } = state?.organization ?? {}
+    return await axios.put(`organizations/${id}`, form)
   },
   async createOrganization({ commit }, data) {
     return await axios.post('organizations', data)

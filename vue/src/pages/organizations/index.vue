@@ -219,7 +219,6 @@ export default {
           this.isLoading = false;
         });
     },
-    searchUser() {},
     async deleteItem(id){
       const { isConfirmed } = await ask(this.$t("organizations.confirmDeleteOrg"), "warning");
 

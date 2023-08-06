@@ -77,7 +77,7 @@ export default {
     };
   },
   computed: {
-    
+    ...mapState("organizations", ['organization'])
   },
   created() {
     this.setBreadCrumb({
@@ -97,6 +97,7 @@ export default {
         this.$router.push({ name: "organizations-list" });
         return
       }
+      
       this.loading = true;
       this.getOrganization(id)
         .then(() => {
