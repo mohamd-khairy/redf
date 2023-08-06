@@ -40,29 +40,13 @@
           </v-menu>
         </v-col>
         <v-col cols="6" class="d-flex text-right align-center">
-          <v-text-field
-            v-model="searchQuery"
-            append-icon="mdi-magnify"
-            class="flex-grow-1 mr-md-2"
-            solo
-            hide-details
-            dense
-            clearable
-            :placeholder="$t('general.search')"
-            @keyup.enter="searchUser(searchQuery)"
-          ></v-text-field>
+          <v-text-field v-model="searchQuery" append-icon="mdi-magnify" class="flex-grow-1 mr-md-2" solo hide-details
+            dense clearable :placeholder="$t('general.search')" @keyup.enter="searchUser(searchQuery)"></v-text-field>
 
           <v-tooltip top>
             <template v-slot:activator="{ on, attrs }">
-              <v-btn
-                color="primary"
-                class="mx-2 "
-                elevation="0"
-                v-bind="attrs"
-                v-on="on"
-                to="/users/create"
-                v-can="'create-user'"
-              >
+              <v-btn color="#014c4f" class="mx-2 " elevation="0" v-bind="attrs" v-on="on" to="/users/create"
+                v-can="'create-user'">
                 <v-icon>
                   mdi-plus
                 </v-icon>
@@ -70,29 +54,14 @@
             </template>
             <span>{{ $t("users.createUser") }}</span>
           </v-tooltip>
-          <v-btn
-            :loading="isLoading"
-            icon
-            @click.prevent="open()"
-            small
-            class="ml-2"
-          >
+          <v-btn :loading="isLoading" icon @click.prevent="open()" small class="ml-2">
             <v-icon>mdi-refresh</v-icon>
           </v-btn>
         </v-col>
       </v-row>
-      <v-data-table
-        show-select
-        v-model="selectedUsers"
-        :headers="headers"
-        :items="userItems"
-        :options.sync="options"
-        class="flex-grow-1"
-        :loading="isLoading"
-        :page="page"
-        :pageCount="numberOfPages"
-        :server-items-length="totalUsers"
-      >
+      <v-data-table show-select v-model="selectedUsers" :headers="headers" :items="userItems" :options.sync="options"
+        class="flex-grow-1" :loading="isLoading" :page="page" :pageCount="numberOfPages"
+        :server-items-length="totalUsers">
         <template v-slot:item.id="{ item }">
           <div class="font-weight-bold">
             # <copy-label :text="item.id + ''" />
@@ -111,14 +80,8 @@
         </template>
 
         <template v-slot:item.role="{ item }">
-          <v-chip
-            label
-            small
-            v-for="(item, index) in item.roles"
-            :key="index"
-            class="font-weight-bold"
-            :color="item.display_name === 'Admin' ? 'primary' : undefined"
-          >
+          <v-chip label small v-for="(item, index) in item.roles" :key="index" class="font-weight-bold"
+            :color="item.display_name === 'Admin' ? 'primary' : undefined">
             {{ item.display_name }}
           </v-chip>
         </template>
@@ -129,20 +92,10 @@
 
         <template v-slot:item.action="{ item }">
           <div class="actions">
-            <v-btn
-              color="primary"
-              icon
-              :to="`/users/edit/${item.id}`"
-              v-can="'update-user'"
-            >
+            <v-btn color="primary" icon :to="`/users/edit/${item.id}`" v-can="'update-user'">
               <v-icon>mdi-open-in-new</v-icon>
             </v-btn>
-            <v-btn
-              color="error"
-              icon
-              @click.prevent="deleteItem(item.id)"
-              v-can="'delete-user'"
-            >
+            <v-btn color="error" icon @click.prevent="deleteItem(item.id)" v-can="'delete-user'">
               <v-icon>mdi-delete</v-icon>
             </v-btn>
           </div>
@@ -203,7 +156,7 @@ export default {
     };
   },
   watch: {
-    selectedUsers(val) {},
+    selectedUsers(val) { },
     options: {
       handler() {
         this.open();
@@ -229,7 +182,7 @@ export default {
   methods: {
     ...mapActions("users", ["getUsers", "deleteUser", "deleteAll"]),
     ...mapActions("app", ["setBreadCrumb"]),
-    searchUser() {},
+    searchUser() { },
     open() {
       this.isLoading = true;
       let { page, itemsPerPage } = this.options;
@@ -311,9 +264,11 @@ export default {
 .slide-fade-enter-active {
   transition: all 0.3s ease;
 }
+
 .slide-fade-leave-active {
   transition: all 0.3s cubic-bezier(1, 0.5, 0.8, 1);
 }
+
 .slide-fade-enter,
 .slide-fade-leave-to {
   transform: translateX(10px);

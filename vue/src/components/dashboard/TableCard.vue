@@ -1,11 +1,7 @@
 <template>
   <div>
-    <v-data-table
-      :headers="headers"
-      :items="table.table"
-      :class="!table.table.length ? 'empty-dt' : ''"
-      hseriale-default-footer
-    >
+    <v-data-table :headers="headers" :items="tableData" :class="!tableData.length ? 'empty-dt' : ''"
+      hseriale-default-footer>
       <template v-slot:no-data>
         <div class="text-center my-2 primary--text" color="primary">
           <emptyDataSvg></emptyDataSvg>
@@ -26,22 +22,23 @@ export default {
     emptyDataSvg
   },
   props: {
-    table: Object
+    tableData: Array,
+    headers: Array
   },
   data() {
     return {};
   },
   computed: {
-    headers() {
-      return this.table.columns.map(column => {
-        return { text: column, value: column };
-      });
-    }
+    // headers() {
+    //   return this.table.columns.map(column => {
+    //     return { text: column, value: column };
+    //   });
+    // }
   },
 
   methods: {
-    open(item) {}
-  }
+    open(item) { }
+  },
 };
 </script>
 <style>

@@ -158,6 +158,8 @@ export default {
   menu: {
     search: 'Search (press "ctrl + /" to focus)',
     dashboard: "Dashboard",
+    departments: "Departments",
+    organizations: "Organizations",
     logout: "Logout",
     profile: "Profile",
     blank: "Blank Page",
@@ -366,6 +368,11 @@ export default {
     dronesSettings: "drones Settings",
     valid: "Valid",
     invalid: "Invalid"
+  },
+  departments: {
+    departmentsList: "Departments List",
+    createDepartment: "Create Department",
+    updateDepartment: "Update Department",
   },
   users: {
     rolesList: "Roles List",

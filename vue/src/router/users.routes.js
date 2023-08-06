@@ -5,7 +5,7 @@ export default [
     meta: {
       auth: true,
       permissions: 'read-user',
-      title: "dashboard"
+      title: "menu.dashboard"
     }
   },
   {
@@ -14,7 +14,7 @@ export default [
     meta: {
       auth: true,
       permissions: 'read-user',
-      title: "dashboard"
+      title: "menu.dashboard"
     },
     component: () =>
       import(/* webpackChunkName: "users-list" */ "@/pages/users/UsersPage.vue")
@@ -25,7 +25,7 @@ export default [
     meta: {
       auth: true,
       permissions: 'update-user',
-      title: "dashboard"
+      title: "menu.dashboard"
     },
     component: () =>
       import(
@@ -38,7 +38,7 @@ export default [
     meta: {
       auth: true,
       permissions: 'update-user',
-      title: "dashboard"
+      title: "menu.dashboard"
     },
     component: () =>
       import(
@@ -51,7 +51,7 @@ export default [
     meta: {
       auth: true,
       permissions: 'create-user',
-      title: "dashboard"
+      title: "menu.dashboard"
     },
     component: () =>
       import(
