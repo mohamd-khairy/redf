@@ -172,21 +172,21 @@ export default [
       title: ""
     }
   },
-  {
-    path: "/settings/drones",
-    name: "settings-drones",
-    meta: {
-      auth: true,
-      permissions: "read-drone"
-    },
-    component: () =>
-      import(
-        /* webpackChunkName: "settings-drones */ "@/pages/settings/drones/dronesPage.vue"
-      ),
-    meta: {
-      title: ""
-    }
-  },
+  // {
+  //   path: "/settings/drones",
+  //   name: "settings-drones",
+  //   meta: {
+  //     auth: true,
+  //     permissions: "read-drone"
+  //   },
+  //   component: () =>
+  //     import(
+  //       /* webpackChunkName: "settings-drones */ "@/pages/settings/drones/dronesPage.vue"
+  //     ),
+  //   meta: {
+  //     title: ""
+  //   }
+  // },
   {
     path: "/settings/logs",
     name: "settings-logs",
