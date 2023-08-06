@@ -26,11 +26,11 @@ class TemplateRequest extends FormRequest
     {
         return [
             "name" => ['nullable','min:3',"max:255"],
-            'user_id' => [
-                'required',
-                'integer',
-                Rule::exists('users', 'id'),
-            ],
+            // 'user_id' => [
+            //     'required',
+            //     'integer',
+            //     Rule::exists('users', 'id'),
+            // ],
         ];
     }
 }

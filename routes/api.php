@@ -66,7 +66,6 @@ Route::group(['prefix' => 'v1'], function () {
 
     /*********************Forms***************** */
     Route::group(['middleware' => ['auth:sanctum'], 'prefix' => 'forms'], function (){
-
          // index
          Route::get('/', [FormsController::class, 'index']);
         // all

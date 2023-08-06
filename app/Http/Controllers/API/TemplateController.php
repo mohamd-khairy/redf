@@ -7,7 +7,8 @@ use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
- use App\Http\Requests\TemplateRequest;
+use App\Http\Requests\TemplateRequest;
+use Illuminate\Validation\ValidationException;
 
 class TemplateController extends Controller
 {
@@ -61,6 +62,8 @@ class TemplateController extends Controller
     {
         try {
             $validatedData = $request->validated();
+            $validatedData['user_id'] = auth()->user()->id;
+            $validatedData['type'] = 'form';
             // Since validation passed, you can directly create the department.
             $template = Template::create($validatedData);
             return responseSuccess($template, 'Template has been successfully created');
@@ -86,16 +89,24 @@ class TemplateController extends Controller
 
         $request->validate([
             'name' => 'nullable|string|min:3|max:255',
-            'user_id' => [
-                'required',
-                'integer',
-                Rule::exists('users', 'id'),
-            ],
+            // 'user_id' => [
+            //     'required',
+            //     'integer',
+            //     Rule::exists('users', 'id'),
+            // ],
         ]);
-
-        $template->update($request->all());
+        $validatedData = $request->all();
+        $validatedData['user_id'] = auth()->user()->id;
+        $validatedData['type'] = 'form';
+        $template->update($validatedData);
 
         return responseSuccess($template, 'template has been successfully Updated');
+    }
+
+    public function show($id)
+    {
+        $template = Template::findOrFail($id);
+        return responseSuccess($template, 'template has been successfully show');
     }
 
     /**
