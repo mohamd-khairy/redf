@@ -17,9 +17,8 @@ return new class extends Migration
             $table->id();
             $table->string('name')->nullable();
             $table->text('description')->nullable();
-            $table->date('expires_at');
             $table->unsignedBigInteger('user_id');
-            $table->unsignedBigInteger('template_id');
+            $table->unsignedBigInteger('template_id')->nullable();
             $table->softDeletes();
             $table->timestamps();
 

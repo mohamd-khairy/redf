@@ -24,22 +24,44 @@ class FormsController extends Controller
         // $this->middleware('permission:delete-form', ['only' => ['destroy', 'delete_all']]);
     }
 
-    public function store(CreateFormRequest $request)
+    public function allForm(Request $request)
     {
         try {
-            DB::beginTransaction();
-            $data = $this->repo->createTemplate($request->name, auth()->id(), $request->template_id ?? null, $request->icon, $request->organization_id);
-            DB::commit();
-            if ($data) {
-                return responseSuccess(new FormResource($data));
-            } else {
-                return responseFail('something went wrong');
-            }
+            $forms = Form::paginate(10);
+            return responseSuccess($forms);
         } catch (\Throwable $th) {
-            DB::rollBack();
-            return responseFail('something went wrong');
+            throw $th;
         }
     }
+
+    public function createForm(CreateFormRequest $request)
+    {
+        try {
+            $data = $request->all();
+            $data['user_id'] = auth()->user()->id;
+            $form = Form::firstOrCreate($data);
+            return responseSuccess($form);
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
+
+    // public function store(CreateFormRequest $request)
+    // {
+    //     try {
+    //         DB::beginTransaction();
+    //         $data = $this->repo->createTemplate($request->name, auth()->id(), $request->template_id ?? null, $request->icon, $request->organization_id);
+    //         DB::commit();
+    //         if ($data) {
+    //             return responseSuccess(new FormResource($data));
+    //         } else {
+    //             return responseFail('something went wrong');
+    //         }
+    //     } catch (\Throwable $th) {
+    //         DB::rollBack();
+    //         return responseFail('something went wrong');
+    //     }
+    // }
 
     // public function updateTemplate(Request $request)
     // {
