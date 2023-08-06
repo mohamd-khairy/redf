@@ -2,25 +2,26 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Models\Role;
+use App\Models\User;
 use App\Enums\GenderEnum;
 use App\Enums\StatusEnum;
-use App\Http\Controllers\Controller;
-use App\Models\User;
-use App\Services\UploadService;
 use Illuminate\Http\Request;
+use App\Services\UploadService;
+use App\Http\Controllers\Controller;
+use Illuminate\Validation\Rules\Enum;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Validation\Rules\Enum;
 
 class UserController extends Controller
 {
     public function __construct()
     {
         $this->middleware(['auth']);
-        $this->middleware('permission:read-user', ['only' => ['index', 'show']]);
-        $this->middleware('permission:create-user', ['only' => ['store']]);
-        $this->middleware('permission:update-user', ['only' => ['update']]);
-        $this->middleware('permission:delete-user', ['only' => ['destroy']]);
+        // $this->middleware('permission:read-user', ['only' => ['index', 'show']]);
+        // $this->middleware('permission:create-user', ['only' => ['store']]);
+        // $this->middleware('permission:update-user', ['only' => ['update']]);
+        // $this->middleware('permission:delete-user', ['only' => ['destroy']]);
     }
     /**
      * Display a listing of the resource.
@@ -75,12 +76,13 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
+
+
         $validate = Validator::make($request->all(), [
+            'name' => 'required|string',
+            'email' => 'required|email|unique:users,email',
             'password' => 'required|min:8',
             'confirm_password' => 'same:password',
-            'name' => 'required|string',
-            'username' => 'required|string|unique:users,username',
-            'email' => 'required|email|unique:users,email',
             'avatar' => 'image|mimes:png,jpg,jpeg',
         ]);
 
@@ -97,7 +99,7 @@ class UserController extends Controller
 
         $user = User::create($data);
 
-        $user->assignRole('admin');
+        $user->assignRole('employee');
 
         return responseSuccess($user, 'User has been successfully created');
     }
@@ -124,32 +126,26 @@ class UserController extends Controller
      */
     public function update(Request $request, $id)
     {
+
         $validate = Validator::make($request->all(), [
             'password' => 'nullable|min:8',
             'confirm_password' => 'same:password',
             'name' => 'nullable|string',
-            'username' => 'nullable|string|unique:users,username,' . $id,
-            'email' => 'nullable|email|unique:users,email,' . $id,
+             'email' => 'nullable|email|unique:users,email,' . $id,
             'avatar' => 'nullable|image|' . v_image(),
-            'address1' => 'nullable|string',
-            'address2' => 'nullable|string',
-            'postal_code' => 'nullable|string',
-            'website' => 'nullable|url',
-            'city' => 'nullable|string',
-            'region' => 'nullable|string',
-            'country' => 'nullable|string',
-            'gender' => ['nullable', new Enum(GenderEnum::class)],
-            'status' => ['nullable', new Enum(StatusEnum::class)],
+            'role_id' => 'nullable|exists:roles,id', // Add the 'role_id' validation rule
+
         ]);
+        // dd($id);
 
         if ($validate->fails()) {
             return responseFail($validate->messages()->first());
         }
 
-        $data = $request->except('confirm_password', 'email');
+        $data = $request->except('confirm_password', 'email', 'role_id');
 
         $user = User::findOrFail($id);
-
+        // dd($user->getRoleNames());
         if ($request->file('avatar')) {
             if ($user->avatar) {
                 UploadService::delete($user->avatar);
@@ -159,6 +155,16 @@ class UserController extends Controller
 
         $user->update($data);
 
+        if ($request->has('role_id')) {
+            $role = Role::find($request->input('role_id'));
+
+            if ($role) {
+                $user->roles()->sync([$role->id]);
+            } else {
+                return responseSuccess("role not found");
+
+            }
+        }
         return responseSuccess($user, 'User has been successfully updated');
     }
 

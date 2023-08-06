@@ -31,7 +31,7 @@ class UserRolePermissionSeeder extends Seeder
             'email_verified_at' => now()
         ]);
 
-        $root->syncRoles(['root']);
+        $root->syncRoles(['admin']);
         $admin->assignRole('admin');
     }
 }

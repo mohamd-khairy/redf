@@ -29,6 +29,7 @@ Route::group(['prefix' => 'v1'], function () {
         Route::get('logout', [AuthController::class, 'logout']);
         Route::get('users/actions', [UserController::class, 'actions']);
         Route::apiResource('users', UserController::class);
+
     });
 
     /*********************VerificationController***************** */
@@ -37,9 +38,11 @@ Route::group(['prefix' => 'v1'], function () {
         Route::post('/verify', [VerificationController::class, 'send']);
     });
 
+
     /*********************RoleController***************** */
     Route::group(['middleware' => 'auth:sanctum'], function () {
         Route::apiResource('roles', RoleController::class);
+
     });
 
     /*********************PermissionController***************** */
