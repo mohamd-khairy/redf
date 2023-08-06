@@ -103,6 +103,12 @@ class TemplateController extends Controller
         return responseSuccess($template, 'template has been successfully Updated');
     }
 
+    public function show($id)
+    {
+        $template = Template::findOrFail($id);
+        return responseSuccess($template, 'template has been successfully show');
+    }
+
     /**
      * Remove the specified resource from storage.
      *
