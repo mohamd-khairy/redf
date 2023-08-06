@@ -41,8 +41,9 @@ export default {
       commit("SET_TOKEN", "");
       commit("SET_USER", {});
       commit("SET_PERMISSIONS", []);
+      localStorage.removeItem("token")
       router.push({ name: "auth-signin" });
-    } catch (error) {}
+    } catch (error) { }
   },
   async editProfile({ commit }, data) {
     const response = await axios.post("updateProfile", data);

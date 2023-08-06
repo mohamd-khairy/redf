@@ -1,7 +1,11 @@
 import axios from '@/plugins/axios'
 
 const actions = {
+<<<<<<< HEAD
   async getOrganizations({ commit },data) {
+=======
+  async getOrganizations({ commit }, data) {
+>>>>>>> 067342234c9ecdbc758a74d5845dc50b5d1d0529
     const response = await axios.get("organizations", {
       params: {
         search: data.search,
@@ -39,7 +43,14 @@ const actions = {
   },
   async createOrganization({ commit }, data) {
     return await axios.post('organizations', data)
-  }
+  },
+  async storeDepartment({ commit }, data) {
+    return await axios.post('organizations', data)
+  },
+  async deleteDepartment({ commit, dispatch }, id) {
+    return await axios.delete(`organizations/${id}`)
+    // await dispatch('getUsers')
+  },
 }
 
 export default actions

@@ -4,6 +4,7 @@ import Vuex from 'vuex'
 // Global vuex
 import AppModule from './app'
 import Users from './users'
+import Departments from './departments'
 import Auth from "./auth";
 import Roles from "./roles";
 import Settings from "./settings";
@@ -40,6 +41,7 @@ const store = new Vuex.Store({
     'email-app': EmailModule,
     'todo-app': TodoModule,
     users: Users,
+    departments: Departments,
     roles: Roles,
     settings: Settings,
     locations: Locations,

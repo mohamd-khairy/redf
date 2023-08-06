@@ -116,10 +116,10 @@ axios
       store,
       sockets: {
         connect: function () {
-          console.log('socket connected')
+          // console.log('socket connected')
         },
         itemAdded: function (data) {
-          console.log(`item added ${data}`)
+          // console.log(`item added ${data}`)
         }
       },
       async created() {
