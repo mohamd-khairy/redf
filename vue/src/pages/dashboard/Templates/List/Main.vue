@@ -167,7 +167,7 @@ export default {
         // this.open()
     },
     methods: {
-        ...mapActions("templates", ["getTemplatesList", "deleteTemplate"]),
+        ...mapActions("templates", ["getTemplatesList", "deleteForm"]),
         ...mapActions("app", ["setBreadCrumb"]),
         searchtemplate() { },
         open() {
@@ -205,7 +205,7 @@ export default {
 
             if (isConfirmed) {
                 this.isLoading = true;
-                this.deleteTemplate(id)
+                this.deleteForm(id)
                     .then(response => {
                         makeToast("success", response.data.message);
                         this.open();

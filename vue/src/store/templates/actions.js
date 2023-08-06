@@ -40,6 +40,10 @@ const actions = {
     return await axios.delete(`templates/${id}`)
     // await dispatch('getUsers')
   },
+  async deleteForm({ commit, dispatch }, id) {
+    return await axios.delete(`delete-form/${id}`)
+    // await dispatch('getUsers')
+  },
 }
 
 export default actions
