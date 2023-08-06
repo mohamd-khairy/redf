@@ -31,6 +31,47 @@ export default [
     },
 
     {
+        path: "/templates/list",
+        name: 'TemplatesList',
+        component: () => import(/* webpackChunkName: "landing-home" */ '@/pages/dashboard/Templates/List/Main.vue'),
+        meta: {
+            auth: true,
+            title: "menu.templates",
+            // layout: 'landing'
+        },
+    },
+    {
+        path: "/templates/list",
+        name: 'TemplatesList',
+        component: () => import(/* webpackChunkName: "landing-home" */ '@/pages/dashboard/Templates/List/Main.vue'),
+        meta: {
+            auth: true,
+            title: "menu.templates",
+            // layout: 'landing'
+        },
+    },
+    {
+        path: "/templates/create",
+        name: 'TemplatesCreate',
+        component: () => import(/* webpackChunkName: "landing-home" */ '@/pages/dashboard/Templates/List/CreateTemplate.vue'),
+        meta: {
+            auth: true,
+            title: "templates.createTemplate",
+            // layout: 'landing'
+        },
+    },
+    {
+        path: "/templates/edit/:id",
+        name: 'TemplatesUpdate',
+        component: () => import(/* webpackChunkName: "landing-home" */ '@/pages/dashboard/Templates/Types/UpdateTemplate.vue'),
+        meta: {
+            auth: true,
+            title: "templates.updateTemplate",
+            // layout: 'landing'
+        },
+    },
+
+    {
         path: "/templates/types",
         name: 'Templates',
         component: () => import(/* webpackChunkName: "landing-home" */ '@/pages/dashboard/Templates/Types/Main.vue'),
@@ -47,6 +88,16 @@ export default [
         meta: {
             auth: true,
             title: "templates.createTemplate",
+            // layout: 'landing'
+        },
+    },
+    {
+        path: "/templates/types/edit/:id",
+        name: 'templatesUpdate',
+        component: () => import(/* webpackChunkName: "landing-home" */ '@/pages/dashboard/Templates/Types/UpdateTemplate.vue'),
+        meta: {
+            auth: true,
+            title: "templates.updateTemplate",
             // layout: 'landing'
         },
     },

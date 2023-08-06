@@ -7,7 +7,7 @@
                     <v-menu offset-y left>
                         <template v-slot:activator="{ on }">
                             <transition name="slide-fade" mode="out-in">
-                                <v-btn v-show="selectedtemplates.length > 0" v-on="on">
+                                <v-btn v-show="selectedTemplates.length > 0" v-on="on">
                                     {{ $t("general.actions") }}
                                     <v-icon right>mdi-menu-down</v-icon>
                                 </v-btn>
@@ -37,7 +37,7 @@
                     <v-tooltip top>
                         <template v-slot:activator="{ on, attrs }">
                             <v-btn color="#014c4f" class="mx-2 " elevation="0" v-bind="attrs" v-on="on"
-                                to="/templates/types/create" v-can="'create-user'">
+                                to="/templates/create" v-can="'create-user'">
                                 <v-icon>
                                     mdi-plus
                                 </v-icon>
@@ -50,7 +50,7 @@
                     </v-btn>
                 </v-col>
             </v-row>
-            <v-data-table show-select v-model="selectedtemplates" :headers="headers" :items="templateItems"
+            <v-data-table show-select v-model="selectedTemplates" :headers="headers" :items="templateItems"
                 :options.sync="options" class="flex-grow-1" :loading="isLoading" :page="page" :pageCount="numberOfPages"
                 :server-items-length="totaltemplates">
                 <template v-slot:item.id="{ item }">
@@ -65,7 +65,7 @@
 
                 <template v-slot:item.actions="{ item }">
                     <div class="actions">
-                        <v-btn color="#014c4f" icon :to="`/templates/types/edit/${item.id}`">
+                        <v-btn color="#014c4f" icon :to="`/templates/edit/${item.id}`">
                             <v-icon>mdi-pencil</v-icon>
                         </v-btn>
                         <v-btn color="error" icon @click.prevent="deleteItem(item.id)">
@@ -110,12 +110,12 @@ export default {
                     href: "#"
                 },
                 {
-                    text: this.$t("menu.templatesTypes")
+                    text: this.$t("menu.templates")
                 }
             ],
 
             searchQuery: "",
-            selectedtemplates: [],
+            selectedTemplates: [],
             templateItems: [],
             headers: [
                 {
@@ -155,19 +155,19 @@ export default {
         }
     },
     computed: {
-        ...mapState("templates", ["templates"])
+        ...mapState("templates", ["templatesList"])
     },
     created() {
         this.setBreadCrumb({
             breadcrumbs: this.breadcrumbs,
-            pageTitle: this.$t("menu.templatesTypes")
+            pageTitle: this.$t("menu.templates")
         });
     },
     mounted() {
         // this.open()
     },
     methods: {
-        ...mapActions("templates", ["getTemplates", "deleteTemplate"]),
+        ...mapActions("templates", ["getTemplatesList", "deleteTemplate"]),
         ...mapActions("app", ["setBreadCrumb"]),
         searchtemplate() { },
         open() {
@@ -182,16 +182,17 @@ export default {
                 sortDirection: direction,
                 sortColumn: this.options.sortBy[0] ?? ""
             };
-            this.getTemplates(data)
+            this.getTemplatesList(data)
                 .then(() => {
                     this.isLoading = false;
+                    console.log(this.templatesList);
                     if (itemsPerPage != -1) {
-                        this.templateItems = this.templates.data;
-                        this.totaltemplates = this.templates.total;
-                        this.numberOfPages = this.templates.last_page;
+                        this.templateItems = this.templatesList.data;
+                        this.totaltemplates = this.templatesList.total;
+                        this.numberOfPages = this.templatesList.last_page;
                     } else {
-                        this.templateItems = this.templates;
-                        this.totaltemplates = this.templates.length;
+                        this.templateItems = this.templatesList;
+                        this.totaltemplates = this.templatesList.length;
                         this.numberOfPages = 1;
                     }
                 })
