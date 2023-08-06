@@ -158,6 +158,8 @@ export default {
   menu: {
     search: 'Search (press "ctrl + /" to focus)',
     dashboard: "Dashboard",
+    departments: "Departments",
+    organizations: "Organizations",
     logout: "Logout",
     profile: "Profile",
     blank: "Blank Page",
@@ -230,7 +232,8 @@ export default {
     documents: "Documents",
     beneficiaries: "Beneficiaries",
     log: "Log",
-    review_and_audit: "Review and audit"
+    review_and_audit: "Review and audit",
+    organizations: "Organizations"
 
   },
   breadcrumbs: {
@@ -366,6 +369,11 @@ export default {
     dronesSettings: "drones Settings",
     valid: "Valid",
     invalid: "Invalid"
+  },
+  departments: {
+    departmentsList: "Departments List",
+    createDepartment: "Create Department",
+    updateDepartment: "Update Department",
   },
   users: {
     rolesList: "Roles List",
@@ -606,7 +614,8 @@ export default {
     selectAtLeastOnePineed:
       "Select at leaast one pinned report or add a new pin",
     statistics: "Statistics",
-    no_data_available: "No data available"
+    no_data_available: "No data available",
+    update: 'Update'
   },
   reports: {
     buildReport: "Build Report",
@@ -652,5 +661,17 @@ export default {
     editPinned: "Edit Pinned Report",
     draftedReports: "Drafted Reports",
     editDraft: "Edit Draft"
+  },
+  organizations: {
+    organizationsList: "Organizations List",
+    organizationsManagement: 'Organizations Management',
+    createOrganizer: "Create Organization",
+    orgName: "Organization Name",
+    orgDesc: "Organization Description",
+    createOrg: "Create Organization",
+    editOrg: "Edit Organization",
+    confirmDeleteOrg: "Are you sure to delete this Organization?",
+    confirmDeleteSelectedOrg: "Are you sure to delete the selected Organizations?",
+    editOrg: "Edit Organization",
   }
 };

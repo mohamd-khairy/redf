@@ -8,7 +8,7 @@ export default [
       ),
     meta: {
       layout: "auth",
-      title: "login"
+      title: "menu.login"
     }
   },
   {
@@ -20,7 +20,7 @@ export default [
       ),
     meta: {
       layout: "auth",
-      title: "signup"
+      title: "menu.signup"
     }
   },
   {
@@ -32,7 +32,7 @@ export default [
       ),
     meta: {
       layout: "auth",
-      title: "verify_email"
+      title: "menu.verify_email"
     }
   },
   {
@@ -44,7 +44,7 @@ export default [
       ),
     meta: {
       layout: "auth",
-      title: "forget_password"
+      title: "menu.forget_password"
     }
   },
   {
@@ -54,7 +54,7 @@ export default [
       import(/* webpackChunkName: "auth-reset" */ "@/pages/auth/ResetPage.vue"),
     meta: {
       layout: "auth",
-      title: "dashboard"
+      title: "menu.dashboard"
     }
   },
   {

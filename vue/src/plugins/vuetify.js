@@ -38,7 +38,6 @@ function getThemeConfigs() {
       .join("");
     configs[newKey] = value;
   });
-  console.log(config);
 }
 
 // getThemeConfigs();

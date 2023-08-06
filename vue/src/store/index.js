@@ -4,6 +4,7 @@ import Vuex from 'vuex'
 // Global vuex
 import AppModule from './app'
 import Users from './users'
+import Departments from './departments'
 import Auth from "./auth";
 import Roles from "./roles";
 import Settings from "./settings";
@@ -13,6 +14,8 @@ import Events from "./events";
 import Reports from "./reports";
 import drones from "./drones";
 import Flights from "./flights";
+import Organizations from "./organizations";
+import Templates from "./templates";
 
 // Example Apps
 import BoardModule from '../apps/board/store'
@@ -39,6 +42,7 @@ const store = new Vuex.Store({
     'email-app': EmailModule,
     'todo-app': TodoModule,
     users: Users,
+    departments: Departments,
     roles: Roles,
     settings: Settings,
     locations: Locations,
@@ -47,6 +51,8 @@ const store = new Vuex.Store({
     reports: Reports,
     drones: drones,
     flights: Flights,
+    organizations: Organizations,
+    templates: Templates,
     auth: Auth
   }
 })

@@ -10,6 +10,14 @@ export default {
       items: []
     },
     {
+      icon: "mdi-list-box",
+      text: "departments",
+      key: "menu.departments",
+      link: "/departments",
+      permission: "read-role",
+      items: []
+    },
+    {
       icon: "mdi-animation",
       text: "projects",
       key: "menu.projects",
@@ -74,12 +82,35 @@ export default {
       items: []
     },
     {
-      icon: "mdi-form-textbox",
-      text: "models",
-      key: "menu.pipesModel",
-      link: "/models",
+      icon: "mdi-file-document-edit-outline",
+      text: "Organizations",
+      key: "menu.organizations",
+      link: "/organizations",
       permission: "read-role",
       items: []
+    },
+    {
+      icon: "mdi-form-textbox",
+      text: "templates",
+      key: "menu.templates",
+      link: "/templates",
+      permission: "read-role",
+      items: [
+        {
+          icon: "mdi-list-box",
+          text: "TemplatesTypes",
+          key: "menu.templatesTypes",
+          permission: "read-role",
+          link: "/templates/types"
+        },
+        {
+          icon: "mdi-list-box",
+          text: "Templates",
+          key: "menu.templates",
+          permission: "read-role",
+          link: "/templates/list"
+        },
+      ]
     },
 
     {
