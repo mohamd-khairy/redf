@@ -238,7 +238,9 @@ export default {
     beneficiaries: "المستفيدون",
     log: "سجل الحركة",
     review_and_audit: "المراجعة والتدقيق",
-    organizations: "المنظمات"
+    organizations: "المنظمات",
+    templates: "النماذج",
+    templatesTypes: "أنواع النماذج"
   },
   breadcrumbs: {
     pipesList: "قائمة النماذج",
@@ -443,6 +445,11 @@ export default {
     departmentsList: "قائمة الإدارات",
     createDepartment: "إضافة إدارة",
     updateDepartment: "تعديل إدارة",
+  },
+  templates: {
+    templatesList: "قائمة النماذج",
+    createTemplate: "إضافة نموذج",
+    updateTemplate: "تعديل نموذج",
   },
   charts: {
     Station1: "موقع 1",

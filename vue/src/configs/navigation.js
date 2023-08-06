@@ -91,11 +91,26 @@ export default {
     },
     {
       icon: "mdi-form-textbox",
-      text: "models",
-      key: "menu.pipesModel",
-      link: "/models",
+      text: "templates",
+      key: "menu.templates",
+      link: "/templates",
       permission: "read-role",
-      items: []
+      items: [
+        {
+          icon: "mdi-list-box",
+          text: "TemplatesTypes",
+          key: "menu.templatesTypes",
+          permission: "read-role",
+          link: "/templates/types"
+        },
+        {
+          icon: "mdi-list-box",
+          text: "Templates",
+          key: "menu.templates",
+          permission: "read-role",
+          link: "/templates/list"
+        },
+      ]
     },
 
     {
