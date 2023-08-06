@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\OrganzationRequest;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\ValidationException;
 
 class OrganizationController extends Controller
 {
@@ -91,6 +92,12 @@ class OrganizationController extends Controller
         $organization->update($request->all());
 
         return responseSuccess($organization, 'organization has been successfully Updated');
+    }
+
+    public function show($id)
+    {
+        $organization = Organization::findOrFail($id);
+        return responseSuccess($organization, 'organization has been successfully showed');
     }
 
     /**
