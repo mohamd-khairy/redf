@@ -87,6 +87,7 @@
 </template>
   
 <script>
+import $ from 'jquery'
 import CopyLabel from "../../../../components/common/CopyLabel";
 import { mapActions, mapState } from "vuex";
 import { ask, makeToast } from "@/helpers";
@@ -165,6 +166,8 @@ export default {
     },
     mounted() {
         // this.open()
+        console.log($);
+        // $(".ssss").css("color", "red")
     },
     methods: {
         ...mapActions("templates", ["getTemplates", "deleteTemplate"]),

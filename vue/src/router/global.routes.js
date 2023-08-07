@@ -63,7 +63,7 @@ export default [
     {
         path: "/templates/edit/:id",
         name: 'TemplatesUpdate',
-        component: () => import(/* webpackChunkName: "landing-home" */ '@/pages/dashboard/Templates/Types/UpdateTemplate.vue'),
+        // component: () => import(/* webpackChunkName: "landing-home" */ '@/pages/dashboard/Templates/templates/index.vue'),
         meta: {
             auth: true,
             title: "templates.updateTemplate",
