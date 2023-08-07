@@ -1,7 +1,7 @@
 const path = require("path");
 
 module.exports = {
-  publicPath: process.env.VUE_APP_PUBLIC_DIR || "/drones",
+  publicPath: process.env.VUE_APP_PUBLIC_DIR || "/redf",
   outputDir: path.resolve(__dirname, "../public/build"),
 
   // https://cli.vuejs.org/config/#productionsourcemap

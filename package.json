@@ -5,15 +5,20 @@
         "build": "vite build"
     },
     "devDependencies": {
+        "@syncfusion/ej2": "^22.2.7",
         "axios": "^1.1.2",
+        "i": "^0.3.7",
         "laravel-vite-plugin": "^0.7.2",
         "lodash": "^4.17.19",
+        "npm": "^9.8.1",
         "postcss": "^8.1.14",
         "vite": "^4.4.8"
     },
     "dependencies": {
         "@mdi/font": "^7.2.96",
+        "jquery": "^3.7.0",
         "laravel-echo": "^1.15.0",
-        "pusher-js": "^8.0.2"
+        "pusher-js": "^8.0.2",
+        "vue-multiselect": "^2.1.7"
     }
 }

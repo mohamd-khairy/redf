@@ -375,6 +375,11 @@ export default {
     createDepartment: "Create Department",
     updateDepartment: "Update Department",
   },
+  templates: {
+    templatesList: "Templates List",
+    createTemplate: "Create Template",
+    updateTemplate: "Update Template",
+  },
   users: {
     rolesList: "Roles List",
     deleteRole: "Delete Role",
@@ -487,7 +492,8 @@ export default {
     level: "Level",
     datetime: "Time",
     environment: "Environment",
-    description: "Description"
+    description: "Description",
+    templates: "Templates"
   },
   texts: {
     editor: "Editor",
