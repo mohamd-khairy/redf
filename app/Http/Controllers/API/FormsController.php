@@ -30,7 +30,7 @@ class FormsController extends Controller
     public function allForm(Request $request)
     {
         try {
-            $forms = Form::paginate(10);
+            $forms = Form::with('template')->paginate(10);
             return responseSuccess($forms);
         } catch (\Throwable $th) {
             throw $th;
@@ -80,11 +80,11 @@ class FormsController extends Controller
 
     public function update($request, $form)
     {
-        // dd($request->all());
         $user_id = Auth::id();
 
         // update form
         $form->update($request->all());
+
         // Set the user_id in the form
         $form->user_id = $user_id;
         $form->save();
@@ -94,30 +94,29 @@ class FormsController extends Controller
         });
 
         $form->pages()->delete();
-        // $form->pages()->map->items()->delete();
-        // $form->pages()->delete();
 
         $pagesData = $request->input('pages');
 
         foreach ($pagesData as $pageData) {
 
-            $editable =  $pageData['title']['editable'] == false ? 0 :1 ;
+            $editable =  $pageData['title']['editable'] == false ? 0 : 1;
 
-              $page = new FormPage([
+            $page = new FormPage([
                 'title' => $pageData['title']['title'],
                 'editable' => $editable,
-             ]);
+            ]);
+
             $form->pages()->save($page);
 
             if (isset($pageData['items']) && is_array($pageData['items'])) {
                 foreach ($pageData['items'] as $itemData) {
-                     // Serialize the 'childList' array to a JSON string
+                    // Serialize the 'childList' array to a JSON string
                     $childList = isset($itemData['childList']) ? json_encode($itemData['childList']) : null;
                     $item = new FormPageItem([
                         'type' => $itemData['type'],
                         'label' => $itemData['label'],
                         'notes' => $itemData['notes'],
-                         'width' => $itemData['width'],
+                        'width' => $itemData['width'],
                         'height' => $itemData['height'],
                         'enabled' => $itemData['enabled'],
                         'required' => $itemData['required'],
