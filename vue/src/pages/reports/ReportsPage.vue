@@ -2,7 +2,8 @@
   <div class="d-flex flex-grow-1 flex-column">
     <div class="d-flex align-center py-3">
       <div class="d-flex align-baseline">
-        <div class="display-1 d-flex align-center">{{ $t('menu.reports') }}</div><small class="mx-1">({{ $t('dashboard.thismonth') }})</small>
+        <div class="display-1 d-flex align-center">{{ $t('menu.reports') }}</div><small class="mx-1">({{
+          $t('dashboard.thismonth') }})</small>
       </div>
       <v-spacer></v-spacer>
       <!--      <div style="width: 140px; height: 47px;">-->
@@ -18,11 +19,7 @@
         <template>
           <div class="date-picker position-relative">
             <i aria-hidden="true" class="v-icon mdi mdi-calendar"></i>
-            <date-range-picker
-              v-model="dateRange"
-              :date-format="dateFormat"
-              direction='rtl'
-            >
+            <date-range-picker v-model="dateRange" :date-format="dateFormat" direction='rtl'>
             </date-range-picker>
           </div>
         </template>
@@ -31,96 +28,48 @@
     <v-row v-if="isLoading3" class="flex-grow-0 mb-1" dense>
       <v-col cols="12" lg="3" md="6">
         <v-card>
-          <v-skeleton-loader
-          :min-height="115"
-
-          type="card-heading, list-item"
-        ></v-skeleton-loader>
+          <v-skeleton-loader :min-height="115" type="card-heading, list-item"></v-skeleton-loader>
         </v-card>
       </v-col>
       <v-col cols="12" lg="3" md="6">
         <v-card>
-          <v-skeleton-loader
-        :min-height="115"
-
-          type="card-heading, list-item"
-        ></v-skeleton-loader>
+          <v-skeleton-loader :min-height="115" type="card-heading, list-item"></v-skeleton-loader>
         </v-card>
       </v-col>
       <v-col cols="12" lg="3" md="6">
         <v-card>
-          <v-skeleton-loader
-        :min-height="115"
-
-          type="card-heading, list-item"
-        ></v-skeleton-loader>
+          <v-skeleton-loader :min-height="115" type="card-heading, list-item"></v-skeleton-loader>
         </v-card>
       </v-col>
       <v-col cols="12" lg="3" md="6">
         <v-card>
-          <v-skeleton-loader
-          :min-height="115"
-
-          type="card-heading, list-item"
-        ></v-skeleton-loader>
+          <v-skeleton-loader :min-height="115" type="card-heading, list-item"></v-skeleton-loader>
         </v-card>
       </v-col>
     </v-row>
-    <v-row v-else  class="flex-grow-0 mb-1" dense>
+    <v-row v-else class="flex-grow-0 mb-1" dense>
       <v-col cols="12" lg="3" md="6">
         <div class="d-flex flex-column flex-grow-1 h-full">
-          <track-card
-            :label="$t('general.screenshots')"
-            class="h-full"
-            color="#8c9eff"
-            :value="12"
-            :percentage="4.3"
-            :percentage-label="$t('dashboard.lastweek')"
-            :loading="isLoading3"
-            :series="ordersSeries"
-          ></track-card>
+          <track-card :label="$t('general.screenshots')" class="h-full" color="#8c9eff" :value="12" :percentage="4.3"
+            :percentage-label="$t('dashboard.lastweek')" :loading="isLoading3" :series="ordersSeries"></track-card>
         </div>
       </v-col>
       <v-col cols="12" lg="3" md="6">
         <div class="d-flex flex-column flex-grow-1 h-full">
-          <track-card
-            :label="$t('general.risky')"
-            class="h-full"
-            color="#8c9eff"
-            :value="32"
-            :percentage="24"
-            :percentage-label="$t('dashboard.lastweek')"
-            :loading="isLoading3"
-            :series="ordersSeries"
-          ></track-card>
+          <track-card :label="$t('general.risky')" class="h-full" color="#8c9eff" :value="32" :percentage="24"
+            :percentage-label="$t('dashboard.lastweek')" :loading="isLoading3" :series="ordersSeries"></track-card>
         </div>
       </v-col>
       <v-col cols="12" lg="3" md="6">
         <div class="d-flex flex-column flex-grow-1 h-full">
-          <track-card
-            :label="$t('general.drones')"
-            class="h-full"
-            color="#8c9eff"
-            :value="8"
-            :percentage="85"
-            :percentage-label="$t('dashboard.lastweek')"
-            :loading="isLoading3"
-            :series="ordersSeries"
-          ></track-card>
+          <track-card :label="$t('general.drones')" class="h-full" color="#8c9eff" :value="8" :percentage="85"
+            :percentage-label="$t('dashboard.lastweek')" :loading="isLoading3" :series="ordersSeries"></track-card>
         </div>
       </v-col>
       <v-col cols="12" lg="3" md="6">
         <div class="d-flex flex-column flex-grow-1 h-full">
-          <track-card
-            :label="$t('general.stations')"
-            class="h-full"
-            color="#8c9eff"
-            :value="2"
-            :percentage="7.9"
-            :percentage-label="$t('dashboard.lastweek')"
-            :loading="isLoading3"
-            :series="ordersSeries"
-          ></track-card>
+          <track-card :label="$t('general.stations')" class="h-full" color="#8c9eff" :value="2" :percentage="7.9"
+            :percentage-label="$t('dashboard.lastweek')" :loading="isLoading3" :series="ordersSeries"></track-card>
         </div>
       </v-col>
     </v-row>
@@ -185,7 +134,7 @@
           </div>
           <div v-else class="d-flex flex-column flex-grow-1">
             <v-card-title>
-              {{$t('general.DronesInEachStation')}}
+              {{ $t('general.dronesInEachStation') }}
             </v-card-title>
             <div class="d-flex flex-column flex-grow-1">
               <bar></bar>
@@ -228,12 +177,12 @@ export default {
     // spline
   },
   filters: {
-    dateCell (value) {
+    dateCell(value) {
       const dt = new Date(value)
 
       return dt.getDate()
     },
-    date (val) {
+    date(val) {
       return val ? val.toLocaleString() : 'filter'
     }
   },
@@ -266,7 +215,7 @@ export default {
         ]
       }],
 
-      filter:[this.$t('dashboard.thismonth'), this.$t('dashboard.lastweek'), this.$t('dashboard.lastmonth')],
+      filter: [this.$t('dashboard.thismonth'), this.$t('dashboard.lastweek'), this.$t('dashboard.lastmonth')],
       defaultSelected: this.$t('dashboard.thismonth'),
 
       filterLabel: true,
@@ -314,9 +263,10 @@ export default {
 }
 </script>
 <style>
-.vue-daterange-picker{
+.vue-daterange-picker {
   margin: 0;
 }
+
 /* .v-skeleton-loader > .v-skeleton-loader__bone{
   min-height: 115px;
 } */

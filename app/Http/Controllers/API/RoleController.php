@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Models\Role;
+use App\Models\User;
+use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\RoleResource;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
 use Spatie\Permission\Models\Permission;
-use App\Models\Role;
+use Illuminate\Support\Facades\Validator;
 
 class RoleController extends Controller
 {
@@ -91,7 +92,8 @@ class RoleController extends Controller
     {
         $role = Role::findOrFail($id);
         $role->delete();
-
         return responseSuccess([], 'Role has been deleted successfully');
     }
+
+
 }

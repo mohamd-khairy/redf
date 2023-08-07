@@ -159,6 +159,8 @@ export default {
   menu: {
     search: "بحث (اضغط على 'ctrl + /' للتركيز)",
     dashboard: "الرئيسية",
+    departments: "الإدارات",
+    organizations: "المنظمات",
     logout: "تسجيل خروج",
     login: "تسجيل الدخول",
     signup: "تسجيل حساب جديد",
@@ -235,7 +237,10 @@ export default {
     documents: "المستندات",
     beneficiaries: "المستفيدون",
     log: "سجل الحركة",
-    review_and_audit: "المراجعة والتدقيق"
+    review_and_audit: "المراجعة والتدقيق",
+    organizations: "المنظمات",
+    templates: "النماذج",
+    templatesTypes: "أنواع النماذج"
   },
   breadcrumbs: {
     pipesList: "قائمة النماذج",
@@ -435,6 +440,17 @@ export default {
     Female: "انثى",
     Other: "آخرى"
   },
+
+  departments: {
+    departmentsList: "قائمة الإدارات",
+    createDepartment: "إضافة إدارة",
+    updateDepartment: "تعديل إدارة",
+  },
+  templates: {
+    templatesList: "قائمة النماذج",
+    createTemplate: "إضافة نموذج",
+    updateTemplate: "تعديل نموذج",
+  },
   charts: {
     Station1: "موقع 1",
     Station2: "موقع 2",
@@ -481,7 +497,8 @@ export default {
     lastSignIn: "آخر تسجيل دخول",
     disabled: "التفعيل",
     download: "تحميل الملف",
-    location: "الموقع"
+    location: "الموقع",
+    description: 'الوصف'
   },
   texts: {
     editor: "محرر",
@@ -595,7 +612,7 @@ export default {
     mail_port: " رقم منفذ الخادم",
     mailTemplateContent: "محتويات قالب البريد",
     search: "بحث",
-    DronesInEachStation: "الطائرات في كل موقع",
+    dronesInEachStation: "الطائرات في كل موقع",
     filterWithDat: "بحث بالتاريخ",
     calenderHeader: "Calender",
     calenderFooter: "Selected Date",
@@ -614,7 +631,8 @@ export default {
     selectAtLeastOnePineed:
       "حدد تقريرًا مثبتًا واحدا على الأقل أو أضف مثبت جديدا",
     statistics: "الاحصائيات",
-    no_data_available: "لا يوجد بيانات"
+    no_data_available: "لا يوجد بيانات",
+    update: 'تحديث'
   },
   reports: {
     buildReport: "انشاء تقرير",
@@ -663,5 +681,16 @@ export default {
   },
   messages: {
     welcome: "مرحبا"
+  },
+  organizations: {
+    organizationsList: "قائمة المنظمات",
+    organizationsManagement: 'ادارة المنظمات',
+    createOrganizer: "انشاء منظمة ",
+    orgName: "اسم المنظمة",
+    orgDesc: "وصف المنظمة",
+    createOrg: "انشاء منظمة",
+    confirmDeleteOrg: "هل انت متأكد من حذف هذه المنظمة ؟",
+    confirmDeleteSelectedOrg: "هل انت متأكد من حذف المنظمات المحددة ؟",
+    editOrg: "تحديث منظمة",
   }
 };

@@ -23,11 +23,16 @@ class AuthController extends Controller
             return responseFail($validate->messages()->first());
         }
 
-        $data = $request->only('email', 'password');
-
-        if (!auth()->attempt($data)) {
+        // ldap
+        if (
+            !auth()->attempt($request->only('email', 'password')) &&
+            !auth()->attempt(['cn' => $request->get('email'), 'password' => $request->get('password')]) &&
+            !auth()->attempt(['samaccountname' => $request->get('email'), 'password' => $request->get('password')]) &&
+            !auth()->attempt(['uid' => $request->get('email'), 'password' => $request->get('password')])
+        ) {
             return responseFail('Email & Password does not match with our record.');
         }
+
 
         $user = User::with([
             'roles',

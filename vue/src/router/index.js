@@ -3,6 +3,7 @@ import Router from "vue-router";
 
 // Routes
 import AppsRoutes from "./apps.routes";
+import GlobalRoutes from "./global.routes";
 import UIRoutes from "./ui.routes";
 import PagesRoutes from "./pages.routes";
 import UsersRoutes from "./users.routes";
@@ -13,6 +14,7 @@ import SettingsRoutes from "./settings.routes";
 import PipesRoutes from "./pipes.routes";
 import FlightsRoutes from "./flights.routes";
 import ReportsRoutes from "./reports.routes";
+import OrganizationsRoutes from "./organizations.routes";
 import store from "@/store";
 import i18n from "../plugins/vue-i18n";
 
@@ -31,10 +33,11 @@ export const routes = [
         /* webpackChunkName: "dashboard" */ "@/pages/dashboard/DashboardPage.vue"
       ),
     meta: {
-      title: "dashboard"
+      title: "menu.dashboard"
     }
   },
   ...AppsRoutes,
+  ...GlobalRoutes,
   ...UIRoutes,
   ...PagesRoutes,
   ...UsersRoutes,
@@ -45,6 +48,7 @@ export const routes = [
   ...PipesRoutes,
   ...FlightsRoutes,
   ...ReportsRoutes,
+  ...OrganizationsRoutes,
 
   {
     path: "/blank",
@@ -93,7 +97,7 @@ router.beforeEach((to, from, next) => {
     let isAllowed = localStorage.getItem('user_permissions').includes(to.meta.permissions)
     if (!isAllowed) return next('auth-signin')
   }
-  document.title = i18n.t(`menu.${to.meta.title}`)
+  document.title = i18n.t(`${to.meta.title}`)
   return next();
 });
 

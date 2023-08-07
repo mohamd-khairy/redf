@@ -13,7 +13,6 @@ class Form extends Model
     protected $fillable = [
         'name',
         'description',
-        'expires_at',
         'user_id',
         'template_id'
     ];

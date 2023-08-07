@@ -12,7 +12,7 @@ class RolesService
     /**
      *  Define basic operations to be used for each model permissions.
      */
-    public const BASIC_ROLES = ['root', 'admin'];
+    public const BASIC_ROLES = ['admin','manager','tasks','consultant','reports','settings','employee'];
 
     /**
      *  Define basic operations to be used for each model permissions.
@@ -64,7 +64,9 @@ class RolesService
 
             $label = ucwords(str_replace(['-', '_'], ' ', $item));
 
+
             $roleModel = Role::create(['name' => $item, 'display_name' => $label]);
+
 
             $models = is_null($models) ? self::GetModels() : $models;
 

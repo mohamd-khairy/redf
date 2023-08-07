@@ -10,11 +10,19 @@ export default {
       items: []
     },
     {
+      icon: "mdi-list-box",
+      text: "departments",
+      key: "menu.departments",
+      link: "/departments",
+      permission: "read-role",
+      items: []
+    },
+    {
       icon: "mdi-animation",
       text: "projects",
       key: "menu.projects",
       link: "/projects",
-      permission: "read-event",
+      permission: "read-role",
       items: []
     },
     {
@@ -22,7 +30,7 @@ export default {
       text: "cases",
       key: "menu.cases",
       link: "/cases",
-      permission: "read-event",
+      permission: "read-role",
       items: []
     },
     {
@@ -30,7 +38,7 @@ export default {
       text: "legal_advice",
       key: "menu.legal_advice",
       link: "/legal_advice",
-      permission: "read-event",
+      permission: "read-role",
       items: []
     },
     {
@@ -38,7 +46,7 @@ export default {
       text: "tasks",
       key: "menu.tasks",
       link: "/tasks",
-      permission: "read-event",
+      permission: "read-role",
       items: []
     },
     {
@@ -46,7 +54,7 @@ export default {
       text: "documents",
       key: "menu.documents",
       link: "/documents",
-      permission: "read-event",
+      permission: "read-role",
       items: []
     },
     {
@@ -54,7 +62,7 @@ export default {
       text: "beneficiaries",
       key: "menu.beneficiaries",
       link: "/beneficiaries",
-      permission: "read-event",
+      permission: "read-role",
       items: []
     },
     {
@@ -62,7 +70,7 @@ export default {
       text: "log",
       key: "menu.log",
       link: "/log",
-      permission: "read-event",
+      permission: "read-role",
       items: []
     },
     {
@@ -70,16 +78,39 @@ export default {
       text: "review_and_audit",
       key: "menu.review_and_audit",
       link: "/review_and_audit",
-      permission: "read-event",
+      permission: "read-role",
+      items: []
+    },
+    {
+      icon: "mdi-file-document-edit-outline",
+      text: "Organizations",
+      key: "menu.organizations",
+      link: "/organizations",
+      permission: "read-role",
       items: []
     },
     {
       icon: "mdi-form-textbox",
-      text: "models",
-      key: "menu.pipesModel",
-      link: "/models",
-      permission: "read-event",
-      items: []
+      text: "templates",
+      key: "menu.templates",
+      link: "/templates",
+      permission: "read-role",
+      items: [
+        {
+          icon: "mdi-list-box",
+          text: "TemplatesTypes",
+          key: "menu.templatesTypes",
+          permission: "read-role",
+          link: "/templates/types"
+        },
+        {
+          icon: "mdi-list-box",
+          text: "Templates",
+          key: "menu.templates",
+          permission: "read-role",
+          link: "/templates/list"
+        },
+      ]
     },
 
     {
@@ -193,7 +224,7 @@ export default {
         },
         {
           key: "menu.drones",
-          text: "Drones",
+          text: "drones",
           link: "/settings/drones",
           permission: "read-drone"
         },
