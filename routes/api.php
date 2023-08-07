@@ -113,5 +113,6 @@ Route::group(['prefix' => 'v1'], function () {
         Route::post('create-form', [FormsController::class, 'createForm']);
         Route::get('show-form', [FormsController::class, 'showForm']);
         Route::put('update-form/{id}', [FormsController::class, 'updateForm']);
+        Route::get('list-form', [FormsController::class, 'listForm']);
     });
 });

@@ -131,4 +131,8 @@ class FormsController extends Controller
 
         return $form->refresh();
     }
+
+    public function listForm(Request $request){
+        dd($request->all());
+    }
 }
