@@ -1,26 +1,19 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\AI\AIController;
 use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\API\RoleController;
 use App\Http\Controllers\API\UserController;
-use App\Http\Controllers\API\DroneController;
-use App\Http\Controllers\API\EventController;
 use App\Http\Controllers\API\FormsController;
-use App\Http\Controllers\API\FlightController;
 use App\Http\Controllers\API\SettingController;
-use App\Http\Controllers\API\LocationController;
 use App\Http\Controllers\Api\TemplateController;
 use App\Http\Controllers\Api\DepartmentController;
 use App\Http\Controllers\API\PermissionController;
 use App\Http\Controllers\API\NotificationController;
 use App\Http\Controllers\Api\OrganizationController;
 use App\Http\Controllers\API\VerificationController;
-use App\Http\Controllers\API\DetectionTypeController;
 
 Route::group(['prefix' => 'v1'], function () {
-
 
     /*********************AuthController***************** */
     Route::post('login', [AuthController::class, 'login']);
@@ -29,7 +22,6 @@ Route::group(['prefix' => 'v1'], function () {
         Route::get('logout', [AuthController::class, 'logout']);
         Route::get('users/actions', [UserController::class, 'actions']);
         Route::apiResource('users', UserController::class);
-
     });
 
     /*********************VerificationController***************** */
@@ -38,11 +30,9 @@ Route::group(['prefix' => 'v1'], function () {
         Route::post('/verify', [VerificationController::class, 'send']);
     });
 
-
     /*********************RoleController***************** */
     Route::group(['middleware' => 'auth:sanctum'], function () {
         Route::apiResource('roles', RoleController::class);
-
     });
 
     /*********************PermissionController***************** */
