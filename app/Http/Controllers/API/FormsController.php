@@ -2,16 +2,17 @@
 
 namespace App\Http\Controllers\API;
 
-use App\Http\Controllers\Controller;
-use App\Http\Repositories\TemplatesRepository;
-use App\Http\Requests\CreateFormRequest;
-use App\Http\Requests\FormUpdateRequest;
-use App\Http\Resources\FormResource;
 use App\Models\Form;
 use App\Models\FormPage;
+use App\Models\FormPageItem;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\Controller;
+use App\Http\Resources\FormResource;
+use Illuminate\Support\Facades\Auth;
+use App\Http\Requests\CreateFormRequest;
+use App\Http\Requests\FormUpdateRequest;
+use App\Http\Repositories\TemplatesRepository;
 
 class FormsController extends Controller
 {
@@ -60,19 +61,16 @@ class FormsController extends Controller
 
     public function updateForm($id, FormUpdateRequest $request)
     {
+
         try {
             DB::beginTransaction();
-
             $form = Form::find($id);
 
             if (!$form) {
                 return responseFail('there is no form with this id');
             }
-
             $data = $this->update($request, $form);
-
             DB::commit();
-
             return responseSuccess(new FormResource($form));
         } catch (\Throwable $th) {
             throw $th;
@@ -82,49 +80,55 @@ class FormsController extends Controller
 
     public function update($request, $form)
     {
+        // dd($request->all());
+        $user_id = Auth::id();
+
         // update form
-        $form->update([
-            'name' => $request->name ?? null,
-            'description' => $request->description ?? null,
-            'user_id' => auth()->user()->id,
-        ]);
+        $form->update($request->all());
+        // Set the user_id in the form
+        $form->user_id = $user_id;
+        $form->save();
 
-        $form->pages()->map->items()->delete();
+        $form->pages()->each(function ($page) {
+            $page->items()->delete();
+        });
+
         $form->pages()->delete();
+        // $form->pages()->map->items()->delete();
+        // $form->pages()->delete();
 
-        foreach ($request->pages as $page) {
-            $page = (object)$page;
+        $pagesData = $request->input('pages');
 
-            // form pages
-            $formPage = FormPage::create([
-                'form_id' => $form->id,
-                'title' => $page->title['title'],
-            ]);
+        foreach ($pagesData as $pageData) {
 
-            // form items
-            foreach ($page->items as $item) {
-                $item = (object)$item;
+            $editable =  $pageData['title']['editable'] == false ? 0 :1 ;
 
-                if ($item->removed == 'true' || $item->removed == true) continue;
+              $page = new FormPage([
+                'title' => $pageData['title']['title'],
+                'editable' => $editable,
+             ]);
+            $form->pages()->save($page);
 
-                $formPage->items()->create([
-                    'type' => $item->type ?? null,
-                    'label' => $item->label ?? null,
-                    'notes' => $item->notes ?? null,
-                    'excel_name' => $item->excel_name ?? null,
-                    'width' => $item->width ?? null,
-                    'height' => $item->height ?? null,
-                    'length' => $item->length ?? null,
-                    'input_type' => $item->input_type ?? 'text',
-                    'enabled' => filter_var($item->enabled ?? '', FILTER_VALIDATE_BOOLEAN),
-                    'required' => filter_var($item->required ?? '', FILTER_VALIDATE_BOOLEAN),
-                    'website_view' => filter_var($item->website_view ?? '', FILTER_VALIDATE_BOOLEAN),
-                    'childList' => json_encode($item->childList ?? []),
-                ]);
+            if (isset($pageData['items']) && is_array($pageData['items'])) {
+                foreach ($pageData['items'] as $itemData) {
+                     // Serialize the 'childList' array to a JSON string
+                    $childList = isset($itemData['childList']) ? json_encode($itemData['childList']) : null;
+                    $item = new FormPageItem([
+                        'type' => $itemData['type'],
+                        'label' => $itemData['label'],
+                        'notes' => $itemData['notes'],
+                         'width' => $itemData['width'],
+                        'height' => $itemData['height'],
+                        'enabled' => $itemData['enabled'],
+                        'required' => $itemData['required'],
+                        'website_view' => $itemData['website_view'],
+                        'childList' => $childList, // Save the serialized string
+                    ]);
+                    $page->items()->save($item);
+                }
             }
         }
 
-        // return form
         return $form->refresh();
     }
 }

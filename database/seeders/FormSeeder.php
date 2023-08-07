@@ -2,13 +2,12 @@
 
 namespace Database\Seeders;
 
+use App\Models\Form;
+use App\Models\FormPage;
 use Illuminate\Database\Seeder;
-use App\Models\Template;
-use App\Models\TemplatePage;
-use App\Models\TemplatePageItem;
-use Illuminate\Support\Facades\Log;
+use App\Models\FormPageItem;
 
-class TemplateSqlFileSeeder extends Seeder
+class FormSeeder extends Seeder
 {
     /**
      * Run the database seeders.
@@ -32,40 +31,40 @@ class TemplateSqlFileSeeder extends Seeder
             ],
         ]);
         //template
-        Template::create([
-            'name' => 'Legal advice form request',
-            'type' => 'form',
+        $form1 = Form::firstOrCreate([
+            'name' => 'طلب استمارة استشارة قانونية',
+            'description' => 'طلب استمارة استشارة قانونية',
             'user_id' => 1,
-            'icon' => 'cs-save',
+            'template_id' => 1,
         ]);
-        Template::create([
-            'name' => 'Litigation and request form',
-            'type' => 'form',
+        $form2 = Form::firstOrCreate([
+            'name' => 'استمارة التقاضي والطلب',
+            'description' => 'استمارة التقاضي والطلب',
             'user_id' => 1,
-            'icon' => 'cs-save',
+            'template_id' => 2,
         ]);
-        Template::create([
-            'name' => 'Contract review form',
-            'type' => 'form',
+        $form3 = Form::firstOrCreate([
+            'name' => 'استمارة مراجعة العقد',
+            'description' => 'استمارة مراجعة العقد',
             'user_id' => 1,
-            'icon' => 'cs-save',
+            'template_id' => 3,
         ]);
-         // pages
-        TemplatePage::create([
-            'title' => 'advice form',
-            'template_id' => 1
+        // pages
+        $form_page1 = FormPage::create([
+            'title' => 'نموذج المشورة',
+            'form_id' => $form1->id
         ]);
-        TemplatePage::create([
-            'title' => 'Litigation request form',
-            'template_id' => 2
+        $form_page2 = FormPage::create([
+            'title' => 'نموذج طلب التقاضي',
+            'form_id' => $form2->id
         ]);
-        TemplatePage::create([
-            'title' => 'Contract review form',
-            'template_id' => 3
+        $form_page3 = FormPage::create([
+            'title' => 'استمارة مراجعة العقد',
+            'form_id' => $form3->id
         ]);
-//        items
-        TemplatePageItem::create([
-            'label' => 'Requestor name',
+        //        items
+        FormPageItem::create([
+            'label' => 'اسم الطالب',
             'type' => 'text',
             'enabled' => 1,
             'required' => 1,
@@ -77,10 +76,10 @@ class TemplateSqlFileSeeder extends Seeder
             'height' => '',
             'length' => '200',
             'childList' => json_encode([]),
-            'template_page_id' => 1
+            'form_page_id' => $form_page1->id
         ]);
-        TemplatePageItem::create([
-            'label' => 'Employee Id',
+        FormPageItem::create([
+            'label' => 'هوية الموظف',
             'type' => 'text',
             'enabled' => 1,
             'required' => 1,
@@ -92,10 +91,10 @@ class TemplateSqlFileSeeder extends Seeder
             'height' => '',
             'length' => '200',
             'childList' => json_encode([]),
-            'template_page_id' => 1
+            'form_page_id' => $form_page1->id
         ]);
-        TemplatePageItem::create([
-            'label' => 'Department',
+        FormPageItem::create([
+            'label' => 'قسم',
             'type' => 'textarea',
             'enabled' => 1,
             'required' => 1,
@@ -107,10 +106,10 @@ class TemplateSqlFileSeeder extends Seeder
             'height' => '',
             'length' => '500',
             'childList' => json_encode([]),
-            'template_page_id' => 1
+            'form_page_id' => $form_page1->id
         ]);
-        TemplatePageItem::create([
-            'label' => 'Legal advice subject',
+        FormPageItem::create([
+            'label' => 'موضوع الاستشارة القانونية',
             'type' => 'textarea',
             'enabled' => 1,
             'required' => 1,
@@ -122,10 +121,10 @@ class TemplateSqlFileSeeder extends Seeder
             'height' => '',
             'length' => '500',
             'childList' => json_encode([]),
-            'template_page_id' => 1
+            'form_page_id' => $form_page1->id
         ]);
-        TemplatePageItem::create([
-            'label' => 'Legal advice description',
+        FormPageItem::create([
+            'label' => 'وصف الاستشارة القانونية',
             'type' => 'textarea',
             'enabled' => 1,
             'required' => 0,
@@ -137,10 +136,10 @@ class TemplateSqlFileSeeder extends Seeder
             'height' => '',
             'length' => '500',
             'childList' => json_encode([]),
-            'template_page_id' => 1
+            'form_page_id' => $form_page1->id
         ]);
-        TemplatePageItem::create([
-            'label' => 'Attached file',
+        FormPageItem::create([
+            'label' => 'ملف مرفق',
             'type' => 'file',
             'enabled' => 1,
             'required' => 0,
@@ -151,10 +150,10 @@ class TemplateSqlFileSeeder extends Seeder
             'input_type' => 'text',
             'height' => '',
             'childList' => json_encode([]),
-            'template_page_id' => 1
+            'form_page_id' => $form_page1->id
         ]);
-        TemplatePageItem::create([
-            'label' => 'The purpose of legal advice',
+        FormPageItem::create([
+            'label' => 'الغرض من الاستشارة القانونية',
             'type' => 'textarea',
             'enabled' => 1,
             'required' => 0,
@@ -166,10 +165,10 @@ class TemplateSqlFileSeeder extends Seeder
             'height' => '',
             'length' => '500',
             'childList' => json_encode([]),
-            'template_page_id' => 1
+            'form_page_id' => $form_page1->id
         ]);
-        TemplatePageItem::create([
-            'label' => 'Confidential legal advice',
+        FormPageItem::create([
+            'label' => 'استشارة قانونية سرية',
             'type' => 'select',
             'enabled' => 1,
             'required' => 0,
@@ -180,10 +179,10 @@ class TemplateSqlFileSeeder extends Seeder
             'input_type' => 'text',
             'height' => 'auto',
             'childList' => $data,
-            'template_page_id' => 1
+            'form_page_id' => $form_page1->id
         ]);
-        TemplatePageItem::create([
-            'label' => 'Notes',
+        FormPageItem::create([
+            'label' => 'ملحوظات',
             'type' => 'textarea',
             'enabled' => 1,
             'required' => 0,
@@ -195,10 +194,10 @@ class TemplateSqlFileSeeder extends Seeder
             'height' => '',
             'length' => '500',
             'childList' => json_encode([]),
-            'template_page_id' => 1
+            'form_page_id' => $form_page1->id
         ]);
-        TemplatePageItem::create([
-            'label' => 'Requestor name ',
+        FormPageItem::create([
+            'label' => 'اسم الطالب',
             'type' => 'text',
             'enabled' => 1,
             'required' => 1,
@@ -210,10 +209,10 @@ class TemplateSqlFileSeeder extends Seeder
             'height' => '',
             'length' => '100',
             'childList' => json_encode([]),
-            'template_page_id' => 2
+            'form_page_id' => $form_page2->id
         ]);
-        TemplatePageItem::create([
-            'label' => 'Employee Id ',
+        FormPageItem::create([
+            'label' => 'هوية الموظف',
             'type' => 'text',
             'enabled' => 1,
             'required' => 1,
@@ -225,10 +224,10 @@ class TemplateSqlFileSeeder extends Seeder
             'height' => '',
             'length' => '100',
             'childList' => json_encode([]),
-            'template_page_id' => 2
+            'form_page_id' => $form_page2->id
         ]);
-        TemplatePageItem::create([
-            'label' => 'Department ',
+        FormPageItem::create([
+            'label' => 'قسم',
             'type' => 'textarea',
             'enabled' => 1,
             'required' => 1,
@@ -240,10 +239,10 @@ class TemplateSqlFileSeeder extends Seeder
             'height' => '',
             'length' => '500',
             'childList' => json_encode([]),
-            'template_page_id' => 2
+            'form_page_id' => $form_page2->id
         ]);
-        TemplatePageItem::create([
-            'label' => 'Subject',
+        FormPageItem::create([
+            'label' => 'الموضوع',
             'type' => 'textarea',
             'enabled' => 1,
             'required' => 1,
@@ -255,10 +254,10 @@ class TemplateSqlFileSeeder extends Seeder
             'height' => '',
             'length' => '500',
             'childList' => json_encode([]),
-            'template_page_id' => 2
+            'form_page_id' => $form_page2->id
         ]);
-        TemplatePageItem::create([
-            'label' => 'Purpose of litigation and request',
+        FormPageItem::create([
+            'label' => 'الغرض من التقاضي والطلب',
             'type' => 'textarea',
             'enabled' => 1,
             'required' => 1,
@@ -270,10 +269,10 @@ class TemplateSqlFileSeeder extends Seeder
             'height' => '',
             'length' => '1000',
             'childList' => json_encode([]),
-            'template_page_id' => 2
+            'form_page_id' => $form_page2->id
         ]);
-        TemplatePageItem::create([
-            'label' => 'Details  of the lawsuit/litigation',
+        FormPageItem::create([
+            'label' => 'تفاصيل الدعوى / التقاضي',
             'type' => 'textarea',
             'enabled' => 1,
             'required' => 1,
@@ -285,10 +284,10 @@ class TemplateSqlFileSeeder extends Seeder
             'height' => '',
             'length' => '1000',
             'childList' => json_encode([]),
-            'template_page_id' => 2
+            'form_page_id' => $form_page2->id
         ]);
-        TemplatePageItem::create([
-            'label' => 'Attached files support the request ',
+        FormPageItem::create([
+            'label' => 'الملفات المرفقة تدعم الطلب ',
             'type' => 'file',
             'enabled' => 1,
             'required' => 1,
@@ -300,10 +299,10 @@ class TemplateSqlFileSeeder extends Seeder
             'height' => '',
             'length' => '',
             'childList' => json_encode([]),
-            'template_page_id' => 2
+            'form_page_id' => $form_page2->id
         ]);
-        TemplatePageItem::create([
-            'label' => 'The date of the court session, if exist ',
+        FormPageItem::create([
+            'label' => 'موعد الجلسة إن وجدت ',
             'type' => 'text',
             'enabled' => 1,
             'required' => 0,
@@ -315,10 +314,10 @@ class TemplateSqlFileSeeder extends Seeder
             'height' => '',
             'length' => '20',
             'childList' => json_encode([]),
-            'template_page_id' => 2
+            'form_page_id' => $form_page2->id
         ]);
-        TemplatePageItem::create([
-            'label' => 'Confidential Litigation and pleading ',
+        FormPageItem::create([
+            'label' => 'التقاضي والمرافعة السرية',
             'type' => 'select',
             'enabled' => 1,
             'required' => 1,
@@ -330,10 +329,10 @@ class TemplateSqlFileSeeder extends Seeder
             'height' => '',
             'length' => '20',
             'childList' => $data,
-            'template_page_id' => 2
+            'form_page_id' => $form_page2->id
         ]);
-        TemplatePageItem::create([
-            'label' => 'Notes ',
+        FormPageItem::create([
+            'label' => 'ملاحظات ',
             'type' => 'textarea',
             'enabled' => 1,
             'required' => 0,
@@ -345,10 +344,10 @@ class TemplateSqlFileSeeder extends Seeder
             'height' => '',
             'length' => '1000',
             'childList' => json_encode([]),
-            'template_page_id' => 2
+            'form_page_id' => $form_page2->id
         ]);
-        TemplatePageItem::create([
-            'label' => 'Requestor name ',
+        FormPageItem::create([
+            'label' => 'اسم الطالب ',
             'type' => 'text',
             'enabled' => 1,
             'required' => 1,
@@ -360,10 +359,10 @@ class TemplateSqlFileSeeder extends Seeder
             'height' => '',
             'length' => '100',
             'childList' => json_encode([]),
-            'template_page_id' => 3
+            'form_page_id' => $form_page3->id
         ]);
-        TemplatePageItem::create([
-            'label' => 'Employee Id ',
+        FormPageItem::create([
+            'label' => 'هويه الموظف',
             'type' => 'text',
             'enabled' => 1,
             'required' => 1,
@@ -375,10 +374,10 @@ class TemplateSqlFileSeeder extends Seeder
             'height' => '',
             'length' => '100',
             'childList' => json_encode([]),
-            'template_page_id' => 3
+            'form_page_id' => $form_page3->id
         ]);
-        TemplatePageItem::create([
-            'label' => 'Department ',
+        FormPageItem::create([
+            'label' => 'القسم ',
             'type' => 'textarea',
             'enabled' => 1,
             'required' => 1,
@@ -390,10 +389,10 @@ class TemplateSqlFileSeeder extends Seeder
             'height' => '',
             'length' => '500',
             'childList' => json_encode([]),
-            'template_page_id' => 3
+            'form_page_id' => $form_page3->id
         ]);
-        TemplatePageItem::create([
-            'label' => 'Subject',
+        FormPageItem::create([
+            'label' => 'الموضوع',
             'type' => 'textarea',
             'enabled' => 1,
             'required' => 1,
@@ -405,10 +404,10 @@ class TemplateSqlFileSeeder extends Seeder
             'height' => '',
             'length' => '500',
             'childList' => json_encode([]),
-            'template_page_id' => 3
+            'form_page_id' => $form_page3->id
         ]);
-        TemplatePageItem::create([
-            'label' => 'Contract description',
+        FormPageItem::create([
+            'label' => 'تفاصيل العقد',
             'type' => 'textarea',
             'enabled' => 1,
             'required' => 1,
@@ -420,10 +419,10 @@ class TemplateSqlFileSeeder extends Seeder
             'height' => '',
             'length' => '500',
             'childList' => json_encode([]),
-            'template_page_id' => 3
+            'form_page_id' => $form_page3->id
         ]);
-        TemplatePageItem::create([
-            'label' => 'Purpose of the request',
+        FormPageItem::create([
+            'label' => 'الغرض من الطلب',
             'type' => 'radio',
             'enabled' => 1,
             'required' => 1,
@@ -436,16 +435,16 @@ class TemplateSqlFileSeeder extends Seeder
             'length' => '',
             'childList' => json_encode([
                 [
-                    'text' => 'Review contract',
+                    'text' => 'مراجعة العقد',
                 ],
                 [
-                    'text' => 'Prepare contract',
+                    'text' => 'تجهيز العقد',
                 ],
             ]),
-            'template_page_id' => 3
+            'form_page_id' => $form_page3->id
         ]);
-        TemplatePageItem::create([
-            'label' => 'Attached contract file',
+        FormPageItem::create([
+            'label' => 'ملف العقد المرفق',
             'type' => 'file',
             'enabled' => 1,
             'required' => 0,
@@ -457,10 +456,10 @@ class TemplateSqlFileSeeder extends Seeder
             'height' => '',
             'length' => '',
             'childList' => json_encode([]),
-            'template_page_id' => 3
+            'form_page_id' => $form_page3->id
         ]);
-        TemplatePageItem::create([
-            'label' => 'Notes',
+        FormPageItem::create([
+            'label' => 'ملاحظات',
             'type' => 'textarea',
             'enabled' => 1,
             'required' => 0,
@@ -472,7 +471,7 @@ class TemplateSqlFileSeeder extends Seeder
             'height' => '',
             'length' => '1000',
             'childList' => json_encode([]),
-            'template_page_id' => 3
+            'form_page_id' => $form_page3->id
         ]);
     }
 }
