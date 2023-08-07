@@ -59,6 +59,10 @@
                     </div>
                 </template>
 
+                <template v-slot:item.type="{ item }">
+                    <div>{{ item.template?.name }}</div>
+                </template>
+
                 <template v-slot:item.created_at="{ item }">
                     <div>{{ item.created_at | formatDate("lll") }}</div>
                 </template>
@@ -85,7 +89,7 @@
         </v-card>
     </div>
 </template>
-  
+
 <script>
 import CopyLabel from "../../../../components/common/CopyLabel";
 import { mapActions, mapState } from "vuex";
@@ -125,6 +129,10 @@ export default {
                 {
                     text: this.$t("tables.name"),
                     value: "name"
+                },
+                {
+                    text: this.$t("tables.type"),
+                    value: "type"
                 },
                 {
                     text: this.$t("tables.description"),
@@ -247,7 +255,7 @@ export default {
     }
 };
 </script>
-  
+
 <style lang="scss" scoped>
 .slide-fade-enter-active {
     transition: all 0.3s ease;
@@ -263,4 +271,3 @@ export default {
     opacity: 0;
 }
 </style>
-  
