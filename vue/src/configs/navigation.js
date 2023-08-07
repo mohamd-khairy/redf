@@ -209,6 +209,12 @@ export default {
           link: "/settings/mail-server",
           permission: "read-setting"
         },
+        {
+          key: "menu.logs",
+          text: "Logs",
+          link: "/settings/logs",
+          permission: "read-setting"
+        },
         // { key: 'menu.sms', link: '/settings/sms' },
         {
           key: "menu.stations",
@@ -226,12 +232,6 @@ export default {
           key: "menu.drones",
           text: "drones",
           link: "/settings/drones",
-          permission: "read-drone"
-        },
-        {
-          key: "menu.logs",
-          text: "Logs",
-          link: "/settings/logs",
           permission: "read-drone"
         }
       ]

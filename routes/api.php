@@ -69,6 +69,7 @@ Route::group(['prefix' => 'v1'], function () {
 
     /*********************TemplateController***************** */
     Route::group(['middleware' => 'auth:sanctum'], function () {
+        Route::get('get-template-type', [TemplateController::class , 'getTemplatesType']);
         Route::apiResource('templates', TemplateController::class);
     });
 
@@ -76,7 +77,6 @@ Route::group(['prefix' => 'v1'], function () {
     Route::group(['middleware' => 'auth:sanctum'], function () {
         Route::get('all-form', [FormsController::class, 'allForm']);
         Route::post('create-form', [FormsController::class, 'createForm']);
-        Route::get('show-form', [FormsController::class, 'showForm']);
         Route::put('update-form/{id}', [FormsController::class, 'updateForm']);
         Route::get('get-forms-by-templateId', [FormsController::class, 'getFormsByTemplate']);
         Route::get('get-form/{formId}', [FormsController::class, 'listForm']);

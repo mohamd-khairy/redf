@@ -53,16 +53,6 @@ class FormsController extends Controller
         }
     }
 
-    public function showForm($id)
-    {
-        try {
-            $form = Form::find($id);
-            return responseSuccess($form);
-        } catch (\Throwable $th) {
-            throw $th;
-        }
-    }
-
     public function updateForm($id, FormUpdateRequest $request)
     {
 
@@ -132,12 +122,10 @@ class FormsController extends Controller
         return $form->refresh();
     }
 
-
     public function getFormsByTemplate(Request $request)
     {
         try {
             $template_id = $request->template_id;
-
             if ($template_id) {
                 // If template_id is provided, fetch the specific form
                 $allForms = Form::where('template_id', $template_id)->get();
@@ -152,8 +140,8 @@ class FormsController extends Controller
         }
     }
 
-    public function listForm($id){
-
+    public function listForm($id)
+    {
         try {
             $form = Form::find($id);
             if (!$form) {
