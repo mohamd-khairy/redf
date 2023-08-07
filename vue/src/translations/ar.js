@@ -498,7 +498,8 @@ export default {
     disabled: "التفعيل",
     download: "تحميل الملف",
     location: "الموقع",
-    description: 'الوصف'
+    description: 'الوصف',
+    templates: "النماذج"
   },
   texts: {
     editor: "محرر",

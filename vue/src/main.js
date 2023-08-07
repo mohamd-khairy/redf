@@ -10,6 +10,7 @@ import store from "./store";
 import router from "./router";
 
 // PLUGINS
+// import $ from 'jquery'
 import vuetify from "./plugins/vuetify";
 import i18n from "./plugins/vue-i18n";
 import "./plugins/vue-google-maps";
