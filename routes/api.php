@@ -67,31 +67,6 @@ Route::group(['prefix' => 'v1'], function () {
         Route::post('notifications', [NotificationController::class, 'update']);
     });
 
-    /*********************Forms***************** */
-    // Route::group(['middleware' => ['auth:sanctum'], 'prefix' => 'forms'], function (){
-    //      // index
-    //      Route::get('/', [FormsController::class, 'index']);
-    //     // all
-    //     Route::get('all', [FormsController::class, 'all']);
-    //     // change notifications
-    //     Route::put('{userForm}/changeNotifications', [FormsController::class, 'changeNotifications']);
-    //     // Get form with filled data for reviewing
-    //     Route::get('{userForm}/get', [FormsController::class, 'get']);
-    //     // review store
-    //     Route::put('{userForm}/review', [FormsController::class, 'review']);
-    //     // delete
-    //     Route::delete('{ids?}', [FormsController::class, 'destroy']);
-    //     // get
-    //     Route::get('get/users/{q?}', [FormsController::class, 'getUsers']);
-    //     Route::get('get/users/{q?}', [FormsController::class, 'getUsers']);
-    //     // assign users
-    //     Route::post('{template}/assignUsers', [FormsController::class, 'assignUsers']);
-    //     Route::post('restore/{ids?}', [FormsController::class, 'restore']);
-    //     Route::post('assign', [FormsController::class, 'assign']);
-    //     Route::get('getUserOrganization', [FormsController::class, 'getUserOrganization']);
-    //     Route::get('getUserTemplates', [FormsController::class, 'getUserTemplates']);
-    // });
-
     /*********************DepartmentController***************** */
     Route::group(['middleware' => 'auth:sanctum'], function () {
         Route::apiResource('departments', DepartmentController::class);
@@ -102,12 +77,12 @@ Route::group(['prefix' => 'v1'], function () {
         Route::apiResource('organizations', OrganizationController::class);
     });
 
-    /*********************OrganizationController***************** */
+    /*********************TemplateController***************** */
     Route::group(['middleware' => 'auth:sanctum'], function () {
         Route::apiResource('templates', TemplateController::class);
     });
 
-    /*********************OrganizationController***************** */
+    /*********************FormsController***************** */
     Route::group(['middleware' => 'auth:sanctum'], function () {
         Route::get('all-form', [FormsController::class, 'allForm']);
         Route::post('create-form', [FormsController::class, 'createForm']);
