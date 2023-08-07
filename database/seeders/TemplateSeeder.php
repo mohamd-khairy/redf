@@ -18,27 +18,25 @@ class TemplateSeeder extends Seeder
     {
         $data = [
             [
-                'name' => 'قضية حديدة',
+                'id' => 1,
+                'name' => 'القضايا',
                 'user_id' => 1
-            ]
+            ],
+            [
+                'id' => 2,
+                'name' => 'الاستشارات القانونية',
+                'user_id' => 1
+            ],
+            [
+                'id' => 3,
+                'name' => 'المراجعة والتدقيق',
+                'user_id' => 1
+            ],
+
         ];
 
         foreach ($data as $item) {
             Template::firstOrCreate($item);
-        }
-
-
-        $data = [
-            [
-                'name' => 'قضية ',
-                'description' => 'قضية ',
-                'user_id' => 1,
-                'template_id' => 1,
-            ]
-        ];
-
-        foreach ($data as $item) {
-            Form::firstOrCreate($item);
         }
     }
 }

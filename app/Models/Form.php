@@ -17,9 +17,9 @@ class Form extends Model
         'template_id'
     ];
 
-    public function organization()
+    public function template()
     {
-        return $this->belongsTo(Organization::class);
+        return $this->belongsTo(Template::class);
     }
 
     public function user()

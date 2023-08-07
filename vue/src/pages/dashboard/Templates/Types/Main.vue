@@ -85,7 +85,7 @@
         </v-card>
     </div>
 </template>
-  
+
 <script>
 import $ from 'jquery'
 import CopyLabel from "../../../../components/common/CopyLabel";
@@ -126,10 +126,6 @@ export default {
                 {
                     text: this.$t("tables.name"),
                     value: "name"
-                },
-                {
-                    text: this.$t("tables.description"),
-                    value: "description"
                 },
                 {
                     text: this.$t("tables.created"),
@@ -249,7 +245,7 @@ export default {
     }
 };
 </script>
-  
+
 <style lang="scss" scoped>
 .slide-fade-enter-active {
     transition: all 0.3s ease;
@@ -265,4 +261,3 @@ export default {
     opacity: 0;
 }
 </style>
-  
