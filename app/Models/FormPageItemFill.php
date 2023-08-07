@@ -15,6 +15,7 @@ class FormPageItemFill extends Model
         'review',
         'comment',
         'form_item_page_id',
-        'user_id'
+        'user_id',
+        'form_request_id'
     ];
 }
