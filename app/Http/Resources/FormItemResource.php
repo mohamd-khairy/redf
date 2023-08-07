@@ -14,8 +14,7 @@ class FormItemResource extends JsonResource
      */
     public function toArray($request)
     {
-
-        return [
+         return [
             'id' => $this->id,
             'name' => $this->name ?? "--",
             'description' => $this->description ?? "--",
@@ -23,8 +22,6 @@ class FormItemResource extends JsonResource
             'updated_at' => $this->updated_at ? $this->updated_at->diffForHumans() : 'N/A',
             'user' => optional($this->user)->name ?? 'Unknown User',
             'pages' => FormPageResource::collection($this->pages),
-
-
           ];
     }
 }
