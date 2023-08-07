@@ -100,11 +100,9 @@ class FormsController extends Controller
 
         foreach ($pagesData as $pageData) {
 
-            $editable =  $pageData['title']['editable'] == false ? 0 : 1;
-
             $page = new FormPage([
                 'title' => $pageData['title']['title'],
-                'editable' => $editable,
+                'editable' =>  $pageData['title']['editable'] == false ? 0 : 1
             ]);
 
             $form->pages()->save($page);
@@ -112,7 +110,6 @@ class FormsController extends Controller
             if (isset($pageData['items']) && is_array($pageData['items'])) {
                 foreach ($pageData['items'] as $itemData) {
                     // Serialize the 'childList' array to a JSON string
-                    $childList = isset($itemData['childList']) ? json_encode($itemData['childList']) : null;
                     $item = new FormPageItem([
                         'type' => $itemData['type'],
                         'label' => $itemData['label'],
@@ -122,7 +119,7 @@ class FormsController extends Controller
                         'enabled' => $itemData['enabled'],
                         'required' => $itemData['required'],
                         'website_view' => $itemData['website_view'],
-                        'childList' => $childList, // Save the serialized string
+                        'childList' => isset($itemData['childList']) ? json_encode($itemData['childList']) : null // Save the serialized string
                     ]);
                     $page->items()->save($item);
                 }
@@ -132,24 +129,35 @@ class FormsController extends Controller
         return $form->refresh();
     }
 
+<<<<<<< HEAD
     public function getFormsByTemplate(Request $request){
         try {
             $template_id = $request->template_id;
+=======
+    public function listForm(Request $request)
+    {
+        try {
+            $template_id = $request->template_id;
+
+>>>>>>> 3ef0e5c50b8b614f8344476fd18ff2b4a5c20ca7
             if ($template_id) {
                 // If template_id is provided, fetch the specific form
-                $formTemplate = Form::where('template_id', $template_id)->first();
-                if (!$formTemplate) {
-                    return responseFail('Form not found.',);
-                 }
-
-                return responseSuccess(new FormResource($formTemplate));
+                $allForms = Form::where('template_id', $template_id)->get();
             } else {
                 // If template_id is not provided, return all forms
+<<<<<<< HEAD
                 $allForms = Form::all();
                 return responseSuccess(FormResource::collection($allForms));
 
              }
           } catch (\Throwable $th) {
+=======
+                $allForms = Form::get();
+            }
+
+            return responseSuccess(FormResource::collection($allForms));
+        } catch (\Throwable $th) {
+>>>>>>> 3ef0e5c50b8b614f8344476fd18ff2b4a5c20ca7
             //throw $th;
         }
     }
