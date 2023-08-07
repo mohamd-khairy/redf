@@ -14,7 +14,7 @@ class FormPageItemFill extends Model
         'value',
         'review',
         'comment',
-        'form_item_page_id',
+        'form_page_item_id',
         'user_id',
         'form_request_id'
     ];

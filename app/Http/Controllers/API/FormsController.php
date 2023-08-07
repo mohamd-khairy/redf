@@ -4,8 +4,11 @@ namespace App\Http\Controllers\API;
 
 use App\Models\Form;
 use App\Models\FormPage;
+use App\Models\FormRequest;
 use App\Models\FormPageItem;
 use Illuminate\Http\Request;
+use App\Enums\FormRequestStatus;
+use App\Models\FormPageItemFill;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\FormResource;
@@ -129,35 +132,22 @@ class FormsController extends Controller
         return $form->refresh();
     }
 
-<<<<<<< HEAD
-    public function getFormsByTemplate(Request $request){
-        try {
-            $template_id = $request->template_id;
-=======
-    public function listForm(Request $request)
+
+    public function getFormsByTemplate(Request $request)
     {
         try {
             $template_id = $request->template_id;
 
->>>>>>> 3ef0e5c50b8b614f8344476fd18ff2b4a5c20ca7
             if ($template_id) {
                 // If template_id is provided, fetch the specific form
                 $allForms = Form::where('template_id', $template_id)->get();
             } else {
                 // If template_id is not provided, return all forms
-<<<<<<< HEAD
                 $allForms = Form::all();
                 return responseSuccess(FormResource::collection($allForms));
-
              }
-          } catch (\Throwable $th) {
-=======
-                $allForms = Form::get();
-            }
 
-            return responseSuccess(FormResource::collection($allForms));
         } catch (\Throwable $th) {
->>>>>>> 3ef0e5c50b8b614f8344476fd18ff2b4a5c20ca7
             //throw $th;
         }
     }
@@ -176,6 +166,40 @@ class FormsController extends Controller
     }
 
     public function storeFormFill(Request $request){
-        dd($request->all());
-    }
+
+        $form_id = $request->id;
+
+        $formRequest = FormRequest::create([
+            'form_id' => $form_id,
+            'user_id' => auth()->user()->id,
+            'status' => FormRequestStatus::PENDING, // Set the initial status to "pending"
+        ]);
+
+         // collect(request('pages'))
+        // ->pluck("items")
+        // ->each(fn($item) => FormPageItemFill::insert($item));
+
+
+        $pages = $request->input('pages', []);
+
+        foreach ($pages as $page) {
+            $pageItems = $page['items'] ?? [];
+
+            foreach ($pageItems as $pageItem) {
+                // Assuming you have the 'value' field in the request
+                $value = $pageItem['value'] ?? null;
+                $formPageItemFill = new FormPageItemFill([
+                    'value' => $value,
+                    'form_page_item_id' => $pageItem['form_page_id'],
+                    'user_id' => auth()->user()->id,
+                    'form_request_id' => $formRequest->id,
+                ]);
+                $formPageItemFill->save();
+            }
+        }
+
+        return responseSuccess([], 'Form Fill has been successfully deleted');
+
+
+     }
 }
