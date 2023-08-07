@@ -63,7 +63,7 @@ class TemplateController extends Controller
         try {
             $validatedData = $request->validated();
             $validatedData['user_id'] = auth()->user()->id;
-            $validatedData['type'] = 'form';
+            // $validatedData['type'] = 'form';
             // Since validation passed, you can directly create the department.
             $template = Template::create($validatedData);
             return responseSuccess($template, 'Template has been successfully created');
