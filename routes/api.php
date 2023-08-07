@@ -69,6 +69,7 @@ Route::group(['prefix' => 'v1'], function () {
 
     /*********************TemplateController***************** */
     Route::group(['middleware' => 'auth:sanctum'], function () {
+        Route::get('get-template-type', [TemplateController::class , 'getTemplatesType']);
         Route::apiResource('templates', TemplateController::class);
     });
 

@@ -20,6 +20,14 @@ class TemplateController extends Controller
         // $this->middleware('permission:update-department', ['only' => ['update']]);
         // $this->middleware('permission:delete-department', ['only' => ['destroy']]);
     }
+
+    public function getTemplatesType()
+    {
+        $templates = Template::query()->get();
+
+        return responseSuccess($templates);
+    }
+
     /**
      * Display a listing of the resource.
      *
