@@ -49,17 +49,7 @@ class FormsController extends Controller
             throw $th;
         }
     }
-
-    public function showForm($id)
-    {
-        try {
-            $form = Form::find($id);
-            return responseSuccess($form);
-        } catch (\Throwable $th) {
-            throw $th;
-        }
-    }
-
+    
     public function updateForm($id, FormUpdateRequest $request)
     {
 

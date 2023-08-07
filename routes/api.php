@@ -76,7 +76,6 @@ Route::group(['prefix' => 'v1'], function () {
     Route::group(['middleware' => 'auth:sanctum'], function () {
         Route::get('all-form', [FormsController::class, 'allForm']);
         Route::post('create-form', [FormsController::class, 'createForm']);
-        Route::get('show-form', [FormsController::class, 'showForm']);
         Route::put('update-form/{id}', [FormsController::class, 'updateForm']);
         Route::get('list-form', [FormsController::class, 'listForm']);
     });
