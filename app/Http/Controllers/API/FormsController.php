@@ -119,22 +119,53 @@ class FormsController extends Controller
         return $form->refresh();
     }
 
+<<<<<<< HEAD
+    public function getFormsByTemplate(Request $request){
+        try {
+            $template_id = $request->template_id;
+=======
     public function listForm(Request $request)
     {
         try {
             $template_id = $request->template_id;
 
+>>>>>>> 3ef0e5c50b8b614f8344476fd18ff2b4a5c20ca7
             if ($template_id) {
                 // If template_id is provided, fetch the specific form
                 $allForms = Form::where('template_id', $template_id)->get();
             } else {
                 // If template_id is not provided, return all forms
+<<<<<<< HEAD
+                $allForms = Form::all();
+                return responseSuccess(FormResource::collection($allForms));
+
+             }
+          } catch (\Throwable $th) {
+=======
                 $allForms = Form::get();
             }
 
             return responseSuccess(FormResource::collection($allForms));
         } catch (\Throwable $th) {
+>>>>>>> 3ef0e5c50b8b614f8344476fd18ff2b4a5c20ca7
             //throw $th;
         }
+    }
+
+    public function listForm($id){
+
+        try {
+            $form = Form::find($id);
+            if (!$form) {
+                return responseFail('there is no form with this id');
+            }
+            return responseSuccess(new FormItemResource($form));
+        } catch (\Throwable $th) {
+            //throw $th;
+        }
+    }
+
+    public function storeFormFill(Request $request){
+        dd($request->all());
     }
 }
