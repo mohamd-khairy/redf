@@ -63,72 +63,72 @@ class TemplatesRepository
         return $template;
     }
 
-    // public function updateTemplate($id, $name, $ar_name, $icon = 'cs-star-full', $organizations)
-    // {
-    //     try {
-    //         DB::beginTransaction();
-    //         $organizationIds = [];
-    //         foreach ($organizations as $organization) {
-    //             $organizationIds[] = $organization['id'];
-    //         }
-    //         $template = Template::where('id', $id)->first();
+    public function updateTemplate($id, $name, $ar_name, $icon = 'cs-star-full', $organizations)
+    {
+        try {
+            DB::beginTransaction();
+            $organizationIds = [];
+            foreach ($organizations as $organization) {
+                $organizationIds[] = $organization['id'];
+            }
+            $template = Template::where('id', $id)->first();
 
-    //         $template->update([
-    //             'name' => $name,
-    //             'ar_name' => $ar_name,
-    //             'icon' => $icon,
-    //         ]);
-    //         //            \Log::info( collect($organizationIds)->toJson());
-    //         $template->organizations()->sync($organizationIds);
-    //         DB::commit();
+            $template->update([
+                'name' => $name,
+                'ar_name' => $ar_name,
+                'icon' => $icon,
+            ]);
+            //            \Log::info( collect($organizationIds)->toJson());
+            $template->organizations()->sync($organizationIds);
+            DB::commit();
 
-    //         return $template;
-    //     } catch (Throwable $e) {
-    //         DB::rollBack();
-    //         throw $e;
-    //     }
-    // }
+            return $template;
+        } catch (Throwable $e) {
+            DB::rollBack();
+            throw $e;
+        }
+    }
 
-    // public function update($request, $template)
-    // {
-    //     // create template
-    //     $template->update([
-    //         //'name' => $request->name,
-    //         'user_id' => auth()->user()->id,
-    //         'updated_at' => Carbon::now()
-    //     ]);
-    //     // update pages
-    //     DB::table((new \App\Models\TemplatePageItem())->getTable())->whereIn('template_page_id', $template->pages->pluck('id'))->delete();
-    //     DB::table((new \App\Models\TemplatePage)->getTable())->whereIn('id', $template->pages->pluck('id'))->delete();
-    //     foreach ($request->pages as $page) {
-    //         $page = (object)$page;
-    //         $template_page = $template->pages()->create([
-    //             'title' => $page->title['title'],
-    //         ]);
-    //         // create items
-    //         foreach ($page->items as $item) {
-    //             $item = (object)$item;
-    //             if ($item->removed == 'true' || $item->removed == true) continue;
+    public function update($request, $template)
+    {
+        // create template
+        $template->update([
+            //'name' => $request->name,
+            'user_id' => auth()->user()->id,
+            'updated_at' => Carbon::now()
+        ]);
+        // update pages
+        DB::table((new \App\Models\TemplatePageItem())->getTable())->whereIn('template_page_id', $template->pages->pluck('id'))->delete();
+        DB::table((new \App\Models\TemplatePage)->getTable())->whereIn('id', $template->pages->pluck('id'))->delete();
+        foreach ($request->pages as $page) {
+            $page = (object)$page;
+            $template_page = $template->pages()->create([
+                'title' => $page->title['title'],
+            ]);
+            // create items
+            foreach ($page->items as $item) {
+                $item = (object)$item;
+                if ($item->removed == 'true' || $item->removed == true) continue;
 
-    //             $create['items'][] = $template_page->items()->create([
-    //                 'type' => $item->type,
-    //                 'label' => $item->label,
-    //                 'notes' => $item->notes,
-    //                 'excel_name' => $item->excel_name ?? '',
-    //                 'width' => $item->width,
-    //                 'height' => $item->height,
-    //                 'length' => $item->length ?? null,
-    //                 'input_type' => $item->input_type ?? 'text',
-    //                 'enabled' => filter_var($item->enabled, FILTER_VALIDATE_BOOLEAN),
-    //                 'required' => filter_var($item->required, FILTER_VALIDATE_BOOLEAN),
-    //                 'website_view' => filter_var($item->website_view, FILTER_VALIDATE_BOOLEAN),
-    //                 'childList' => json_encode($item->childList),
-    //             ]);
-    //         }
-    //     }
-    //     // return template
-    //     return $create;
-    // }
+                $create['items'][] = $template_page->items()->create([
+                    'type' => $item->type,
+                    'label' => $item->label,
+                    'notes' => $item->notes,
+                    'excel_name' => $item->excel_name ?? '',
+                    'width' => $item->width,
+                    'height' => $item->height,
+                    'length' => $item->length ?? null,
+                    'input_type' => $item->input_type ?? 'text',
+                    'enabled' => filter_var($item->enabled, FILTER_VALIDATE_BOOLEAN),
+                    'required' => filter_var($item->required, FILTER_VALIDATE_BOOLEAN),
+                    'website_view' => filter_var($item->website_view, FILTER_VALIDATE_BOOLEAN),
+                    'childList' => json_encode($item->childList),
+                ]);
+            }
+        }
+        // return template
+        return $create;
+    }
 
     // public function assignUsers($request, $template)
     // {
