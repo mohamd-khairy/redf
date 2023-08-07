@@ -12,6 +12,7 @@ use App\Http\Resources\FormResource;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\CreateFormRequest;
 use App\Http\Requests\FormUpdateRequest;
+use App\Http\Resources\FormItemResource;
 use App\Http\Repositories\TemplatesRepository;
 
 class FormsController extends Controller
@@ -71,7 +72,7 @@ class FormsController extends Controller
             }
             $data = $this->update($request, $form);
             DB::commit();
-            return responseSuccess(new FormResource($form));
+            return responseSuccess(new FormItemResource($form));
         } catch (\Throwable $th) {
             throw $th;
         }
@@ -132,6 +133,27 @@ class FormsController extends Controller
     }
 
     public function listForm(Request $request){
-        dd($request->all());
+        try {
+
+            $template_id = $request->template_id;
+
+
+            if ($template_id) {
+                // If template_id is provided, fetch the specific form
+                $formTemplate = Form::where('template_id', $template_id)->first();
+                if (!$formTemplate) {
+                    return responseFail('Form not found.',);
+                 }
+
+                return responseSuccess(new FormResource($formTemplate));
+            } else {
+                // If template_id is not provided, return all forms
+                $allForms = Form::all();
+
+                return responseSuccess(FormResource::collection($allForms));
+            }
+          } catch (\Throwable $th) {
+            //throw $th;
+        }
     }
 }
