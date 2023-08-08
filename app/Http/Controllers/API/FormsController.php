@@ -55,7 +55,6 @@ class FormsController extends Controller
 
     public function updateForm($id, FormUpdateRequest $request)
     {
-
         try {
             DB::beginTransaction();
             $form = Form::find($id);
@@ -67,6 +66,7 @@ class FormsController extends Controller
             DB::commit();
             return responseSuccess(new FormItemResource($form));
         } catch (\Throwable $th) {
+            Db::rollBack();
             throw $th;
         }
     }
@@ -131,9 +131,9 @@ class FormsController extends Controller
                 $allForms = Form::where('template_id', $template_id)->get();
             } else {
                 // If template_id is not provided, return all forms
-                $allForms = Form::all();
-                return responseSuccess(FormResource::collection($allForms));
+                $allForms = Form::get();
             }
+            return responseSuccess(FormResource::collection($allForms));
         } catch (\Throwable $th) {
             //throw $th;
         }
@@ -152,7 +152,8 @@ class FormsController extends Controller
         }
     }
 
-    public function storeFormFill(Request $request){
+    public function storeFormFill(Request $request)
+    {
         // collect(request('pages'))
         // ->pluck("items")
         // ->each(fn($item) => FormPageItemFill::insert($item));
@@ -178,10 +179,8 @@ class FormsController extends Controller
             DB::commit();
             return responseSuccess([], 'Form Fill has been successfully deleted');
         } catch (\Throwable $th) {
-            //throw $th;
+            DB::rollBack();
+            throw $th;
         }
-
-
-
-     }
+    }
 }
