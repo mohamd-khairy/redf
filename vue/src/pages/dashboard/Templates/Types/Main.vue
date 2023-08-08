@@ -14,13 +14,7 @@
                             </transition>
                         </template>
                         <v-list dense>
-                            <!--              <v-list-item >-->
-                            <!--                <v-list-item-title>{{ $t('general.verify') }}</v-list-item-title>-->
-                            <!--              </v-list-item>-->
-                            <!--              <v-list-item >-->
-                            <!--                <v-list-item-title>{{ $t('general.disabled') }}</v-list-item-title>-->
-                            <!--              </v-list-item>-->
-                            <!--              <v-divider></v-divider>-->
+
                             <v-list-item>
                                 <v-list-item-title>{{
                                     $t("general.delete")
