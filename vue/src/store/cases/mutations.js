@@ -18,14 +18,20 @@ const mutations = {
     state.detectionTypes = value;
   },
   SET_NOTES(state, value) {
-    state.notes = value
+    state.notes = value;
   },
   SET_EVENT(state, value) {
     state.event = value;
   },
   SET_LIVE_MODE(state, value) {
     state.liveMode = value;
-  }
+  },
+  SET_PAGES(state, value) {
+    state.pages = value;
+  },
+  SET_SELECTED_FORM_NAME(state, value) {
+    state.selectedFormName = value;
+  },
 };
 
 export default mutations;
