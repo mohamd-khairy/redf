@@ -204,11 +204,23 @@ class FormsController extends Controller
     {
         try {
 
-            // $formrequest = DB::table('form_requests')
-            //     ->join('forms', ' form_requests.id', '=', 'forms.user_id')
-            //     ->join('orders', ' form_requests.id', '=', 'orders.user_id')
-            //     ->select(' form_requests.*', 'contacts.phone', 'orders.price')
-            //     ->get();
+            // $formRequests = DB::table('form_requests')
+            // ->join('forms', 'form_requests.form_id', '=', 'forms.id')
+            // ->join('users', 'form_requests.user_id', '=', 'users.id')
+            // ->join('form_pages', 'forms.id', '=', 'form_pages.form_id')
+            // ->join('form_page_items', 'form_pages.id', '=', 'form_page_items.form_page_id')
+            
+            // ->select(
+            //     'form_requests.id as request_id',
+            //     'form_requests.created_at as request_created_at',
+            //     'forms.*',
+            //     'users.*',
+            //     'form_pages.*',
+            //     'form_page_items.*',
+            // )
+            // ->where('forms.template_id', $request->template_id)
+            // ->paginate(10);
+            // dd($formRequests);
 
             //get forms by template id
             $formRequests = FormRequest::with('form.pages.items','user','form_page_item_fill')->whereHas('form', function ($q) use ($request) {
@@ -217,6 +229,7 @@ class FormsController extends Controller
 
             return responseSuccess($formRequests, 'Form requests retrieved successfully');
         } catch (\Exception $e) {
+            dd($e);
             // Return an error response if something goes wrong
             return responseFail('Error retrieving form requests');
         }

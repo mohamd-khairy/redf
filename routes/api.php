@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\API\RoleController;
+use App\Http\Controllers\Api\TaskController;
 use App\Http\Controllers\API\UserController;
 use App\Http\Controllers\API\FormsController;
 use App\Http\Controllers\API\SettingController;
@@ -72,6 +73,12 @@ Route::group(['prefix' => 'v1'], function () {
         Route::get('get-template-type', [TemplateController::class , 'getTemplatesType']);
         Route::apiResource('templates', TemplateController::class);
     });
+
+      /*********************TasksController***************** */
+      Route::group(['middleware' => 'auth:sanctum'], function () {
+        Route::apiResource('tasks', TaskController::class);
+    });
+
 
     /*********************FormsController***************** */
     Route::group(['middleware' => 'auth:sanctum'], function () {
