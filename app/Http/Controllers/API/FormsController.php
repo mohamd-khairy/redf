@@ -20,11 +20,9 @@ use App\Http\Repositories\TemplatesRepository;
 
 class FormsController extends Controller
 {
-    protected $repo;
 
-    public function __construct(TemplatesRepository $repo)
+    public function __construct()
     {
-        $this->repo = $repo;
         // $this->middleware('permission:list-form|edit-form|create-form|delete-form', ['only' => ['index', 'store']]);
         // $this->middleware('permission:create-form', ['only' => ['store']]);
         // $this->middleware('permission:edit-form', ['only' => ['edit', 'update']]);
@@ -70,7 +68,6 @@ class FormsController extends Controller
             throw $th;
         }
     }
-
 
     public function update($request, $form)
     {
@@ -152,10 +149,9 @@ class FormsController extends Controller
                 // If template_id is not provided, return all forms
                 $allForms = Form::all();
                 return responseSuccess(FormResource::collection($allForms));
-             }
-
+            }
         } catch (\Throwable $th) {
-            //throw $th;
+            throw $th;
         }
     }
 
@@ -168,11 +164,12 @@ class FormsController extends Controller
             }
             return responseSuccess(new FormItemResource($form));
         } catch (\Throwable $th) {
-            //throw $th;
+            throw $th;
         }
     }
 
-    public function storeFormFill(Request $request){
+    public function storeFormFill(Request $request)
+    {
 
         try {
             DB::beginTransaction();
@@ -184,9 +181,6 @@ class FormsController extends Controller
                 'status' => FormRequestStatus::PENDING, // Set the initial status to "pending"
             ]);
 
-            // collect(request('pages'))
-            // ->pluck("items")
-            // ->each(fn($item) => FormPageItemFill::insert($item));
             $pages = $request->input('pages', []);
             foreach ($pages as $page) {
                 $pageItems = $page['items'] ?? [];
@@ -202,13 +196,9 @@ class FormsController extends Controller
             }
             DB::commit();
             return responseSuccess([], 'Form Fill has been successfully deleted');
-
         } catch (\Throwable $th) {
             DB::rollBack();
             throw $th;
         }
-
-
-
-     }
+    }
 }
