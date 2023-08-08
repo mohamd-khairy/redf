@@ -16,7 +16,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\CreateFormRequest;
 use App\Http\Requests\FormUpdateRequest;
 use App\Http\Resources\FormItemResource;
-use App\Http\Repositories\TemplatesRepository;
+use Illuminate\Pipeline\Pipeline;
 
 class FormsController extends Controller
 {
@@ -170,9 +170,9 @@ class FormsController extends Controller
         try {
             DB::beginTransaction();
 
-                $form_id = $request->id;
-                $formRequest = FormRequest::create([
-                    'form_id' => $form_id,
+            $form_id = $request->id;
+            $formRequest = FormRequest::create([
+                'form_id' => $form_id,
                 'user_id' => auth()->user()->id,
                 'status' => FormRequestStatus::PENDING, // Set the initial status to "pending"
             ]);
@@ -203,29 +203,16 @@ class FormsController extends Controller
     public function getFormRequest(Request $request)
     {
         try {
+            $query = FormRequest::with('form.pages.items', 'user', 'form_page_item_fill')
+                ->whereHas('form', function ($q) use ($request) {
+                    $q->where('template_id', $request->template_id);
+                });
 
-            // $formRequests = DB::table('form_requests')
-            // ->join('forms', 'form_requests.form_id', '=', 'forms.id')
-            // ->join('users', 'form_requests.user_id', '=', 'users.id')
-            // ->join('form_pages', 'forms.id', '=', 'form_pages.form_id')
-            // ->join('form_page_items', 'form_pages.id', '=', 'form_page_items.form_page_id')
-            
-            // ->select(
-            //     'form_requests.id as request_id',
-            //     'form_requests.created_at as request_created_at',
-            //     'forms.*',
-            //     'users.*',
-            //     'form_pages.*',
-            //     'form_page_items.*',
-            // )
-            // ->where('forms.template_id', $request->template_id)
-            // ->paginate(10);
-            // dd($formRequests);
+            $formRequests = app(Pipeline::class)->send($query)->through([
+                SortFilters::class,
+            ])->thenReturn();
 
-            //get forms by template id
-            $formRequests = FormRequest::with('form.pages.items','user','form_page_item_fill')->whereHas('form', function ($q) use ($request) {
-                $q->where('template_id', $request->template_id);
-            })->paginate(10);
+            $formRequests = $formRequests->paginate(request('page_size', 10));
 
             return responseSuccess($formRequests, 'Form requests retrieved successfully');
         } catch (\Exception $e) {
