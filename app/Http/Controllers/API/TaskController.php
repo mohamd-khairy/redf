@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Api;
 
 use Carbon\Carbon;
 use App\Models\Task;
+use Illuminate\Support\Facades\Validator;
+
 use Illuminate\Http\Request;
 use App\Http\Requests\TaskRequest;
 use App\Http\Controllers\Controller;
@@ -34,19 +36,19 @@ class TaskController extends Controller
             return responseFail($validate->messages()->first());
         }
         $page_size = request('pageSize', 15);
-        $organizations = Organization::query();
+        $tasks = Task::query();
         if (request('search')) {
-            $organizations = $organizations->where(function ($q) {
-                $q->where('name', 'like', '%' . request('search') . '%');
+            $tasks = $tasks->where(function ($q) {
+                $q->where('title', 'like', '%' . request('search') . '%');
             });
         }
         if ($page_size == -1) {
-            $organizations = $organizations->get();
+            $tasks = $tasks->get();
         } else {
-            $organizations = $organizations->paginate($page_size);
+            $tasks = $tasks->paginate($page_size);
         }
 
-        return responseSuccess(['organizations' => $organizations]);
+        return responseSuccess(['tasks' => $tasks]);
     }
 
     /**
@@ -81,15 +83,15 @@ class TaskController extends Controller
       
         $task = Task::findOrFail($id);
         $request->validate([
-            'title' => 'required|string|max:255',
-            'type' => 'required', // Enum values
-            'user_id' => 'required|exists:users,id',
-            'assigner_id' => 'required|exists:users,id',
-            'due_date' => 'required|date',
-            'details' => 'nullable|string',
-            'document_id' => 'required|exists:documents,id',
-            'share_with' => 'nullable|string',
-            'form_id' => 'nullable|exists:forms,id',
+            'title' => 'sometimes|string|max:255',
+            'type' => 'sometimes', // Enum values
+            'user_id' => 'sometimes|exists:users,id',
+            'assigner_id' => 'sometimes|exists:users,id',
+            'due_date' => 'sometimes|date',
+            'details' => 'sometimes|string',
+            'document_id' => 'sometimes|exists:documents,id',
+            'share_with' => 'sometimes|string',
+            'form_id' => 'sometimes|exists:forms,id',
         ]);
 
         $task->update($request->all());
@@ -99,8 +101,8 @@ class TaskController extends Controller
 
     public function show($id)
     {
-        $organization = Organization::findOrFail($id);
-        return responseSuccess($organization, 'organization has been successfully showed');
+        $task = Task::findOrFail($id);
+        return responseSuccess($task, 'task has been successfully showed');
     }
 
     /**
@@ -111,8 +113,8 @@ class TaskController extends Controller
      */
     public function destroy($id)
     {
-        $organization = Organization::findOrFail($id);
-        $organization->delete();
-        return responseSuccess([], 'organization has been successfully deleted');
+        $task = Task::findOrFail($id);
+        $task->delete();
+        return responseSuccess([], 'Task has been successfully deleted');
     }
 }

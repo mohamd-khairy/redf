@@ -5,10 +5,12 @@ namespace App\Http\Controllers\API;
 use App\Models\Form;
 use App\Models\FormPage;
 use App\Models\FormRequest;
+use App\Filters\SortFilters;
 use App\Models\FormPageItem;
 use Illuminate\Http\Request;
 use App\Enums\FormRequestStatus;
 use App\Models\FormPageItemFill;
+use Illuminate\Pipeline\Pipeline;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\FormResource;
@@ -16,7 +18,6 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\CreateFormRequest;
 use App\Http\Requests\FormUpdateRequest;
 use App\Http\Resources\FormItemResource;
-use Illuminate\Pipeline\Pipeline;
 
 class FormsController extends Controller
 {
@@ -216,9 +217,9 @@ class FormsController extends Controller
 
             return responseSuccess($formRequests, 'Form requests retrieved successfully');
         } catch (\Exception $e) {
-            dd($e);
+            // dd($e->getMed);
             // Return an error response if something goes wrong
-            return responseFail('Error retrieving form requests');
+            return responseFail($e->getMessage());
         }
     }
 }
