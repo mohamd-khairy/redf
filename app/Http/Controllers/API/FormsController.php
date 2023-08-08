@@ -121,19 +121,15 @@ class FormsController extends Controller
 
     public function deleteForm($id){
         try {
-            // Find the form by its ID
+             
             $form = Form::findOrFail($id);
             if (!$form) {
-                // Return an error response if the form ID doesn't exist
                 return response()->json(['message' => 'Form not found'], 404);
             }
             // Delete the form
             $form->delete();
-            
-            // Return a response indicating success
             return response()->json(['message' => 'Form deleted successfully']);
         } catch (\Exception $e) {
-            // Return an error response if something goes wrong
             return response()->json(['message' => 'Failed to delete form'], 500);
         }
     }
