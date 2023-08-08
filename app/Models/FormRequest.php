@@ -17,4 +17,9 @@ class FormRequest extends Model
         'form_id',
         'user_id'
     ];
+
+    public function form_page_item_fill()
+    {
+        return $this->hasMany(FormPageItemFill::class);
+    }
 }

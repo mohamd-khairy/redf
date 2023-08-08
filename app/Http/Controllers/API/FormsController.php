@@ -89,7 +89,6 @@ class FormsController extends Controller
         $pagesData = $request->input('pages');
 
         foreach ($pagesData as $pageData) {
-
             $page = new FormPage([
                 'title' => $pageData['title']['title'],
                 'editable' =>  $pageData['title']['editable'] == false ? 0 : 1
@@ -166,7 +165,7 @@ class FormsController extends Controller
 
     public function storeFormFill(Request $request)
     {
-
+ 
         try {
             DB::beginTransaction();
 
@@ -176,14 +175,16 @@ class FormsController extends Controller
                 'user_id' => auth()->user()->id,
                 'status' => FormRequestStatus::PENDING, // Set the initial status to "pending"
             ]);
+            
 
             $pages = $request->input('pages', []);
-            foreach ($pages as $page) {
+             foreach ($pages as $page) {
+ 
                 $pageItems = $page['items'] ?? [];
-                foreach ($pageItems as $pageItem) {
-                    $formPageItemFill = new FormPageItemFill([
+                 foreach ($pageItems as $pageItem) {
+                     $formPageItemFill = new FormPageItemFill([
                         'value' => $pageItem['value'] ?? null,
-                        'form_page_item_id' => $pageItem['form_page_id'],
+                        'form_page_item_id' => $pageItem['form_page_item_id'],
                         'user_id' => auth()->user()->id,
                         'form_request_id' => $formRequest->id,
                     ]);
@@ -196,5 +197,17 @@ class FormsController extends Controller
             DB::rollBack();
             throw $th;
         }
+    }
+
+    public function getFormRequest(Request $request){
+        try {
+             // get forms by template id
+            $formIds = Form::where('template_id',$request->template_id)->pluck('id')->toArray();
+            $formRequests = FormRequest::with('form_page_item_fill')->whereIn('form_id' , $formIds)->paginate(10);
+            return responseSuccess($formRequests, 'Form requests retrieved successfully');
+        } catch (\Exception $e) {
+            // Return an error response if something goes wrong
+            return responseFail('Error retrieving form requests');
+         }
     }
 }
