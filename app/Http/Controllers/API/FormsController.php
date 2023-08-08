@@ -154,39 +154,34 @@ class FormsController extends Controller
     }
 
     public function storeFormFill(Request $request){
-
-        $form_id = $request->id;
-
-        $formRequest = FormRequest::create([
-            'form_id' => $form_id,
-            'user_id' => auth()->user()->id,
-            'status' => FormRequestStatus::PENDING, // Set the initial status to "pending"
-        ]);
-
-         // collect(request('pages'))
+        // collect(request('pages'))
         // ->pluck("items")
         // ->each(fn($item) => FormPageItemFill::insert($item));
-
-
-        $pages = $request->input('pages', []);
-
-        foreach ($pages as $page) {
-            $pageItems = $page['items'] ?? [];
-
-            foreach ($pageItems as $pageItem) {
-                // Assuming you have the 'value' field in the request
-                $value = $pageItem['value'] ?? null;
-                $formPageItemFill = new FormPageItemFill([
-                    'value' => $value,
-                    'form_page_item_id' => $pageItem['form_page_id'],
-                    'user_id' => auth()->user()->id,
-                    'form_request_id' => $formRequest->id,
-                ]);
-                $formPageItemFill->save();
+        try {
+            DB::beginTransaction();
+            $form_id = $request->id;
+            $formRequest = FormRequest::create([
+                'form_id' => $form_id,
+                'user_id' => auth()->user()->id,
+                'status' => FormRequestStatus::PENDING, // Set the initial status to "pending"
+            ]);
+            foreach (request('pages') as $page) {
+                foreach ($request('items') as $pageItem) {
+                    $formPageItemFill = new FormPageItemFill([
+                        'value' => $pageItem['value'] ?? null,
+                        'form_page_item_id' => $pageItem['form_page_id'],
+                        'user_id' => auth()->user()->id,
+                        'form_request_id' => $formRequest->id,
+                    ]);
+                    $formPageItemFill->save();
+                }
             }
+            DB::commit();
+            return responseSuccess([], 'Form Fill has been successfully deleted');
+        } catch (\Throwable $th) {
+            //throw $th;
         }
 
-        return responseSuccess([], 'Form Fill has been successfully deleted');
 
 
      }
