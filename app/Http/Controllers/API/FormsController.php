@@ -133,8 +133,7 @@ class FormsController extends Controller
                 // If template_id is not provided, return all forms
                 $allForms = Form::all();
                 return responseSuccess(FormResource::collection($allForms));
-             }
-
+            }
         } catch (\Throwable $th) {
             //throw $th;
         }
