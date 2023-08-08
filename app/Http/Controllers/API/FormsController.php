@@ -118,9 +118,10 @@ class FormsController extends Controller
         return $form->refresh();
     }
 
-    public function deleteForm($id){
+    public function deleteForm($id)
+    {
         try {
-             
+
             $form = Form::findOrFail($id);
             if (!$form) {
                 return response()->json(['message' => 'Form not found'], 404);
@@ -142,9 +143,9 @@ class FormsController extends Controller
                 $allForms = Form::where('template_id', $template_id)->get();
             } else {
                 // If template_id is not provided, return all forms
-                $allForms = Form::all();
-                return responseSuccess(FormResource::collection($allForms));
+                $allForms = Form::get();
             }
+            return responseSuccess(FormResource::collection($allForms));
         } catch (\Throwable $th) {
             throw $th;
         }
@@ -165,7 +166,7 @@ class FormsController extends Controller
 
     public function storeFormFill(Request $request)
     {
- 
+
         try {
             DB::beginTransaction();
 
@@ -175,14 +176,14 @@ class FormsController extends Controller
                 'user_id' => auth()->user()->id,
                 'status' => FormRequestStatus::PENDING, // Set the initial status to "pending"
             ]);
-            
+
 
             $pages = $request->input('pages', []);
-             foreach ($pages as $page) {
- 
+            foreach ($pages as $page) {
+
                 $pageItems = $page['items'] ?? [];
-                 foreach ($pageItems as $pageItem) {
-                     $formPageItemFill = new FormPageItemFill([
+                foreach ($pageItems as $pageItem) {
+                    $formPageItemFill = new FormPageItemFill([
                         'value' => $pageItem['value'] ?? null,
                         'form_page_item_id' => $pageItem['form_page_item_id'],
                         'user_id' => auth()->user()->id,
@@ -199,15 +200,22 @@ class FormsController extends Controller
         }
     }
 
-    public function getFormRequest(Request $request){
+    public function getFormRequest(Request $request)
+    {
         try {
-             // get forms by template id
-            $formIds = Form::where('template_id',$request->template_id)->pluck('id')->toArray();
-            $formRequests = FormRequest::with('form_page_item_fill')->whereIn('form_id' , $formIds)->paginate(10);
+            // // get forms by template id
+            // $formIds = Form::where('template_id', $request->template_id)->pluck('id')->toArray();
+            // $formRequests = FormRequest::with('form_page_item_fill')->whereIn('form_id', $formIds)->paginate(10);
+
+
+            $formRequests = FormRequest::with('form_page_item_fill')->whereHas('form', function ($q) use ($request) {
+                $q->where('template_id', $request->template_id);
+            })->paginate(10);
+
             return responseSuccess($formRequests, 'Form requests retrieved successfully');
         } catch (\Exception $e) {
             // Return an error response if something goes wrong
             return responseFail('Error retrieving form requests');
-         }
+        }
     }
 }
