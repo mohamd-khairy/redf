@@ -10,6 +10,15 @@ export default {
       items: []
     },
     {
+      icon: "mdi-gavel",
+      text: "requests",
+      key: "menu.requests",
+      permission: "read-role",
+      // link: "/reports",
+      items: [
+      ]
+    },
+    {
       icon: "mdi-list-box",
       text: "departments",
       key: "menu.departments",
@@ -25,22 +34,22 @@ export default {
       permission: "read-role",
       items: []
     },
-    {
-      icon: "mdi-gavel",
-      text: "cases",
-      key: "menu.cases",
-      link: "/cases",
-      permission: "read-role",
-      items: []
-    },
-    {
-      icon: "mdi-scale-balance",
-      text: "legal_advice",
-      key: "menu.legal_advice",
-      link: "/legal_advice",
-      permission: "read-role",
-      items: []
-    },
+    // {
+    //   icon: "mdi-gavel",
+    //   text: "cases",
+    //   key: "menu.cases",
+    //   link: "/cases",
+    //   permission: "read-role",
+    //   items: []
+    // },
+    // {
+    //   icon: "mdi-scale-balance",
+    //   text: "legal_advice",
+    //   key: "menu.legal_advice",
+    //   link: "/legal_advice",
+    //   permission: "read-role",
+    //   items: []
+    // },
     {
       icon: "mdi-file-document",
       text: "tasks",
@@ -73,14 +82,14 @@ export default {
       permission: "read-role",
       items: []
     },
-    {
-      icon: "mdi-file-document-edit-outline",
-      text: "review_and_audit",
-      key: "menu.review_and_audit",
-      link: "/review_and_audit",
-      permission: "read-role",
-      items: []
-    },
+    // {
+    //   icon: "mdi-file-document-edit-outline",
+    //   text: "review_and_audit",
+    //   key: "menu.review_and_audit",
+    //   link: "/review_and_audit",
+    //   permission: "read-role",
+    //   items: []
+    // },
     {
       icon: "mdi-file-document-edit-outline",
       text: "Organizations",

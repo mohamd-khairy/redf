@@ -15,6 +15,8 @@ import PipesRoutes from "./pipes.routes";
 import FlightsRoutes from "./flights.routes";
 import ReportsRoutes from "./reports.routes";
 import OrganizationsRoutes from "./organizations.routes";
+
+import CasesRoutes from "./cases.routes";
 import store from "@/store";
 import i18n from "../plugins/vue-i18n";
 
@@ -49,6 +51,7 @@ export const routes = [
   ...FlightsRoutes,
   ...ReportsRoutes,
   ...OrganizationsRoutes,
+  ...CasesRoutes,
 
   {
     path: "/blank",

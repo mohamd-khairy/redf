@@ -36,7 +36,7 @@
 
                     <v-tooltip top>
                         <template v-slot:activator="{ on, attrs }">
-                            <v-btn color="#014c4f" class="mx-2 " elevation="0" v-bind="attrs" v-on="on"
+                            <v-btn color="primary" class="mx-2 " elevation="0" v-bind="attrs" v-on="on"
                                 to="/templates/types/create" v-can="'create-user'">
                                 <v-icon>
                                     mdi-plus

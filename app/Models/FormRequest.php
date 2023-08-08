@@ -22,4 +22,9 @@ class FormRequest extends Model
     {
         return $this->hasMany(FormPageItemFill::class);
     }
+
+    public function form()
+    {
+        return $this->belongsTo(Form::class);
+    }
 }
