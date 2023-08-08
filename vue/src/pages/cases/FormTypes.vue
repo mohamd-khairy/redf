@@ -11,11 +11,11 @@
     </div> -->
 
     <v-row>
-      <v-col v-for="location in locations" :key="location.id" cols="3">
+      <v-col v-for="form in forms" :key="form.id" cols="3">
         <v-hover v-slot="{ hover }">
           <v-card
             :class="{ 'on-hover': hover }"
-            @click="openModels(location.id)"
+            @click="openModels(form.id)"
             style="overflow: hidden;"
           >
             <v-card-title class=" ">
@@ -23,11 +23,11 @@
                 rounded
                 class="me-2 v-avatar--variant-tonal  primary--text"
                 size="56"
-              ><v-icon>mdi-map-marker </v-icon></v-avatar
+              ><v-icon>mdi-scale-balance </v-icon></v-avatar
               >
               <div class="title-cont ">
-                <h6 class="text-caption">Location</h6>
-                {{ location.name }}
+<!--                <h6 class="text-caption">Form</h6>-->
+                {{ form.name }}
               </div>
             </v-card-title>
 
@@ -54,21 +54,16 @@ export default {
     return {
       breadcrumbs: [
         {
-          text: this.$t("menu.flights"),
+          text: this.$t("menu.cases"),
           disabled: false,
           href: "#"
         },
         {
-          text: this.$t("menu.live_stream"),
-          disabled: false,
-          href: "#"
-        },
-        {
-          text: this.$t("menu.selectLocation")
+          text: this.$t("cases.caseType")
         }
       ],
       x: 0,
-      y: 0
+      y: 0,
     };
   },
   computed: {
@@ -77,7 +72,7 @@ export default {
   created() {
     this.setBreadCrumb({
       breadcrumbs: this.breadcrumbs,
-      pageTitle: this.$t("menu.pipesModel")
+      pageTitle: this.$t("menu.cases")
     });
   },
   mounted() {
@@ -116,8 +111,9 @@ export default {
     ...mapActions("app", ["setBreadCrumb"]),
     searchUser() {},
     open() {
+      let {id} = this.$route.params;
       this.isLoading = true;
-      this.getForms($)
+      this.getForms(id)
         .then(() => {
           this.isLoading = false;
         })
@@ -126,7 +122,7 @@ export default {
         });
     },
     openModels(id) {
-      this.$router.push("/flights/location/" + id);
+      this.$router.push("/cases/create/" + id);
     },
     mouseEnterFunction(e, path) {
       // console.log("mouseEnterEv");

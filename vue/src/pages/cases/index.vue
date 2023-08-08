@@ -60,7 +60,7 @@
                 elevation="0"
                 v-bind="attrs"
                 v-on="on"
-                to="/cases/form-types"
+                :to=formTypesUrl
                 v-can="'create-user'"
               >
                 <v-icon>
@@ -198,7 +198,8 @@ export default {
         { text: this.$t("tables.role"), value: "role" },
         { text: this.$t("tables.created"), value: "created_at" },
         { text: "", sortable: false, align: "right", value: "action" }
-      ]
+      ],
+      formTypesUrl:''
     };
   },
   watch: {
@@ -217,6 +218,8 @@ export default {
     ...mapState("users", ["users"])
   },
   created() {
+    let {id} = this.$route.params;
+    this.formTypesUrl = '/cases/form-types/'+id
     this.setBreadCrumb({
       breadcrumbs: this.breadcrumbs,
       pageTitle: this.$t("cases.casesList")

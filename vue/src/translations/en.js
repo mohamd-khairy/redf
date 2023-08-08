@@ -445,6 +445,7 @@ export default {
     Other: "Other"
   },
   cases: {
+    caseType: "Cases Type",
     casesList: "Cases List",
     deleteRole: "Delete Role",
     createRole: "Create Role",

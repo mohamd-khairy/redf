@@ -442,6 +442,7 @@ export default {
     Other: "آخرى"
   },
   cases: {
+    caseType: "نوع القضية",
     casesList: "قائمة القضايا",
     deleteRole: "مسح الصلاحية",
     createRole: "إنشاء صلاحية",

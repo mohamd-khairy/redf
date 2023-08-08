@@ -6,23 +6,23 @@ export default [{
   },
   component: () => import(/* webpackChunkName: "cases-list" */ '@/pages/cases/index')
 },
-// {
-//   path: '/cases/form-types',
-//   name: 'form-types',
-//   meta: {
-//     auth: true
-//   },
-//   exact: true,
-//   component: () => import(/* webpackChunkName: "form-types" */ '@/pages/cases/FormTypes')
-// },
 {
-  path: '/cases/:id',
-  name: 'cases-live',
+  path: '/cases/form-types/:id',
+  name: 'form-types',
+  meta: {
+    auth: true
+  },
+  exact: true,
+  component: () => import(/* webpackChunkName: "form-types" */ '@/pages/cases/FormTypes')
+},
+{
+  path: '/cases/create/:id',
+  name: 'cases-create',
   meta: {
     auth: true,
-    permissions: 'read-event'
+    // permissions: 'read-event'
   },
-  component: () => import(/* webpackChunkName: "pipes-list" */ '@/pages/flights/FlightLive.vue')
+  component: () => import(/* webpackChunkName: "pipes-list" */ '@/pages/cases/CreateCase')
 },
 {
   path: '/flights/show',
