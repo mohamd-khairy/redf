@@ -133,8 +133,7 @@ class FormsController extends Controller
                 // If template_id is not provided, return all forms
                 $allForms = Form::all();
                 return responseSuccess(FormResource::collection($allForms));
-             }
-
+            }
         } catch (\Throwable $th) {
             //throw $th;
         }
@@ -153,41 +152,42 @@ class FormsController extends Controller
         }
     }
 
-    public function storeFormFill(Request $request){
+    public function storeFormFill(Request $request)
+    {
+        try {
 
-        $form_id = $request->id;
+            $form_id = $request->id;
 
-        $formRequest = FormRequest::create([
-            'form_id' => $form_id,
-            'user_id' => auth()->user()->id,
-            'status' => FormRequestStatus::PENDING, // Set the initial status to "pending"
-        ]);
+            $formRequest = FormRequest::create([
+                'form_id' => $form_id,
+                'user_id' => auth()->user()->id,
+                'status' => FormRequestStatus::PENDING, // Set the initial status to "pending"
+            ]);
 
-         // collect(request('pages'))
-        // ->pluck("items")
-        // ->each(fn($item) => FormPageItemFill::insert($item));
+            // collect(request('pages'))
+            // ->pluck("items")
+            // ->each(fn($item) => FormPageItemFill::insert($item));
 
+            $pages = $request->input('pages', []);
 
-        $pages = $request->input('pages', []);
+            foreach ($pages as $page) {
+                $pageItems = $page['items'] ?? [];
 
-        foreach ($pages as $page) {
-            $pageItems = $page['items'] ?? [];
-
-            foreach ($pageItems as $pageItem) {
-                // Assuming you have the 'value' field in the request
-                $value = $pageItem['value'] ?? null;
-                $formPageItemFill = new FormPageItemFill([
-                    'value' => $value,
-                    'form_page_item_id' => $pageItem['form_page_id'],
-                    'user_id' => auth()->user()->id,
-                    'form_request_id' => $formRequest->id,
-                ]);
-                $formPageItemFill->save();
+                foreach ($pageItems as $pageItem) {
+                    // Assuming you have the 'value' field in the request
+                    $formPageItemFill = new FormPageItemFill([
+                        'value' => $pageItem['value'] ?? null,
+                        'form_page_item_id' => $pageItem['form_page_id'],
+                        'user_id' => auth()->user()->id,
+                        'form_request_id' => $formRequest->id,
+                    ]);
+                    $formPageItemFill->save();
+                }
             }
+
+            return responseSuccess([], 'Form Fill has been successfully deleted');
+        } catch (\Throwable $th) {
+            // throw $th;
         }
-
-        return responseSuccess([], 'Form Fill has been successfully deleted');
-
-
-     }
+    }
 }
