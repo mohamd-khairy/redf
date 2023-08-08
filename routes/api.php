@@ -78,7 +78,7 @@ Route::group(['prefix' => 'v1'], function () {
         Route::get('all-form', [FormsController::class, 'allForm']);
         Route::post('create-form', [FormsController::class, 'createForm']);
         Route::put('update-form/{id}', [FormsController::class, 'updateForm']);
-        Route::delete('forms/{id}', [FormsController::class, 'deleteForm']);
+        Route::delete('delete-form/{id}', [FormsController::class, 'deleteForm']);
         Route::get('get-forms-by-templateId', [FormsController::class, 'getFormsByTemplate']);
         Route::get('get-form/{formId}', [FormsController::class, 'listForm']);
         Route::post('store-form-fill', [FormsController::class, 'storeFormFill']);
