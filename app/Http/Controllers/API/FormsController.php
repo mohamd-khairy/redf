@@ -55,7 +55,6 @@ class FormsController extends Controller
 
     public function updateForm($id, FormUpdateRequest $request)
     {
-
         try {
             DB::beginTransaction();
             $form = Form::find($id);
@@ -67,6 +66,7 @@ class FormsController extends Controller
             DB::commit();
             return responseSuccess(new FormItemResource($form));
         } catch (\Throwable $th) {
+            Db::rollBack();
             throw $th;
         }
     }
@@ -185,7 +185,8 @@ class FormsController extends Controller
             return responseSuccess([], 'Form Fill has been successfully deleted');
 
         } catch (\Throwable $th) {
-            //throw $th;
+            DB::rollBack();
+            throw $th;
         }
 
 
