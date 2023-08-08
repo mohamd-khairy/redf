@@ -379,6 +379,24 @@ export default {
     templatesList: "Templates List",
     createTemplate: "Create Template",
     updateTemplate: "Update Template",
+    basic_data: "Basic Information",
+    template_edit: "Template Structure"
+  },
+  builder: {
+    page: "Page",
+    label: "Label",
+    text: "Text",
+    table: "Table",
+    select: "Select",
+    textarea: "Textarea",
+    poll: "Poll",
+    tree: "Tree",
+    column: "Column",
+    radio: "Radio",
+    attachment: "Attachment",
+  },
+  buttons: {
+    save: "Save Changes"
   },
   users: {
     rolesList: "Roles List",
