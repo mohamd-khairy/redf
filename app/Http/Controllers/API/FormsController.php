@@ -16,7 +16,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\CreateFormRequest;
 use App\Http\Requests\FormUpdateRequest;
 use App\Http\Resources\FormItemResource;
-use App\Http\Repositories\TemplatesRepository;
+use Illuminate\Pipeline\Pipeline;
 
 class FormsController extends Controller
 {
@@ -170,9 +170,9 @@ class FormsController extends Controller
         try {
             DB::beginTransaction();
 
-                $form_id = $request->id;
-                $formRequest = FormRequest::create([
-                    'form_id' => $form_id,
+            $form_id = $request->id;
+            $formRequest = FormRequest::create([
+                'form_id' => $form_id,
                 'user_id' => auth()->user()->id,
                 'status' => FormRequestStatus::PENDING, // Set the initial status to "pending"
             ]);
@@ -203,17 +203,16 @@ class FormsController extends Controller
     public function getFormRequest(Request $request)
     {
         try {
+            $query = FormRequest::with('form.pages.items', 'user', 'form_page_item_fill')
+                ->whereHas('form', function ($q) use ($request) {
+                    $q->where('template_id', $request->template_id);
+                });
 
-            // $formrequest = DB::table('form_requests')
-            //     ->join('forms', ' form_requests.id', '=', 'forms.user_id')
-            //     ->join('orders', ' form_requests.id', '=', 'orders.user_id')
-            //     ->select(' form_requests.*', 'contacts.phone', 'orders.price')
-            //     ->get();
+            $formRequests = app(Pipeline::class)->send($query)->through([
+                SortFilters::class,
+            ])->thenReturn();
 
-            //get forms by template id
-            $formRequests = FormRequest::with('form.pages.items','user','form_page_item_fill')->whereHas('form', function ($q) use ($request) {
-                $q->where('template_id', $request->template_id);
-            })->paginate(10);
+            $formRequests = $formRequests->paginate(request('page_size', 10));
 
             return responseSuccess($formRequests, 'Form requests retrieved successfully');
         } catch (\Exception $e) {
