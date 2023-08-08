@@ -18,4 +18,9 @@ class FormPageItemFill extends Model
         'user_id',
         'form_request_id'
     ];
+
+    public function form_requests()
+    {
+        return $this->belongsTo(FormRequest::class);
+    }
 }
