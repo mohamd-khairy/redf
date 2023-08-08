@@ -516,6 +516,24 @@ export default {
     templatesList: "قائمة النماذج",
     createTemplate: "إضافة نموذج",
     updateTemplate: "تعديل نموذج",
+    basic_data: "البيانات الأساسية",
+    template_edit: "تكوين النموذج"
+  },
+  builder: {
+    page: "صفحة",
+    label: "تسمية",
+    text: "نص",
+    table: "جدول",
+    select: "قائمة",
+    textarea: "نص",
+    poll: "انتخاب",
+    tree: "شجرة",
+    column: "سطر",
+    radio: "راديو",
+    attachment: "مرفق",
+  },
+  buttons: {
+    save: "حفظ التغيرات"
   },
   charts: {
     Station1: "موقع 1",
