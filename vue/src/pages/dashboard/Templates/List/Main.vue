@@ -14,13 +14,6 @@
                             </transition>
                         </template>
                         <v-list dense>
-                            <!--              <v-list-item >-->
-                            <!--                <v-list-item-title>{{ $t('general.verify') }}</v-list-item-title>-->
-                            <!--              </v-list-item>-->
-                            <!--              <v-list-item >-->
-                            <!--                <v-list-item-title>{{ $t('general.disabled') }}</v-list-item-title>-->
-                            <!--              </v-list-item>-->
-                            <!--              <v-divider></v-divider>-->
                             <v-list-item>
                                 <v-list-item-title>{{
                                     $t("general.delete")
@@ -45,7 +38,13 @@
                         </template>
                         <span>{{ $t("templates.createTemplate") }}</span>
                     </v-tooltip>
-                    <v-btn :loading="isLoading" icon @click.prevent="open()" small class="ml-2">
+
+                    <!-- <v-btn color="#014c4f" class="mx-2" elevation="0" v-bind="attrs" v-on="on" :to="`/templates/edit/${item}`" v-can="'create-user'">
+                        <v-icon>
+                            mdi-file-edit-outline
+                        </v-icon>
+                    </v-btn> -->
+                    <v-btn color="#014c4f" elevation="0" :loading="isLoading" @click.prevent="open()" class="mx-2">
                         <v-icon>mdi-refresh</v-icon>
                     </v-btn>
                 </v-col>
@@ -71,6 +70,30 @@
                         <v-btn color="error" icon @click.prevent="deleteItem(item.id)">
                             <v-icon>mdi-delete</v-icon>
                         </v-btn>
+                        <v-dialog transition="dialog-bottom-transition" max-width="600">
+                            <!-- <template v-slot:activator="{ on, attrs }">
+                                    <v-btn color="primary" v-bind="attrs" v-on="on">From the bottom</v-btn>
+                                </template> -->
+                            <template v-slot:activator="{ on, attrs }">
+                                <v-btn icon v-bind="attrs" v-on="on" v-can="'create-user'">
+                                    <v-icon>
+                                        mdi-account-key
+                                    </v-icon>
+                                </v-btn>
+                            </template>
+
+                            <template v-slot:default="dialog">
+                                <v-card>
+                                    <v-toolbar color="primary" dark>Opening from the bottom</v-toolbar>
+                                    <v-card-text>
+                                        <div class="text-h2 pa-12">Hello world!</div>
+                                    </v-card-text>
+                                    <v-card-actions class="justify-end">
+                                        <v-btn text @click="dialog.value = false">Close</v-btn>
+                                    </v-card-actions>
+                                </v-card>
+                            </template>
+                        </v-dialog>
                     </div>
                 </template>
                 <template v-slot:no-data>
