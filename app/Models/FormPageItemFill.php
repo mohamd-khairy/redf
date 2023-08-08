@@ -23,4 +23,10 @@ class FormPageItemFill extends Model
     {
         return $this->belongsTo(FormRequest::class);
     }
+
+    public function page_item()
+    {
+        return $this->belongsTo(FormPageItem::class);
+    }
+
 }

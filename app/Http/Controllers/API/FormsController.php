@@ -203,12 +203,15 @@ class FormsController extends Controller
     public function getFormRequest(Request $request)
     {
         try {
-            // // get forms by template id
-            // $formIds = Form::where('template_id', $request->template_id)->pluck('id')->toArray();
-            // $formRequests = FormRequest::with('form_page_item_fill')->whereIn('form_id', $formIds)->paginate(10);
 
+            // $formrequest = DB::table('form_requests')
+            //     ->join('forms', ' form_requests.id', '=', 'forms.user_id')
+            //     ->join('orders', ' form_requests.id', '=', 'orders.user_id')
+            //     ->select(' form_requests.*', 'contacts.phone', 'orders.price')
+            //     ->get();
 
-            $formRequests = FormRequest::with('form_page_item_fill')->whereHas('form', function ($q) use ($request) {
+            //get forms by template id
+            $formRequests = FormRequest::with('form.pages.items','user','form_page_item_fill')->whereHas('form', function ($q) use ($request) {
                 $q->where('template_id', $request->template_id);
             })->paginate(10);
 
