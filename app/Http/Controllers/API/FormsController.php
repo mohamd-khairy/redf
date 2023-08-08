@@ -169,9 +169,9 @@ class FormsController extends Controller
         try {
             DB::beginTransaction();
 
-            $form_id = $request->id;
-            $formRequest = FormRequest::create([
-                'form_id' => $form_id,
+                $form_id = $request->id;
+                $formRequest = FormRequest::create([
+                    'form_id' => $form_id,
                 'user_id' => auth()->user()->id,
                 'status' => FormRequestStatus::PENDING, // Set the initial status to "pending"
             ]);
