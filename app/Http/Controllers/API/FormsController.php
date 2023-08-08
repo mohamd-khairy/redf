@@ -133,7 +133,8 @@ class FormsController extends Controller
                 // If template_id is not provided, return all forms
                 $allForms = Form::all();
                 return responseSuccess(FormResource::collection($allForms));
-            }
+             }
+
         } catch (\Throwable $th) {
             //throw $th;
         }
@@ -153,19 +154,24 @@ class FormsController extends Controller
     }
 
     public function storeFormFill(Request $request){
-        // collect(request('pages'))
-        // ->pluck("items")
-        // ->each(fn($item) => FormPageItemFill::insert($item));
+
         try {
             DB::beginTransaction();
+
             $form_id = $request->id;
             $formRequest = FormRequest::create([
                 'form_id' => $form_id,
                 'user_id' => auth()->user()->id,
                 'status' => FormRequestStatus::PENDING, // Set the initial status to "pending"
             ]);
-            foreach (request('pages') as $page) {
-                foreach ($request('items') as $pageItem) {
+
+            // collect(request('pages'))
+            // ->pluck("items")
+            // ->each(fn($item) => FormPageItemFill::insert($item));
+            $pages = $request->input('pages', []);
+            foreach ($pages as $page) {
+                $pageItems = $page['items'] ?? [];
+                foreach ($pageItems as $pageItem) {
                     $formPageItemFill = new FormPageItemFill([
                         'value' => $pageItem['value'] ?? null,
                         'form_page_item_id' => $pageItem['form_page_id'],
@@ -177,6 +183,7 @@ class FormsController extends Controller
             }
             DB::commit();
             return responseSuccess([], 'Form Fill has been successfully deleted');
+
         } catch (\Throwable $th) {
             //throw $th;
         }
