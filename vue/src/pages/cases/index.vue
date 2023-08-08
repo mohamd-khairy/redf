@@ -60,7 +60,7 @@
                 elevation="0"
                 v-bind="attrs"
                 v-on="on"
-                to="/users/create"
+                to="/cases/form-types"
                 v-can="'create-user'"
               >
                 <v-icon>
@@ -68,7 +68,7 @@
                 </v-icon>
               </v-btn>
             </template>
-            <span>{{ $t("users.createUser") }}</span>
+            <span>{{ $t("cases.createCase") }}</span>
           </v-tooltip>
           <v-btn
             :loading="isLoading"
@@ -161,7 +161,6 @@
 </template>
 
 <script>
-import users from "./content/users";
 import CopyLabel from "../../components/common/CopyLabel";
 import { mapActions, mapState } from "vuex";
 import { ask, makeToast } from "@/helpers";
@@ -180,12 +179,12 @@ export default {
       isLoading: false,
       breadcrumbs: [
         {
-          text: this.$t("menu.usersManagement"),
+          text: this.$t("menu.casesManagement"),
           disabled: false,
           href: "#"
         },
         {
-          text: this.$t("users.usersList")
+          text: this.$t("menu.cases")
         }
       ],
 
@@ -220,7 +219,7 @@ export default {
   created() {
     this.setBreadCrumb({
       breadcrumbs: this.breadcrumbs,
-      pageTitle: this.$t("users.usersList")
+      pageTitle: this.$t("cases.casesList")
     });
   },
   mounted() {
