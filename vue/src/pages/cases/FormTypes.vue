@@ -11,22 +11,23 @@
     </div> -->
 
     <v-row>
-      <v-col v-for="form in forms" :key="form.id" cols="3">
+      <v-col v-for="form in forms" :key="form.id" cols="4">
         <v-hover v-slot="{ hover }">
           <v-card
+            class="formType-card"
             :class="{ 'on-hover': hover }"
             @click="openModels(form.id)"
-            style="overflow: hidden;"
+            style="overflow: hidden"
           >
-            <v-card-title class=" ">
+            <v-card-title class="card-title-cont">
               <v-avatar
                 rounded
-                class="me-2 v-avatar--variant-tonal  primary--text"
+                class="me-2 v-avatar--variant-tonal primary--text"
                 size="56"
-              ><v-icon>mdi-scale-balance </v-icon></v-avatar
+                ><v-icon>mdi-scale-balance </v-icon></v-avatar
               >
-              <div class="title-cont ">
-<!--                <h6 class="text-caption">Form</h6>-->
+              <div class="title-cont">
+                <!--                <h6 class="text-caption">Form</h6>-->
                 {{ form.name }}
               </div>
             </v-card-title>
@@ -48,7 +49,7 @@
 import { mapActions, mapState } from "vuex";
 
 export default {
-  name:'FormTypes',
+  name: "FormTypes",
   components: {},
   data() {
     return {
@@ -56,65 +57,39 @@ export default {
         {
           text: this.$t("menu.cases"),
           disabled: false,
-          href: "#"
+          href: "#",
         },
         {
-          text: this.$t("cases.caseType")
-        }
+          text: this.$t("cases.caseType"),
+        },
       ],
       x: 0,
       y: 0,
     };
   },
   computed: {
-    ...mapState("cases", ["forms"])
+    ...mapState("cases", ["forms"]),
   },
   created() {
     this.setBreadCrumb({
       breadcrumbs: this.breadcrumbs,
-      pageTitle: this.$t("menu.cases")
+      pageTitle: this.$t("menu.cases"),
     });
   },
   mounted() {
     this.open();
-    document.getElementsByClassName("path").forEach(path => {
-      path.addEventListener("mouseenter", e =>
-        this.mouseEnterFunction(e, path)
-      );
-    });
-
-    document.getElementsByClassName("path").forEach(path => {
-      path.addEventListener("mouseleave", this.mouseLeaveFunction);
-    });
-    let x;
-    let y;
-
-    document.getElementsByClassName("path").forEach(path => {
-      path.addEventListener("mousemove", this.mouseMoveFunction);
-    });
   },
-  unmounted() {
-    document.getElementsByClassName("path").forEach(path => {
-      path.removeEventListener("mouseenter", e =>
-        this.mouseEnterFunction(e, path)
-      );
-    });
-    document.getElementsByClassName("path").forEach(path => {
-      path.removeEventListener("mouseleave", this.mouseLeaveFunction);
-    });
-    document.getElementsByClassName("path").forEach(path => {
-      path.removeEventListener("mousemove", this.mouseMoveFunction);
-    });
-  },
+  unmounted() {},
   methods: {
     ...mapActions("cases", ["getForms"]),
     ...mapActions("app", ["setBreadCrumb"]),
     searchUser() {},
     open() {
-      let {id} = this.$route.params;
+      let { id } = this.$route.params;
       this.isLoading = true;
       this.getForms(id)
         .then(() => {
+          console.log(this.forms);
           this.isLoading = false;
         })
         .catch(() => {
@@ -131,11 +106,11 @@ export default {
 
       document
         .getElementsByClassName("RegionsNameInMap")
-        .forEach(elm => (elm.style.display = "block"));
+        .forEach((elm) => (elm.style.display = "block"));
       document.getElementsByClassName("RegionsNameInMap").innerHTML = title;
     },
     mouseLeaveFunction() {
-      document.getElementsByClassName("RegionsNameInMap").forEach(elm => {
+      document.getElementsByClassName("RegionsNameInMap").forEach((elm) => {
         elm.innerHTML = "";
         elm.style.display = "none";
       });
@@ -144,12 +119,12 @@ export default {
       this.x = event.clientX; // Get the horizontal coordinate
       this.y = event.clientY; // Get the vertical coordinate
 
-      document.getElementsByClassName("RegionsNameInMap").forEach(element => {
+      document.getElementsByClassName("RegionsNameInMap").forEach((element) => {
         element.style.left = this.x + 10 + "px";
         element.style.top = this.y + 10 + "px";
       });
-    }
-  }
+    },
+  },
 };
 </script>
 
@@ -208,7 +183,12 @@ export default {
 .overlay:hover .link-icon {
   transform: scale(1.1);
 }
+.formType-card .title-cont {
+  word-break: break-word;
+}
+.formType-card .card-title-cont {
+  flex-wrap: nowrap;
+}
 
 ////
 </style>
-
