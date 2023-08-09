@@ -17,8 +17,13 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('status');
+            $table->string('priority');
+            $table->dateTime('start_date');
+            $table->dateTime('end_date');
             $table->string('type');
             $table->unsignedBigInteger('user_id');
+            $table->softDeletes();
+
             $table->timestamps();
         });
     }

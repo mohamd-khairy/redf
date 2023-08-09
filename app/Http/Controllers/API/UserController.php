@@ -30,6 +30,7 @@ class UserController extends Controller
      */
     public function index(Request $request)
     {
+
         $validate = Validator::make($request->all(), [
             'page' => 'nullable|numeric|min:1',
             'pageSize' => 'nullable|min:1',

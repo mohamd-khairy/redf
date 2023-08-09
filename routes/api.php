@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\TaskController;
 use App\Http\Controllers\API\UserController;
 use App\Http\Controllers\API\FormsController;
 use App\Http\Controllers\API\SettingController;
+use App\Http\Controllers\api\DocumentController;
 use App\Http\Controllers\Api\TemplateController;
 use App\Http\Controllers\Api\DepartmentController;
 use App\Http\Controllers\API\PermissionController;
@@ -74,9 +75,14 @@ Route::group(['prefix' => 'v1'], function () {
         Route::apiResource('templates', TemplateController::class);
     });
 
-      /*********************TasksController***************** */
-      Route::group(['middleware' => 'auth:sanctum'], function () {
+    /*********************TasksController***************** */
+    Route::group(['middleware' => 'auth:sanctum'], function () {
         Route::apiResource('tasks', TaskController::class);
+    });
+
+     /*********************DocumentController***************** */
+     Route::group(['middleware' => 'auth:sanctum'], function () {
+        Route::apiResource('documents', DocumentController::class);
     });
 
 

@@ -24,6 +24,8 @@ return new class extends Migration
             $table->unsignedBigInteger('assigner_id');
             $table->unsignedBigInteger('document_id')->nullable();
             $table->unsignedBigInteger('form_id')->nullable();
+            $table->softDeletes();
+
             $table->timestamps();
         });
     }

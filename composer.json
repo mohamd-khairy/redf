@@ -34,6 +34,7 @@
     "autoload": {
         "files": [
             "app/Helpers/help.php",
+            "app/Helpers/Model.php",
             "app/Helpers/Report.php"
         ],
         "psr-4": {

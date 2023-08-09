@@ -1,16 +1,16 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers\api;
 
 use Carbon\Carbon;
-use App\Models\Task;
+use App\Models\Document;
+use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use App\Http\Requests\DocumentRequest;
 use Illuminate\Support\Facades\Validator;
 
-use Illuminate\Http\Request;
-use App\Http\Requests\TaskRequest;
-use App\Http\Controllers\Controller;
 
-class TaskController extends Controller
+class DocumentController extends Controller
 {
     public function __construct()
     {
@@ -36,19 +36,19 @@ class TaskController extends Controller
             return responseFail($validate->messages()->first());
         }
         $page_size = request('pageSize', 15);
-        $tasks = Task::query();
+        $documents = Document::query();
         if (request('search')) {
-            $tasks = $tasks->where(function ($q) {
-                $q->where('title', 'like', '%' . request('search') . '%');
+            $documents = $documents->where(function ($q) {
+                $q->where('name', 'like', '%' . request('search') . '%');
             });
         }
         if ($page_size == -1) {
-            $tasks = $tasks->get();
+            $documents = $documents->get();
         } else {
-            $tasks = $tasks->paginate($page_size);
+            $documents = $documents->paginate($page_size);
         }
 
-        return responseSuccess(['tasks' => $tasks]);
+        return responseSuccess(['documents' => $documents]);
     }
 
     /**
@@ -57,15 +57,18 @@ class TaskController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(TaskRequest $request)
+    public function store(DocumentRequest $request)
     {
 
         try {
             $validatedData = $request->validated();
-            $validatedData['due_date'] = Carbon::createFromFormat('d-m-Y', $validatedData['due_date'])
+            $validatedData['start_date'] = Carbon::createFromFormat('d-m-Y', $validatedData['start_date'])
             ->format('Y-m-d');
-            $task = Task::create($validatedData);
-            return responseSuccess($task, 'Task has been successfully created');
+            $validatedData['end_date'] = Carbon::createFromFormat('d-m-Y', $validatedData['end_date'])
+            ->format('Y-m-d');
+
+            $document = Document::create($validatedData);
+            return responseSuccess($document, 'document has been successfully created');
         } catch (ValidationException $e) {
             return responseFail($e->getMessage());
         }
@@ -81,28 +84,26 @@ class TaskController extends Controller
     public function update(Request $request, $id)
     {
 
-        $task = Task::findOrFail($id);
+        $document = Document::findOrFail($id);
         $request->validate([
-            'title' => 'sometimes|string|max:255',
-            'type' => 'sometimes', // Enum values
+            'name' => 'sometimes|string|max:255',
+            'status' => 'sometimes', // Enum values
+            'priority' => 'sometimes', // Enum values
             'user_id' => 'sometimes|exists:users,id',
-            'assigner_id' => 'sometimes|exists:users,id',
-            'due_date' => 'sometimes|date',
-            'details' => 'sometimes|string',
-            'document_id' => 'sometimes|exists:documents,id',
-            'share_with' => 'sometimes|string',
-            'form_id' => 'sometimes|exists:forms,id',
+            'start_date' => 'sometimes|date',
+            'end_date' => 'sometimes|date',
+            'type' => 'sometimes',
         ]);
 
-        $task->update($request->all());
+        $document->update($request->all());
 
-        return responseSuccess($task, 'task has been successfully Updated');
+        return responseSuccess($document, 'document has been successfully Updated');
     }
 
     public function show($id)
     {
-        $task = Task::findOrFail($id);
-        return responseSuccess($task, 'task has been successfully showed');
+        $document = Document::findOrFail($id);
+        return responseSuccess($document, 'Document has been successfully showed');
     }
 
     /**
@@ -113,8 +114,8 @@ class TaskController extends Controller
      */
     public function destroy($id)
     {
-        $task = Task::findOrFail($id);
-        $task->delete();
-        return responseSuccess([], 'Task has been successfully deleted');
+        $document = Document::findOrFail($id);
+        $document->delete();
+        return responseSuccess([], 'Document has been successfully deleted');
     }
 }
