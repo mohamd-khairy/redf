@@ -1,5 +1,8 @@
 const state = {
   forms: [],
+  formRequests: [],
+
+
   cards: [],
   eventTypes: [],
   statuses: [],

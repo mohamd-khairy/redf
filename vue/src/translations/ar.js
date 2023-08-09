@@ -542,7 +542,7 @@ export default {
     status: "الحالة",
     detectionType: "نوع الاكتشاف",
     openFile: "فتح الملف",
-    id: "الرقم التعريفي",
+    id: "الرقم التسلسلى",
     serial: "الرقم التسلسلي",
     date: "التاريخ",
     time: "الوقت",
@@ -565,7 +565,11 @@ export default {
     download: "تحميل الملف",
     location: "الموقع",
     description: 'الوصف',
-    templates: "النماذج"
+    templates: "النماذج",
+    user: "المستفيد",
+    assigner: "المكلف",
+    organization: "المنظمة",
+    department: "القسم",
   },
   texts: {
     editor: "محرر",

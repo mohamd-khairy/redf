@@ -2,13 +2,23 @@ import axios from '@/plugins/axios'
 
 const actions = {
   async getForms({commit}, data) {
-    const response = await axios.get(`get-forms-by-templateId`, {
+    const response = await axios.get(`get-forms`, {
       params: {
         template_id: data.template_id,
       }
     });
     const forms = response?.data.data
     commit('SET_FORMS', forms)
+  },
+
+  async getFormRequests({commit}, data) {
+    const response = await axios.get(`get-form-Requests`, {
+      params: {
+        template_id: data.template_id,
+      }
+    });
+    const formRequests = response?.data.data
+    commit('SET_formRequests', formRequests)
   },
 
 
