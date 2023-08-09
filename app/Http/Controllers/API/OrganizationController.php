@@ -2,10 +2,14 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Filters\SearchFilters;
+use App\Filters\SortFilters;
 use App\Models\Organization;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\OrganzationRequest;
+use App\Http\Requests\PageRequest;
+use Illuminate\Pipeline\Pipeline;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 
@@ -24,30 +28,18 @@ class OrganizationController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
+    public function index(PageRequest $request)
     {
-        $validate = Validator::make($request->all(), [
-            'page' => 'nullable|numeric|min:1',
-            'pageSize' => 'nullable|min:1',
-        ]);
-
-        if ($validate->fails()) {
-            return responseFail($validate->messages()->first());
-        }
-        $page_size = request('pageSize', 15);
         $organizations = Organization::query();
-        if (request('search')) {
-            $organizations = $organizations->where(function ($q) {
-                $q->where('name', 'like', '%' . request('search') . '%');
-            });
-        }
-        if ($page_size == -1) {
-            $organizations = $organizations->get();
-        } else {
-            $organizations = $organizations->paginate($page_size);
-        }
 
-        return responseSuccess(['organizations' => $organizations]);
+        $data = app(Pipeline::class)->send($organizations)->through([
+            SearchFilters::class,
+            SortFilters::class,
+        ])->thenReturn();
+
+        $data = $data->paginate(request('pageSize', 15));
+
+        return responseSuccess(['organizations' => $data]);
     }
 
     /**
