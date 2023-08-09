@@ -10,7 +10,9 @@ const state = {
   notes: [],
   detectionTypes: [],
   event: {},
-  liveMode: false
-}
+  liveMode: false,
+  pages: [],
+  selectedFormName: "",
+};
 
-export default state
+export default state;

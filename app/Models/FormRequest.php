@@ -23,6 +23,11 @@ class FormRequest extends Model
         return $this->hasMany(FormPageItemFill::class);
     }
 
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
     public function form()
     {
         return $this->belongsTo(Form::class);

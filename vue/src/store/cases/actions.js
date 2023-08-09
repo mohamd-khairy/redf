@@ -119,7 +119,14 @@ const actions = {
     });
     const live_mode = response?.data.data;
     commit("SET_LIVE_MODE", liveModeState);
-  }
-}
+  },
+  async getPages({ commit }, formId) {
+    const response = await axios.get(`get-form/${formId}`);
+    const pages = response?.data.data.pages;
+    const selectedFormName = response?.data.data.name;
+    commit("SET_PAGES", pages);
+    commit("SET_SELECTED_FORM_NAME", selectedFormName);
+  },
+};
 
 export default actions
