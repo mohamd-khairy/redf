@@ -18,6 +18,7 @@ import Organizations from "./organizations";
 import Templates from "./templates";
 import Cases from "./cases";
 import Documents from "./documents";
+import Tasks from "./tasks";
 
 // Example Apps
 import BoardModule from "../apps/board/store";
@@ -58,6 +59,7 @@ const store = new Vuex.Store({
     cases: Cases,
     auth: Auth,
     documents: Documents,
+    tasks: Tasks,
   },
 });
 

@@ -803,4 +803,18 @@ export default {
     priority: "الاولوية",
     types: "النوع",
   },
+  tasks: {
+    tasksList: "قائمة المهام",
+    tasksManagement: "ادارة المهام",
+    createTask: "انشاء مهمة ",
+    taskName: "اسم المهمة",
+    taskDesc: "وصف المهمة",
+    createTask: "انشاء المهمة",
+    confirmDeleteTask: "هل انت متأكد من حذف هذه المهمة ؟",
+    confirmDeleteSelectedTask: "هل انت متأكد من حذف المهام المحددة ؟",
+    editTask: "تحديث المهمة",
+    status: "الحالة",
+    priority: "الاولوية",
+    types: "النوع",
+  },
 };

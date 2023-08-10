@@ -785,4 +785,16 @@ export default {
     confirmDeleteSelectedDoc: "Are you sure to delete the selected Documents?",
     editDoc: "Edit Document",
   },
+  tasks: {
+    tasksList: "Tasks List",
+    tasksManagement: "Tasks Management",
+    createTask: "Create Task",
+    taskName: "Task Name",
+    taskDesc: "Task Description",
+    createTask: "Create Task",
+    editTask: "Edit Task",
+    confirmDeleteTask: "Are you sure to delete this Task?",
+    confirmDeleteSelectedTask: "Are you sure to delete the selected Tasks?",
+    editTask: "Edit Task",
+  },
 };
