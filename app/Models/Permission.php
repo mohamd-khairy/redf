@@ -2,7 +2,15 @@
 
 namespace App\Models;
 
+use Spatie\Activitylog\LogOptions;
+use Spatie\Activitylog\Traits\LogsActivity;
+
 class Permission extends \Spatie\Permission\Models\Permission
 {
-    public $inPermission = true;
+    use LogsActivity;
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()->logOnly(['name', 'display_name', 'group']);
+    }
 }

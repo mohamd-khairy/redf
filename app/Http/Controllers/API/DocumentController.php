@@ -2,13 +2,18 @@
 
 namespace App\Http\Controllers\api;
 
+use App\Filters\SearchFilters;
+use App\Filters\SortFilters;
 use Carbon\Carbon;
 use App\Models\Document;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\DocumentRequest;
+use App\Http\Requests\PageRequest;
+use Illuminate\Pipeline\Pipeline;
 use Illuminate\Support\Facades\Validator;
-
+use Illuminate\Validation\ValidationException;
+use Throwable;
 
 class DocumentController extends Controller
 {
@@ -25,30 +30,18 @@ class DocumentController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
+    public function index(PageRequest $request)
     {
-        $validate = Validator::make($request->all(), [
-            'page' => 'nullable|numeric|min:1',
-            'pageSize' => 'nullable|min:1',
-        ]);
-
-        if ($validate->fails()) {
-            return responseFail($validate->messages()->first());
-        }
-        $page_size = request('pageSize', 15);
         $documents = Document::query();
-        if (request('search')) {
-            $documents = $documents->where(function ($q) {
-                $q->where('name', 'like', '%' . request('search') . '%');
-            });
-        }
-        if ($page_size == -1) {
-            $documents = $documents->get();
-        } else {
-            $documents = $documents->paginate($page_size);
-        }
 
-        return responseSuccess(['documents' => $documents]);
+        $data = app(Pipeline::class)->send($documents)->through([
+            SearchFilters::class,
+            SortFilters::class,
+        ])->thenReturn();
+
+        $data = $data->paginate(request('pageSize', 15));
+
+        return responseSuccess(['documents' => $data]);
     }
 
     /**
@@ -63,13 +56,13 @@ class DocumentController extends Controller
         try {
             $validatedData = $request->validated();
             $validatedData['start_date'] = Carbon::createFromFormat('d-m-Y', $validatedData['start_date'])
-            ->format('Y-m-d');
+                ->format('Y-m-d');
             $validatedData['end_date'] = Carbon::createFromFormat('d-m-Y', $validatedData['end_date'])
-            ->format('Y-m-d');
+                ->format('Y-m-d');
 
             $document = Document::create($validatedData);
             return responseSuccess($document, 'document has been successfully created');
-        } catch (ValidationException $e) {
+        } catch (Throwable $e) {
             return responseFail($e->getMessage());
         }
     }

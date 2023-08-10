@@ -33,7 +33,7 @@ class FormsController extends Controller
     public function allForm(Request $request)
     {
         try {
-            $forms = Form::with('template')->paginate(10);
+            $forms = Form::with('template')->paginate(15);
             return responseSuccess($forms);
         } catch (\Throwable $th) {
             throw $th;

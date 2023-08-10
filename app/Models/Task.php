@@ -11,8 +11,8 @@ use Spatie\Activitylog\Traits\LogsActivity;
 
 class Task extends Model
 {
-    use SoftDeletes , HasFactory;
-     use LogsActivity;
+    use SoftDeletes, HasFactory;
+    use LogsActivity;
 
     public $inPermission = true;
 

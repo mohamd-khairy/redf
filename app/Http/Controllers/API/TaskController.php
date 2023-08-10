@@ -2,13 +2,16 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Filters\SearchFilters;
+use App\Filters\SortFilters;
 use Carbon\Carbon;
 use App\Models\Task;
-use Illuminate\Support\Facades\Validator;
-
 use Illuminate\Http\Request;
 use App\Http\Requests\TaskRequest;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\PageRequest;
+use Illuminate\Pipeline\Pipeline;
+use Throwable;
 
 class TaskController extends Controller
 {
@@ -25,30 +28,18 @@ class TaskController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
+    public function index(PageRequest $request)
     {
-        $validate = Validator::make($request->all(), [
-            'page' => 'nullable|numeric|min:1',
-            'pageSize' => 'nullable|min:1',
-        ]);
-
-        if ($validate->fails()) {
-            return responseFail($validate->messages()->first());
-        }
-        $page_size = request('pageSize', 15);
         $tasks = Task::query();
-        if (request('search')) {
-            $tasks = $tasks->where(function ($q) {
-                $q->where('title', 'like', '%' . request('search') . '%');
-            });
-        }
-        if ($page_size == -1) {
-            $tasks = $tasks->get();
-        } else {
-            $tasks = $tasks->paginate($page_size);
-        }
 
-        return responseSuccess(['tasks' => $tasks]);
+        $data = app(Pipeline::class)->send($tasks)->through([
+            SearchFilters::class,
+            SortFilters::class,
+        ])->thenReturn();
+
+        $data = $data->paginate(request('pageSize', 15));
+
+        return responseSuccess(['tasks' => $data]);
     }
 
     /**
@@ -63,10 +54,10 @@ class TaskController extends Controller
         try {
             $validatedData = $request->validated();
             $validatedData['due_date'] = Carbon::createFromFormat('d-m-Y', $validatedData['due_date'])
-            ->format('Y-m-d');
+                ->format('Y-m-d');
             $task = Task::create($validatedData);
             return responseSuccess($task, 'Task has been successfully created');
-        } catch (ValidationException $e) {
+        } catch (Throwable $e) {
             return responseFail($e->getMessage());
         }
     }

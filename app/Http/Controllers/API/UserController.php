@@ -4,13 +4,13 @@ namespace App\Http\Controllers\API;
 
 use App\Models\Role;
 use App\Models\User;
-use App\Enums\GenderEnum;
-use App\Enums\StatusEnum;
+use App\Filters\SearchFilters;
+use App\Filters\SortFilters;
 use Illuminate\Http\Request;
 use App\Services\UploadService;
 use App\Http\Controllers\Controller;
-use Illuminate\Validation\Rules\Enum;
-use Illuminate\Support\Facades\Storage;
+use App\Http\Requests\PageRequest;
+use Illuminate\Pipeline\Pipeline;
 use Illuminate\Support\Facades\Validator;
 
 class UserController extends Controller
@@ -28,46 +28,23 @@ class UserController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
+
+    public function index(PageRequest $request)
     {
-
-        $validate = Validator::make($request->all(), [
-            'page' => 'nullable|numeric|min:1',
-            'pageSize' => 'nullable|min:1',
-        ]);
-
-        if ($validate->fails()) {
-            return responseFail($validate->messages()->first());
-        }
-
-        $page_size = request('pageSize', 15);
-
-        $users = User::with(['roles', 'permissions'])->whereHas('roles', function ($q) {
+        $query = User::with(['roles', 'permissions'])->whereHas('roles', function ($q) {
             $q->where('name', '!=', 'root'); //->where('name', '!=', 'admin');
         })->where('id', '!=', auth()->id());
 
-        if (request('search')) {
-            $users = $users->where(function ($q) {
-                $q->where('name', 'like', '%' . request('search') . '%')
-                    ->orWhere('email', 'like', '%' . request('search') . '%');
-            });
-        }
+        $data = app(Pipeline::class)->send($query)->through([
+            SearchFilters::class,
+            SortFilters::class,
+        ])->thenReturn();
 
-        if (in_array(request('sortCoulmn', 'id'), ['id', 'name', 'email', 'created_at'])) {
+        $data = $data->paginate(request('pageSize', 15));
 
-            $users = $users->orderBy(request('sortCoulmn', 'id'), request('sortDirection', 'desc'));
-        } else {
-            $users = $users->latest();
-        }
-
-        if ($page_size == -1) {
-            $users = $users->get();
-        } else {
-            $users = $users->paginate($page_size);
-        }
-
-        return responseSuccess(['users' => $users]);
+        return responseSuccess(['users' => $data]);
     }
+
 
     /**
      * Store a newly created resource in storage.
@@ -131,7 +108,7 @@ class UserController extends Controller
             'password' => 'nullable|min:8',
             'confirm_password' => 'same:password',
             'name' => 'nullable|string',
-             'email' => 'nullable|email|unique:users,email,' . $id,
+            'email' => 'nullable|email|unique:users,email,' . $id,
             'avatar' => 'nullable|image|' . v_image(),
             'role_id' => 'nullable|exists:roles,id', // Add the 'role_id' validation rule
 
@@ -162,7 +139,6 @@ class UserController extends Controller
                 $user->roles()->sync([$role->id]);
             } else {
                 return responseSuccess("role not found");
-
             }
         }
         return responseSuccess($user, 'User has been successfully updated');
