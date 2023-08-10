@@ -83,7 +83,7 @@ class TaskController extends Controller
 
         $task = Task::findOrFail($id);
         $request->validate([
-            'title' => 'sometimes|string|max:255',
+            'name' => 'sometimes|string|max:255',
             'type' => 'sometimes', // Enum values
             'user_id' => 'sometimes|exists:users,id',
             'assigner_id' => 'sometimes|exists:users,id',

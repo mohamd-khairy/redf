@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::create('tasks', function (Blueprint $table) {
             $table->id();
-            $table->string('title');
+            $table->string('name');
             $table->string('type');
             $table->dateTime('due_date');
             $table->text('details')->nullable();
@@ -24,6 +24,11 @@ return new class extends Migration
             $table->unsignedBigInteger('assigner_id');
             $table->unsignedBigInteger('document_id')->nullable();
             $table->unsignedBigInteger('form_id')->nullable();
+
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('assigner_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('document_id')->references('id')->on('documents')->onDelete('cascade');
+            $table->foreign('document_id')->references('id')->on('forms')->onDelete('cascade');
             $table->softDeletes();
 
             $table->timestamps();

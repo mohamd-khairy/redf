@@ -127,8 +127,7 @@ class UserController extends Controller
      */
     public function update(Request $request, $id)
     {
-
-        $validate = Validator::make($request->all(), [
+         $validate = Validator::make($request->all(), [
             'password' => 'nullable|min:8',
             'confirm_password' => 'same:password',
             'name' => 'nullable|string',
@@ -137,7 +136,6 @@ class UserController extends Controller
             'role_id' => 'nullable|exists:roles,id', // Add the 'role_id' validation rule
 
         ]);
-        // dd($id);
 
         if ($validate->fails()) {
             return responseFail($validate->messages()->first());
@@ -154,12 +152,13 @@ class UserController extends Controller
             $data['avatar'] = UploadService::store($request->avatar, 'profile');
         }
 
+
         $user->update($data);
+
 
         if ($request->has('role_id')) {
             $role = Role::find($request->input('role_id'));
-
-            if ($role) {
+             if ($role) {
                 $user->roles()->sync([$role->id]);
             } else {
                 return responseSuccess("role not found");
