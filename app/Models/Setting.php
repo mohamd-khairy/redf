@@ -4,10 +4,13 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Spatie\Activitylog\LogOptions;
+use Spatie\Activitylog\Traits\LogsActivity;
 
 class Setting extends Model
 {
     use HasFactory;
+    use LogsActivity;
 
     public $inPermission = true;
 
@@ -16,6 +19,11 @@ class Setting extends Model
     public $appends = [
         'full_url'
     ];
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()->logOnly(['name', 'display_name']);
+    }
 
     public function getValueAttribute($value)
     {

@@ -36,6 +36,9 @@ import "./filters/formatDate";
 import "./filters/formatTime";
 
 // STYLES
+import "bootstrap"
+import "bootstrap/dist/css/bootstrap.min.css"
+
 // Main Theme SCSS
 import "./assets/scss/theme.scss";
 

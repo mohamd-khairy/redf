@@ -2,12 +2,16 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Filters\SearchFilters;
+use App\Filters\SortFilters;
 use App\Models\Template;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\PageRequest;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Requests\TemplateRequest;
+use Illuminate\Pipeline\Pipeline;
 use Illuminate\Validation\ValidationException;
 
 class TemplateController extends Controller
@@ -33,31 +37,18 @@ class TemplateController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
+    public function index(PageRequest $request)
     {
+        $query = Template::query();
 
-        $validate = Validator::make($request->all(), [
-            'page' => 'nullable|numeric|min:1',
-            'pageSize' => 'nullable|min:1',
-        ]);
+        $data = app(Pipeline::class)->send($query)->through([
+            SearchFilters::class,
+            SortFilters::class,
+        ])->thenReturn();
 
-        if ($validate->fails()) {
-            return responseFail($validate->messages()->first());
-        }
-        $page_size = request('pageSize', 15);
-        $templates = Template::query();
-        if (request('search')) {
-            $templates = $templates->where(function ($q) {
-                $q->where('name', 'like', '%' . request('search') . '%');
-            });
-        }
-        if ($page_size == -1) {
-            $templates = $templates->get();
-        } else {
-            $templates = $templates->paginate($page_size);
-        }
+        $data = $data->paginate(request('pageSize', 15));
 
-        return responseSuccess(['templates' => $templates]);
+        return responseSuccess(['templates' => $data]);
     }
 
     /**

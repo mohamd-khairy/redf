@@ -27,7 +27,7 @@
                     </v-btn>
                 </li>
                 <li class="option-item">
-                    <v-btn color="#014c4f" large>
+                    <v-btn color="#014c4f" large @click="appendTable">
                         <v-icon>
                             mdi-table
                         </v-icon>
@@ -43,7 +43,7 @@
                     </v-btn>
                 </li>
                 <li class="option-item">
-                    <v-btn color="#014c4f" large>
+                    <v-btn color="#014c4f" large @click="appendTextArea">
                         <v-icon>
                             mdi-form-textarea
                         </v-icon>
@@ -67,7 +67,7 @@
                     </v-btn>
                 </li>
                 <li class="option-item">
-                    <v-btn color="#014c4f" large>
+                    <v-btn color="#014c4f" large @click="appendColumn">
                         <v-icon>
                             mdi-table-row
                         </v-icon>
@@ -75,7 +75,7 @@
                     </v-btn>
                 </li>
                 <li class="option-item">
-                    <v-btn color="#014c4f" large>
+                    <v-btn color="#014c4f" large @click="appendRadio">
                         <v-icon>
                             mdi-radiobox-marked
                         </v-icon>
@@ -83,7 +83,7 @@
                     </v-btn>
                 </li>
                 <li class="option-item">
-                    <v-btn color="#014c4f" large>
+                    <v-btn color="#014c4f" large @click="appendAttachment">
                         <v-icon>
                             mdi-file-document-plus-outline
                         </v-icon>
@@ -207,8 +207,240 @@ export default {
             elementContainer.appendChild(input)
             container.appendChild(elementContainer)
             activeTab.appendChild(container)
+        },
+        appendTextArea() {
+            let activeTab = document.querySelector(".page-dynamic .v-tabs .v-window-item--active");
+            let container = document.createElement("div")
+            let elementContainer = document.createElement("div")
+            let label = document.createElement("label")
+            let span = document.createElement("span")
+            let iconLbl = document.createElement("i")
+            let labelContent = document.createTextNode("Label Title")
+            let input = document.createElement("textarea")
+            let optionsContainer = document.createElement("div")
+            let optionsBtn = document.createElement("button")
+            let optionsDropDown = document.createElement("div")
+            let optionsDropDownDeleteBtn = document.createElement("button")
+            let optionsDropDownDeleteBtnIcon = document.createElement("i")
+            let optionsIcon = document.createElement("i")
+
+            container.classList.add("created-element", "mb-2", "d-flex", "align-items-center")
+            elementContainer.classList.add("element-container")
+            iconLbl.classList.add("v-icon", "notranslate", "mdi", "mdi-label", "theme--light")
+            span.setAttribute("contenteditable", true)
+            span.classList.add("mx-1")
+            span.appendChild(labelContent)
+            label.appendChild(iconLbl)
+            label.appendChild(span)
+            label.classList.add('d-block', 'mb-1')
+            input.setAttribute("type", "text")
+            input.setAttribute("placeholder", "Input Title")
+            input.classList.add("form-control")
+
+            optionsDropDown.classList.add("dropdown-content")
+            optionsDropDown.setAttribute("id", "myDropdown")
+            optionsBtn.classList.add("dropdown_btn")
+            optionsBtn.addEventListener("click", (e) => {
+                let drop = e.target.parentElement.parentElement.children[1];
+                drop.classList.toggle("show")
+            })
+            optionsIcon.classList.add("v-icon", "notranslate", "mdi", "mdi-dots-vertical", "theme--light")
+            optionsDropDownDeleteBtnIcon.classList.add("v-icon", "notranslate", "mdi", "mdi-delete", "theme--light")
+            optionsDropDownDeleteBtn.appendChild(optionsDropDownDeleteBtnIcon)
+            optionsDropDown.appendChild(optionsDropDownDeleteBtn)
+            optionsBtn.appendChild(optionsIcon)
+            optionsContainer.appendChild(optionsBtn)
+            optionsContainer.appendChild(optionsDropDown)
+            container.appendChild(optionsContainer)
+            elementContainer.appendChild(label)
+            elementContainer.appendChild(input)
+            container.appendChild(elementContainer)
+            activeTab.appendChild(container)
 
 
+        },
+        appendColumn() {
+            let activeTab = document.querySelector(".page-dynamic .v-tabs .v-window-item--active");
+            let container = document.createElement("div")
+            let elementContainer = document.createElement("div")
+            // let label = document.createElement("label")
+            let span = document.createElement("span")
+            // let iconLbl = document.createElement("i")
+            // let labelContent = document.createTextNode("Label Title")
+            let input = document.createElement("div")
+            let optionsContainer = document.createElement("div")
+            let optionsBtn = document.createElement("button")
+            let optionsDropDown = document.createElement("div")
+            let optionsDropDownDeleteBtn = document.createElement("button")
+            let optionsDropDownDeleteBtnIcon = document.createElement("i")
+            let optionsIcon = document.createElement("i")
+
+            container.classList.add("created-element", "mb-2", "d-flex", "align-items-center")
+            elementContainer.classList.add("element-container", "row")
+            // iconLbl.classList.add("v-icon", "notranslate", "mdi", "mdi-label", "theme--light")
+            span.setAttribute("contenteditable", true)
+            span.classList.add("mx-1")
+            // span.appendChild(labelContent)
+            // label.appendChild(iconLbl)
+            // label.appendChild(span)
+            // label.classList.add('d-block', 'mb-1')
+            input.classList.add("col")
+
+            optionsDropDown.classList.add("dropdown-content")
+            optionsDropDown.setAttribute("id", "myDropdown")
+            optionsBtn.classList.add("dropdown_btn")
+            optionsBtn.addEventListener("click", (e) => {
+                let drop = e.target.parentElement.parentElement.children[1];
+                drop.classList.toggle("show")
+            })
+            optionsIcon.classList.add("v-icon", "notranslate", "mdi", "mdi-dots-vertical", "theme--light")
+            optionsDropDownDeleteBtnIcon.classList.add("v-icon", "notranslate", "mdi", "mdi-delete", "theme--light")
+            optionsDropDownDeleteBtn.appendChild(optionsDropDownDeleteBtnIcon)
+            optionsDropDown.appendChild(optionsDropDownDeleteBtn)
+            optionsBtn.appendChild(optionsIcon)
+            optionsContainer.appendChild(optionsBtn)
+            optionsContainer.appendChild(optionsDropDown)
+            container.appendChild(optionsContainer)
+            // elementContainer.appendChild(label)
+            elementContainer.appendChild(input)
+            container.appendChild(elementContainer)
+            activeTab.appendChild(container)
+
+        },
+        appendRadio() {
+            let activeTab = document.querySelector(".page-dynamic .v-tabs .v-window-item--active");
+            let container = document.createElement("div")
+            let elementContainer = document.createElement("div")
+            let label = document.createElement("label")
+            let span = document.createElement("span")
+            let iconLbl = document.createElement("i")
+            let labelContent = document.createTextNode("Label Title")
+            let input = document.createElement("input")
+            let optionsContainer = document.createElement("div")
+            let optionsBtn = document.createElement("button")
+            let optionsDropDown = document.createElement("div")
+            let optionsDropDownDeleteBtn = document.createElement("button")
+            let optionsDropDownDeleteBtnIcon = document.createElement("i")
+            let optionsIcon = document.createElement("i")
+
+            container.classList.add("created-element", "mb-2", "d-flex", "align-items-center")
+            elementContainer.classList.add("element-container", "form-check")
+            iconLbl.classList.add("v-icon", "notranslate", "mdi", "mdi-label", "theme--light")
+            span.setAttribute("contenteditable", true)
+            span.classList.add("mx-1")
+            span.appendChild(labelContent)
+            label.appendChild(iconLbl)
+            label.appendChild(span)
+            label.classList.add('form-check-label')
+            label.setAttribute("for", "flexRadioDefault1")
+            input.setAttribute("type", "radio")
+            input.setAttribute("name", "flexRadioDefault")
+            input.setAttribute("id", "flexRadioDefault1")
+            // input.setAttribute("placeholder", "Input Title")
+            input.classList.add("form-check-input")
+
+            optionsDropDown.classList.add("dropdown-content")
+            optionsDropDown.setAttribute("id", "myDropdown")
+            optionsBtn.classList.add("dropdown_btn")
+            optionsBtn.addEventListener("click", (e) => {
+                let drop = e.target.parentElement.parentElement.children[1];
+                drop.classList.toggle("show")
+            })
+            optionsIcon.classList.add("v-icon", "notranslate", "mdi", "mdi-dots-vertical", "theme--light")
+            optionsDropDownDeleteBtnIcon.classList.add("v-icon", "notranslate", "mdi", "mdi-delete", "theme--light")
+            optionsDropDownDeleteBtn.appendChild(optionsDropDownDeleteBtnIcon)
+            optionsDropDown.appendChild(optionsDropDownDeleteBtn)
+            optionsBtn.appendChild(optionsIcon)
+            optionsContainer.appendChild(optionsBtn)
+            optionsContainer.appendChild(optionsDropDown)
+            container.appendChild(optionsContainer)
+            elementContainer.appendChild(label)
+            elementContainer.appendChild(input)
+            container.appendChild(elementContainer)
+            activeTab.appendChild(container)
+        },
+        appendAttachment() {
+            let activeTab = document.querySelector(".page-dynamic .v-tabs .v-window-item--active");
+            let container = document.createElement("div")
+            let elementContainer = document.createElement("div")
+            let label = document.createElement("label")
+            let span = document.createElement("span")
+            let iconLbl = document.createElement("i")
+            let labelContent = document.createTextNode("Label Title")
+            let input = document.createElement("input")
+            let optionsContainer = document.createElement("div")
+            let optionsBtn = document.createElement("button")
+            let optionsDropDown = document.createElement("div")
+            let optionsDropDownDeleteBtn = document.createElement("button")
+            let optionsDropDownDeleteBtnIcon = document.createElement("i")
+            let optionsIcon = document.createElement("i")
+
+            container.classList.add("created-element", "mb-2", "d-flex", "align-items-center")
+            elementContainer.classList.add("element-container")
+            iconLbl.classList.add("v-icon", "notranslate", "mdi", "mdi-label", "theme--light")
+            span.setAttribute("contenteditable", true)
+            span.classList.add("mx-1")
+            span.appendChild(labelContent)
+            label.appendChild(iconLbl)
+            label.appendChild(span)
+            label.classList.add('d-block', 'mb-1')
+            input.setAttribute("type", "file")
+            input.setAttribute("placeholder", "Input Title")
+            input.classList.add("form-control")
+
+            optionsDropDown.classList.add("dropdown-content")
+            optionsDropDown.setAttribute("id", "myDropdown")
+            optionsBtn.classList.add("dropdown_btn")
+            optionsBtn.addEventListener("click", (e) => {
+                let drop = e.target.parentElement.parentElement.children[1];
+                drop.classList.toggle("show")
+            })
+            optionsIcon.classList.add("v-icon", "notranslate", "mdi", "mdi-dots-vertical", "theme--light")
+            optionsDropDownDeleteBtnIcon.classList.add("v-icon", "notranslate", "mdi", "mdi-delete", "theme--light")
+            optionsDropDownDeleteBtn.appendChild(optionsDropDownDeleteBtnIcon)
+            optionsDropDown.appendChild(optionsDropDownDeleteBtn)
+            optionsBtn.appendChild(optionsIcon)
+            optionsContainer.appendChild(optionsBtn)
+            optionsContainer.appendChild(optionsDropDown)
+            container.appendChild(optionsContainer)
+            elementContainer.appendChild(label)
+            elementContainer.appendChild(input)
+            container.appendChild(elementContainer)
+            activeTab.appendChild(container)
+        },
+        appendTable() {
+            const activeTab = document.querySelector(".page-dynamic .v-tabs .v-window-item--active");
+            const tbl = document.createElement("table");
+            const tblHead = document.createElement("thead");
+            const tblBody = document.createElement("tbody");
+            const rowHead = document.createElement("tr");
+            tbl.classList.add("table", "table-striped")
+            // creating all cells
+            for (let i = 0; i < 2; i++) {
+                // creates a table row
+                const rowBody = document.createElement("tr");
+
+                const cellHead = document.createElement("th");
+                const cellHeadText = document.createTextNode(`Table Head Column`);
+                cellHead.appendChild(cellHeadText);
+                rowHead.appendChild(cellHead);
+                for (let j = 0; j < 2; j++) {
+                    const cellBody = document.createElement("td");
+                    const cellBodyText = document.createTextNode(`Table Body Column`);
+                    cellBody.appendChild(cellBodyText);
+                    rowBody.appendChild(cellBody);
+                }
+                tblHead.appendChild(rowHead);
+                tblBody.appendChild(rowBody);
+            }
+
+            // put the <tbody> in the <table>
+            tbl.appendChild(tblHead);
+            tbl.appendChild(tblBody);
+            // appends <table> into <body>
+            // document.body.appendChild(tbl);
+            // sets the border attribute of tbl to '2'
+            activeTab.appendChild(tbl)
         },
         appendPage() {
             this.tabs.push({

@@ -15,11 +15,17 @@ return new class extends Migration
     {
         Schema::create('documents', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('status');
-            $table->string('type');
+            $table->string('name')->nullable();
+            $table->string('status')->nullable();
+            $table->string('priority')->nullable();
+            $table->dateTime('start_date')->nullable();
+            $table->dateTime('end_date')->nullable();
+            $table->string('type')->nullable();
             $table->unsignedBigInteger('user_id');
+            $table->softDeletes();
             $table->timestamps();
+
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
 

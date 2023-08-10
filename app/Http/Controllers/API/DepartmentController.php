@@ -2,11 +2,16 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Filters\SearchFilters;
+use App\Filters\SortFilters;
 use App\Models\Department;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\DepartmentRequest;
+use App\Http\Requests\PageRequest;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Pipeline\Pipeline;
+use Throwable;
 
 class DepartmentController extends Controller
 {
@@ -23,31 +28,18 @@ class DepartmentController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
+    public function index(PageRequest $request)
     {
-
-        $validate = Validator::make($request->all(), [
-            'page' => 'nullable|numeric|min:1',
-            'pageSize' => 'nullable|min:1',
-        ]);
-
-        if ($validate->fails()) {
-            return responseFail($validate->messages()->first());
-        }
-        $page_size = request('pageSize', 15);
         $departments = Department::query();
-        if (request('search')) {
-            $departments = $departments->where(function ($q) {
-                $q->where('name', 'like', '%' . request('search') . '%');
-            });
-        }
-        if ($page_size == -1) {
-            $departments = $departments->get();
-        } else {
-            $departments = $departments->paginate($page_size);
-        }
 
-        return responseSuccess(['departments' => $departments]);
+        $data = app(Pipeline::class)->send($departments)->through([
+            SearchFilters::class,
+            SortFilters::class,
+        ])->thenReturn();
+
+        $data = $data->paginate(request('pageSize', 15));
+
+        return responseSuccess(['departments' => $data]);
     }
 
     /**
@@ -64,7 +56,7 @@ class DepartmentController extends Controller
             // Since validation passed, you can directly create the department.
             $department = Department::create($validatedData);
             return responseSuccess($department, 'Department has been successfully created');
-        } catch (ValidationException $e) {
+        } catch (Throwable $e) {
             // If validation fails, handle the validation errors here.
             return responseFail($e->getMessage());
         }
