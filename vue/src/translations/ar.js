@@ -588,6 +588,9 @@ export default {
     assigner: "المكلف",
     organization: "المنظمة",
     department: "القسم",
+    priority: "الاولوية",
+    start_date: "تاريخ البداية",
+    end_date: "تاريخ النهاية",
   },
   texts: {
     editor: "محرر",
@@ -724,6 +727,8 @@ export default {
     update: "تحديث",
     saveChanges: "حفظ التغيرات",
     required_input: "هذا الحقل مطلوب",
+    start_date: "تاريخ البداية",
+    end_date: "تاريخ النهاية",
   },
   reports: {
     buildReport: "انشاء تقرير",
@@ -783,5 +788,19 @@ export default {
     confirmDeleteOrg: "هل انت متأكد من حذف هذه المنظمة ؟",
     confirmDeleteSelectedOrg: "هل انت متأكد من حذف المنظمات المحددة ؟",
     editOrg: "تحديث منظمة",
+  },
+  documents: {
+    documentsList: "قائمة المستندات",
+    documentsManagement: "ادارة المستندات",
+    createDocument: "انشاء مستند ",
+    docName: "اسم المستند",
+    docDesc: "وصف المستند",
+    createDoc: "انشاء مستند",
+    confirmDeleteDoc: "هل انت متأكد من حذف هذه المستند ؟",
+    confirmDeleteSelectedDoc: "هل انت متأكد من حذف المستندات المحددة ؟",
+    editDoc: "تحديث مستند",
+    status: "الحالة",
+    priority: "الاولوية",
+    types: "النوع",
   },
 };

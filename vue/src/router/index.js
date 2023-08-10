@@ -15,6 +15,7 @@ import PipesRoutes from "./pipes.routes";
 import FlightsRoutes from "./flights.routes";
 import ReportsRoutes from "./reports.routes";
 import OrganizationsRoutes from "./organizations.routes";
+import DocumentsRoutes from "./documents.routes";
 
 import CasesRoutes from "./cases.routes";
 import store from "@/store";
@@ -25,7 +26,7 @@ Vue.use(Router);
 export const routes = [
   {
     path: "/",
-    redirect: "/dashboard/analytics"
+    redirect: "/dashboard/analytics",
   },
   {
     path: "/dashboard/analytics",
@@ -35,8 +36,8 @@ export const routes = [
         /* webpackChunkName: "dashboard" */ "@/pages/dashboard/DashboardPage.vue"
       ),
     meta: {
-      title: "menu.dashboard"
-    }
+      title: "menu.dashboard",
+    },
   },
   ...AppsRoutes,
   ...GlobalRoutes,
@@ -52,6 +53,7 @@ export const routes = [
   ...ReportsRoutes,
   ...OrganizationsRoutes,
   ...CasesRoutes,
+  ...DocumentsRoutes,
 
   {
     path: "/blank",
@@ -59,8 +61,8 @@ export const routes = [
     component: () =>
       import(/* webpackChunkName: "blank" */ "@/pages/BlankPage.vue"),
     meta: {
-      title: "blank"
-    }
+      title: "blank",
+    },
   },
   {
     path: "*",
@@ -69,9 +71,9 @@ export const routes = [
       import(/* webpackChunkName: "error" */ "@/pages/error/NotFoundPage.vue"),
     meta: {
       layout: "error",
-      title: "errorNotFound"
-    }
-  }
+      title: "errorNotFound",
+    },
+  },
 ];
 
 const router = new Router({
@@ -83,7 +85,7 @@ const router = new Router({
 
     return { x: 0, y: 0 };
   },
-  routes
+  routes,
 });
 
 /**
@@ -97,16 +99,18 @@ router.beforeEach((to, from, next) => {
   }
 
   if (to.meta.permissions && to.meta.permissions.length > 0) {
-    let isAllowed = localStorage.getItem('user_permissions').includes(to.meta.permissions)
-    if (!isAllowed) return next('auth-signin')
+    let isAllowed = localStorage
+      .getItem("user_permissions")
+      .includes(to.meta.permissions);
+    if (!isAllowed) return next("auth-signin");
   }
-  document.title = i18n.t(`${to.meta.title}`)
+  document.title = i18n.t(`${to.meta.title}`);
   return next();
 });
 
 /**
  * After each route update
  */
-router.afterEach((to, from) => { });
+router.afterEach((to, from) => {});
 
 export default router;

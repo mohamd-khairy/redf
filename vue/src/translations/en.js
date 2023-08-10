@@ -581,6 +581,9 @@ export default {
     assigner: "Assigner",
     organization: "Organization",
     department: "Department",
+    priority: "Priority",
+    start_date: "Start Date",
+    end_date: "End Date",
   },
   texts: {
     editor: "Editor",
@@ -769,5 +772,17 @@ export default {
     confirmDeleteSelectedOrg:
       "Are you sure to delete the selected Organizations?",
     editOrg: "Edit Organization",
+  },
+  documents: {
+    documentsList: "Documents List",
+    documentsManagement: "Documents Management",
+    createDocument: "Create Document",
+    docName: "Document Name",
+    docDesc: "Document Description",
+    createDoc: "Create Document",
+    editDoc: "Edit Document",
+    confirmDeleteDoc: "Are you sure to delete this Document?",
+    confirmDeleteSelectedDoc: "Are you sure to delete the selected Documents?",
+    editDoc: "Edit Document",
   },
 };
