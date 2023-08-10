@@ -1,6 +1,6 @@
 <template>
   <div class="form-group pageTitle">
-    <textarea v-if="editing" v-model="title" class="border-0 form-control"></textarea>
+    <input v-if="editing" v-model="title" class="border-0 form-control-custom" />
     <label v-else class="text-bold" v-html="title.replace(/\n/g, '<br>')"></label>
   </div>
 </template>
@@ -26,7 +26,12 @@ export default {
   white-space: pre-wrap;
 }
 
-.pageTitle textarea, .pageTitle label {
+.form-control-custom {
+  background: transparent;
+}
+
+.pageTitle textarea,
+.pageTitle label {
   background: rgba(0, 0, 0, 0);
   text-align: center;
 }
