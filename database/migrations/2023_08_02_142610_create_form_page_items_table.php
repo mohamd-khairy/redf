@@ -21,8 +21,11 @@ return new class extends Migration
             $table->boolean('required')->default(false);
             $table->boolean('website_view')->default(true);
             $table->text('notes')->nullable();
+            $table->text('comment')->nullable();
             $table->string('width')->nullable();
             $table->string('height')->nullable();
+            $table->string('length')->nullable();
+            $table->string('input_type')->nullable();
             $table->text('childList')->nullable();
             $table->unsignedBigInteger('form_page_id');
             $table->softDeletes();

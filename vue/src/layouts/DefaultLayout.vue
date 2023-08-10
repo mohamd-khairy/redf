@@ -18,7 +18,7 @@
       </template>
 
       <!-- Navigation menu -->
-      <main-menu :menu="navigationPermissions" :pinned="pinnedReports" />
+      <main-menu :menu="navigationPermissions" :pinned="pinnedReports" :templates="templateData" />
 
       <!-- Navigation menu footer -->
       <template v-slot:append>
@@ -83,7 +83,7 @@
 </template>
 
 <script>
-import { mapActions, mapState } from "vuex";
+import {mapActions, mapState} from "vuex";
 
 // navigation menu configurations
 import config from "../configs";
@@ -107,6 +107,7 @@ export default {
       drawer: null,
       showSearch: false,
       // pinnedReports: [],
+      templateData: [],
       navigation: config.navigation,
       logo: "/images/logo.svg"
     };
@@ -114,6 +115,7 @@ export default {
   created() {
     // this.getPinned();
     this.getSavedPinned();
+    this.getTemplateTypes();
   },
   updated() {
     // this.setFavicon(this.websitefavIcon);
@@ -186,6 +188,18 @@ export default {
           id: pin.id
         }));
         this.pinnedReports = pinnedData;
+      } catch (error) {
+        console.error(error);
+      }
+    },
+    async getTemplateTypes() {
+      try {
+        const response = await this.$axios.get(`get-template-type`);
+        const templates = response?.data.data;
+        this.templateData = templates.map(template => ({
+          title: template.name,
+          id: template.id
+        }));
       } catch (error) {
         console.error(error);
       }

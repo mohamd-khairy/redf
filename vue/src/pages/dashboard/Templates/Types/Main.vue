@@ -30,7 +30,7 @@
 
                     <v-tooltip top>
                         <template v-slot:activator="{ on, attrs }">
-                            <v-btn color="#014c4f" class="mx-2 " elevation="0" v-bind="attrs" v-on="on"
+                            <v-btn color="primary" class="mx-2 " elevation="0" v-bind="attrs" v-on="on"
                                 to="/templates/types/create" v-can="'create-user'">
                                 <v-icon>
                                     mdi-plus
@@ -79,7 +79,7 @@
         </v-card>
     </div>
 </template>
-  
+
 <script>
 import $ from 'jquery'
 import CopyLabel from "../../../../components/common/CopyLabel";
@@ -120,10 +120,6 @@ export default {
                 {
                     text: this.$t("tables.name"),
                     value: "name"
-                },
-                {
-                    text: this.$t("tables.description"),
-                    value: "description"
                 },
                 {
                     text: this.$t("tables.created"),
@@ -243,7 +239,7 @@ export default {
     }
 };
 </script>
-  
+
 <style lang="scss" scoped>
 .slide-fade-enter-active {
     transition: all 0.3s ease;
@@ -259,4 +255,3 @@ export default {
     opacity: 0;
 }
 </style>
-  

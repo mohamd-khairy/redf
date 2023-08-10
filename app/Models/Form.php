@@ -5,10 +5,13 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Spatie\Activitylog\Traits\LogsActivity;
+use Spatie\Activitylog\LogOptions;
 
 class Form extends Model
 {
     use HasFactory, SoftDeletes;
+    use LogsActivity;
 
     protected $fillable = [
         'name',
@@ -17,11 +20,20 @@ class Form extends Model
         'template_id'
     ];
 
-    public function organization()
+    public function getActivitylogOptions(): LogOptions
     {
-        return $this->belongsTo(Organization::class);
+        return LogOptions::defaults()->logOnly(self::getFillable());
     }
 
+    public function template()
+    {
+        return $this->belongsTo(Template::class);
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
     public function pages()
     {
         return $this->hasMany(FormPage::class);

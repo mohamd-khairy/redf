@@ -60,7 +60,7 @@
                 elevation="0"
                 v-bind="attrs"
                 v-on="on"
-                to="/users/create"
+                :to=formTypesUrl
                 v-can="'create-user'"
               >
                 <v-icon>
@@ -68,7 +68,7 @@
                 </v-icon>
               </v-btn>
             </template>
-            <span>{{ $t("users.createUser") }}</span>
+            <span>{{ $t("cases.createCase") }}</span>
           </v-tooltip>
           <v-btn
             :loading="isLoading"
@@ -161,7 +161,6 @@
 </template>
 
 <script>
-import users from "./content/users";
 import CopyLabel from "../../components/common/CopyLabel";
 import { mapActions, mapState } from "vuex";
 import { ask, makeToast } from "@/helpers";
@@ -180,12 +179,12 @@ export default {
       isLoading: false,
       breadcrumbs: [
         {
-          text: this.$t("menu.usersManagement"),
+          text: this.$t("menu.casesManagement"),
           disabled: false,
           href: "#"
         },
         {
-          text: this.$t("users.usersList")
+          text: this.$t("menu.cases")
         }
       ],
 
@@ -199,7 +198,8 @@ export default {
         { text: this.$t("tables.role"), value: "role" },
         { text: this.$t("tables.created"), value: "created_at" },
         { text: "", sortable: false, align: "right", value: "action" }
-      ]
+      ],
+      formTypesUrl:''
     };
   },
   watch: {
@@ -218,9 +218,11 @@ export default {
     ...mapState("users", ["users"])
   },
   created() {
+    let {id} = this.$route.params;
+    this.formTypesUrl = '/cases/form-types/'+id
     this.setBreadCrumb({
       breadcrumbs: this.breadcrumbs,
-      pageTitle: this.$t("users.usersList")
+      pageTitle: this.$t("cases.casesList")
     });
   },
   mounted() {

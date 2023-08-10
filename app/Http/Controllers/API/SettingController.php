@@ -14,10 +14,10 @@ class SettingController extends Controller
     public function __construct()
     {
         $this->middleware('auth', ['except' => ['generalSettings']]);
-        $this->middleware('permission:read-setting', ['only' => ['index', 'get', 'show']]);
-        $this->middleware('permission:create-setting', ['only' => ['store']]);
-        $this->middleware('permission:update-setting', ['only' => ['update']]);
-        $this->middleware('permission:delete-setting', ['only' => ['destroy']]);
+        // $this->middleware('permission:read-setting', ['only' => ['index', 'get', 'show']]);
+        // $this->middleware('permission:create-setting', ['only' => ['store']]);
+        // $this->middleware('permission:update-setting', ['only' => ['update']]);
+        // $this->middleware('permission:delete-setting', ['only' => ['destroy']]);
     }
 
     public function generalSettings()

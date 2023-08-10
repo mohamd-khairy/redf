@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Http\Resources\FormPageItemResource;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class FormPageResource extends JsonResource
@@ -14,6 +15,10 @@ class FormPageResource extends JsonResource
      */
     public function toArray($request)
     {
-        return parent::toArray($request);
+        return [
+            'id' => $this->id,
+            'title' => $this->title,
+            'items' => FormPageItemResource::collection($this->items)
+        ];
     }
 }

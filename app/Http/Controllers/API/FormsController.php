@@ -2,22 +2,28 @@
 
 namespace App\Http\Controllers\API;
 
-use App\Http\Controllers\Controller;
-use App\Http\Repositories\TemplatesRepository;
-use App\Http\Requests\CreateFormRequest;
-use App\Http\Resources\FormResource;
 use App\Models\Form;
+use App\Models\FormPage;
+use App\Models\FormRequest;
+use App\Filters\SortFilters;
+use App\Models\FormPageItem;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+use App\Enums\FormRequestStatus;
+use App\Models\FormPageItemFill;
+use Illuminate\Pipeline\Pipeline;
 use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\Controller;
+use App\Http\Resources\FormResource;
+use Illuminate\Support\Facades\Auth;
+use App\Http\Requests\CreateFormRequest;
+use App\Http\Requests\FormUpdateRequest;
+use App\Http\Resources\FormItemResource;
 
 class FormsController extends Controller
 {
-    protected $repo;
 
-    public function __construct(TemplatesRepository $repo)
+    public function __construct()
     {
-        $this->repo = $repo;
         // $this->middleware('permission:list-form|edit-form|create-form|delete-form', ['only' => ['index', 'store']]);
         // $this->middleware('permission:create-form', ['only' => ['store']]);
         // $this->middleware('permission:edit-form', ['only' => ['edit', 'update']]);
@@ -27,7 +33,7 @@ class FormsController extends Controller
     public function allForm(Request $request)
     {
         try {
-            $forms = Form::paginate(10);
+            $forms = Form::with('template')->paginate(15);
             return responseSuccess($forms);
         } catch (\Throwable $th) {
             throw $th;
@@ -46,108 +52,174 @@ class FormsController extends Controller
         }
     }
 
-    // public function store(CreateFormRequest $request)
-    // {
-    //     try {
-    //         DB::beginTransaction();
-    //         $data = $this->repo->createTemplate($request->name, auth()->id(), $request->template_id ?? null, $request->icon, $request->organization_id);
-    //         DB::commit();
-    //         if ($data) {
-    //             return responseSuccess(new FormResource($data));
-    //         } else {
-    //             return responseFail('something went wrong');
-    //         }
-    //     } catch (\Throwable $th) {
-    //         DB::rollBack();
-    //         return responseFail('something went wrong');
-    //     }
-    // }
+    public function updateForm($id, FormUpdateRequest $request)
+    {
+        try {
+            DB::beginTransaction();
+            $form = Form::find($id);
 
-    // public function updateTemplate(Request $request)
-    // {
-    //     try {
-    //         if ($this->repo->getModelClass()->findOrFail($request->id))
-    //             $res = $this->repo->updateTemplate($request->id, $request->name, $request->ar_name, $request->icon, $request->organization_id);
-    //         return $res;
-    //     } catch (Exception $e) {
-    //         if (strpos($e->getMessage(), 'Duplicate entry') !== false) {
-    //             return response()->json(['errors' => ['name' => ['This name already exists']]], 422);
-    //         }
-    //         return response()->json(['message' => 'Unknown error', $e], 500);
-    //     }
-    // }
+            if (!$form) {
+                return responseFail('there is no form with this id');
+            }
+            $data = $this->update($request, $form);
+            DB::commit();
+            return responseSuccess(new FormItemResource($form));
+        } catch (\Throwable $th) {
+            Db::rollBack();
+            throw $th;
+        }
+    }
 
-    // public function update(Template $template, TemplateUpdateRequest $request)
-    // {
-    //     try {
-    //         DB::beginTransaction();
-    //         $data = $this->repo->update($request, $template);
-    //         DB::commit();
+    public function update($request, $form)
+    {
+        $user_id = Auth::id();
 
-    //         if ($data) {
-    //             return response()->json(new TemplateResource($template->refresh()));
-    //         } else {
-    //             return response()->json('something went wrong', 500);
-    //         }
-    //     } catch (\Exception $e) {
-    //         return $e;
-    //         //            return response()->json('something went wrong', 500);
-    //     }
-    // }
+        // update form
+        $form->update($request->all());
 
-    // public function destroy(Request $request)
-    // {
-    //     try {
-    //         foreach ($request->ids as $tempId) {
-    //             $tempName = Template::where('id', $tempId)->pluck('name');
-    //             Permission::where('name', $tempName)->delete();
-    //         };
-    //         return $this->repo->bulkDelete($request->ids ?? [], false);
-    //     } catch (Exception $e) {
-    //         // return [$request->ids,$e->getMessage()];
-    //         return response()->json(['message' => 'Unknown error'], 500);
-    //     }
-    // }
-    // public function restore(Request $request)
-    // {
-    //     try {
-    //         return $this->repo->bulkRestore($request->ids ?? [], false);
-    //     } catch (Exception $e) {
-    //         // return [$request->ids,$e->getMessage()];
-    //         return response()->json(['message' => 'Unknown error'], 500);
-    //     }
-    // }
+        // Set the user_id in the form
+        $form->user_id = $user_id;
+        $form->save();
 
-    // public function assign(Request $request)
-    // {
-    //     DB::beginTransaction();
-    //     try {
-    //         //            return $request->all();
-    //         $data = $this->repo->assignAdmin($request->template_id, $request->selectedAdmins);
-    //         DB::commit();
-    //         if ($data)
-    //             return response()->json(['data' => $data, 'message' => 'successfully assigned to user', 'code' => 200], 200);
-    //         else
-    //             return response()->json(['data' => [], 'message' => 'bad request', 'code' => 400], 400);
-    //     } catch (Exception $e) {
-    //         DB::rollBack();
-    //         return response()->json(['message' => $e->getMessage()], 500);
-    //     }
-    // }
+        $form->pages()->each(function ($page) {
+            $page->items()->delete();
+        });
 
-    // public function getUserOrganization(Request $request)
-    // {
-    //     DB::beginTransaction();
-    //     try {
-    //         $data = $this->repo->getUsersOfOrganizations($request->organization_id);
-    //         DB::commit();
-    //         if ($data)
-    //             return response()->json(['data' => $data, 'message' => 'successfully get users', 'code' => 200], 200);
-    //         else
-    //             return response()->json(['data' => [], 'message' => 'bad request', 'code' => 400], 400);
-    //     } catch (Exception $e) {
-    //         DB::rollBack();
-    //         return response()->json(['message' => $e->getMessage()], 500);
-    //     }
-    // }
+        $form->pages()->delete();
+
+        $pagesData = $request->input('pages');
+
+        foreach ($pagesData as $pageData) {
+            $page = new FormPage([
+                'title' => $pageData['title']['title'],
+                'editable' =>  $pageData['title']['editable'] == false ? 0 : 1
+            ]);
+
+            $form->pages()->save($page);
+
+            if (isset($pageData['items']) && is_array($pageData['items'])) {
+                foreach ($pageData['items'] as $itemData) {
+                    // Serialize the 'childList' array to a JSON string
+                    $item = new FormPageItem([
+                        'type' => $itemData['type'],
+                        'label' => $itemData['label'],
+                        'notes' => $itemData['notes'],
+                        'width' => $itemData['width'],
+                        'height' => $itemData['height'],
+                        'enabled' => $itemData['enabled'],
+                        'required' => $itemData['required'],
+                        'website_view' => $itemData['website_view'],
+                        'childList' => isset($itemData['childList']) ? json_encode($itemData['childList']) : null // Save the serialized string
+                    ]);
+                    $page->items()->save($item);
+                }
+            }
+        }
+
+        return $form->refresh();
+    }
+
+    public function deleteForm($id)
+    {
+        try {
+
+            $form = Form::findOrFail($id);
+            if (!$form) {
+                return response()->json(['message' => 'Form not found'], 404);
+            }
+            // Delete the form
+            $form->delete();
+            return response()->json(['message' => 'Form deleted successfully']);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Failed to delete form'], 500);
+        }
+    }
+
+    public function getFormsByTemplate(Request $request)
+    {
+        try {
+            $template_id = $request->template_id;
+            if ($template_id) {
+                // If template_id is provided, fetch the specific form
+                $allForms = Form::where('template_id', $template_id)->get();
+            } else {
+                // If template_id is not provided, return all forms
+                $allForms = Form::get();
+            }
+            return responseSuccess(FormResource::collection($allForms));
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
+
+    public function listForm($id)
+    {
+        try {
+            $form = Form::find($id);
+            if (!$form) {
+                return responseFail('there is no form with this id');
+            }
+            return responseSuccess(new FormItemResource($form));
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
+
+    public function storeFormFill(Request $request)
+    {
+
+        try {
+            DB::beginTransaction();
+
+            $form_id = $request->id;
+            $formRequest = FormRequest::create([
+                'form_id' => $form_id,
+                'user_id' => auth()->user()->id,
+                'status' => FormRequestStatus::PENDING, // Set the initial status to "pending"
+            ]);
+
+
+            $pages = $request->input('pages', []);
+            foreach ($pages as $page) {
+
+                $pageItems = $page['items'] ?? [];
+                foreach ($pageItems as $pageItem) {
+                    $formPageItemFill = new FormPageItemFill([
+                        'value' => $pageItem['value'] ?? null,
+                        'form_page_item_id' => $pageItem['form_page_item_id'],
+                        'user_id' => auth()->user()->id,
+                        'form_request_id' => $formRequest->id,
+                    ]);
+                    $formPageItemFill->save();
+                }
+            }
+            DB::commit();
+            return responseSuccess([], 'Form Fill has been successfully deleted');
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            throw $th;
+        }
+    }
+
+    public function getFormRequest(Request $request)
+    {
+        try {
+            $query = FormRequest::with('form.pages.items', 'user', 'form_page_item_fill')
+                ->whereHas('form', function ($q) use ($request) {
+                    $q->where('template_id', $request->template_id);
+                });
+
+            $formRequests = app(Pipeline::class)->send($query)->through([
+                SortFilters::class,
+            ])->thenReturn();
+
+            $formRequests = $formRequests->paginate(request('page_size', 10));
+
+            return responseSuccess($formRequests, 'Form requests retrieved successfully');
+        } catch (\Exception $e) {
+            // dd($e->getMed);
+            // Return an error response if something goes wrong
+            return responseFail($e->getMessage());
+        }
+    }
 }
