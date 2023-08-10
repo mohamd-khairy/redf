@@ -1049,14 +1049,14 @@ export default {
             }, 701 * template.pages.length)
           }
 
-          return
+          // return
         }
       })
       .catch(error => {
         if (error.response.data.message === 'Validation Error')
           this.validationErrors = error.response.data.errors
-        window.jQueryToast(this.$t('Validation_Error'), 'danger');
-        window.jQueryEndLoading();
+        // window.jQueryToast(this.$t('Validation_Error'), 'danger');
+        // window.jQueryEndLoading();
         this.$emit('error', this.$t('Can_not_load_this_templates'))
       })
   },
