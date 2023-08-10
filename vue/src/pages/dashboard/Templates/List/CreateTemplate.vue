@@ -22,7 +22,7 @@
                         </v-row>
 
                         <div class="mt-2">
-                            <v-btn :loading="loading" :disabled="loading" @click="createTemplate" color="#014c4f">
+                            <v-btn :loading="loading" :disabled="loading" @click="createTemplate" color="primary">
                                 {{ $t("general.save") }}
                             </v-btn>
                         </div>
@@ -32,7 +32,7 @@
         </v-card>
     </div>
 </template>
-  
+
 <script>
 import { mapActions } from "vuex";
 import { makeToast } from "@/helpers";
@@ -121,4 +121,3 @@ export default {
     }
 };
 </script>
-  
