@@ -491,6 +491,17 @@ export default {
 </script>
 
 <style lang="scss">
+.context-menu-list {
+    background: #eee;
+    list-style: none;
+    border-radius: 8px;
+    padding: 8px 12px;
+
+    .context-menu-item {
+        padding: 3px 0;
+    }
+}
+
 .dropdown_btn.form-select {
     min-height: 40px;
 }
@@ -667,11 +678,6 @@ export default {
 
 .rotate-90 {
     transform: rotate(90deg);
-}
-
-.context-menu-list {
-    background: #000;
-    list-style: none;
 }
 </style>
 
