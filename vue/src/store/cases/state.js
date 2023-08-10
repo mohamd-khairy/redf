@@ -12,7 +12,10 @@ const state = {
   event: {},
   liveMode: false,
   pages: [],
-  selectedFormName: "",
+  selectedForm: {
+    name: "",
+    id: null,
+  },
 };
 
 export default state;
