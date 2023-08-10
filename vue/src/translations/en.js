@@ -577,6 +577,10 @@ export default {
     environment: "Environment",
     description: "Description",
     templates: "Templates",
+    user: "User",
+    assigner: "Assigner",
+    organization: "Organization",
+    department: "Department",
   },
   texts: {
     editor: "Editor",

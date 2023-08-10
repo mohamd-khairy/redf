@@ -33,10 +33,11 @@ class FormsController extends Controller
     public function allForm(Request $request)
     {
         try {
-            $forms = Form::with('template')->paginate(10);
+            $forms = Form::with('template')->paginate(15);
             return responseSuccess($forms);
         } catch (\Throwable $th) {
-            throw $th;
+            // throw $th;
+            return responseFail($th->getMessage());
         }
     }
 
@@ -48,7 +49,8 @@ class FormsController extends Controller
             $form = Form::firstOrCreate($data);
             return responseSuccess($form);
         } catch (\Throwable $th) {
-            throw $th;
+            // throw $th;
+            return responseFail($th->getMessage());
         }
     }
 
@@ -66,35 +68,32 @@ class FormsController extends Controller
             return responseSuccess(new FormItemResource($form));
         } catch (\Throwable $th) {
             Db::rollBack();
-            throw $th;
+            // throw $th;
+            return responseFail($th->getMessage());
         }
     }
 
     public function update($request, $form)
     {
-        $user_id = Auth::id();
-
         // update form
-        $form->update($request->all());
+        $data = $request->all();
+        $data['user_id'] = Auth::id();
+        $form->update($data);
 
-        // Set the user_id in the form
-        $form->user_id = $user_id;
-        $form->save();
-
+        // delete old form pages
         $form->pages()->each(function ($page) {
             $page->items()->delete();
         });
 
         $form->pages()->delete();
 
+        // create new form pages with new elements
         $pagesData = $request->input('pages');
-
         foreach ($pagesData as $pageData) {
             $page = new FormPage([
                 'title' => $pageData['title']['title'],
                 'editable' =>  $pageData['title']['editable'] == false ? 0 : 1
             ]);
-
             $form->pages()->save($page);
 
             if (isset($pageData['items']) && is_array($pageData['items'])) {
@@ -130,8 +129,9 @@ class FormsController extends Controller
             // Delete the form
             $form->delete();
             return response()->json(['message' => 'Form deleted successfully']);
-        } catch (\Exception $e) {
-            return response()->json(['message' => 'Failed to delete form'], 500);
+        } catch (\Throwable $th) {
+            return responseFail($th->getMessage());
+
         }
     }
 
@@ -148,7 +148,8 @@ class FormsController extends Controller
             }
             return responseSuccess(FormResource::collection($allForms));
         } catch (\Throwable $th) {
-            throw $th;
+            // throw $th;
+            return responseFail($th->getMessage());
         }
     }
 
@@ -161,7 +162,8 @@ class FormsController extends Controller
             }
             return responseSuccess(new FormItemResource($form));
         } catch (\Throwable $th) {
-            throw $th;
+            // throw $th;
+            return responseFail($th->getMessage());
         }
     }
 
@@ -197,7 +199,7 @@ class FormsController extends Controller
             return responseSuccess([], 'Form Fill has been successfully deleted');
         } catch (\Throwable $th) {
             DB::rollBack();
-            throw $th;
+            return responseFail($th->getMessage());
         }
     }
 
@@ -216,7 +218,7 @@ class FormsController extends Controller
             $formRequests = $formRequests->paginate(request('page_size', 10));
 
             return responseSuccess($formRequests, 'Form requests retrieved successfully');
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             // dd($e->getMed);
             // Return an error response if something goes wrong
             return responseFail($e->getMessage());

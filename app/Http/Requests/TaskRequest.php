@@ -24,7 +24,7 @@ class TaskRequest extends FormRequest
     public function rules()
     {
         return [
-            'title' => 'required|string|max:255',
+            'name' => 'required|string|max:255',
             'type' => 'required', // Enum values
             'user_id' => 'required|exists:users,id',
             'assigner_id' => 'required|exists:users,id',

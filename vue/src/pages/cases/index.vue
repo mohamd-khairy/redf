@@ -2,22 +2,22 @@
   <div class="d-flex flex-column flex-grow-1">
     <!-- <div class="d-flex align-center py-3">
       <div>
-        <div class="display-1">{{ $t('users.usersList') }}</div>
+        <div class="display-1">{{ $t('cases.casesList') }}</div>
         <v-breadcrumbs :items="breadcrumbs" class="pa-0 py-2"></v-breadcrumbs>
       </div>
       <v-spacer></v-spacer>
-      <v-btn color="primary" to="/users/create" v-can="'create-user'">
-        {{ $t('users.createUser') }}
+      <v-btn color="primary" to="/cases/create" v-can="'create-user'">
+        {{ $t('cases.createUser') }}
       </v-btn>
     </div> -->
     <v-card>
-      <!-- users list -->
+      <!-- cases list -->
       <v-row dense class="pa-2 align-center">
         <v-col cols="6">
           <v-menu offset-y left>
             <template v-slot:activator="{ on }">
               <transition name="slide-fade" mode="out-in">
-                <v-btn v-show="selectedUsers.length > 0" v-on="on">
+                <v-btn v-show="selected.length > 0" v-on="on">
                   {{ $t("general.actions") }}
                   <v-icon right>mdi-menu-down</v-icon>
                 </v-btn>
@@ -31,7 +31,7 @@
               <!--                <v-list-item-title>{{ $t('general.disabled') }}</v-list-item-title>-->
               <!--              </v-list-item>-->
               <!--              <v-divider></v-divider>-->
-              <v-list-item @click="deleteAllUsers()">
+              <v-list-item @click="deleteAllCases()">
                 <v-list-item-title>{{
                   $t("general.delete")
                 }}</v-list-item-title>
@@ -49,7 +49,7 @@
             dense
             clearable
             :placeholder="$t('general.search')"
-            @keyup.enter="searchUser(searchQuery)"
+            @keyup.enter="search(searchQuery)"
           ></v-text-field>
 
           <v-tooltip top>
@@ -83,15 +83,15 @@
       </v-row>
       <v-data-table
         show-select
-        v-model="selectedUsers"
+        v-model="selected"
         :headers="headers"
-        :items="userItems"
+        :items="items"
         :options.sync="options"
         class="flex-grow-1"
         :loading="isLoading"
         :page="page"
         :pageCount="numberOfPages"
-        :server-items-length="totalUsers"
+        :server-items-length="total"
       >
         <template v-slot:item.id="{ item }">
           <div class="font-weight-bold">
@@ -132,7 +132,7 @@
             <v-btn
               color="primary"
               icon
-              :to="`/users/edit/${item.id}`"
+              :to="`/cases/edit/${item.id}`"
               v-can="'update-user'"
             >
               <v-icon>mdi-open-in-new</v-icon>
@@ -173,7 +173,7 @@ export default {
   data() {
     return {
       page: 1,
-      totalUsers: 0,
+      total: 0,
       numberOfPages: 0,
       options: {},
       isLoading: false,
@@ -189,13 +189,15 @@ export default {
       ],
 
       searchQuery: "",
-      selectedUsers: [],
-      userItems: [],
+      selected: [],
+      items: [],
       headers: [
         { text: this.$t("tables.id"), value: "id" },
-        { text: this.$t("tables.email"), value: "email" },
-        { text: this.$t("tables.name"), value: "name" },
-        { text: this.$t("tables.role"), value: "role" },
+        { text: this.$t("tables.user"), value: "user" },
+        { text: this.$t("tables.assigner"), value: "assigner" },
+        { text: this.$t("tables.organization"), value: "organization" },
+        { text: this.$t("tables.department"), value: "department" },
+        { text: this.$t("tables.status"), value: "status" },
         { text: this.$t("tables.created"), value: "created_at" },
         { text: "", sortable: false, align: "right", value: "action" }
       ],
@@ -203,7 +205,7 @@ export default {
     };
   },
   watch: {
-    selectedUsers(val) {},
+    selected(val) {},
     options: {
       handler() {
         this.open();
@@ -215,7 +217,7 @@ export default {
     }
   },
   computed: {
-    ...mapState("users", ["users"])
+    ...mapState("cases", ["formRequests"])
   },
   created() {
     let {id} = this.$route.params;
@@ -229,31 +231,32 @@ export default {
     // this.open()
   },
   methods: {
-    ...mapActions("users", ["getUsers", "deleteUser", "deleteAll"]),
+    ...mapActions("cases", ["getFormRequests", "deleteUser", "deleteAll"]),
     ...mapActions("app", ["setBreadCrumb"]),
-    searchUser() {},
+    search() {},
     open() {
       this.isLoading = true;
       let { page, itemsPerPage } = this.options;
       const direction = this.options.sortDesc[0] ? "asc" : "desc";
-
+      let {id} = this.$route.params;
       let data = {
+        template_id:id,
         search: this.searchQuery,
         pageSize: itemsPerPage,
         pageNumber: page,
         sortDirection: direction,
         sortColumn: this.options.sortBy[0] ?? ""
       };
-      this.getUsers(data)
+      this.getFormRequests(data)
         .then(() => {
           this.isLoading = false;
           if (itemsPerPage != -1) {
-            this.userItems = this.users.data;
-            this.totalUsers = this.users.total;
-            this.numberOfPages = this.users.last_page;
+            this.items = this.formRequests.data;
+            this.total = this.formRequests.total;
+            this.numberOfPages = this.formRequests.last_page;
           } else {
-            this.userItems = this.users;
-            this.totalUsers = this.users.length;
+            this.items = this.formRequests;
+            this.total = this.formRequests.length;
             this.numberOfPages = 1;
           }
         })
@@ -278,13 +281,13 @@ export default {
       }
     },
 
-    async deleteAllUsers() {
+    async deleteAllCases() {
       let data = {};
       let ids = [];
       const { isConfirmed } = await ask("Are you sure to delete it?", "info");
       if (isConfirmed) {
-        if (this.selectedUsers.length) {
-          this.selectedUsers.forEach(item => {
+        if (this.selected.length) {
+          this.selected.forEach(item => {
             ids.push(item.id);
           });
         }

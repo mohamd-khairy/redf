@@ -1,33 +1,51 @@
 <template>
     <div class="tabs-container">
-        <v-tabs v-model="tab" background-color="#014c4f" color="#ffffff">
-            <v-tab v-for="(tab, id) in tabs" :key="id">
-                <span contenteditable="true">{{ tab.title }}</span>
-                <v-icon class="mx-2" small @click="removeTab(tab)" v-if="id > 0">mdi-close</v-icon>
+        <v-tabs v-model="tab" background-color="primary" color="#ffffff">
+            <v-tab v-for="(tab, index) in tabs" :key="index">
+                <span contenteditable="true" @input="event => onInput(event, index)"
+                      @keyup.delete="onRemove(index)" :id="`content-${index}`"
+                >{{ tab.title }}</span>
+                <v-icon class="mx-2" small @click="removeTab(tab)" v-if="index > 0">mdi-close</v-icon>
             </v-tab>
-            <v-tab-item v-for="(tab, id) in tabs" :key="id" class="px-3 py-2">
+            <v-tab-item v-for="(tab, index) in tabs" :key="index" class="px-3 py-2">
                 <slot></slot>
             </v-tab-item>
         </v-tabs>
-        <div class="actions mt-2">
-            <v-btn color="#014c4f" large>{{ $t("buttons.save") }}</v-btn>
-        </div>
     </div>
 </template>
 
 <script>
 export default {
-    props: ["tabs"],
-    data() {
-        return {
-            tab: 1,
-        }
+  props: ["tabs"],
+  data() {
+      return {
+        tab: 1,
+      }
+  },
+  mounted() {
+    this.updateAllTabs();
+  },
+  methods: {
+    removeTab(tab) {
+        this.$emit("removeSelectedTab", tab)
     },
-    methods: {
-        removeTab(tab) {
-            this.$emit("removeSelectedTab", tab)
-        }
-    }
+    onInput(event, index) {
+      const value = event.target.innerText;
+      this.tabs[index].title = value;
+    },
+    onRemove(index) {
+      if (this.tabs.length > 1 && this.tabs[index].title.length === 0) {
+        this.$delete(this.tabs, index);
+        this.updateAllTabs();
+      }
+    },
+    updateAllTabs() {
+      this.tabs.forEach((c, index) => {
+        const el = document.getElementById(`content-${index}`);
+        el.innerText = c.title;
+      });
+    },
+  }
 }
 </script>
 

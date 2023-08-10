@@ -12,7 +12,7 @@ class SortFilters
         $query = $next($request);
 
         /************ Sort filter ********* */
-        if (in_array(request('sortCoulmn', 'id'), ['id', 'date'])) {
+        if (in_array(request('sortCoulmn', 'id'), ['id', 'name', 'email', 'created_at'])) {
 
             $query = $query->orderBy(request('sortCoulmn', 'id'), request('sortDirection', 'desc'));
         } else {

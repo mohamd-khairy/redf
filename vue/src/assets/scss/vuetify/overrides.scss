@@ -696,6 +696,16 @@
 
   .v-window-item {
     input {
+      &:not(input[type=radio]) {
+        width        : 100%;
+        border       : 1px solid #ddd !important;
+        padding      : 10px 15px !important;
+        background   : #fff !important;
+        border-radius: 8px;
+      }
+    }
+
+    textarea {
       width        : 100%;
       border       : 1px solid #ddd !important;
       padding      : 10px 15px !important;

@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\api\LogController;
 use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\API\RoleController;
 use App\Http\Controllers\Api\TaskController;
@@ -35,6 +36,11 @@ Route::group(['prefix' => 'v1'], function () {
     /*********************RoleController***************** */
     Route::group(['middleware' => 'auth:sanctum'], function () {
         Route::apiResource('roles', RoleController::class);
+    });
+
+       /*********************logsController***************** */
+    Route::group(['middleware' => 'auth:sanctum'], function () {
+        Route::get('all-logs', [LogController::class, 'all_logs']);
     });
 
     /*********************PermissionController***************** */
@@ -92,9 +98,9 @@ Route::group(['prefix' => 'v1'], function () {
         Route::post('create-form', [FormsController::class, 'createForm']);
         Route::put('update-form/{id}', [FormsController::class, 'updateForm']);
         Route::delete('delete-form/{id}', [FormsController::class, 'deleteForm']);
-        Route::get('get-forms-by-templateId', [FormsController::class, 'getFormsByTemplate']);
+        Route::get('get-forms', [FormsController::class, 'getFormsByTemplate']);
         Route::get('get-form/{formId}', [FormsController::class, 'listForm']);
         Route::post('store-form-fill', [FormsController::class, 'storeFormFill']);
-        Route::get('getFormRequest-by-templateId', [FormsController::class, 'getFormRequest']);
+        Route::get('get-form-Requests', [FormsController::class, 'getFormRequest']);
     });
 });
