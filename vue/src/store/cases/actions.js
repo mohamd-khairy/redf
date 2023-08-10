@@ -113,8 +113,54 @@ const actions = {
     const response = await axios.get(`get-form/${formId}`);
     const pages = response?.data.data.pages;
     const selectedFormName = response?.data.data.name;
+    const selectedFormId = response?.data.data.id;
     commit("SET_PAGES", pages);
-    commit("SET_SELECTED_FORM_NAME", selectedFormName);
+    commit("SET_SELECTED_FORM", {
+      name: selectedFormName,
+      id: selectedFormId,
+    });
+  },
+  validateFormData({ state }) {
+    return state.pages.every((page) => {
+      return page.items.every(
+        (input) => !input.required || (input.value && input.value.trim() !== "")
+      );
+    });
+  },
+  async updatePages({ state }, formId) {
+    try {
+      const customFormData = {
+        id: state.selectedForm.id,
+        name: state.selectedForm.name,
+        pages: state.pages.map((page) => ({
+          id: page.id,
+          title: page.title,
+          items: page.items
+            .filter((input) => input.value)
+            .map((input) => {
+              return {
+                form_page_item_id: input.id,
+                value: input.value,
+                type: input.type,
+              };
+            }),
+        })),
+      };
+
+      const bodyFormData = new FormData();
+
+      for (const key in customFormData) {
+        let value = customFormData[key];
+        bodyFormData.set(key, JSON.stringify(value));
+      }
+      const response = await axios.post(`store-form-fill`, bodyFormData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+    } catch (error) {
+      console.error("Error saving form data:", error);
+    }
   },
 };
 

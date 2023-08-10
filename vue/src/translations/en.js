@@ -9,7 +9,7 @@ export default {
     faq: "FAQ",
     contact: "Contact Us",
     tos: "Terms of Service",
-    policy: "Privacy Policy"
+    policy: "Privacy Policy",
   },
   board: {
     titlePlaceholder: "Enter a title for this card",
@@ -20,14 +20,14 @@ export default {
       TODO: "TO DO",
       INPROGRESS: "INPROGRESS",
       TESTING: "TESTING",
-      DONE: "DONE"
-    }
+      DONE: "DONE",
+    },
   },
   chat: {
     online: "Users Online ({count})",
     addChannel: "Add Channel",
     channel: "Channel | Channels",
-    message: "Message"
+    message: "Message",
   },
   email: {
     compose: "Compose Email",
@@ -45,13 +45,13 @@ export default {
     generalMail: "General mail notice",
     newUserMail: "Mail notification when a new user is added",
     mailWhenUserUpdate: "Mail notification when user update",
-    mailNotificationForms: "Mail notification forms"
+    mailNotificationForms: "Mail notification forms",
   },
   todo: {
     addTask: "Add Task",
     tasks: "Tasks",
     completed: "Completed",
-    labels: "Labels"
+    labels: "Labels",
   },
   dashboard: {
     activity: "Activity",
@@ -66,17 +66,17 @@ export default {
     types: "Types",
     customers: "Customers",
     tickets: "Support Tickets",
-    viewReport: "View Report"
+    viewReport: "View Report",
   },
   usermenu: {
     profile: "Profile",
     signin: "Sign In",
     dashboard: "Dashboard",
-    signout: "Sign Out"
+    signout: "Sign Out",
   },
   error: {
     notfound: "Page Not Found",
-    other: "An Error Ocurred"
+    other: "An Error Ocurred",
   },
   check: {
     title: "Set New Password",
@@ -87,7 +87,7 @@ export default {
     error: "The action link is invalid",
     verifylink: "Verifying link...",
     verifyemail: "Verifying email address...",
-    emailverified: "Email verified! Redirecting..."
+    emailverified: "Email verified! Redirecting...",
   },
   forgot: {
     title: "Forgot Password?",
@@ -95,7 +95,7 @@ export default {
       "Enter your account email address and we will send you a link to reset your password.",
     email: "Email",
     button: "Request Password Reset",
-    backtosign: "Back to Sign In"
+    backtosign: "Back to Sign In",
   },
   login: {
     title: "Sign In",
@@ -106,7 +106,7 @@ export default {
     forgot: "Forgot password?",
     noaccount: "Don't have an account?",
     create: "Create one here",
-    error: "The email / password combination is invalid"
+    error: "The email / password combination is invalid",
   },
   register: {
     title: "Create Account",
@@ -117,13 +117,13 @@ export default {
     orsign: "Or sign up with",
     agree: "By signing up, you agree to the",
     account: "Already have an account?",
-    signin: "Sign In"
+    signin: "Sign In",
   },
   utility: {
-    maintenance: "In Maintenance"
+    maintenance: "In Maintenance",
   },
   faq: {
-    call: "Have other questions? Please reach out "
+    call: "Have other questions? Please reach out ",
   },
   ecommerce: {
     products: "Products",
@@ -153,7 +153,7 @@ export default {
     discount: "Discount",
     subtotal: "Subtotal",
     continue: "Continue Shopping",
-    checkout: "Checkout"
+    checkout: "Checkout",
   },
   menu: {
     search: 'Search (press "ctrl + /" to focus)',
@@ -225,7 +225,7 @@ export default {
     live_stream: "Live stream",
     flights_table: "Flight table",
     flights_location: "Flight locations",
-    projects: 'Projects',
+    projects: "Projects",
     cases: "Cases",
     legal_advice: "Legal Advice",
     tasks: "Tasks",
@@ -233,8 +233,8 @@ export default {
     beneficiaries: "Beneficiaries",
     log: "Log",
     review_and_audit: "Review and audit",
-    casesManagement : "Cases Management",
-    requests : "Requests",
+    casesManagement: "Cases Management",
+    requests: "Requests",
   },
   breadcrumbs: {
     pipesList: "Pipes List",
@@ -244,7 +244,7 @@ export default {
     not_selected: "Not Selected",
     "location 1": "location 1",
     "location 2": "location 2",
-    "location 3": "location 3"
+    "location 3": "location 3",
   },
   // Vuetify components translations
   $vuetify: {
@@ -252,7 +252,7 @@ export default {
     close: "Close",
     dataIterator: {
       noResultsText: "No matching records found",
-      loadingText: "Loading items..."
+      loadingText: "Loading items...",
     },
     dataTable: {
       itemsPerPageText: "Rows per page:",
@@ -262,9 +262,9 @@ export default {
         sortNone: "Not sorted.",
         activateNone: "Activate to remove sorting.",
         activateDescending: "Activate to sort descending.",
-        activateAscending: "Activate to sort ascending."
+        activateAscending: "Activate to sort ascending.",
       },
-      sortBy: "Sort by"
+      sortBy: "Sort by",
     },
     dataFooter: {
       itemsPerPageText: "Items per page:",
@@ -273,33 +273,33 @@ export default {
       prevPage: "Previous page",
       firstPage: "First page",
       lastPage: "Last page",
-      pageText: "{0}-{1} of {2}"
+      pageText: "{0}-{1} of {2}",
     },
     datePicker: {
       itemsSelected: "{0} selected",
       nextMonthAriaLabel: "Next month",
       nextYearAriaLabel: "Next year",
       prevMonthAriaLabel: "Previous month",
-      prevYearAriaLabel: "Previous year"
+      prevYearAriaLabel: "Previous year",
     },
     noDataText: "No data available",
     carousel: {
       prev: "Previous visual",
       next: "Next visual",
       ariaLabel: {
-        delimiter: "Carousel slide {0} of {1}"
-      }
+        delimiter: "Carousel slide {0} of {1}",
+      },
     },
     calendar: {
-      moreEvents: "{0} more"
+      moreEvents: "{0} more",
     },
     fileInput: {
       counter: "{0} files",
-      counterSize: "{0} files ({1} in total)"
+      counterSize: "{0} files ({1} in total)",
     },
     timePicker: {
       am: "AM",
-      pm: "PM"
+      pm: "PM",
     },
     pagination: {
       ariaLabel: {
@@ -307,9 +307,9 @@ export default {
         next: "Next page",
         previous: "Previous page",
         page: "Goto Page {0}",
-        currentPage: "Current Page, Page {0}"
-      }
-    }
+        currentPage: "Current Page, Page {0}",
+      },
+    },
   },
   settings: {
     siteInformation: "Site Information",
@@ -333,7 +333,7 @@ export default {
     modelsNotifications: "Models Notifications",
     email: "Email",
     emailAndNotifications: "Email and Notifications",
-    newDetection: "New Detection"
+    newDetection: "New Detection",
   },
   stations: {
     station: "station",
@@ -353,7 +353,7 @@ export default {
     map: "Map",
     no: "No",
     yes: "Yes",
-    region: "Region"
+    region: "Region",
   },
   types: {
     detection_type: "Detection Type",
@@ -363,12 +363,12 @@ export default {
     createDetectionType: "Create detection type",
     name: "Name",
     nameOnScreen: "Name on Screen",
-    editDetectionType: "Edit detection type"
+    editDetectionType: "Edit detection type",
   },
   drones: {
     dronesSettings: "drones Settings",
     valid: "Valid",
-    invalid: "Invalid"
+    invalid: "Invalid",
   },
   departments: {
     departmentsList: "Departments List",
@@ -380,7 +380,7 @@ export default {
     createTemplate: "Create Template",
     updateTemplate: "Update Template",
     basic_data: "Basic Information",
-    template_edit: "Template Structure"
+    template_edit: "Template Structure",
   },
   builder: {
     page: "Page",
@@ -396,7 +396,7 @@ export default {
     attachment: "Attachment",
   },
   buttons: {
-    save: "Save Changes"
+    save: "Save Changes",
   },
   users: {
     rolesList: "Roles List",
@@ -460,7 +460,7 @@ export default {
     Gender: "Gender",
     Male: "Male",
     Female: "Female",
-    Other: "Other"
+    Other: "Other",
   },
   cases: {
     caseType: "Cases Type",
@@ -525,7 +525,7 @@ export default {
     Gender: "Gender",
     Male: "Male",
     Female: "Female",
-    Other: "Other"
+    Other: "Other",
   },
   charts: {
     Station1: "Station 1",
@@ -538,7 +538,7 @@ export default {
     drone1: "Drone 1",
     drone2: "Drone 2",
     drone3: "Drone 3",
-    drone4: "Drone 4"
+    drone4: "Drone 4",
   },
   tables: {
     name: "name",
@@ -576,7 +576,7 @@ export default {
     datetime: "Time",
     environment: "Environment",
     description: "Description",
-    templates: "Templates"
+    templates: "Templates",
   },
   texts: {
     editor: "Editor",
@@ -619,7 +619,7 @@ export default {
     NoAdminControls: "No Admin Controls",
     ViewPayoutsOnly: "View Payouts only",
     ViewDisputesOnly: "View Disputes only",
-    ResponseToCustomerFeedback: "Response to Customer Feedback"
+    ResponseToCustomerFeedback: "Response to Customer Feedback",
   },
   general: {
     count: "Count",
@@ -704,7 +704,9 @@ export default {
       "Select at leaast one pinned report or add a new pin",
     statistics: "Statistics",
     no_data_available: "No data available",
-    update: 'Update'
+    update: "Update",
+    saveChanges: "Save Changes",
+    required_input: "This field is required",
   },
   reports: {
     buildReport: "Build Report",
@@ -749,18 +751,19 @@ export default {
     editPinnedReport: "Edit Pinned Reports",
     editPinned: "Edit Pinned Report",
     draftedReports: "Drafted Reports",
-    editDraft: "Edit Draft"
+    editDraft: "Edit Draft",
   },
   organizations: {
     organizationsList: "Organizations List",
-    organizationsManagement: 'Organizations Management',
+    organizationsManagement: "Organizations Management",
     createOrganizer: "Create Organization",
     orgName: "Organization Name",
     orgDesc: "Organization Description",
     createOrg: "Create Organization",
     editOrg: "Edit Organization",
     confirmDeleteOrg: "Are you sure to delete this Organization?",
-    confirmDeleteSelectedOrg: "Are you sure to delete the selected Organizations?",
+    confirmDeleteSelectedOrg:
+      "Are you sure to delete the selected Organizations?",
     editOrg: "Edit Organization",
-  }
+  },
 };

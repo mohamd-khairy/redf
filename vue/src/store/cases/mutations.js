@@ -29,8 +29,11 @@ const mutations = {
   SET_PAGES(state, value) {
     state.pages = value;
   },
-  SET_SELECTED_FORM_NAME(state, value) {
-    state.selectedFormName = value;
+  SET_SELECTED_FORM(state, value) {
+    state.selectedForm = value;
+  },
+  SET_INPUT_VALUE(state, { tabIndex, inputIndex, newValue }) {
+    state.tabs[tabIndex].items[inputIndex].value = newValue;
   },
 };
 
