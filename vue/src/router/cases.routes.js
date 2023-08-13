@@ -28,6 +28,16 @@ export default [{
   component: () => import(/* webpackChunkName: "pipes-list" */ '@/pages/cases/CreateCase')
 },
 {
+  path: '/cases/edit/:id',
+  name: 'cases-create',
+  meta: {
+    title: 'menu.editCase',
+    auth: true,
+    // permissions: 'read-event'
+  },
+  component: () => import(/* webpackChunkName: "pipes-list" */ '@/pages/cases/EditCase')
+},
+{
   path: '/flights/show',
   name: 'flights-show',
   meta: {
