@@ -54,6 +54,8 @@ class FormsController extends Controller
         }
     }
 
+
+
     public function updateForm($id, FormUpdateRequest $request)
     {
         try {
@@ -64,6 +66,25 @@ class FormsController extends Controller
                 return responseFail('there is no form with this id');
             }
             $data = $this->update($request, $form);
+            DB::commit();
+            return responseSuccess(new FormItemResource($form));
+        } catch (\Throwable $th) {
+            Db::rollBack();
+            // throw $th;
+            return responseFail($th->getMessage());
+        }
+    }
+
+    public function updateFormBasic($id, Request $request)
+    {
+        try {
+            DB::beginTransaction();
+            $form = Form::find($id);
+
+            if (!$form) {
+                return responseFail('there is no form with this id');
+            }
+            $data = $form->update($request->only('name', 'description'));
             DB::commit();
             return responseSuccess(new FormItemResource($form));
         } catch (\Throwable $th) {
@@ -131,7 +152,6 @@ class FormsController extends Controller
             return response()->json(['message' => 'Form deleted successfully']);
         } catch (\Throwable $th) {
             return responseFail($th->getMessage());
-
         }
     }
 

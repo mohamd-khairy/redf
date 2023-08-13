@@ -86,12 +86,12 @@ export default {
             breadcrumbs: this.breadcrumbs,
             pageTitle: this.$t("templates.updateTemplate")
         });
-        axios.get(`templates/${this.$route.params.id}`).then((data) => {
+        axios.get(`get-form/${this.$route.params.id}`).then((data) => {
             this.template = data.data.data
         })
     },
     methods: {
-        ...mapActions("templates", ["updateTemplate"]),
+        ...mapActions("templates", ["updateForm"]),
         ...mapActions("app", ["setBreadCrumb"]),
         buildForm(data) {
             let keys = Object.keys(data);
@@ -109,11 +109,11 @@ export default {
             this.loading = true;
             this.errors = {};
             let form = this.buildForm(this.template)
-            this.updateTemplate(form)
+            this.updateForm(form)
                 .then(response => {
                     this.loading = false;
                     makeToast("success", response.data.message);
-                    this.$router.push({ name: "Templates" });
+                    this.$router.push({ name: "TemplatesList" });
                 })
                 .catch(error => {
                     this.loading = false;
