@@ -2,7 +2,8 @@ export default [{
   path: '/cases/:id',
   name: 'cases-list',
   meta: {
-    auth: true
+    title: 'menu.requests',
+    auth: true,
   },
   component: () => import(/* webpackChunkName: "cases-list" */ '@/pages/cases/index')
 },
@@ -10,7 +11,8 @@ export default [{
   path: '/cases/form-types/:id',
   name: 'form-types',
   meta: {
-    auth: true
+    title: 'menu.requests',
+    auth: true,
   },
   exact: true,
   component: () => import(/* webpackChunkName: "form-types" */ '@/pages/cases/FormTypes')
@@ -19,6 +21,7 @@ export default [{
   path: '/cases/create/:id',
   name: 'cases-create',
   meta: {
+    title: 'menu.requests',
     auth: true,
     // permissions: 'read-event'
   },
