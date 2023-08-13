@@ -563,6 +563,7 @@ export default {
     height: "Height",
     position: "Position",
     type: "Type",
+    phone: "Phone",
     email: "Email",
     verified: "Verified",
     role: "Role",

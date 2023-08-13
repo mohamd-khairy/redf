@@ -122,6 +122,18 @@ export default {
                     value: "name"
                 },
                 {
+                    text: this.$t("tables.type"),
+                    value: "type"
+                },
+                {
+                    text: this.$t("tables.phone"),
+                    value: "phone"
+                },
+                {
+                    text: this.$t("tables.email"),
+                    value: "email"
+                },
+                {
                     text: this.$t("tables.created"),
                     value: "created_at"
                 },

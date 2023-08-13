@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use App\Models\Form;
 use App\Models\FormPage;
 use App\Models\FormRequest;
+use Illuminate\Support\Str;
 use App\Filters\SortFilters;
 use App\Models\FormPageItem;
 use Illuminate\Http\Request;
@@ -17,6 +18,7 @@ use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\FormResource;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 use App\Http\Requests\CreateFormRequest;
 use App\Http\Requests\FormAssignRequest;
 use App\Http\Requests\FormUpdateRequest;
@@ -122,19 +124,21 @@ class FormsController extends Controller
 
             if (isset($pageData['items']) && is_array($pageData['items'])) {
                 foreach ($pageData['items'] as $itemData) {
-                    // Serialize the 'childList' array to a JSON string
-                    $item = new FormPageItem([
-                        'type' => $itemData['type'],
-                        'label' => $itemData['label'],
-                        'notes' => $itemData['notes'],
-                        'width' => $itemData['width'],
-                        'height' => $itemData['height'],
-                        'enabled' => $itemData['enabled'],
-                        'required' => $itemData['required'],
-                        'website_view' => $itemData['website_view'],
-                        'childList' => isset($itemData['childList']) ? json_encode($itemData['childList']) : null // Save the serialized string
-                    ]);
-                    $page->items()->save($item);
+                    if (isset($itemData['removed']) && !$itemData['removed']) {
+                        // Serialize the 'childList' array to a JSON string
+                        $item = new FormPageItem([
+                            'type' => $itemData['type'],
+                            'label' => $itemData['label'],
+                            'notes' => $itemData['notes'],
+                            'width' => $itemData['width'],
+                            'height' => $itemData['height'],
+                            'enabled' => $itemData['enabled'],
+                            'required' => $itemData['required'],
+                            'website_view' => $itemData['website_view'],
+                            'childList' => isset($itemData['childList']) ? json_encode($itemData['childList']) : null // Save the serialized string
+                        ]);
+                        $page->items()->save($item);
+                    }
                 }
             }
         }
@@ -211,11 +215,25 @@ class FormsController extends Controller
                 $pages = $pagesInput;
             }
 
+
             foreach ($pages as $page) {
                 $pageItems = $page['items'] ?? [];
                 foreach ($pageItems as $pageItem) {
+                    // Check if the type is "file"
+            if ($pageItem['type'] === 'file') {
+                        // Decode the base64 value
+                        $fileName = $this->generateUniqueFileName($pageItem['value']);
+                        $decodedValue = 'formPages/' . $fileName;
+                        $file = explode(',',$pageItem['value'])[1];
+
+                        $fileDataDecode = base64_decode($file);
+                        Storage::disk('public')->put($decodedValue, $fileDataDecode);
+                    } else {
+                        // Use the value as is
+                        $decodedValue = $pageItem['value'];
+                    }
                     $formPageItemFill = new FormPageItemFill([
-                        'value' => $pageItem['value'] ?? null,
+                        'value' => $decodedValue,
                         'form_page_item_id' => $pageItem['form_page_item_id'],
                         'user_id' => auth()->user()->id,
                         'form_request_id' => $formRequest->id,
@@ -229,6 +247,28 @@ class FormsController extends Controller
             DB::rollBack();
             return responseFail($th->getMessage());
         }
+    }
+    private function generateUniqueFileName($originalFileName)
+    {
+
+
+        $extension = explode('/', mime_content_type($originalFileName))[1];
+
+        if($extension === 'vnd.openxmlformats-officedocument.spreadsheetml.sheet'){
+            $extension = 'xlsx';
+        }
+        elseif ($extension === 'octet-stream' || $extension === 'vnd.openxmlformats-officedocument.wordprocessingml.document')
+        {
+            $extension = 'docx';
+        }
+        elseif ($extension === 'plain')
+        {
+            $extension = 'txt';
+        }else{
+            $extension = explode('/', mime_content_type($originalFileName))[1];
+        }
+
+        return uniqid() . '_' . Str::random(8) . '.' . $extension;
     }
 
     public function getFormRequest(Request $request)
@@ -259,9 +299,9 @@ class FormsController extends Controller
             $form_request_ids = $request->form_request_id;
             $dateFromRequest = $request->date;
             $formattedDate = Carbon::createFromFormat('Y-m-d', $dateFromRequest)->toDateString();
-             // check if  form_request_id has record or not
+            // check if  form_request_id has record or not
             foreach ($form_request_ids as $form_request_id) {
-                $checkIfAssigned = AssignRequest::where('form_request_id', $form_request_id)->where('status','active')->first();
+                $checkIfAssigned = AssignRequest::where('form_request_id', $form_request_id)->where('status', 'active')->first();
 
                 if ($checkIfAssigned) {
                     if ($checkIfAssigned->status !== "deleted") {
@@ -284,12 +324,9 @@ class FormsController extends Controller
                 FormRequest::where('id', $form_request_id)->update(['status' => 'processing']);
             }
             return responseSuccess(['assignNew' => $assignNew]);
-
-
         } catch (Exception $e) {
             return $e;
             return response()->json(['message' => 'Unknown error', $e], 500);
         }
-
     }
 }
