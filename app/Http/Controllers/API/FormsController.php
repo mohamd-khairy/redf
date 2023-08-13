@@ -203,10 +203,15 @@ class FormsController extends Controller
                 'status' => FormRequestStatus::PENDING, // Set the initial status to "pending"
             ]);
 
+            $pagesInput = $request->input('pages', []);
 
-            $pages = $request->input('pages', []);
+            if (is_string($pagesInput)) {
+                $pages = json_decode($pagesInput, true);
+            } else {
+                $pages = $pagesInput;
+            }
+
             foreach ($pages as $page) {
-
                 $pageItems = $page['items'] ?? [];
                 foreach ($pageItems as $pageItem) {
                     $formPageItemFill = new FormPageItemFill([
