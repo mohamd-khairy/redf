@@ -59,7 +59,7 @@
 
                 <template v-slot:item.actions="{ item }">
                     <div class="actions">
-                        <v-btn color="#014c4f" icon :to="`/templates/types/edit/${item.id}`">
+                        <v-btn color="primary" icon :to="`/templates/types/edit/${item.id}`">
                             <v-icon>mdi-pencil</v-icon>
                         </v-btn>
                         <v-btn color="error" icon @click.prevent="deleteItem(item.id)">
@@ -68,7 +68,7 @@
                     </div>
                 </template>
                 <template v-slot:no-data>
-                    <div class="text-center my-2 primary--text" color="#014c4f">
+                    <div class="text-center my-2 primary--text" color="primary">
                         <emptyDataSvg></emptyDataSvg>
                         <div class="dt-no_data">
                             {{ $t("general.no_data_available") }}

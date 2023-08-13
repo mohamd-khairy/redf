@@ -79,25 +79,27 @@
         <template v-slot:item.name="{ item }">
           {{ item.name }}
         </template>
-        <template v-slot:item.status="{ item }">
-          {{ item.status }}
-        </template>
+
         <template v-slot:item.type="{ item }">
           {{ item.type }}
         </template>
-        <template v-slot:item.priority="{ item }">
-          {{ item.priority }}
+
+        <template v-slot:item.requested_from="{ item }">
+          {{ item.requested_from }}
         </template>
-        <template v-slot:item.start_date="{ item }">
-          <div>{{ item.start_date | formatDate("lll") }}</div>
+        <template v-slot:item.assigned_to="{ item }">
+          {{ item.assigned_to }}
         </template>
-        <template v-slot:item.end_date="{ item }">
-          <div>{{ item.end_date | formatDate("lll") }}</div>
+        <template v-slot:item.document_id="{ item }">
+          <div>{{ item.document_id }}</div>
+        </template>
+        <template v-slot:item.due_date="{ item }">
+          <div>{{ item.due_date | formatDate("lll") }}</div>
         </template>
 
         <template v-slot:item.action="{ item }">
           <div class="actions">
-            <v-btn color="primary" icon :to="`/documents/edit/${item.id}`">
+            <v-btn color="primary" icon :to="`/tasks/edit/${item.id}`">
               <v-icon>mdi-open-in-new</v-icon>
             </v-btn>
             <v-btn color="error" icon @click.prevent="deleteItem(item.id)">
@@ -150,11 +152,11 @@ export default {
       headers: [
         { text: this.$t("tables.id"), value: "id" },
         { text: this.$t("tables.name"), value: "name" },
-        { text: this.$t("tables.status"), value: "status" },
         { text: this.$t("tables.type"), value: "type" },
-        { text: this.$t("tables.priority"), value: "priority" },
-        { text: this.$t("tables.start_date"), value: "start_date" },
-        { text: this.$t("tables.end_date"), value: "end_date" },
+        { text: this.$t("tasks.requested_from"), value: "user_id" },
+        { text: this.$t("tasks.assigned_to"), value: "assigner_id" },
+        { text: this.$t("tasks.document"), value: "document_id" },
+        { text: this.$t("tasks.due_date"), value: "due_date" },
         { text: "", sortable: false, align: "right", value: "action" },
       ],
     };
@@ -181,6 +183,7 @@ export default {
 
   methods: {
     ...mapActions("app", ["setBreadCrumb"]),
+
     ...mapActions("tasks", ["getTasks", "deleteTask", "deleteAll"]),
     open() {
       this.isLoading = true;
