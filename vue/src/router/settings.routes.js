@@ -5,7 +5,7 @@ export default [
     meta: {
       auth: true,
       permissions: "read-setting",
-      title: ""
+      title: "menu.general"
     },
     component: () =>
       import(
@@ -24,7 +24,7 @@ export default [
             /* webpackChunkName: "settings-general" */ "@/pages/settings/general/InformationPage.vue"
           ),
         meta: {
-          title: ""
+          title: "menu.general"
         }
       },
       {
@@ -35,7 +35,7 @@ export default [
             /* webpackChunkName: "settings-colors */ "@/pages/settings/general/ThemePage.vue"
           ),
         meta: {
-          title: ""
+          title: "menu.general"
         }
       },
       {
@@ -46,7 +46,7 @@ export default [
             /* webpackChunkName: "settings-properties" */ "@/pages/settings/general/PropertiesPage.vue"
           ),
         meta: {
-          title: ""
+          title: "menu.general"
         }
       }
     ]
@@ -64,7 +64,7 @@ export default [
         /* webpackChunkName: "settings-mail-template */ "@/pages/settings/mail/MailTemplatePage.vue"
       ),
     meta: {
-      title: ""
+      title: "menu.general"
     }
   },
   {
@@ -79,7 +79,7 @@ export default [
         /* webpackChunkName: "settings-mail */ "@/pages/settings/mail/MailServerPage.vue"
       ),
     meta: {
-      title: ""
+      title: "menu.general"
     }
   },
   {
@@ -94,7 +94,7 @@ export default [
         /* webpackChunkName: "settings-sms */ "@/pages/settings/sms/SMSPage.vue"
       ),
     meta: {
-      title: ""
+      title: "menu.general"
     }
   },
   {
@@ -109,7 +109,7 @@ export default [
         /* webpackChunkName: "settings-stations */ "@/pages/settings/stations/StationsPage.vue"
       ),
     meta: {
-      title: ""
+      title: "menu.general"
     }
   },
   {
@@ -124,7 +124,7 @@ export default [
         /* webpackChunkName: "settings-stations-edit */ "@/pages/settings/stations/EditPage.vue"
       ),
     meta: {
-      title: ""
+      title: "menu.general"
     }
   },
   {
@@ -139,7 +139,7 @@ export default [
         /* webpackChunkName: "settings-types */ "@/pages/settings/detection-types/DetectionTypesPage"
       ),
     meta: {
-      title: ""
+      title: "menu.general"
     }
   },
   {
@@ -154,7 +154,7 @@ export default [
         /* webpackChunkName: "settings-types-create" */ "@/pages/settings/detection-types/CreateDetectionType"
       ),
     meta: {
-      title: ""
+      title: "menu.general"
     }
   },
   {
@@ -169,7 +169,7 @@ export default [
         /* webpackChunkName: "settings-types-edit */ "@/pages/settings/detection-types/EditDetectionType"
       ),
     meta: {
-      title: ""
+      title: "menu.general"
     }
   },
   // {
@@ -184,7 +184,7 @@ export default [
   //       /* webpackChunkName: "settings-drones */ "@/pages/settings/drones/dronesPage.vue"
   //     ),
   //   meta: {
-  //     title: ""
+  //     title: "menu.general"
   //   }
   // },
   {
@@ -199,7 +199,7 @@ export default [
         /* webpackChunkName: "settings-drones */ "@/pages/settings/logs/index.vue"
       ),
     meta: {
-      title: ""
+      title: "menu.general"
     }
   }
 ];

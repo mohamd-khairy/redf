@@ -461,6 +461,12 @@ export default {
     Male: "Male",
     Female: "Female",
     Other: "Other",
+    types: {
+      company: "Company",
+      user: "User",
+      employee: "Employee",
+      governorate: "Governorate",
+    }
   },
   cases: {
     caseType: "Cases Type",

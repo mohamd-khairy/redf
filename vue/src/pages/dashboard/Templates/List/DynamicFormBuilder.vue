@@ -135,7 +135,7 @@ import TreeElement from "./dynamic-elements/TreeElement";
 import LineElement from "./dynamic-elements/LineElement";
 import RadioElement from "./dynamic-elements/RadioElement";
 import AttachmentElement from "./dynamic-elements/AttachmentElement";
-import {makeToast} from "@/helpers";
+import { makeToast } from "@/helpers";
 
 const _PageTitle = Vue.extend(PageTitle)
 const _TextElement = Vue.extend(TextElement)
