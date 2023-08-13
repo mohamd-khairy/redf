@@ -1,42 +1,70 @@
 <template>
-  <div v-if="!removed" :style="{'height': height}" class="element row"
-       :class="{
-        'col-3': width==='col-3','col-4': width==='col-4','col-6': width==='col-6','col-8': width==='col-8','col-12': width==='col-12',
-    }">
-    <div v-if="!reviewing&&!filling" class="col"></div>
+  <div v-if="!removed" :style="{ 'height': height }" class="element row" :class="{
+    'col-3': width === 'col-3', 'col-4': width === 'col-4', 'col-6': width === 'col-6', 'col-8': width === 'col-8', 'col-12': width === 'col-12',
+  }">
+    <div v-if="!reviewing && !filling" class="col"></div>
 
-    <span class="col-1 menu-icon material-icons cursor-pointer" @click="menuOpen = !menuOpen" v-if="!reviewing&&!filling">
-      more vert
-    </span>
-
-    <div v-if="!reviewing&&!filling" class="col-1 moving-tool">
-      <span class="material-icons cursor-pointer col-12 moving-up"
-            @click="moveUp($event, referenceX, referenceY)">
-        arrow drop up
+    <div class="col-1 cursor-pointer pt-0" @click="menuOpen = !menuOpen" v-if="!reviewing && !filling">
+      <i class="v-icon notranslate mdi mdi-dots-horizontal"></i>
+    </div>
+    <div v-if="!reviewing && !filling" @click="moveUp($event, referenceX, referenceY)" class="col-2 pt-0 moving-tool">
+      <span class="moving-up text-center">
+        <i class="v-icon notranslate mdi mdi-arrow-up-bold-box-outline"></i>
+        <!-- <v-icon> mdi-arrow-up-bold-box-outline </v-icon> -->
       </span>
-      <span class="material-icons cursor-pointer col-12 moving-down"
-            @click="moveDown($event, referenceX, referenceY)">
-        arrow drop down
+      <span class="moving-down" @click="moveDown($event, referenceX, referenceY)">
+        <i class="v-icon notranslate mdi mdi-arrow-down-bold-box-outline"></i>
+        <!-- <v-icon> mdi-arrow-down-bold-box-outline </v-icon> -->
       </span>
     </div>
 
-    <ul class="context-menu-list context-menu-root" v-if="menuOpen" v-on:clickout="menuOpen=false">
+    <ul class="context-menu-list context-menu-root" v-if="menuOpen" v-on:clickout="menuOpen = false">
       <li class="context-menu-item cursor-pointer text-danger" @click="confirmRemove">
-        <i class="material-icons">
-          delete forever
+        <i class="v-icon notranslate mdi mdi-delete-forever">
         </i>
-        <span>Remove</span>
+        <span class="mx-2">Remove</span>
       </li>
       <li class="context-menu-item">
-        <i class="material-icons fa-flip-vertical">
-          straighten
+        <i class="v-icon notranslate mdi mdi-wrench-outline">
         </i>
-        <span>Height</span>
-        <select v-model="height" class="width form-control-sm">
+        <span class="mx-2">Width</span>
+        <select v-model="width" class="width form-control-sm">
+          <option value="col-3">25%</option>
+          <option value="col-4">33.3%</option>
+          <option value="col-6">50%</option>
+          <option value="col-8">66.6%</option>
+          <option value="col-12">100%</option>
+        </select>
+      </li>
+      <li class="context-menu-item">
+        <i class="v-icon notranslate mdi mdi-wrench-outline">
+        </i>
+        <span class="mx-2">Height</span>
+        <select v-model="height" class="height form-control-sm">
           <option value="auto">Fit</option>
-          <option value="45px">Small}</option>
+          <option value="65px">Small</option>
           <option value="90px">Medium</option>
-          <option value="145px">Large</option>
+          <option value="115px">Large</option>
+        </select>
+      </li>
+      <li class="context-menu-item">
+        <i class="v-icon notranslate mdi mdi-wrench-outline">
+        </i>
+        <span class="mx-2">Alignment</span>
+        <i class="cursor-pointer v-icon notranslate mdi mdi-format-align-left" @click="notes = 'left'">
+        </i>
+        <i class="cursor-pointer v-icon notranslate mdi mdi-format-align-center" @click="notes = 'center'">
+        </i>
+        <i class="cursor-pointer v-icon notranslate mdi mdi-format-align-right" @click="notes = 'right'">
+        </i>
+      </li>
+      <li class="context-menu-item">
+        <i class="v-icon notranslate mdi mdi-earth">
+        </i>
+        <span class="mx-2">Website View</span>
+        <select v-model="website_view" class="height form-control-sm">
+          <option value="true">Yes</option>
+          <option value="false">No</option>
         </select>
       </li>
     </ul>
@@ -102,6 +130,4 @@ export default {
 }
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

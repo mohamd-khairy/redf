@@ -99,6 +99,7 @@ Route::group(['prefix' => 'v1'], function () {
     Route::group(['middleware' => 'auth:sanctum'], function () {
         Route::get('all-form', [FormsController::class, 'allForm']);
         Route::post('create-form', [FormsController::class, 'createForm']);
+        Route::put('update-form-basic/{id}', [FormsController::class, 'updateFormBasic']);
         Route::put('update-form/{id}', [FormsController::class, 'updateForm']);
         Route::delete('delete-form/{id}', [FormsController::class, 'deleteForm']);
         Route::get('get-forms', [FormsController::class, 'getFormsByTemplate']);
