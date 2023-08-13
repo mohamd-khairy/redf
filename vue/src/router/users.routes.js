@@ -57,5 +57,18 @@ export default [
       import(
         /* webpackChunkName: "users-create" */ "@/pages/users/CreateUserPage.vue"
       )
-  }
+  },
+  {
+    path: "/beneficiaries",
+    name: "Beneficiaries",
+    meta: {
+      auth: true,
+      title: "menu.beneficiaries"
+    },
+    component: () =>
+      import(
+        "@/pages/dashboard/Users/Main.vue"
+      )
+  },
+
 ];

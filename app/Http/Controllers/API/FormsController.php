@@ -213,11 +213,20 @@ class FormsController extends Controller
                 $pages = $pagesInput;
             }
 
+
             foreach ($pages as $page) {
                 $pageItems = $page['items'] ?? [];
                 foreach ($pageItems as $pageItem) {
+                    // Check if the type is "file"
+                    if ($pageItem['type'] === 'file') {
+                        // Decode the base64 value
+                        $decodedValue = base64_decode($pageItem['value']);
+                    } else {
+                        // Use the value as is
+                        $decodedValue = $pageItem['value'];
+                    }
                     $formPageItemFill = new FormPageItemFill([
-                        'value' => $pageItem['value'] ?? null,
+                        'value' => $decodedValue,
                         'form_page_item_id' => $pageItem['form_page_item_id'],
                         'user_id' => auth()->user()->id,
                         'form_request_id' => $formRequest->id,
