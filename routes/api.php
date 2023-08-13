@@ -26,6 +26,7 @@ Route::group(['prefix' => 'v1'], function () {
         Route::get('users/actions', [UserController::class, 'actions']);
         Route::apiResource('users', UserController::class);
         Route::get('get-users', [UserController::class, 'get_users']);
+        Route::get('user-type', [UserController::class, 'user_type']);
 
     });
 
@@ -104,5 +105,7 @@ Route::group(['prefix' => 'v1'], function () {
         Route::get('get-form/{formId}', [FormsController::class, 'listForm']);
         Route::post('store-form-fill', [FormsController::class, 'storeFormFill']);
         Route::get('get-form-Requests', [FormsController::class, 'getFormRequest']);
+        Route::post('assign-request', [FormsController::class, 'assignRequest']);
+
     });
 });

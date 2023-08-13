@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers\API;
 
+use Carbon\Carbon;
 use App\Models\Form;
 use App\Models\FormPage;
 use App\Models\FormRequest;
 use App\Filters\SortFilters;
 use App\Models\FormPageItem;
 use Illuminate\Http\Request;
+use App\Models\AssignRequest;
 use App\Enums\FormRequestStatus;
 use App\Models\FormPageItemFill;
 use Illuminate\Pipeline\Pipeline;
@@ -16,6 +18,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\FormResource;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\CreateFormRequest;
+use App\Http\Requests\FormAssignRequest;
 use App\Http\Requests\FormUpdateRequest;
 use App\Http\Resources\FormItemResource;
 
@@ -223,5 +226,45 @@ class FormsController extends Controller
             // Return an error response if something goes wrong
             return responseFail($e->getMessage());
         }
+    }
+
+    public function assignRequest(FormAssignRequest $request)
+    {
+        try {
+            $form_request_ids = $request->form_request_id;
+            $dateFromRequest = $request->date;
+            $formattedDate = Carbon::createFromFormat('Y-m-d', $dateFromRequest)->toDateString();
+             // check if  form_request_id has record or not
+            foreach ($form_request_ids as $form_request_id) {
+                $checkIfAssigned = AssignRequest::where('form_request_id', $form_request_id)->where('status','active')->first();
+
+                if ($checkIfAssigned) {
+                    if ($checkIfAssigned->status !== "deleted") {
+                        $checkIfAssigned->update([
+                            'status' => "deleted",
+                        ]);
+                    }
+                }
+                $form_user_id = Form::where('id', $form_request_id)->pluck('user_id');
+
+                $assignNew = AssignRequest::create([
+                    'form_request_id' => $form_request_id,
+                    'user_id' => $request->user_id,
+                    'date' => $formattedDate,
+                    'assigner_id' => Auth::user()->id,
+                    'status' => 'active',
+                    'form_user_id' => $form_user_id,
+                ]);
+                // dd(FormRequest::where('id', $form_request_id)->get());
+                FormRequest::where('id', $form_request_id)->update(['status' => 'processing']);
+            }
+            return responseSuccess(['assignNew' => $assignNew]);
+
+
+        } catch (Exception $e) {
+            return $e;
+            return response()->json(['message' => 'Unknown error', $e], 500);
+        }
+
     }
 }

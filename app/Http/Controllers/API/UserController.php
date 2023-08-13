@@ -110,7 +110,7 @@ class UserController extends Controller
             'name' => 'nullable|string',
             'email' => 'nullable|email|unique:users,email,' . $id,
             'avatar' => 'nullable|image|' . v_image(),
-            'role_id' => 'nullable|exists:roles,id', // Add the 'role_id' validation rule
+            'roles' => 'nullable|exists:roles,id', // Add the 'roles' validation rule
 
         ]);
 
@@ -133,8 +133,8 @@ class UserController extends Controller
         $user->update($data);
 
 
-        if ($request->has('role_id')) {
-            $role = Role::find($request->input('role_id'));
+        if ($request->has('roles')) {
+            $role = Role::find($request->input('roles'));
              if ($role) {
                 $user->roles()->sync([$role->id]);
             } else {
@@ -194,8 +194,26 @@ class UserController extends Controller
         return responseFail('this action is not available');
     }
     public function get_users(Request $request){
-        $users =  userType($request->type);
+        $query = User::whereNot('type','employee');
+        $data = app(Pipeline::class)->send($query)->through([
+            SearchFilters::class,
+            SortFilters::class,
+        ])->thenReturn();
+        $data = $data->paginate(request('pageSize', 15));
+        return responseSuccess(['users' => $data]);
+    }
 
-        return responseSuccess(['users' => $users]);
+    public function user_type(Request $request){
+        $query = User::query();
+        // Check if the "type" parameter is present in the request
+        if ($request->has('type')) {
+            $query->where('type', $request->type);
+        }
+        $data = app(Pipeline::class)->send($query)->through([
+            SearchFilters::class,
+            SortFilters::class,
+        ])->thenReturn();
+        $data = $data->paginate(request('pageSize', 15));
+        return responseSuccess(['users' => $data]);
     }
 }
