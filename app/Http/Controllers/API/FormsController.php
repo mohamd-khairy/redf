@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use App\Models\Form;
 use App\Models\FormPage;
 use App\Models\FormRequest;
+use Illuminate\Support\Str;
 use App\Filters\SortFilters;
 use App\Models\FormPageItem;
 use Illuminate\Http\Request;
@@ -17,6 +18,7 @@ use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\FormResource;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 use App\Http\Requests\CreateFormRequest;
 use App\Http\Requests\FormAssignRequest;
 use App\Http\Requests\FormUpdateRequest;
@@ -216,9 +218,14 @@ class FormsController extends Controller
                 $pageItems = $page['items'] ?? [];
                 foreach ($pageItems as $pageItem) {
                     // Check if the type is "file"
-                    if ($pageItem['type'] === 'file') {
+            if ($pageItem['type'] === 'file') {
                         // Decode the base64 value
-                        $decodedValue = base64_decode($pageItem['value']);
+                        $fileName = $this->generateUniqueFileName($pageItem['value']);
+                        $decodedValue = 'formPages/' . $fileName;
+                        $file = explode(',',$pageItem['value'])[1];
+
+                        $fileDataDecode = base64_decode($file);
+                        Storage::disk('public')->put($decodedValue, $fileDataDecode);
                     } else {
                         // Use the value as is
                         $decodedValue = $pageItem['value'];
@@ -238,6 +245,28 @@ class FormsController extends Controller
             DB::rollBack();
             return responseFail($th->getMessage());
         }
+    }
+    private function generateUniqueFileName($originalFileName)
+    {
+
+
+        $extension = explode('/', mime_content_type($originalFileName))[1];
+
+        if($extension === 'vnd.openxmlformats-officedocument.spreadsheetml.sheet'){
+            $extension = 'xlsx';
+        }
+        elseif ($extension === 'octet-stream' || $extension === 'vnd.openxmlformats-officedocument.wordprocessingml.document')
+        {
+            $extension = 'docx';
+        }
+        elseif ($extension === 'plain')
+        {
+            $extension = 'txt';
+        }else{
+            $extension = explode('/', mime_content_type($originalFileName))[1];
+        }
+
+        return uniqid() . '_' . Str::random(8) . '.' . $extension;
     }
 
     public function getFormRequest(Request $request)
