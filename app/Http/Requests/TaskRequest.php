@@ -30,9 +30,9 @@ class TaskRequest extends FormRequest
             'assigner_id' => 'required|exists:users,id',
             'due_date' => 'required|date',
             'details' => 'nullable|string',
-            'document_id' => 'required|exists:documents,id',
             'share_with' => 'nullable|string',
             'form_id' => 'nullable|exists:forms,id',
+            'file' => 'required|file|mimes:jpg,jpeg,png,pdf,docx',
         ];
     }
 }
