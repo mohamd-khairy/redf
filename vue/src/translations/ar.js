@@ -828,6 +828,6 @@ export default {
     document: "المستند",
     due_date: "تاريخ الاستحقاق",
     requested_from: "مكلفة من",
-
+    form: "النموذج"
   },
 };

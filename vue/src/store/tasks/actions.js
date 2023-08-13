@@ -51,6 +51,12 @@ const actions = {
     const { documents } = response?.data.data;
     commit("SET_DOCUMENTS", documents.data);
   },
+  async getForms({ commit }) {
+    const response = await axios.get("forms");
+
+    const { forms } = response?.data.data;
+    commit("SET_FORMS", forms.data);
+  },
 };
 
 export default actions;

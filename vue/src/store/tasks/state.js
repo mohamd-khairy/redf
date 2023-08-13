@@ -3,6 +3,7 @@ const state = {
   task: {},
   users: [],
   documents: [],
+  forms: [],
 };
 
 export default state;
