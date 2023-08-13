@@ -719,6 +719,24 @@
   background: #014c4f !important;
 }
 
+.page-dynamic .e-content.e-lib.e-touch .element .context-menu-list {
+  position: absolute;
+  top     : 0%;
+  right   : 0%;
+  width   : 300px;
+  z-index : 99;
+}
+
+.page-dynamic .e-content.e-lib.e-touch .element {
+  position: relative;
+}
+
+.page-dynamic .rowe-item.e-active {
+  display  : flex;
+  flex-wrap: wrap;
+}
+
+
 .v-data-table table tbody tr:not(.v-data-table__selected):hover {
   box-shadow: none;
   transform : none;

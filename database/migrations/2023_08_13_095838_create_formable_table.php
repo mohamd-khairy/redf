@@ -13,12 +13,13 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('files', function (Blueprint $table) {
+        Schema::create('formable', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('path');
-            $table->morphs('fileable');
+            $table->unsignedBigInteger('form_id');
+            $table->morphs('formable');
             $table->timestamps();
+            $table->foreign('form_id')->references('id')->on('forms')->onDelete('cascade');
+
         });
     }
 
@@ -29,6 +30,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('files');
+        Schema::dropIfExists('formable');
     }
 };

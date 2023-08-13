@@ -99,15 +99,27 @@
           </div>
         </template>
 
-        <template v-slot:item.email="{ item }">
-          <div class="d-flex align-center py-1">
-            <v-avatar size="32" class="elevation-1 grey lighten-3 ml-2">
-              <v-img :src="item.avatar" />
-            </v-avatar>
-            <div class="ml-1 caption font-weight-bold">
-              <copy-label :text="item.email" />
-            </div>
-          </div>
+        <template v-slot:item.user="{ item }">
+          <div>{{ item.user.name ?? '---' }}</div>
+        </template>
+
+        <template v-slot:item.name="{ item }">
+          <div>{{ item.form.name ?? '---' }}</div>
+        </template>
+
+<!--        <template v-slot:item.email="{ item }">-->
+<!--          <div class="d-flex align-center py-1">-->
+<!--            <v-avatar size="32" class="elevation-1 grey lighten-3 ml-2">-->
+<!--              <v-img :src="item.avatar" />-->
+<!--            </v-avatar>-->
+<!--            <div class="ml-1 caption font-weight-bold">-->
+<!--              <copy-label :text="item.email" />-->
+<!--            </div>-->
+<!--          </div>-->
+<!--        </template>-->
+
+        <template v-slot:item.user="{ item }">
+          <div>{{ item.user.name ?? '---' }}</div>
         </template>
 
         <template v-slot:item.role="{ item }">
@@ -193,10 +205,9 @@ export default {
       items: [],
       headers: [
         { text: this.$t("tables.id"), value: "id" },
+        { text: this.$t("tables.name"), value: "name" },
         { text: this.$t("tables.user"), value: "user" },
         { text: this.$t("tables.assigner"), value: "assigner" },
-        { text: this.$t("tables.organization"), value: "organization" },
-        { text: this.$t("tables.department"), value: "department" },
         { text: this.$t("tables.status"), value: "status" },
         { text: this.$t("tables.created"), value: "created_at" },
         { text: "", sortable: false, align: "right", value: "action" }

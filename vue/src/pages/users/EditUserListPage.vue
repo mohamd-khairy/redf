@@ -44,7 +44,6 @@
         <account-tab
           ref="tabs-account"
           @updateUser="updateUser"
-          :user="user"
           :loading="loading"
           :errors="errors"
         ></account-tab>

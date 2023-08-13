@@ -4,31 +4,30 @@ export default [
       redirect: "organizations/list",
       meta: {
         auth: true,
-        permissions: 'read-role'
+        permissions: 'read-role',
+        title: 'menu.organizations',
       },
     },
     {
       path: "/organizations/list",
       name: "organizations-list",
       meta: {
+        title: 'menu.organizations',
         auth: true,
-        permissions: 'read-role'
+        permissions: 'read-role',
       },
       component: () =>
         import(
           /* webpackChunkName: "organizations-list" */ "@/pages/organizations/index.vue"
         ),
-      meta: {
-        title: ""
-      }
     },
     {
       path: "/organizations/edit/:id",
       name: "organizations-edit",
       meta: {
+        title: 'menu.organizations',
         auth: true,
         permissions: 'update-role',
-        title: ""
       },
       component: () =>
         import(
@@ -39,9 +38,9 @@ export default [
       path: "/organizations/create",
       name: "organizations-create",
       meta: {
+        title: 'menu.organizations',
         auth: true,
         permissions: 'create-role',
-        title: ""
       },
       component: () =>
         import(
@@ -52,9 +51,9 @@ export default [
       path: "/organizations/:id",
       name: "organizations-view",
       meta: {
+        title: 'menu.organizations',
         auth: true,
         permissions: 'read-role',
-        title: ""
       },
       component: () =>
         import(
@@ -62,4 +61,3 @@ export default [
         ),
     },
   ];
-  

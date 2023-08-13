@@ -22,14 +22,16 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public $inPermission = true;
 
+    protected $with = ['roles'];
+
     /**
      * The attributes that are mass assignable.
      *
      * @var array<int, string>
      */
     protected $fillable = [
-        'name', 'email', 'password', 'avatar',  'organization_id' , 'department_id', 'type' ,'website',
-         'last_login', 'guid', 'domain'
+        'name', 'email', 'password', 'avatar',  'organization_id', 'department_id', 'type', 'website',
+        'last_login', 'guid', 'domain'
     ];
 
     /**

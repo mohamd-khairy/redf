@@ -25,6 +25,9 @@ Route::group(['prefix' => 'v1'], function () {
         Route::get('logout', [AuthController::class, 'logout']);
         Route::get('users/actions', [UserController::class, 'actions']);
         Route::apiResource('users', UserController::class);
+        Route::get('get-users', [UserController::class, 'get_users']);
+        Route::get('user-type', [UserController::class, 'user_type']);
+
     });
 
     /*********************VerificationController***************** */
@@ -96,11 +99,14 @@ Route::group(['prefix' => 'v1'], function () {
     Route::group(['middleware' => 'auth:sanctum'], function () {
         Route::get('all-form', [FormsController::class, 'allForm']);
         Route::post('create-form', [FormsController::class, 'createForm']);
+        Route::put('update-form-basic/{id}', [FormsController::class, 'updateFormBasic']);
         Route::put('update-form/{id}', [FormsController::class, 'updateForm']);
         Route::delete('delete-form/{id}', [FormsController::class, 'deleteForm']);
         Route::get('get-forms', [FormsController::class, 'getFormsByTemplate']);
         Route::get('get-form/{formId}', [FormsController::class, 'listForm']);
         Route::post('store-form-fill', [FormsController::class, 'storeFormFill']);
         Route::get('get-form-Requests', [FormsController::class, 'getFormRequest']);
+        Route::post('assign-request', [FormsController::class, 'assignRequest']);
+
     });
 });

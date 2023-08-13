@@ -26,4 +26,9 @@ class Document extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function forms()
+    {
+        return $this->morphToMany(Form::class, 'formable');
+    }
 }

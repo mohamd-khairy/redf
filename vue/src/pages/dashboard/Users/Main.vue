@@ -28,7 +28,7 @@
                         hide-details dense clearable :placeholder="$t('general.search')"
                         @keyup.enter="searchtemplate(searchQuery)"></v-text-field>
 
-                    <v-tooltip top>
+                    <!-- <v-tooltip top>
                         <template v-slot:activator="{ on, attrs }">
                             <v-btn color="primary" class="mx-2 " elevation="0" v-bind="attrs" v-on="on"
                                 to="/templates/types/create" v-can="'create-user'">
@@ -38,8 +38,8 @@
                             </v-btn>
                         </template>
                         <span>{{ $t("templates.createTemplate") }}</span>
-                    </v-tooltip>
-                    <v-btn :loading="isLoading" icon @click.prevent="open()" small class="ml-2">
+                    </v-tooltip> -->
+                    <v-btn color="primary" elevation="0" :loading="isLoading" @click.prevent="open()" class="mx-2">
                         <v-icon>mdi-refresh</v-icon>
                     </v-btn>
                 </v-col>
@@ -82,7 +82,7 @@
 
 <script>
 import $ from 'jquery'
-import CopyLabel from "../../../../components/common/CopyLabel";
+import CopyLabel from "@/components/common/CopyLabel";
 import { mapActions, mapState } from "vuex";
 import { ask, makeToast } from "@/helpers";
 import emptyDataSvg from "@/assets/images/illustrations/empty-data.svg";
@@ -100,12 +100,12 @@ export default {
             isLoading: false,
             breadcrumbs: [
                 {
-                    text: this.$t("menu.templates"),
+                    text: this.$t("menu.dashboard"),
                     disabled: false,
-                    href: "#"
+                    href: "/"
                 },
                 {
-                    text: this.$t("menu.templatesTypes")
+                    text: this.$t("menu.beneficiaries")
                 }
             ],
 
@@ -120,6 +120,18 @@ export default {
                 {
                     text: this.$t("tables.name"),
                     value: "name"
+                },
+                {
+                    text: this.$t("tables.type"),
+                    value: "type"
+                },
+                {
+                    text: this.$t("tables.phone"),
+                    value: "phone"
+                },
+                {
+                    text: this.$t("tables.email"),
+                    value: "email"
                 },
                 {
                     text: this.$t("tables.created"),
@@ -146,21 +158,16 @@ export default {
         }
     },
     computed: {
-        ...mapState("templates", ["templates"])
+        ...mapState("users", ["beneficiaries"])
     },
     created() {
         this.setBreadCrumb({
             breadcrumbs: this.breadcrumbs,
-            pageTitle: this.$t("menu.templatesTypes")
+            pageTitle: this.$t("menu.beneficiaries")
         });
     },
-    mounted() {
-        // this.open()
-        console.log($);
-        // $(".ssss").css("color", "red")
-    },
     methods: {
-        ...mapActions("templates", ["getTemplates", "deleteTemplate"]),
+        ...mapActions("users", ["getBeneficiaries"]),
         ...mapActions("app", ["setBreadCrumb"]),
         searchtemplate() { },
         open() {
@@ -175,7 +182,7 @@ export default {
                 sortDirection: direction,
                 sortColumn: this.options.sortBy[0] ?? ""
             };
-            this.getTemplates(data)
+            this.getBeneficiaries(data)
                 .then(() => {
                     this.isLoading = false;
                     if (itemsPerPage != -1) {
@@ -191,22 +198,6 @@ export default {
                 .catch(() => {
                     this.isLoading = false;
                 });
-        },
-        async deleteItem(id) {
-            const { isConfirmed } = await ask("Are you sure to delete it?", "info");
-
-            if (isConfirmed) {
-                this.isLoading = true;
-                this.deleteTemplate(id)
-                    .then(response => {
-                        makeToast("success", response.data.message);
-                        this.open();
-                        this.isLoading = false;
-                    })
-                    .catch(() => {
-                        this.isLoading = false;
-                    });
-            }
         },
 
         async deleteAlltemplates() {

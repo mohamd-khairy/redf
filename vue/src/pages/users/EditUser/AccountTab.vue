@@ -17,24 +17,24 @@
         <v-card-title>{{ $t("users.basicInformation") }}</v-card-title>
         <v-card-text>
           <div class="d-flex flex-column flex-sm-row">
-            <div>
-              <v-img
-                :src="user.avatar"
-                aspect-ratio="1"
-                class="blue-grey lighten-4 rounded elevation-3"
-                max-width="90"
-                max-height="90"
-              ></v-img>
-              <input
-                type="file"
-                accept="image/*"
-                id="update-avatar"
-                class="d-none"
-              />
-              <v-btn class="mt-1" @click.prevent="changeImage()" small>
-                {{ $t("users.EditAvatar") }}
-              </v-btn>
-            </div>
+<!--            <div>-->
+<!--              <v-img-->
+<!--                :src="user.avatar"-->
+<!--                aspect-ratio="1"-->
+<!--                class="blue-grey lighten-4 rounded elevation-3"-->
+<!--                max-width="90"-->
+<!--                max-height="90"-->
+<!--              ></v-img>-->
+<!--              <input-->
+<!--                type="file"-->
+<!--                accept="image/*"-->
+<!--                id="update-avatar"-->
+<!--                class="d-none"-->
+<!--              />-->
+<!--              <v-btn class="mt-1" @click.prevent="changeImage()" small>-->
+<!--                {{ $t("users.EditAvatar") }}-->
+<!--              </v-btn>-->
+<!--            </div>-->
             <div class="flex-grow-1 pt-2 pa-sm-2">
               <v-row>
                 <v-col cols="6">
@@ -72,6 +72,21 @@
                 <v-col cols="6">
                   <v-select
                     label="Select"
+                    :items="roles"
+                    variant="underlined"
+                    class=" mx-1"
+                    :label="$t('tables.role')"
+                    item-text="name"
+                    item-value="id"
+                    hide-details
+                    v-model="roleId"
+                    dense
+                    outlined
+                  ></v-select>
+                </v-col>
+                <!-- <v-col cols="6">
+                  <v-select
+                    label="Select"
                     dense
                     :items="translatedLocations"
                     variant="underlined"
@@ -85,7 +100,7 @@
                     multiple
                     outlined
                   ></v-select>
-                </v-col>
+                </v-col> -->
               </v-row>
               <v-row>
                 <v-col cols="6">
@@ -178,10 +193,10 @@ import { mapActions, mapState } from "vuex";
 
 export default {
   props: {
-    user: {
-      type: Object,
-      default: () => ({})
-    },
+    // user: {
+    //   type: Object,
+    //   default: () => ({})
+    // },
     errors: {
       type: Object,
       default: {}
@@ -198,42 +213,36 @@ export default {
       disableDialog: false,
       avatar: {},
       showPassword: false,
-      selectedLocations: []
+      selectedLocations: [],
+      roleId: '',
     };
   },
   computed: {
-    ...mapState("events", ["locations"]),
-    translatedLocations() {
-      return this.locations.map(option => {
-        return {
-          name: this.$t("breadcrumbs." + option.name),
-          id: option.id
-        };
-      });
-    },
-    translatedSelectedLocations() {
-      let selected = this.user.locations.map(option => {
-        return {
-          nme: this.$t("breadcrumbs." + option.name),
-          id: option.id
-        };
-      });
-      console.log(selected);
-      // return this.locations.map((option) => {
-      //   return {
-      //     text: this.$t('breadcrumbs.'+ option.name),
-      //     value: option.id
-      //   };
-      // });
-    }
+    ...mapState("roles", ["roles"]),
+    ...mapState("users", ["user"]),
+
   },
 
   methods: {
-    ...mapActions("events", ["getLocations"]),
-    fetchLocations() {
+    ...mapActions("roles", ["getRoles"]),
+    ...mapActions("users", ["getUser"]),
+
+    fetchRoles() {
       this.isLoading = true;
-      this.getLocations()
+      this.getRoles()
         .then(() => {
+          this.isLoading = false;
+        })
+        .catch(() => {
+          this.isLoading = false;
+        });
+    },
+    fetchUser(){
+      this.isLoading = true;
+      const { id } = this.$route.params
+      this.getUser(id)
+        .then(() => {
+          this.roleId = (this.user.roles && this.user.roles.length > 0) ? this.user.roles[0].id : ''
           this.isLoading = false;
         })
         .catch(() => {
@@ -244,29 +253,25 @@ export default {
       document.getElementById("update-avatar").click();
     },
     updateProfile() {
-      let locationIds = [];
-      this.user.locations.forEach(item => {
-        locationIds.push(item.id);
-      });
-      var ids = locationIds.join(",");
-      const { email, name, password, confirm_password, username } = this.user;
+      const { email, name, password, confirm_password, username ,roles} = this.user;
       let data = {
         email,
         name,
         password,
         confirm_password,
-        username
+        username,
+        roles
       };
       if (this.avatar.length) {
         data["avatar"] = this.avatar[0];
       }
-      if (locationIds.length) {
-        data["locations"] = ids;
+      if (this.roleId) {
+        data["roles"] = this.roleId;
       }
       let form = this.buildForm(data);
       this.$emit("updateUser", form);
-      document.getElementById("update-avatar").files = null;
-      this.avatar = {};
+      // document.getElementById("update-avatar").files = null;
+      // this.avatar = {};
     },
     buildForm(data) {
       let keys = Object.keys(data);
@@ -284,11 +289,16 @@ export default {
       return form;
     }
   },
+  created() {
+    this.roleId = (this.user.roles && this.user.roles.length > 0) ? this.user.roles[0].id : ''
+  },
   mounted() {
-    this.fetchLocations();
-    document.getElementById("update-avatar").addEventListener("change", e => {
-      this.avatar = e.target.files;
-    });
+    this.fetchRoles();
+    this.fetchUser();
+
+    // document.getElementById("update-avatar").addEventListener("change", e => {
+    //   this.avatar = e.target.files;
+    // });
   }
 };
 </script>
