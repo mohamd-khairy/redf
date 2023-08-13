@@ -29,7 +29,7 @@
 
                     <v-tooltip top>
                         <template v-slot:activator="{ on, attrs }">
-                            <v-btn color="#014c4f" class="mx-2 " elevation="0" v-bind="attrs" v-on="on"
+                            <v-btn color="primary" class="mx-2 " elevation="0" v-bind="attrs" v-on="on"
                                 to="/templates/create" v-can="'create-user'">
                                 <v-icon>
                                     mdi-plus
@@ -39,12 +39,12 @@
                         <span>{{ $t("templates.createTemplate") }}</span>
                     </v-tooltip>
 
-                    <!-- <v-btn color="#014c4f" class="mx-2" elevation="0" v-bind="attrs" v-on="on" :to="`/templates/edit/${item}`" v-can="'create-user'">
+                    <!-- <v-btn color="primary" class="mx-2" elevation="0" v-bind="attrs" v-on="on" :to="`/templates/edit/${item}`" v-can="'create-user'">
                         <v-icon>
                             mdi-file-edit-outline
                         </v-icon>
                     </v-btn> -->
-                    <v-btn color="#014c4f" elevation="0" :loading="isLoading" @click.prevent="open()" class="mx-2">
+                    <v-btn color="primary" elevation="0" :loading="isLoading" @click.prevent="open()" class="mx-2">
                         <v-icon>mdi-refresh</v-icon>
                     </v-btn>
                 </v-col>
@@ -68,7 +68,7 @@
 
                 <template v-slot:item.actions="{ item }">
                     <div class="actions">
-                        <v-btn color="#014c4f" icon :to="`/templates/edit/${item.id}`">
+                        <v-btn color="primary" icon :to="`/templates/edit/${item.id}`">
                             <v-icon>mdi-pencil</v-icon>
                         </v-btn>
                         <v-btn color="error" icon @click.prevent="deleteItem(item.id)">

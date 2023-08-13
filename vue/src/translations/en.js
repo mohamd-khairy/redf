@@ -803,5 +803,11 @@ export default {
     confirmDeleteTask: "Are you sure to delete this Task?",
     confirmDeleteSelectedTask: "Are you sure to delete the selected Tasks?",
     editTask: "Edit Task",
+    status: "Status",
+    priority: "Piriority",
+    types: "Type",
+    assigned_to: "Assigned To",
+    document: "Document",
+    due_date: "Due Date",
   },
 };

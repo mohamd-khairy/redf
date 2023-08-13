@@ -165,7 +165,6 @@ export default {
       tabs: 0,
       current_tab: 0,
       template: {
-        name: 'Template Sample',
         pages: [
           {
             title: 'Page Title',

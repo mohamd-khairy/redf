@@ -8,12 +8,12 @@
                         <v-row>
                             <v-col cols="6">
                                 <v-text-field v-model="template.name" :rules="[rules.required]" :label="$t('tables.name')"
-                                    :error-messages="errors['name']" color="#014c4f"></v-text-field>
+                                    :error-messages="errors['name']" color="primary"></v-text-field>
                             </v-col>
                             <v-col cols="6">
                                 <v-text-field v-model="template.description" :rules="[rules.required]"
                                     :label="$t('tables.description')" :error-messages="errors['description']"
-                                    color="#014c4f"></v-text-field>
+                                    color="primary"></v-text-field>
                             </v-col>
                             <v-col cols="6">
                                 <v-select v-model="template.template_id" :items="templatesList" item-text="name"
