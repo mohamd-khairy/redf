@@ -57,7 +57,7 @@
                     <div>{{ item.created_at | formatDate("lll") }}</div>
                 </template>
 
-                <template v-slot:item.actions="{ item }">
+                <!-- <template v-slot:item.actions="{ item }">
                     <div class="actions">
                         <v-btn color="primary" icon :to="`/templates/types/edit/${item.id}`">
                             <v-icon>mdi-pencil</v-icon>
@@ -66,7 +66,7 @@
                             <v-icon>mdi-delete</v-icon>
                         </v-btn>
                     </div>
-                </template>
+                </template> -->
                 <template v-slot:no-data>
                     <div class="text-center my-2 primary--text" color="primary">
                         <emptyDataSvg></emptyDataSvg>
@@ -126,10 +126,6 @@ export default {
                     value: "type"
                 },
                 {
-                    text: this.$t("tables.phone"),
-                    value: "phone"
-                },
-                {
                     text: this.$t("tables.email"),
                     value: "email"
                 },
@@ -137,10 +133,10 @@ export default {
                     text: this.$t("tables.created"),
                     value: "created_at"
                 },
-                {
-                    text: this.$t("tables.actions"),
-                    value: "actions"
-                },
+                // {
+                //     text: this.$t("tables.actions"),
+                //     value: "actions"
+                // },
 
             ],
         };
@@ -184,16 +180,18 @@ export default {
             };
             this.getBeneficiaries(data)
                 .then(() => {
+                    data
                     this.isLoading = false;
                     if (itemsPerPage != -1) {
-                        this.templateItems = this.templates.data;
-                        this.totaltemplates = this.templates.total;
-                        this.numberOfPages = this.templates.last_page;
+                        this.templateItems = this.beneficiaries.data;
+                        this.totaltemplates = this.beneficiaries.total;
+                        this.numberOfPages = this.beneficiaries.last_page;
                     } else {
-                        this.templateItems = this.templates;
-                        this.totaltemplates = this.templates.length;
+                        this.templateItems = this.beneficiaries;
+                        this.totaltemplates = this.beneficiaries.length;
                         this.numberOfPages = 1;
                     }
+                    console.log(this.beneficiaries);
                 })
                 .catch(() => {
                     this.isLoading = false;
