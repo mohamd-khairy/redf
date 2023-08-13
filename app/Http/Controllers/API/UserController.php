@@ -62,6 +62,7 @@ class UserController extends Controller
             'password' => 'required|min:8',
             'confirm_password' => 'same:password',
             'avatar' => 'image|mimes:png,jpg,jpeg',
+            'type' => 'sometimes|required|in:user,employee,governorate,company,default:employee',
         ]);
 
         if ($validate->fails()) {
@@ -74,6 +75,7 @@ class UserController extends Controller
         if ($request->file('avatar')) {
             $data['avatar'] = UploadService::store($request->avatar, 'profile');
         }
+
 
         $user = User::create($data);
 
@@ -111,6 +113,7 @@ class UserController extends Controller
             'email' => 'nullable|email|unique:users,email,' . $id,
             'avatar' => 'nullable|image|' . v_image(),
             'roles' => 'nullable|exists:roles,id', // Add the 'roles' validation rule
+            'type' => 'sometimes|required|in:user,employee,governorate,company,default:employee',
 
         ]);
 

@@ -440,6 +440,12 @@ export default {
     Male: "ذكر",
     Female: "انثى",
     Other: "آخرى",
+    types: {
+      company: "شركة",
+      user: "مستخدم",
+      employee: "موظف",
+      governorate: "محافظة",
+    }
   },
   cases: {
     caseType: "نوع القضية",

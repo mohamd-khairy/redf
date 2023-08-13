@@ -5,14 +5,14 @@
         <v-card-title>{{ $t('users.basicInformation') }}</v-card-title>
         <v-card-text>
           <div class="d-flex flex-column flex-sm-row">
-<!--            <div>-->
-<!--              <v-img :src="user.avatar" aspect-ratio="1" class="blue-grey lighten-4 rounded elevation-3" max-width="90"-->
-<!--                max-height="90" :loading="loading" />-->
-<!--              <input type="file" accept="image/*" id="update-avatar" class="d-none" />-->
-<!--              <v-btn @click.prevent="changeImage()" :loading="loading" :disabled="loading" class="mt-1" small>-->
-<!--                {{ $t("users.EditAvatar") }}-->
-<!--              </v-btn>-->
-<!--            </div>-->
+            <!--            <div>-->
+            <!--              <v-img :src="user.avatar" aspect-ratio="1" class="blue-grey lighten-4 rounded elevation-3" max-width="90"-->
+            <!--                max-height="90" :loading="loading" />-->
+            <!--              <input type="file" accept="image/*" id="update-avatar" class="d-none" />-->
+            <!--              <v-btn @click.prevent="changeImage()" :loading="loading" :disabled="loading" class="mt-1" small>-->
+            <!--                {{ $t("users.EditAvatar") }}-->
+            <!--              </v-btn>-->
+            <!--            </div>-->
             <div class="flex-grow-1 pt-2 pa-sm-2">
               <v-row>
                 <v-col cols="6">
@@ -30,17 +30,8 @@
                     :error-messages="errors['email']"></v-text-field>
                 </v-col>
                 <v-col cols="6">
-                  <v-select
-                    label="Select"
-                    :items="roles"
-                    variant="underlined"
-                    class=" mx-1"
-                    :label="$t('tables.role')"
-                    item-text="name"
-                    item-value="id"
-                    hide-details
-                    v-model="user.roles"
-                  ></v-select>
+                  <v-select label="Select" :items="roles" variant="underlined" class=" mx-1" :label="$t('tables.role')"
+                    item-text="name" item-value="id" hide-details v-model="user.roles"></v-select>
                 </v-col>
               </v-row>
               <v-row>
@@ -53,6 +44,15 @@
                 <v-col cols="6">
                   <v-text-field v-model="user.confirm_password" :label="$t('check.confirmation_password')" type="password"
                     :error-messages="errors['confirm_password']"></v-text-field>
+                </v-col>
+              </v-row>
+              <v-row>
+                <v-col cols="6">
+                  <v-select label="Select"
+                    :items="[{ name: `${$t('users.types.company')}`, value: 'company' }, { name: `${$t('users.types.employee')}`, value: 'employee' },
+                    { name: `${$t('users.types.user')}`, value: 'user' }, { name: `${$t('users.types.governorate')}`, value: 'governorate' }]"
+                    variant="underlined" class=" mx-1" :label="$t('tables.type')" item-text="name" item-value="value"
+                    hide-details v-model="user.type"></v-select>
                 </v-col>
               </v-row>
 
@@ -241,14 +241,15 @@ export default {
       return form;
     },
     updateProfile() {
-      const { email, name, password, confirm_password, username, roles } = this.user;
+      const { email, name, password, confirm_password, username, roles, type } = this.user;
       let data = {
         email,
         name,
         password,
         confirm_password,
         username,
-        roles
+        roles,
+        type
       };
       if (this.avatar.length) {
         data["avatar"] = this.avatar[0];

@@ -3,7 +3,7 @@ const mutations = {
     state.users = value
   },
   SET_BENEFICIARIES(state, value) {
-    state.Beneficiaries = value
+    state.beneficiaries = value
   }
 }
 

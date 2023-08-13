@@ -107,6 +107,7 @@ Route::group(['prefix' => 'v1'], function () {
         Route::post('store-form-fill', [FormsController::class, 'storeFormFill']);
         Route::get('get-form-Requests', [FormsController::class, 'getFormRequest']);
         Route::post('assign-request', [FormsController::class, 'assignRequest']);
+        Route::get('all-forms', [FormsController::class, 'allForm']);
 
     });
 });
