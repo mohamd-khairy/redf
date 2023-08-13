@@ -99,7 +99,7 @@
 
         <template v-slot:item.action="{ item }">
           <div class="actions">
-            <v-btn color="primary" icon :to="`/documents/edit/${item.id}`">
+            <v-btn color="primary" icon :to="`/tasks/edit/${item.id}`">
               <v-icon>mdi-open-in-new</v-icon>
             </v-btn>
             <v-btn color="error" icon @click.prevent="deleteItem(item.id)">
@@ -153,10 +153,10 @@ export default {
         { text: this.$t("tables.id"), value: "id" },
         { text: this.$t("tables.name"), value: "name" },
         { text: this.$t("tables.type"), value: "type" },
-        { text: this.$t("tables.requested_from"), value: "user_id" },
-        { text: this.$t("tables.assigned_to"), value: "assigner_id" },
-        { text: this.$t("tables.document_id"), value: "document_id" },
-        { text: this.$t("tables.due_date"), value: "due_date" },
+        { text: this.$t("tasks.requested_from"), value: "user_id" },
+        { text: this.$t("tasks.assigned_to"), value: "assigner_id" },
+        { text: this.$t("tasks.document"), value: "document_id" },
+        { text: this.$t("tasks.due_date"), value: "due_date" },
         { text: "", sortable: false, align: "right", value: "action" },
       ],
     };

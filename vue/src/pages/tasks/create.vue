@@ -113,18 +113,18 @@ export default {
     return {
       breadcrumbs: [
         {
-          text: this.$t("documents.documentsManagement"),
+          text: this.$t("tasks.tasksManagement"),
           disabled: false,
           href: "#",
         },
 
         {
-          text: this.$t("documents.documentsList"),
-          to: "/documents/list",
+          text: this.$t("tasks.tasksList"),
+          to: "/tasks/list",
           exact: true,
         },
         {
-          text: this.$t("documents.createDoc"),
+          text: this.$t("tasks.createTask"),
         },
       ],
       loading: false,

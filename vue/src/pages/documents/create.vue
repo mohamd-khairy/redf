@@ -66,7 +66,7 @@
                     v-on="on"
                   ></v-text-field>
                 </template>
-                <v-date-picker v-model="form.start_date" scrollable>
+                <v-date-picker :format="dateFormat" v-model="form.start_date" scrollable>
                   <v-spacer></v-spacer>
                   <v-btn text color="primary" @click="startDateModal = false">
                     {{ $t("general.cancel") }}
@@ -102,7 +102,7 @@
                     v-on="on"
                   ></v-text-field>
                 </template>
-                <v-date-picker v-model="form.end_date" scrollable>
+                <v-date-picker :format="dateFormat" v-model="form.end_date" scrollable>
                   <v-spacer></v-spacer>
                   <v-btn text color="primary" @click="endDateModal = false">
                     Cancel
@@ -165,15 +165,18 @@ export default {
         priority: "",
         type: "",
         user_id: null,
-        start_date: new Date(
-          Date.now() - new Date().getTimezoneOffset() * 60000
-        )
-          .toISOString()
-          .substr(0, 10),
-        end_date: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
-          .toISOString()
-          .substr(0, 10),
+        start_date: null,
+        end_date:null,
+        // start_date: new Date(
+        //   Date.now() - new Date().getTimezoneOffset() * 60000
+        // )
+        //   .toISOString()
+        //   .substr(0, 10),
+        // end_date: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
+        //   .toISOString()
+        //   .substr(0, 10),
       },
+      dateFormat: 'dd-MM-yyyy',
 
       startDateModal: false,
       endDateModal: false,
@@ -206,11 +209,21 @@ export default {
         }
       }
     },
+    formatDate (date) {
+        if (!date) return null
+
+        const [year, month, day] = date.split('-')
+        return `${day}-${month}-${year}`
+      },
     createDoc() {
       this.loading = true;
       this.errors = {};
       this.form.user_id = this.user.id;
-      this.createDocument(this.form)
+      const modForm = {...this.form}
+      console.log(modForm);
+      modForm.start_date = this.formatDate(this.form.start_date)
+      modForm.end_date = this.formatDate(this.form.end_date)
+      this.createDocument(modForm)
         .then(() => {
           this.loading = false;
           this.$router.push({ name: "documents-list" });
