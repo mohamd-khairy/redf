@@ -235,6 +235,7 @@ export default {
     review_and_audit: "Review and audit",
     casesManagement: "Cases Management",
     requests: "Requests",
+    activities: "Activities"
   },
   breadcrumbs: {
     pipesList: "Pipes List",

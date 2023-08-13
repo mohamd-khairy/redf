@@ -70,5 +70,17 @@ export default [
         "@/pages/dashboard/Users/Main.vue"
       )
   },
+  {
+    path: "/activities",
+    name: "Activities",
+    meta: {
+      auth: true,
+      title: "menu.activities"
+    },
+    component: () =>
+      import(
+        "@/pages/dashboard/Activities/Main.vue"
+      )
+  },
 
 ];

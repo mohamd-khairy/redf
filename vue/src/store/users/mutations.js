@@ -4,6 +4,9 @@ const mutations = {
   },
   SET_BENEFICIARIES(state, value) {
     state.beneficiaries = value
+  },
+  SET_ACTIVITIES(state, value) {
+    state.actvs = value
   }
 }
 

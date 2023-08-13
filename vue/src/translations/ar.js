@@ -242,6 +242,7 @@ export default {
     templatesTypes: "أنواع النماذج",
     casesManagement: "ادارة القضايا",
     requests: "الطلبات",
+    activities: "النشاطات"
   },
   breadcrumbs: {
     pipesList: "قائمة النماذج",
