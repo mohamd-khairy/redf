@@ -17,7 +17,7 @@
           <v-menu offset-y left>
             <template v-slot:activator="{ on }">
               <transition name="slide-fade" mode="out-in">
-                <v-btn v-show="selectedUsers.length > 0" v-on="on">
+                <v-btn v-show="selectedUsers.length > 0" v-on="on" color="primary !important">
                   {{ $t("general.actions") }}
                   <v-icon right>mdi-menu-down</v-icon>
                 </v-btn>
@@ -45,7 +45,7 @@
 
           <v-tooltip top>
             <template v-slot:activator="{ on, attrs }">
-              <v-btn color="#014c4f" class="mx-2 " elevation="0" v-bind="attrs" v-on="on" to="/users/create"
+              <v-btn color="primary" class="mx-2 " elevation="0" v-bind="attrs" v-on="on" to="/users/create"
                 v-can="'create-user'">
                 <v-icon>
                   mdi-plus

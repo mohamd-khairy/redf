@@ -1,7 +1,7 @@
 import axios from '@/plugins/axios'
 
 const actions = {
-  async getUsers({ commit },data) {
+  async getUsers({ commit }, data) {
     const response = await axios.get("users", {
       params: {
         search: data.search,
@@ -14,6 +14,19 @@ const actions = {
     const { users } = response?.data.data
     commit('SET_USERS', users)
   },
+  async getBeneficiaries({ commit }, data) {
+    const response = await axios.get("get-users", {
+      params: {
+        search: data.search,
+        pageSize: data.pageSize,
+        page: data.pageNumber,
+        sortDirection: data.sortDirection,
+        sortCoulmn: data.sortColumn,
+      }
+    });
+    const { users } = response?.data.data
+    commit('SET_BENEFICIARIES', users)
+  },
   async getUser({ commit }, id) {
     const response = await axios.get(`users/${id}`)
     const user = response?.data.data
@@ -23,7 +36,7 @@ const actions = {
     return await axios.delete(`users/${id}`)
     // await dispatch('getUsers')
   },
-  async deleteAll({commit}, data) {
+  async deleteAll({ commit }, data) {
     return await axios.get("users/actions", {
       params: {
         ids: data.ids,

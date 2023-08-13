@@ -5,14 +5,14 @@
         <v-card-title>{{ $t('users.basicInformation') }}</v-card-title>
         <v-card-text>
           <div class="d-flex flex-column flex-sm-row">
-            <div>
-              <v-img :src="user.avatar" aspect-ratio="1" class="blue-grey lighten-4 rounded elevation-3" max-width="90"
-                max-height="90" :loading="loading" />
-              <input type="file" accept="image/*" id="update-avatar" class="d-none" />
-              <v-btn @click.prevent="changeImage()" :loading="loading" :disabled="loading" class="mt-1" small>
-                {{ $t("users.EditAvatar") }}
-              </v-btn>
-            </div>
+<!--            <div>-->
+<!--              <v-img :src="user.avatar" aspect-ratio="1" class="blue-grey lighten-4 rounded elevation-3" max-width="90"-->
+<!--                max-height="90" :loading="loading" />-->
+<!--              <input type="file" accept="image/*" id="update-avatar" class="d-none" />-->
+<!--              <v-btn @click.prevent="changeImage()" :loading="loading" :disabled="loading" class="mt-1" small>-->
+<!--                {{ $t("users.EditAvatar") }}-->
+<!--              </v-btn>-->
+<!--            </div>-->
             <div class="flex-grow-1 pt-2 pa-sm-2">
               <v-row>
                 <v-col cols="6">
@@ -30,9 +30,17 @@
                     :error-messages="errors['email']"></v-text-field>
                 </v-col>
                 <v-col cols="6">
-                  <v-select label="Select" :items="translatedLocations" variant="underlined" class=" mx-1"
-                    :label="$t('general.location')" item-text="name" item-value="id" hide-details
-                    v-model="selectedLocations" return-object multiple></v-select>
+                  <v-select
+                    label="Select"
+                    :items="roles"
+                    variant="underlined"
+                    class=" mx-1"
+                    :label="$t('tables.role')"
+                    item-text="name"
+                    item-value="id"
+                    hide-details
+                    v-model="user.roles"
+                  ></v-select>
                 </v-col>
               </v-row>
               <v-row>
@@ -193,34 +201,26 @@ export default {
       avatar: {},
       deleteDialog: false,
       disableDialog: false,
-      selectedLocations: [],
       rules: {
         required: (value) => (value && Boolean(value)) || this.$t("general.fieldRequired")
       }
     }
   },
   computed: {
-    ...mapState("events", ['locations']),
-    translatedLocations() {
-      return this.locations.map((option) => {
-        return {
-          name: this.$t('breadcrumbs.' + option.name),
-          id: option.id
-        };
-      });
-    },
+    ...mapState("roles", ["roles"]),
+
   },
   methods: {
-    ...mapActions("events", ['getLocations']),
-    fetchLocations() {
-      this.isLoading = true
-      this.getLocations()
+    ...mapActions("roles", ["getRoles"]),
+    fetchRoles() {
+      this.isLoading = true;
+      this.getRoles()
         .then(() => {
-          this.isLoading = false
+          this.isLoading = false;
         })
         .catch(() => {
-          this.isLoading = false
-        })
+          this.isLoading = false;
+        });
     },
     changeImage() {
       document.getElementById("update-avatar").click();
@@ -241,25 +241,19 @@ export default {
       return form;
     },
     updateProfile() {
-      let locationIds = []
-      this.selectedLocations.forEach((item) => {
-        locationIds.push(item.id)
-      })
-      var ids = locationIds.join(',')
-      const { email, name, password, confirm_password, username } = this.user;
+      const { email, name, password, confirm_password, username, roles } = this.user;
       let data = {
         email,
         name,
         password,
         confirm_password,
         username,
+        roles
       };
       if (this.avatar.length) {
         data["avatar"] = this.avatar[0];
       }
-      if (locationIds.length) {
-        data["locations"] = ids;
-      }
+
       let form = this.buildForm(data);
       this.$emit("createUser", form);
       document.getElementById("update-avatar").files = null;
@@ -267,10 +261,10 @@ export default {
     },
   },
   mounted() {
-    document.getElementById("update-avatar").addEventListener("change", (e) => {
-      this.avatar = e.target.files;
-    });
-    this.fetchLocations()
+    // document.getElementById("update-avatar").addEventListener("change", (e) => {
+    //   this.avatar = e.target.files;
+    // });
+    this.fetchRoles()
   },
 }
 </script>
