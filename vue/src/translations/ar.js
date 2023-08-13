@@ -816,5 +816,8 @@ export default {
     status: "الحالة",
     priority: "الاولوية",
     types: "النوع",
+    assigned_to: "مكلفة الي",
+    document: "المستند",
+    due_date: "تاريخ الاستحقاق",
   },
 };

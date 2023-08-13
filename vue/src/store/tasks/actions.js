@@ -39,12 +39,17 @@ const actions = {
   async createTask({ commit }, data) {
     return await axios.post("tasks", data);
   },
-  async storeDepartment({ commit }, data) {
-    return await axios.post("tasks", data);
+  async getUsers({ commit }) {
+    const response = await axios.get("users");
+
+    const { users } = response?.data.data;
+    commit("SET_USERS", users.data);
   },
-  async deleteDepartment({ commit, dispatch }, id) {
-    return await axios.delete(`tasks/${id}`);
-    // await dispatch('getUsers')
+  async getDocuments({ commit }) {
+    const response = await axios.get("documents");
+
+    const { documents } = response?.data.data;
+    commit("SET_DOCUMENTS", documents.data);
   },
 };
 

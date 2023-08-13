@@ -2,98 +2,67 @@
   <div class="flex-grow-1">
     <div class="d-flex align-center py-3"></div>
 
-    <v-card :loading="loading">
+    <v-card>
       <v-card-text class="p-3 roles">
         <v-form>
           <v-row dense>
             <v-col cols="6">
               <v-text-field
                 v-model="form.name"
-                :label="$t('documents.docName')"
+                :label="$t('tasks.taskName')"
                 :error-messages="errors['name']"
                 outlined
                 dense
               />
             </v-col>
-            <v-col cols="6">
-              <v-select
-                v-model="form.status"
-                :items="status"
-                :label="$t('documents.status')"
-                :error-messages="errors['status']"
-                outlined
-                dense
-              ></v-select>
-            </v-col>
+
             <v-col cols="6">
               <v-select
                 v-model="form.type"
                 :items="types"
-                :label="$t('documents.types')"
+                :label="$t('tasks.types')"
                 :error-messages="errors['types']"
                 outlined
                 dense
               ></v-select>
             </v-col>
             <v-col cols="6">
-              <v-select
-                v-model="form.priority"
-                :items="priority"
-                :label="$t('documents.priority')"
-                :error-messages="errors['priority']"
+              <v-autocomplete
+                v-model="form.assigner_id"
+                :items="users"
+                :label="$t('tasks.assigned_to')"
+                :error-messages="errors['assigner_id']"
+                item-text="name"
+                item-value="id"
                 outlined
                 dense
-              ></v-select>
+              ></v-autocomplete>
             </v-col>
-            <v-col cols="12" sm="6" md="6">
-              <v-dialog
-                ref="dialogStart"
-                v-model="startDateModal"
-                :return-value.sync="form.start_date"
-                persistent
-                width="290px"
-              >
-                <template v-slot:activator="{ on, attrs }">
-                  <v-text-field
-                    v-model="form.start_date"
-                    @input="validateDates"
-                    :label="$t('general.start_date')"
-                    prepend-icon="mdi-calendar"
-                    readonly
-                    outlined
-                    dense
-                    v-bind="attrs"
-                    v-on="on"
-                  ></v-text-field>
-                </template>
-                <v-date-picker v-model="form.start_date" scrollable>
-                  <v-spacer></v-spacer>
-                  <v-btn text color="primary" @click="startDateModal = false">
-                    {{ $t("general.cancel") }}
-                  </v-btn>
-                  <v-btn
-                    text
-                    color="primary"
-                    @click="$refs.dialogStart.save(form.start_date)"
-                  >
-                    {{ $t("general.ok") }}
-                  </v-btn>
-                </v-date-picker>
-              </v-dialog>
+            <v-col cols="6">
+              <v-autocomplete
+                v-model="form.document_id"
+                :items="documents"
+                :label="$t('tasks.document')"
+                :error-messages="errors['document_id']"
+                item-text="name"
+                item-value="id"
+                outlined
+                dense
+              ></v-autocomplete>
             </v-col>
+
             <v-col cols="12" sm="6" md="6">
               <v-dialog
                 ref="dialog"
-                v-model="endDateModal"
-                :return-value.sync="form.end_date"
+                v-model="dueDateModal"
+                :return-value.sync="dueDate"
                 persistent
                 width="290px"
               >
                 <template v-slot:activator="{ on, attrs }">
                   <v-text-field
-                    v-model="form.end_date"
-                    @input="validateDates"
-                    :label="$t('general.end_date')"
+                    v-model="dueDate"
+                    :label="$t('tasks.due_date')"
                     prepend-icon="mdi-calendar"
                     readonly
                     outlined
@@ -102,15 +71,15 @@
                     v-on="on"
                   ></v-text-field>
                 </template>
-                <v-date-picker v-model="form.end_date" scrollable>
+                <v-date-picker v-model="dueDate" scrollable>
                   <v-spacer></v-spacer>
-                  <v-btn text color="primary" @click="endDateModal = false">
+                  <v-btn text color="primary" @click="dueDateModal = false">
                     Cancel
                   </v-btn>
                   <v-btn
                     text
                     color="primary"
-                    @click="$refs.dialog.save(form.end_date)"
+                    @click="$refs.dialog.save(dueDate)"
                   >
                     OK
                   </v-btn>
@@ -124,7 +93,7 @@
               :loading="loading"
               :disabled="loading"
               color="primary"
-              @click="createDoc()"
+              @click="saveTask()"
             >
               {{ $t("general.save") }}
             </v-btn>
@@ -159,61 +128,47 @@ export default {
         },
       ],
       loading: false,
+      dueDate: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
+        .toISOString()
+        .substr(0, 10),
       form: {
         name: "",
-        status: "",
-        priority: "",
         type: "",
+        document_id: null,
         user_id: null,
-        start_date: new Date(
-          Date.now() - new Date().getTimezoneOffset() * 60000
-        )
-          .toISOString()
-          .substr(0, 10),
-        end_date: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
-          .toISOString()
-          .substr(0, 10),
+        assigner_id: null,
+        due_date: "",
       },
-
-      startDateModal: false,
-      endDateModal: false,
-      status: ["s1", "s2", "s3"],
-      priority: ["p1", "p2"],
-      types: ["t1", "t2", "t3"],
+      dueDateModal: false,
+      types: ["Type 1", "Type 2", "Type 3"],
       errors: {},
       isDateInvalid: false,
     };
   },
   computed: {
     ...mapState("auth", ["user"]),
+    ...mapState("tasks", ["users", "documents"]),
   },
   created() {
     this.setBreadCrumb({
       breadcrumbs: this.breadcrumbs,
-      pageTitle: this.$t("documents.documentsList"),
+      pageTitle: this.$t("tasks.tasksList"),
     });
+    this.open();
   },
 
   methods: {
     ...mapActions("app", ["setBreadCrumb"]),
-    ...mapActions("documents", ["createDocument"]),
-    validateDates() {
-      if (this.startDate && this.endDate) {
-        if (this.startDate >= this.endDate) {
-          this.isDateInvalid = true;
-        } else {
-          this.isDateInvalid = false;
-        }
-      }
-    },
-    createDoc() {
+    ...mapActions("tasks", ["createTask", "getUsers", "getDocuments"]),
+    saveTask() {
       this.loading = true;
       this.errors = {};
       this.form.user_id = this.user.id;
-      this.createDocument(this.form)
+      this.form.due_date = this.formatDate(this.dueDate);
+      this.createTask(this.form)
         .then(() => {
           this.loading = false;
-          this.$router.push({ name: "documents-list" });
+          this.$router.push({ name: "tasks-list" });
         })
         .catch((error) => {
           this.loading = false;
@@ -222,6 +177,16 @@ export default {
             this.errors = errors ?? {};
           }
         });
+    },
+    open() {
+      this.getUsers().then(() => {});
+      this.getDocuments().then(() => {});
+    },
+    formatDate(date) {
+      if (!date) return null;
+
+      const [year, month, day] = date.split("-");
+      return `${day}-${month}-${year}`;
     },
   },
 };
