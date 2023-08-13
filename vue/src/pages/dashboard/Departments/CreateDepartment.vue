@@ -8,17 +8,17 @@
                         <v-row>
                             <v-col cols="6">
                                 <v-text-field v-model="department.name" :rules="[rules.required]" :label="$t('tables.name')"
-                                    :error-messages="errors['name']" color="#014c4f"></v-text-field>
+                                    :error-messages="errors['name']" color="primary"></v-text-field>
                             </v-col>
                             <v-col cols="6">
                                 <v-text-field v-model="department.description" :rules="[rules.required]"
                                     :label="$t('tables.description')" :error-messages="errors['description']"
-                                    color="#014c4f"></v-text-field>
+                                    color="primary"></v-text-field>
                             </v-col>
                         </v-row>
 
                         <div class="mt-2">
-                            <v-btn :loading="loading" :disabled="loading" @click="createDepartment" color="#014c4f">
+                            <v-btn :loading="loading" :disabled="loading" @click="createDepartment" color="primary">
                                 {{ $t("general.save") }}
                             </v-btn>
                         </div>
@@ -28,7 +28,7 @@
         </v-card>
     </div>
 </template>
-  
+
 <script>
 import { mapActions } from "vuex";
 import { makeToast } from "@/helpers";
@@ -103,4 +103,3 @@ export default {
     }
 };
 </script>
-  

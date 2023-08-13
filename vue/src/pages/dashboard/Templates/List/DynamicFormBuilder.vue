@@ -3,7 +3,7 @@
     <v-card>
       <ul class="options-list">
         <li class="option-item">
-          <v-btn color="#014c4f" large @click="addPage">
+          <v-btn color="primary" large @click="addPage">
             <v-icon>
               mdi-tab
             </v-icon>
@@ -11,7 +11,7 @@
           </v-btn>
         </li>
         <li class="option-item">
-          <v-btn color="#014c4f" large @click="addLabelElement">
+          <v-btn color="primary" large @click="addLabelElement">
             <v-icon>
               mdi-label
             </v-icon>
@@ -19,7 +19,7 @@
           </v-btn>
         </li>
         <li class="option-item">
-          <v-btn color="#014c4f" large @click="addTextElement">
+          <v-btn color="primary" large @click="addTextElement">
             <v-icon>
               mdi-form-textbox
             </v-icon>
@@ -27,7 +27,7 @@
           </v-btn>
         </li>
         <!--                <li class="option-item">-->
-        <!--                    <v-btn color="#014c4f" large @click="appendTable">-->
+        <!--                    <v-btn color="primary" large @click="appendTable">-->
         <!--                        <v-icon>-->
         <!--                            mdi-table-->
         <!--                        </v-icon>-->
@@ -35,7 +35,7 @@
         <!--                    </v-btn>-->
         <!--                </li>-->
         <li class="option-item">
-          <v-btn color="#014c4f" large @click="addCheckboxElement">
+          <v-btn color="primary" large @click="addCheckboxElement">
             <v-icon>
               mdi-list-box-outline
             </v-icon>
@@ -43,7 +43,7 @@
           </v-btn>
         </li>
         <li class="option-item">
-          <v-btn color="#014c4f" large @click="addTextAreaElement">
+          <v-btn color="primary" large @click="addTextAreaElement">
             <v-icon>
               mdi-form-textarea
             </v-icon>
@@ -51,7 +51,7 @@
           </v-btn>
         </li>
         <li class="option-item">
-          <v-btn color="#014c4f" large @click="addSelectElement">
+          <v-btn color="primary" large @click="addSelectElement">
             <v-icon>
               mdi-chart-box-outline
             </v-icon>
@@ -59,7 +59,7 @@
           </v-btn>
         </li>
         <!--                <li class="option-item">-->
-        <!--                    <v-btn color="#014c4f" large>-->
+        <!--                    <v-btn color="primary" large>-->
         <!--                        <v-icon>-->
         <!--                            mdi-file-tree-->
         <!--                        </v-icon>-->
@@ -67,7 +67,7 @@
         <!--                    </v-btn>-->
         <!--                </li>-->
         <li class="option-item">
-          <v-btn color="#014c4f" large @click="addLineElement">
+          <v-btn color="primary" large @click="addLineElement">
             <v-icon>
               mdi-table-row
             </v-icon>
@@ -75,7 +75,7 @@
           </v-btn>
         </li>
         <li class="option-item">
-          <v-btn color="#014c4f" large @click="addRadioElement">
+          <v-btn color="primary" large @click="addRadioElement">
             <v-icon>
               mdi-radiobox-marked
             </v-icon>
@@ -83,7 +83,7 @@
           </v-btn>
         </li>
         <li class="option-item">
-          <v-btn color="#014c4f" large @click="addAttachmentElement">
+          <v-btn color="primary" large @click="addAttachmentElement">
             <v-icon>
               mdi-file-document-plus-outline
             </v-icon>

@@ -36,7 +36,7 @@
 
                     <v-tooltip top>
                         <template v-slot:activator="{ on, attrs }">
-                            <v-btn color="#014c4f" class="mx-2 " elevation="0" v-bind="attrs" v-on="on"
+                            <v-btn color="primary" class="mx-2 " elevation="0" v-bind="attrs" v-on="on"
                                 to="/departments/create" v-can="'create-user'">
                                 <v-icon>
                                     mdi-plus
@@ -65,7 +65,7 @@
 
                 <template v-slot:item.actions="{ item }">
                     <div class="actions">
-                        <v-btn color="#014c4f" icon :to="`/departments/edit/${item.id}`">
+                        <v-btn color="primary" icon :to="`/departments/edit/${item.id}`">
                             <v-icon>mdi-pencil</v-icon>
                         </v-btn>
                         <v-btn color="error" icon @click.prevent="deleteItem(item.id)">
@@ -74,7 +74,7 @@
                     </div>
                 </template>
                 <template v-slot:no-data>
-                    <div class="text-center my-2 primary--text" color="#014c4f">
+                    <div class="text-center my-2 primary--text" color="primary">
                         <emptyDataSvg></emptyDataSvg>
                         <div class="dt-no_data">
                             {{ $t("general.no_data_available") }}
@@ -85,7 +85,7 @@
         </v-card>
     </div>
 </template>
-  
+
 <script>
 import CopyLabel from "../../../components/common/CopyLabel";
 import { mapActions, mapState } from "vuex";
@@ -246,7 +246,7 @@ export default {
     }
 };
 </script>
-  
+
 <style lang="scss" scoped>
 .slide-fade-enter-active {
     transition: all 0.3s ease;
@@ -262,4 +262,3 @@ export default {
     opacity: 0;
 }
 </style>
-  
