@@ -26,14 +26,14 @@ export default {
       permission: "read-role",
       items: []
     },
-    {
-      icon: "mdi-animation",
-      text: "projects",
-      key: "menu.projects",
-      link: "/projects",
-      permission: "read-role",
-      items: []
-    },
+    // {
+    //   icon: "mdi-animation",
+    //   text: "projects",
+    //   key: "menu.projects",
+    //   link: "/projects",
+    //   permission: "read-role",
+    //   items: []
+    // },
     // {
     //   icon: "mdi-gavel",
     //   text: "cases",
@@ -74,14 +74,14 @@ export default {
       permission: "read-role",
       items: []
     },
-    {
-      icon: "mdi-history",
-      text: "log",
-      key: "menu.log",
-      link: "/log",
-      permission: "read-role",
-      items: []
-    },
+    // {
+    //   icon: "mdi-history",
+    //   text: "log",
+    //   key: "menu.log",
+    //   link: "/log",
+    //   permission: "read-role",
+    //   items: []
+    // },
     // {
     //   icon: "mdi-file-document-edit-outline",
     //   text: "review_and_audit",
