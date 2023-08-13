@@ -116,7 +116,7 @@
 <!--            <Tabs :tabs="Tabs" @removeSelectedTab="removeSelectedTab"></Tabs>-->
 
             <div class="actions mt-2">
-              <v-btn color="primary" large>{{ $t("buttons.save") }}</v-btn>
+              <v-btn color="primary" large @click="update">{{ $t("buttons.save") }}</v-btn>
             </div>
 
         </v-card>
@@ -357,6 +357,29 @@ export default {
         attachmentElement.$mount()
         document.querySelector('.e-content>.e-active').appendChild(attachmentElement.$el)
         this.template.pages[this.current_tab].items[this.template.pages[this.current_tab].items.length] = attachmentElement.$data
+      },
+
+
+      update() {
+        // this.validationErrors = []
+
+        // for (let i = 0; i < this.template.pages.length; i++) {
+        //   for (let j = 0; j < this.template.pages[i].items.length; j++) {
+        //     console.log(this.template.pages[i].items[j].removed)
+        //     if (this.template.pages[i].items[j].removed) {
+        //       this.template.pages[i].items.splice(j, 1)
+        //     }
+        //   }
+        // }
+        let {id} = this.$route.params;
+        this.$axios.put('update-form/' + id, this.template).then(response => {
+          // if (typeof response.data.success !== 'undefined' && response.data.success === true) {
+          //   return
+          // }
+        }).catch(error => {
+          if (error.response.data.message === 'Validation Error')
+            this.validationErrors = error.response.data.errors
+        })
       },
 
 
@@ -940,7 +963,7 @@ export default {
     },
   mounted() {
     let {id} = this.$route.params;
-    document.body.style.overflowY = 'hidden'
+    // document.body.style.overflowY = 'hidden'
     // init
     const tabObj = this.$refs.TabInstance.ej2Instances
     let temp = this
@@ -982,8 +1005,9 @@ export default {
     // load template
     this.$axios.get('get-form/' + id)
       .then(response => {
-        if (typeof response.data.id !== 'undefined' && response.data.id) {
-          let template = response.data
+        if (typeof response.data.data.id !== 'undefined' && response.data.data.id) {
+          // this.template = response.data.data
+          let template = response.data.data
 
           // mount template pages
           // const tabObj = this.$refs.TabInstance.ej2Instances

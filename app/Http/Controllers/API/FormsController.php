@@ -92,7 +92,7 @@ class FormsController extends Controller
         foreach ($pagesData as $pageData) {
             $page = new FormPage([
                 'title' => $pageData['title']['title'],
-                'editable' =>  $pageData['title']['editable'] == false ? 0 : 1
+                'editable' =>  $pageData['title']['editing'] == false ? 0 : 1
             ]);
             $form->pages()->save($page);
 
