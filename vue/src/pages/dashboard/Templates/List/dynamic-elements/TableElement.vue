@@ -1,136 +1,133 @@
 <template>
-  <div v-if="!removed&&renderComponent" ref="element" :style="{'height': height}" class="element row"
-       :class="{
-        'col-3': width==='col-3','col-4': width==='col-4','col-6': width==='col-6','col-8': width==='col-8','col-12': width==='col-12',
-    }">
+  <div v-if="!removed && renderComponent" ref="element" :style="{ 'height': height }" class="element row" :class="{
+    'col-3': width === 'col-3', 'col-4': width === 'col-4', 'col-6': width === 'col-6', 'col-8': width === 'col-8', 'col-12': width === 'col-12',
+  }">
 
-    <div class="tdMenu" tabindex="-1" ref="tdMenu" v-show="viewTdMenu && !reviewing&&!filling"
-        :style="{top: tdMenuStyles.top, left: tdMenuStyles.left}">
+    <div class="tdMenu" tabindex="-1" ref="tdMenu" v-show="viewTdMenu && !reviewing && !filling"
+      :style="{ top: tdMenuStyles.top, left: tdMenuStyles.left }">
       <ul class="context-menu-list context-menu-root">
         <li class="context-menu-item cursor-pointer" @click="addLabel">
-          <i class="material-icons text-success">add circle</i>
+          <i class="material-icons text-success"></i>
           <span>Label box</span>
         </li>
         <li class="context-menu-item cursor-pointer" @click="addText">
-          <i class="material-icons text-success">add circle</i>
+          <i class="material-icons text-success"></i>
           <span>Text box</span>
         </li>
         <li class="context-menu-item cursor-pointer" @click="addCheckbox">
-          <i class="material-icons text-success">add circle</i>
+          <i class="material-icons text-success"></i>
           <span>Check box</span>
         </li>
         <li class="context-menu-item cursor-pointer" @click="addPercent">
-          <i class="material-icons text-success">add circle</i>
+          <i class="material-icons text-success"></i>
           <span>Percent box</span>
         </li>
         <li class="context-menu-item cursor-pointer" @click="addSelect">
-          <i class="material-icons text-success">add circle</i>
+          <i class="material-icons text-success"></i>
           <span>Select boxes</span>
         </li>
         <li class="context-menu-item cursor-pointer" @click="addSelectRelated">
-          <i class="material-icons text-success">add circle</i>
+          <i class="material-icons text-success"></i>
           <span>Related select box</span>
         </li>
         <li class="context-menu-item cursor-pointer" @click="addRadio">
-          <i class="material-icons text-success">add circle</i>
+          <i class="material-icons text-success"></i>
           <span>Radio buttons</span>
         </li>
       </ul>
     </div>
 
-    <input v-if="!reviewing&&!filling" type="text" v-model="label" class="col border-0">
+    <input v-if="!reviewing && !filling" type="text" v-model="label" class="col border-0">
     <label v-else class="col border-0 text-bold">
       <span v-html="$globals.linkParser(label)"></span>
     </label>
 
     <span class="col-1 menu-icon material-icons cursor-pointer" @click="menuOpen = !menuOpen"
-          v-if="!reviewing&&!filling">
-      more vert
+      v-if="!reviewing && !filling">
+      <i class="v-icon notranslate mdi mdi-dots-horizontal"></i>
     </span>
 
-    <div v-if="!reviewing&&!filling" class="col-1 moving-tool">
-      <span class="material-icons cursor-pointer col-12 moving-up"
-            @click="moveUp($event, referenceX, referenceY)">
-        arrow drop up
+    <div v-if="!reviewing && !filling" class="col-1 moving-tool">
+      <span class="moving-up text-center">
+        <i class="v-icon notranslate mdi mdi-arrow-up-bold-box-outline"></i>
+        <!-- <v-icon> mdi-arrow-up-bold-box-outline </v-icon> -->
       </span>
-      <span class="material-icons cursor-pointer col-12 moving-down"
-            @click="moveDown($event, referenceX, referenceY)">
-        arrow drop down
+      <span class="moving-down" @click="moveDown($event, referenceX, referenceY)">
+        <i class="v-icon notranslate mdi mdi-arrow-down-bold-box-outline"></i>
+        <!-- <v-icon> mdi-arrow-down-bold-box-outline </v-icon> -->
       </span>
     </div>
 
-    <div v-if="filling&&review.comment!==''&&review.comment!==null" class="alert alert-warning">
+    <div v-if="filling && review.comment !== '' && review.comment !== null" class="alert alert-warning">
       <p class="mb-0" v-html="$globals.linkParser(review.comment)"></p>
     </div>
 
-    <div v-if="!reviewing&&!filling">
+    <div v-if="!reviewing && !filling">
       <div class="col text-center">
-        <i class="material-icons text-success cursor-pointer" @click="addColumn">add circle</i>
-        <i class="material-icons text-primary cursor-pointer" @click="removeColumn">remove circle</i>
+        <i class="material-icons text-success cursor-pointer" @click="addColumn"></i>
+        <i class="material-icons text-primary cursor-pointer" @click="removeColumn"></i>
       </div>
       <table ref="table" class="table table-bordered">
         <tr v-for="i in rows">
           <td v-for="j in columns" @contextmenu="tdMenu($event)" class="p-0" style="min-width: 20px;height: 20px;"
-              :style="{width: childList[i-1][j-1].width+' !important'}">
-            <div v-for="(item, index) in childList[i-1][j-1].items" class="p-0 row" style="position:relative;"
-                 :class="{
-                    'text-center': item.contentAlignment==='center',
-                    'text-right': item.contentAlignment==='right',
-                    'text-left': item.contentAlignment==='left',
-                  }">
-              <input v-if="item.type==='label'" type="text" v-model="item.value" class="col border-0" :class="{
-                    'text-center': item.alignment==='center',
-                    'text-right': item.alignment==='right',
-                    'text-left': item.alignment==='left',
-                  }">
-              <input v-else-if="item.type==='checkbox'" v-model="item.value" type="checkbox" class="col mt-2" disabled
-                     :class="{
-                    'text-center': item.alignment==='center',
-                    'text-right': item.alignment==='right',
-                    'text-left': item.alignment==='left',
-                  }">
-              <input v-else-if="item.type==='radio'" v-model="item.value" type="radio" class="col mt-2" disabled
-                     :name="item.name"
-                     :class="{
-                    'text-center': item.alignment==='center',
-                    'text-right': item.alignment==='right',
-                    'text-left': item.alignment==='left',
-                  }">
-              <input v-else-if="item.type==='text'" v-model="item.value" type="text" disabled class="form-control col"
-                     :class="{
-                    'text-center': item.alignment==='center',
-                    'text-right': item.alignment==='right',
-                    'text-left': item.alignment==='left',
-                  }">
-              <div v-else-if="item.type==='percent'" class="input-group col">
+            :style="{ width: childList[i - 1][j - 1].width + ' !important' }">
+            <div v-for="(item, index) in childList[i - 1][j - 1].items" class="p-0 row" style="position:relative;" :class="{
+              'text-center': item.contentAlignment === 'center',
+              'text-right': item.contentAlignment === 'right',
+              'text-left': item.contentAlignment === 'left',
+            }">
+              <input v-if="item.type === 'label'" type="text" v-model="item.value" class="col border-0" :class="{
+                'text-center': item.alignment === 'center',
+                'text-right': item.alignment === 'right',
+                'text-left': item.alignment === 'left',
+              }">
+              <input v-else-if="item.type === 'checkbox'" v-model="item.value" type="checkbox" class="col mt-2" disabled
+                :class="{
+                  'text-center': item.alignment === 'center',
+                  'text-right': item.alignment === 'right',
+                  'text-left': item.alignment === 'left',
+                }">
+              <input v-else-if="item.type === 'radio'" v-model="item.value" type="radio" class="col mt-2" disabled
+                :name="item.name" :class="{
+                  'text-center': item.alignment === 'center',
+                  'text-right': item.alignment === 'right',
+                  'text-left': item.alignment === 'left',
+                }">
+              <input v-else-if="item.type === 'text'" v-model="item.value" type="text" disabled class="form-control col"
+                :class="{
+                  'text-center': item.alignment === 'center',
+                  'text-right': item.alignment === 'right',
+                  'text-left': item.alignment === 'left',
+                }">
+              <div v-else-if="item.type === 'percent'" class="input-group col">
                 <input type="text" class="form-control" disabled>
                 <div class="input-group-append p-0">
                   <span class="input-group-text p-2">%</span>
                 </div>
               </div>
-              <div v-else-if="item.type==='select'" class="col">
+              <div v-else-if="item.type === 'select'" class="col">
                 <div v-for="(option, index2) in item.options" class="row">
                   <input type="text" class="form-control col-11" v-model="option.value">
 
-                  <img v-if="index2===0" src="/images/add-icon.svg" class="add-option p-0 pl-1 col-1"
-                       style="position: unset;height: 15px;margin-top: 10px;"
-                       @click="addItemSelectOption(i-1, j-1, index)">
+                  <img v-if="index2 === 0" src="/images/add-icon.svg" class="add-option p-0 pl-1 col-1"
+                    style="position: unset;height: 15px;margin-top: 10px;"
+                    @click="addItemSelectOption(i - 1, j - 1, index)">
                   <img v-else src="/images/remove.svg" class="remove-option p-0 pl-1 pl-1 col-1"
-                       style="position: unset;height: 15px;margin-top: 10px;"
-                       @click="removeItemSelectOption(i-1, j-1, index, index2)">
+                    style="position: unset;height: 15px;margin-top: 10px;"
+                    @click="removeItemSelectOption(i - 1, j - 1, index, index2)">
                 </div>
               </div>
-              <div v-else-if="item.type==='selectRelated'" class="col">
+              <div v-else-if="item.type === 'selectRelated'" class="col">
                 <div v-for="(option, index2) in item.options" class="row">
                   <input type="text" class="form-control col-6" v-model="option.value">
                   <input type="text" class="form-control col-5" v-model="option.related">
 
-                  <img v-if="index2===0" src="/images/add-icon.svg" class="add-option p-0 pl-1 col-1"
-                       style="position: unset;height: 15px;margin-top: 10px;"
-                       @click="addItemSelectOption(i-1, j-1, index)">
+                  <img v-if="index2 === 0" src="/images/add-icon.svg" class="add-option p-0 pl-1 col-1"
+                    style="position: unset;height: 15px;margin-top: 10px;"
+                    @click="addItemSelectOption(i - 1, j - 1, index)">
                   <img v-else src="/images/remove.svg" class="remove-option p-0 pl-1 pl-1 col-1"
-                       style="position: unset;height: 15px;margin-top: 10px;"
-                       @click="removeItemSelectOption(i-1, j-1, index, index2)">
+                    style="position: unset;height: 15px;margin-top: 10px;"
+                    @click="removeItemSelectOption(i - 1, j - 1, index, index2)">
                 </div>
               </div>
 
@@ -138,10 +135,10 @@
                 more vert
               </span>
               <div class="table-item-menu"
-                   v-if="showItemMenu&&selectItemMenuX===i&&selectItemMenuY===j&&selectItemMenuZ===index">
+                v-if="showItemMenu && selectItemMenuX === i && selectItemMenuY === j && selectItemMenuZ === index">
                 <ul class="context-menu-list context-menu-root">
                   <li class="context-menu-item cursor-pointer text-danger"
-                      @click="childList[i-1][j-1].items.splice(index, 1);showItemMenu=true;showItemMenu=false">
+                    @click="childList[i - 1][j - 1].items.splice(index, 1); showItemMenu = true; showItemMenu = false">
                     <i class="material-icons">
                       delete forever
                     </i>
@@ -152,22 +149,27 @@
                       straighten
                     </i>
                     <span>Alignment</span>
-                    <i class="cursor-pointer material-icons" @click="item.alignment='left';showItemMenu=false;showItemMenu=true">
+                    <i class="cursor-pointer material-icons"
+                      @click="item.alignment = 'left'; showItemMenu = false; showItemMenu = true">
                       format align left
                     </i>
-                    <i class="cursor-pointer material-icons" @click="item.alignment='center';showItemMenu=false;showItemMenu=true">
+                    <i class="cursor-pointer material-icons"
+                      @click="item.alignment = 'center'; showItemMenu = false; showItemMenu = true">
                       format align center
                     </i>
-                    <i class="cursor-pointer material-icons" @click="item.alignment='right';showItemMenu=false;showItemMenu=true">
+                    <i class="cursor-pointer material-icons"
+                      @click="item.alignment = 'right'; showItemMenu = false; showItemMenu = true">
                       format align right
                     </i>
                   </li>
                   <li v-if="item.type !== 'label'" class="context-menu-item cursor-pointer"
-                      @click="childList[i-1][j-1].items[index].noting = !childList[i-1][j-1].items[index].noting;removed=true;removed=false">
+                    @click="childList[i - 1][j - 1].items[index].noting = !childList[i - 1][j - 1].items[index].noting; removed = true; removed = false">
                     <i class="material-icons">speaker notes</i>
                     <span>Notes</span>
                   </li>
-                  <textarea v-if="item.type !== 'label'" type="text" v-model="item.notes" class="notes-text form-control-sm" :class="{'hidden': !childList[i-1][j-1].items[index].noting}"></textarea>
+                  <textarea v-if="item.type !== 'label'" type="text" v-model="item.notes"
+                    class="notes-text form-control-sm"
+                    :class="{ 'hidden': !childList[i - 1][j - 1].items[index].noting }"></textarea>
                   <li v-if="item.type !== 'label'" class="context-menu-item">
                     <i class="material-icons">
                       title
@@ -175,7 +177,7 @@
                     <span>Name</span>
                     <input v-model="item.name" class="width form-control-sm" />
                   </li>
-                  <li v-if="item.type !== 'label'&&item.type !== 'percent'" class="context-menu-item">
+                  <li v-if="item.type !== 'label' && item.type !== 'percent'" class="context-menu-item">
                     <i class="material-icons">
                       keyboard
                     </i>
@@ -199,97 +201,89 @@
     <div v-else>
       <table ref="table" class="table table-bordered" style="height: 58%">
         <tr v-for="i in rows">
-          <td v-for="j in columns" @contextmenu="tdMenu($event)" class="p-0"
-              style="position: relative"
-              :style="{width: childList[i-1][j-1].width+' !important'}">
-            <div v-for="(item, index) in childList[i-1][j-1].items" class="p-0 row"
-                 @mouseover="childList[i-1][j-1].items[index].fillNotes=true;removed=true;removed=false"
-                 @mouseout="childList[i-1][j-1].items[index].fillNotes=false;removed=true;removed=false">
+          <td v-for="j in columns" @contextmenu="tdMenu($event)" class="p-0" style="position: relative"
+            :style="{ width: childList[i - 1][j - 1].width + ' !important' }">
+            <div v-for="(item, index) in childList[i - 1][j - 1].items" class="p-0 row"
+              @mouseover="childList[i - 1][j - 1].items[index].fillNotes = true; removed = true; removed = false"
+              @mouseout="childList[i - 1][j - 1].items[index].fillNotes = false; removed = true; removed = false">
               <span
-                v-if="showRequiredNotify&&item.required&&!item.value&&item.type!=='label'&&item.type!=='radio'&&item.type!=='checkbox'"
+                v-if="showRequiredNotify && item.required && !item.value && item.type !== 'label' && item.type !== 'radio' && item.type !== 'checkbox'"
                 class="text-danger"> *Missing Required Field</span>
-              <label v-if="item.type==='label'" class="col-12 border-0" :class="{
-                    'text-center': item.alignment==='center',
-                    'text-right': item.alignment==='right',
-                    'text-left': item.alignment==='left',
-                  }">{{ item.value }}</label>
-              <div v-else-if="item.type==='checkbox'" class="col-12">
-                <input v-if="!previewing" v-model="item.value"
-                       type="checkbox" class="col-12" :required="item.required"
-                       :disabled="reviewing||!enabled" :class="{
-                    'text-center': item.alignment==='center',
-                    'text-right': item.alignment==='right',
-                    'text-left': item.alignment==='left',
+              <label v-if="item.type === 'label'" class="col-12 border-0" :class="{
+                'text-center': item.alignment === 'center',
+                'text-right': item.alignment === 'right',
+                'text-left': item.alignment === 'left',
+              }">{{ item.value }}</label>
+              <div v-else-if="item.type === 'checkbox'" class="col-12">
+                <input v-if="!previewing" v-model="item.value" type="checkbox" class="col-12" :required="item.required"
+                  :disabled="reviewing || !enabled" :class="{
+                    'text-center': item.alignment === 'center',
+                    'text-right': item.alignment === 'right',
+                    'text-left': item.alignment === 'left',
                   }">
                 <div v-else-if="item.value"><span>&#10003;</span></div>
               </div>
-              <div v-else-if="item.type==='radio'" class="col-12">
-                <input v-if="!previewing" v-model="item.value"
-                       :value="item.name+'-'+i+'-'+j+'-'+index" :name="item.name"
-                       type="radio" class="col-12" :required="item.required"
-                       @change="checkRadio(item.name)" :ref="item.name"
-                       :data-i="i" :data-j="j" :data-index="index"
-                       :disabled="reviewing||!enabled" :class="{
-                    'text-center': item.alignment==='center',
-                    'text-right': item.alignment==='right',
-                    'text-left': item.alignment==='left',
+              <div v-else-if="item.type === 'radio'" class="col-12">
+                <input v-if="!previewing" v-model="item.value" :value="item.name + '-' + i + '-' + j + '-' + index"
+                  :name="item.name" type="radio" class="col-12" :required="item.required" @change="checkRadio(item.name)"
+                  :ref="item.name" :data-i="i" :data-j="j" :data-index="index" :disabled="reviewing || !enabled" :class="{
+                    'text-center': item.alignment === 'center',
+                    'text-right': item.alignment === 'right',
+                    'text-left': item.alignment === 'left',
                   }">
                 <div v-else-if="item.value"><span>&#10003;</span></div>
               </div>
-              <div v-else-if="item.type==='text'" class="col-12">
-                <input v-if="!previewing" v-model="item.value" type="text"
-                       :id="item.name" :data-i="i" :data-j="j" :data-index="index"
-                       class="col-12 form-control"
-                       :disabled="reviewing||!enabled||(typeof item.name != 'undefined' && item.name!==null)"
-                       :required="item.required" :class="{
-                     'border-danger': showRequiredNotify&&item.required&&!item.value,
-                    'text-center': item.alignment==='center',
-                    'text-right': item.alignment==='right',
-                    'text-left': item.alignment==='left',
+              <div v-else-if="item.type === 'text'" class="col-12">
+                <input v-if="!previewing" v-model="item.value" type="text" :id="item.name" :data-i="i" :data-j="j"
+                  :data-index="index" class="col-12 form-control"
+                  :disabled="reviewing || !enabled || (typeof item.name != 'undefined' && item.name !== null)"
+                  :required="item.required" :class="{
+                    'border-danger': showRequiredNotify && item.required && !item.value,
+                    'text-center': item.alignment === 'center',
+                    'text-right': item.alignment === 'right',
+                    'text-left': item.alignment === 'left',
                   }">
                 <div v-else-if="item.value">{{ item.value }}</div>
               </div>
-              <div v-else-if="item.type==='select'" class="col-12">
-                <select v-if="!previewing" v-model="item.value"
-                        :required="item.required" class="form-control col-12"
-                        :disabled="reviewing||!enabled" :class="{
-                      'border-danger': showRequiredNotify&&item.required&&!item.value,
-                    'text-center': item.alignment==='center',
-                    'text-right': item.alignment==='right',
-                    'text-left': item.alignment==='left',
+              <div v-else-if="item.type === 'select'" class="col-12">
+                <select v-if="!previewing" v-model="item.value" :required="item.required" class="form-control col-12"
+                  :disabled="reviewing || !enabled" :class="{
+                    'border-danger': showRequiredNotify && item.required && !item.value,
+                    'text-center': item.alignment === 'center',
+                    'text-right': item.alignment === 'right',
+                    'text-left': item.alignment === 'left',
                   }">
                   <option v-for="option in item.options" :value="option.value">{{ option.value }}</option>
                 </select>
                 <div v-else-if="item.value">{{ item.value }}</div>
               </div>
-              <div v-else-if="item.type==='selectRelated'" class="col-12">
-                <select v-if="!previewing" v-model="item.value"
-                        @change="relatedChange($event, item.name)"
-                        :required="item.required" class="form-control col-12"
-                        :disabled="reviewing||!enabled" :class="{
-                      'border-danger': showRequiredNotify&&item.required&&!item.value,
-                    'text-center': item.alignment==='center',
-                    'text-right': item.alignment==='right',
-                    'text-left': item.alignment==='left',
+              <div v-else-if="item.type === 'selectRelated'" class="col-12">
+                <select v-if="!previewing" v-model="item.value" @change="relatedChange($event, item.name)"
+                  :required="item.required" class="form-control col-12" :disabled="reviewing || !enabled" :class="{
+                    'border-danger': showRequiredNotify && item.required && !item.value,
+                    'text-center': item.alignment === 'center',
+                    'text-right': item.alignment === 'right',
+                    'text-left': item.alignment === 'left',
                   }">
                   <option v-for="option in item.options" :value="option.value" :rel="option.related">{{
-                      option.value
-                    }}
+                    option.value
+                  }}
                   </option>
                 </select>
                 <div v-else-if="item.value"><span>&#10003;</span></div>
               </div>
-              <div v-else-if="item.type==='percent'" class="col-12">
+              <div v-else-if="item.type === 'percent'" class="col-12">
                 <div v-if="!previewing" class="col">
                   <div v-if="i < rows" class="input-group col">
                     <select :ref="'percent'" @change="sumPercent()" v-model="item.value" class="form-control col-12"
-                            :disabled="reviewing||!enabled" :required="required"
-                            :class="{
-                    'text-center': item.alignment==='center',
-                    'text-right': item.alignment==='right',
-                    'text-left': item.alignment==='left',
-                  }">
-                      <option v-for="x in [0,5,10,15,20,25,30,35,40,45,50,55,60,65,70,75,80,85,90,95,100]" :value="x">{{
+                      :disabled="reviewing || !enabled" :required="required" :class="{
+                        'text-center': item.alignment === 'center',
+                        'text-right': item.alignment === 'right',
+                        'text-left': item.alignment === 'left',
+                      }">
+                      <option
+                        v-for="x in [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100]"
+                        :value="x">{{
                           x
                         }}
                       </option>
@@ -302,11 +296,11 @@
                     <p class="text-danger col-12">* Total percent must be 100%</p>
                     <div class="input-group col">
                       <input type="text" ref="totalPercent" v-model="item.value" class="form-control col-12" disabled
-                             :class="{
-                    'text-center': item.alignment==='center',
-                    'text-right': item.alignment==='right',
-                    'text-left': item.alignment==='left',
-                  }">
+                        :class="{
+                          'text-center': item.alignment === 'center',
+                          'text-right': item.alignment === 'right',
+                          'text-left': item.alignment === 'left',
+                        }">
                       <div class="input-group-append p-0">
                         <span class="input-group-text p-2">%</span>
                       </div>
@@ -317,40 +311,40 @@
               </div>
 
               <div class="note-content"
-                   :class="{'fadeIn': filling&&item.fillNotes&&(typeof item.notes != 'undefined' && item.notes !== '' && item.notes !== null), 'fadeOut': !(filling&&item.fillNotes&&(typeof item.notes != 'undefined' && item.notes !== '' && item.notes !== null))}"
-                   style="top: -100px"
-                   @mouseover="childList[i-1][j-1].items[index].fillNotes=true;removed=true;removed=false"
-                   @mouseout="childList[i-1][j-1].items[index].fillNotes=false;removed=true;removed=false">
+                :class="{ 'fadeIn': filling && item.fillNotes && (typeof item.notes != 'undefined' && item.notes !== '' && item.notes !== null), 'fadeOut': !(filling && item.fillNotes && (typeof item.notes != 'undefined' && item.notes !== '' && item.notes !== null)) }"
+                style="top: -100px"
+                @mouseover="childList[i - 1][j - 1].items[index].fillNotes = true; removed = true; removed = false"
+                @mouseout="childList[i - 1][j - 1].items[index].fillNotes = false; removed = true; removed = false">
                 <p v-html="$globals.linkParser(item.notes)"></p>
               </div>
             </div>
           </td>
         </tr>
       </table>
-      <div class="note-content" v-if="0&&fillNotes&&notes!==null">
+      <div class="note-content" v-if="0 && fillNotes && notes !== null">
         <p v-html="$globals.linkParser(notes)"></p>
       </div>
     </div>
 
-    <div v-if="reviewing&&!previewing" class="reviewing-box">
+    <div v-if="reviewing && !previewing" class="reviewing-box">
       <div class="mt-1 text-left">
-          <span class="mr-1 check-input">
-            <label class="checkbox-container">
-              <input type="checkbox" v-model="review.review">
-              <span class="checkmark"></span>
-            </label>
-          </span>
-        <span class="add-note" title="Add Note" @click="commenting=!commenting">
-            <img src="/images/add-icon.svg">
-           </span>
+        <span class="mr-1 check-input">
+          <label class="checkbox-container">
+            <input type="checkbox" v-model="review.review">
+            <span class="checkmark"></span>
+          </label>
+        </span>
+        <span class="add-note" title="Add Note" @click="commenting = !commenting">
+          <img src="/images/add-icon.svg">
+        </span>
         <div class="note-input" v-if="commenting">
           <textarea class="form-control" v-model="review.comment"
-                    style="min-height:60px;max-height: 60px;height: 60px; background: 0 !important;border: 0;"></textarea>
+            style="min-height:60px;max-height: 60px;height: 60px; background: 0 !important;border: 0;"></textarea>
         </div>
       </div>
     </div>
 
-    <ul class="context-menu-list context-menu-root" v-if="menuOpen" v-on:clickout="menuOpen=false">
+    <ul class="context-menu-list context-menu-root" v-if="menuOpen" v-on:clickout="menuOpen = false">
       <li class="context-menu-item cursor-pointer text-danger" @click="confirmRemove">
         <i class="material-icons">
           delete forever
@@ -378,8 +372,7 @@
 
         <div class="row" style="width: 230px;margin-left: 5px;">
           <div class="col-6 p-2" v-for="(col, index) in childList[0]">
-            <select v-model="col.width" :disabled="index===childList[0].length-1"
-                    class="form-control-sm">
+            <select v-model="col.width" :disabled="index === childList[0].length - 1" class="form-control-sm">
               <option value="auto">Auto</option>
               <option value="25%">12.5%</option>
               <option value="25%">25%</option>
@@ -395,13 +388,13 @@
       <li class="context-menu-item">
         <i class="material-icons">view module</i>
         <span>Excel Name</span>
-        <input v-model="excel_name" class="width form-control-sm"/>
+        <input v-model="excel_name" class="width form-control-sm" />
       </li>
       <li class="context-menu-item cursor-pointer" @click="noting = !noting">
         <i class="material-icons">speaker notes</i>
         <span>Notes</span>
       </li>
-      <textarea type="text" v-model="notes" class="notes-text form-control-sm" :class="{'hidden': !noting}"></textarea>
+      <textarea type="text" v-model="notes" class="notes-text form-control-sm" :class="{ 'hidden': !noting }"></textarea>
       <li class="context-menu-item">
         <i class="material-icons">
           mode edit
@@ -668,7 +661,7 @@ export default {
         contentAlignment: 'left',
         width: 'col',
         options: [
-          {value: 'Option here ..'}
+          { value: 'Option here ..' }
         ],
         required: false,
         noting: false,
@@ -687,7 +680,7 @@ export default {
         contentAlignment: 'left',
         width: 'col',
         options: [
-          {value: 'Option here ..', related: 'Related Value ..'}
+          { value: 'Option here ..', related: 'Related Value ..' }
         ],
         required: false,
         noting: false,
@@ -699,7 +692,7 @@ export default {
       //e.preventDefault()
       this.viewTdMenu = true
       this.$refs.tdMenu.focus();
-      let top = e.y -25,
+      let top = e.y - 25,
         left = e.x - this.$refs.element.getBoundingClientRect().left - 25,
         largestHeight = window.innerHeight - this.$refs.tdMenu.offsetHeight - 25,
         largestWidth = window.innerWidth - this.$refs.tdMenu.offsetWidth - 25
@@ -769,8 +762,8 @@ export default {
           // console.log(this.$refs[name][r].getAttribute('data-j'))
           // console.log(this.$refs[name][r].getAttribute('data-index'))
           this.childList[this.$refs[name][r].getAttribute('data-i') - 1]
-            [this.$refs[name][r].getAttribute('data-j') - 1].items
-            [this.$refs[name][r].getAttribute('data-index')].value = ''
+          [this.$refs[name][r].getAttribute('data-j') - 1].items
+          [this.$refs[name][r].getAttribute('data-index')].value = ''
         }
       }
     },
@@ -806,5 +799,4 @@ export default {
   width: max-content;
   list-style-type: none;
 }
-
 </style>
