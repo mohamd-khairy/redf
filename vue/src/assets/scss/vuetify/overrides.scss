@@ -715,6 +715,10 @@
   }
 }
 
+.e-tab .e-tab-header .e-indicator {
+  background: #014c4f !important;
+}
+
 .v-data-table table tbody tr:not(.v-data-table__selected):hover {
   box-shadow: none;
   transform : none;

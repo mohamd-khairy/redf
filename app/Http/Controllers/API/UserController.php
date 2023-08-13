@@ -193,4 +193,9 @@ class UserController extends Controller
 
         return responseFail('this action is not available');
     }
+    public function get_users(Request $request){
+        $users =  userType($request->type);
+
+        return responseSuccess(['users' => $users]);
+    }
 }

@@ -1088,6 +1088,17 @@ export default {
 </script>
 
 <style lang="scss">
+.context-menu-list {
+    background: #eee;
+    list-style: none;
+    border-radius: 8px;
+    padding: 8px 12px;
+
+    .context-menu-item {
+        padding: 3px 0;
+    }
+}
+
 .dropdown_btn.form-select {
     min-height: 40px;
 }
@@ -1201,10 +1212,12 @@ export default {
   margin: 10px 0;
   padding: 0 5px;
 }
+
 .element .menu-icon {
   width: 24px;
   padding: 0;
 }
+
 .element .moving-tool {
   padding: 0;
   width: 24px;
@@ -1212,22 +1225,27 @@ export default {
   position: relative;
   margin: 0;
 }
+
 .element .context-menu-item {
   line-height: 24px;
   padding: 0 !important;
 }
+
 .element .context-menu-item span {
   padding: 0 !important;
 }
+
 .element .context-menu-root {
   width: max-content;
   top: 25px;
   z-index: 9;
   padding: 5px;
 }
+
 .element .hidden {
   display: none;
 }
+
 .element .form-control-sm {
   padding: 3px;
   margin: 0;
@@ -1235,6 +1253,7 @@ export default {
   float: right;
   width: 110px;
 }
+
 .element .notes-text {
   position: absolute;
   top: 0;
@@ -1244,12 +1263,15 @@ export default {
   background: #f9f9f9;
   padding: 5px;
 }
+
 .element .ml-5 {
   margin-left: 5px;
 }
+
 .element .text-right {
   text-align: right;
 }
+
 .rotate-90 {
   transform: rotate(90deg);
 }
