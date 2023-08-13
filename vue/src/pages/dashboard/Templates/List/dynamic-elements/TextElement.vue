@@ -29,7 +29,7 @@
     </div>
 
     <div v-if="previewing" class="ml-5 p-5">{{ fill }}</div>
-    <input v-else-if="!reviewing && !filling" type="text" class="form-control ml-5 p-5" readonly>
+    <input v-else-if="!reviewing && !filling" type="text" class="form-control" readonly>
     <input v-else type="text" class="form-control ml-5 p-5" v-model="fill" :required="required"
       :disabled="reviewing || !enabled" :class="{ 'border-danger': showRequiredNotify && required && !fill }">
 
