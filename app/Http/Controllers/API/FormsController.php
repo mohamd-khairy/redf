@@ -124,19 +124,21 @@ class FormsController extends Controller
 
             if (isset($pageData['items']) && is_array($pageData['items'])) {
                 foreach ($pageData['items'] as $itemData) {
-                    // Serialize the 'childList' array to a JSON string
-                    $item = new FormPageItem([
-                        'type' => $itemData['type'],
-                        'label' => $itemData['label'],
-                        'notes' => $itemData['notes'],
-                        'width' => $itemData['width'],
-                        'height' => $itemData['height'],
-                        'enabled' => $itemData['enabled'],
-                        'required' => $itemData['required'],
-                        'website_view' => $itemData['website_view'],
-                        'childList' => isset($itemData['childList']) ? json_encode($itemData['childList']) : null // Save the serialized string
-                    ]);
-                    $page->items()->save($item);
+                    if (isset($itemData['removed']) && !$itemData['removed']) {
+                        // Serialize the 'childList' array to a JSON string
+                        $item = new FormPageItem([
+                            'type' => $itemData['type'],
+                            'label' => $itemData['label'],
+                            'notes' => $itemData['notes'],
+                            'width' => $itemData['width'],
+                            'height' => $itemData['height'],
+                            'enabled' => $itemData['enabled'],
+                            'required' => $itemData['required'],
+                            'website_view' => $itemData['website_view'],
+                            'childList' => isset($itemData['childList']) ? json_encode($itemData['childList']) : null // Save the serialized string
+                        ]);
+                        $page->items()->save($item);
+                    }
                 }
             }
         }
@@ -297,9 +299,9 @@ class FormsController extends Controller
             $form_request_ids = $request->form_request_id;
             $dateFromRequest = $request->date;
             $formattedDate = Carbon::createFromFormat('Y-m-d', $dateFromRequest)->toDateString();
-             // check if  form_request_id has record or not
+            // check if  form_request_id has record or not
             foreach ($form_request_ids as $form_request_id) {
-                $checkIfAssigned = AssignRequest::where('form_request_id', $form_request_id)->where('status','active')->first();
+                $checkIfAssigned = AssignRequest::where('form_request_id', $form_request_id)->where('status', 'active')->first();
 
                 if ($checkIfAssigned) {
                     if ($checkIfAssigned->status !== "deleted") {
@@ -322,12 +324,9 @@ class FormsController extends Controller
                 FormRequest::where('id', $form_request_id)->update(['status' => 'processing']);
             }
             return responseSuccess(['assignNew' => $assignNew]);
-
-
         } catch (Exception $e) {
             return $e;
             return response()->json(['message' => 'Unknown error', $e], 500);
         }
-
     }
 }
