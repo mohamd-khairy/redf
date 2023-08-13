@@ -41,16 +41,6 @@ export default [
         },
     },
     {
-        path: "/templates/list",
-        name: 'TemplatesList',
-        component: () => import(/* webpackChunkName: "landing-home" */ '@/pages/dashboard/Templates/List/Main.vue'),
-        meta: {
-            auth: true,
-            title: "menu.templates",
-            // layout: 'landing'
-        },
-    },
-    {
         path: "/templates/create",
         name: 'TemplatesCreate',
         component: () => import(/* webpackChunkName: "landing-home" */ '@/pages/dashboard/Templates/List/CreateTemplate.vue'),

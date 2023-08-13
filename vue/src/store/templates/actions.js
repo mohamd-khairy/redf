@@ -36,6 +36,10 @@ const actions = {
     let identifier = data.get("id");
     return await axios.post(`templates/${identifier}`, data)
   },
+  async updateForm({ commit }, data) {
+    let identifier = data.get("id");
+    return await axios.post(`update-form-basic/${identifier}`, data)
+  },
   async deleteTemplate({ commit, dispatch }, id) {
     return await axios.delete(`templates/${id}`)
     // await dispatch('getUsers')

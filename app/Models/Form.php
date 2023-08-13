@@ -43,4 +43,8 @@ class Form extends Model
     {
         return $this->hasMany(FormRequest::class);
     }
+    public function formables()
+    {
+        return $this->morphToMany(Formable::class, 'formable');
+    }
 }
