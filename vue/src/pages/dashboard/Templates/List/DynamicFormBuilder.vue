@@ -135,6 +135,7 @@ import TreeElement from "./dynamic-elements/TreeElement";
 import LineElement from "./dynamic-elements/LineElement";
 import RadioElement from "./dynamic-elements/RadioElement";
 import AttachmentElement from "./dynamic-elements/AttachmentElement";
+import {makeToast} from "@/helpers";
 
 const _PageTitle = Vue.extend(PageTitle)
 const _TextElement = Vue.extend(TextElement)
@@ -368,6 +369,8 @@ export default {
       // }
       let { id } = this.$route.params;
       this.$axios.put('update-form/' + id, this.template).then(response => {
+        makeToast("success", response.data.message);
+        this.$router.push({ name: "TemplatesList" });
         // if (typeof response.data.success !== 'undefined' && response.data.success === true) {
         //   return
         // }
