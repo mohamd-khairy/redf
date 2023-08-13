@@ -287,7 +287,7 @@ class FormsController extends Controller
         }
     }
 
-    public function getFormfill($id)
+    public function getFormRequestfill($id)
     {
         try {
             $formfill = FormRequest::with('form.pages.items', 'user', 'form_page_item_fill')->find($id);
