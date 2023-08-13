@@ -25,6 +25,8 @@ Route::group(['prefix' => 'v1'], function () {
         Route::get('logout', [AuthController::class, 'logout']);
         Route::get('users/actions', [UserController::class, 'actions']);
         Route::apiResource('users', UserController::class);
+        Route::get('get-users', [UserController::class, 'get_users']);
+
     });
 
     /*********************VerificationController***************** */
