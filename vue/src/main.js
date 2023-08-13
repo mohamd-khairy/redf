@@ -25,7 +25,18 @@ import "./plugins/moment";
 import "./plugins/ckeditor";
 import "./plugins/highmap";
 import "./plugins/echo";
+import "./plugins/globals";
 import '@mdi/font/css/materialdesignicons.min.css'
+
+import { TabPlugin } from '@syncfusion/ej2-vue-navigations';
+Vue.use(TabPlugin);
+
+import { DropDownButtonPlugin } from "@syncfusion/ej2-vue-splitbuttons";
+import { enableRipple } from '@syncfusion/ej2-base';
+
+enableRipple(true);
+Vue.use(DropDownButtonPlugin);
+
 
 // FILTERS
 import "./filters/capitalize";
@@ -36,6 +47,9 @@ import "./filters/formatDate";
 import "./filters/formatTime";
 
 // STYLES
+import "bootstrap"
+import "bootstrap/dist/css/bootstrap.min.css"
+
 // Main Theme SCSS
 import "./assets/scss/theme.scss";
 

@@ -1,5 +1,8 @@
 const state = {
   forms: [],
+  formRequests: [],
+
+
   cards: [],
   eventTypes: [],
   statuses: [],
@@ -9,7 +12,10 @@ const state = {
   event: {},
   liveMode: false,
   pages: [],
-  selectedFormName: "",
+  selectedForm: {
+    name: "",
+    id: null,
+  },
 };
 
 export default state;

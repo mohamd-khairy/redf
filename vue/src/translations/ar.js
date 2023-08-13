@@ -9,7 +9,7 @@ export default {
     faq: "التعليمات",
     contact: "اتصل بنا",
     tos: "شروط الخدمة",
-    policy: "سياسة الخصوصية"
+    policy: "سياسة الخصوصية",
   },
   board: {
     titlePlaceholder: "أدخل عنوانًا لهذه البطاقة",
@@ -20,14 +20,14 @@ export default {
       TODO: "لكى يفعل",
       INPROGRESS: "في تقدم",
       TESTING: "اختبارات",
-      DONE: "منجز"
-    }
+      DONE: "منجز",
+    },
   },
   chat: {
     online: "المستخدمون المتصلون ({count})",
     addChannel: "أضف قناة",
     channel: "القناة | القنوات",
-    message: "رسالة"
+    message: "رسالة",
   },
   email: {
     compose: "إنشاء بريد إلكتروني",
@@ -45,13 +45,13 @@ export default {
     generalMail: "إشعار البريد العام",
     newUserMail: "إشعار البريد عند اضافة مستخدم جديد",
     mailWhenUserUpdate: "إشعار البريد عند تحديث المستخدم",
-    mailNotificationForms: "نماذج الإشعار بالبريد"
+    mailNotificationForms: "نماذج الإشعار بالبريد",
   },
   todo: {
     addTask: "إضافة مهمة",
     tasks: "مهام",
     completed: "منجز",
-    labels: "ملصقات"
+    labels: "ملصقات",
   },
   dashboard: {
     activity: "نشاط",
@@ -66,17 +66,17 @@ export default {
     types: "انواع",
     customers: "العملاء",
     tickets: "تذاكر الدعم الفني",
-    viewReport: "عرض التقرير"
+    viewReport: "عرض التقرير",
   },
   usermenu: {
     profile: "الملف الشخصي",
     signin: "تسجيل الدخول",
     dashboard: "الرئيسية",
-    signout: "خروج"
+    signout: "خروج",
   },
   error: {
     notfound: "الصفحة غير موجودة",
-    other: "خطأ ocurred ل"
+    other: "خطأ ocurred ل",
   },
   check: {
     title: "تعيين كلمة مرور جديدة",
@@ -87,7 +87,7 @@ export default {
     error: "ارتباط الإجراء غير صالح",
     verifylink: "التحقق من الارتباط ...",
     verifyemail: "التحقق من عنوان البريد الإلكتروني ...",
-    emailverified: "تم التحقق من البريد الإلكتروني! إعادة توجيه..."
+    emailverified: "تم التحقق من البريد الإلكتروني! إعادة توجيه...",
   },
   forgot: {
     title: "هل نسيت كلمة المرور؟",
@@ -95,7 +95,7 @@ export default {
       "أدخل عنوان البريد الإلكتروني لحسابك وسنرسل لك رابطًا لإعادة تعيين كلمة المرور الخاصة بك.",
     email: "البريد الإلكتروني",
     button: "اعادة تعيين كلمة المرور طلب",
-    backtosign: "العودة إلى تسجيل الدخول"
+    backtosign: "العودة إلى تسجيل الدخول",
   },
   login: {
     title: "تسجيل الدخول",
@@ -107,7 +107,7 @@ export default {
     forgot: "هل نسيت كلمة المرور؟",
     noaccount: "ليس لديك حساب؟",
     create: "قم بإنشاء واحدة هنا",
-    error: "تركيبة البريد الإلكتروني / كلمة المرور غير صالحة"
+    error: "تركيبة البريد الإلكتروني / كلمة المرور غير صالحة",
   },
   register: {
     title: "إنشاء حساب",
@@ -118,13 +118,13 @@ export default {
     orsign: "أو اشترك مع",
     agree: "بالتسجيل ، فإنك توافق على",
     account: "هل لديك حساب؟",
-    signin: "تسجيل الدخول"
+    signin: "تسجيل الدخول",
   },
   utility: {
-    maintenance: "في الصيانة"
+    maintenance: "في الصيانة",
   },
   faq: {
-    call: "هل لديك أسئلة أخرى؟ الرجاء التواصل"
+    call: "هل لديك أسئلة أخرى؟ الرجاء التواصل",
   },
   ecommerce: {
     products: "منتجات",
@@ -154,7 +154,7 @@ export default {
     discount: "خصم",
     subtotal: "المجموع الفرعي",
     continue: "مواصلة التسوق",
-    checkout: "الدفع"
+    checkout: "الدفع",
   },
   menu: {
     search: "بحث (اضغط على 'ctrl + /' للتركيز)",
@@ -230,7 +230,7 @@ export default {
     live_stream: "البث المباشر",
     flights_table: "جدول الرحلات",
     flights_location: "موقع الرحلات",
-    projects: 'المشاريع',
+    projects: "المشاريع",
     cases: "القضايا",
     legal_advice: "الاستشارات القانونية",
     tasks: "المهام",
@@ -240,8 +240,8 @@ export default {
     review_and_audit: "المراجعة والتدقيق",
     templates: "النماذج",
     templatesTypes: "أنواع النماذج",
-    casesManagement : "ادارة القضايا",
-    requests : "الطلبات"
+    casesManagement: "ادارة القضايا",
+    requests: "الطلبات",
   },
   breadcrumbs: {
     pipesList: "قائمة النماذج",
@@ -251,14 +251,14 @@ export default {
     not_selected: "لم يتم تحديد الموقع",
     "location 1": "موقع 1",
     "location 2": "موقع 2",
-    "location 3": "موقع 3"
+    "location 3": "موقع 3",
   },
   $vuetify: {
     badge: "شارة",
     close: "قريب",
     dataIterator: {
       noResultsText: "لا توجد سجلات مطابقة",
-      loadingText: "جارٍ تحميل العناصر ..."
+      loadingText: "جارٍ تحميل العناصر ...",
     },
     dataTable: {
       itemsPerPageText: "عدد الصفوف في الصفحة:",
@@ -268,9 +268,9 @@ export default {
         sortNone: "لم يتم الفرز.",
         activateNone: "تنشيط لإزالة الفرز.",
         activateDescending: "تنشيط للترتيب تنازليًا.",
-        activateAscending: "قم بالتفعيل للترتيب تصاعديًا."
+        activateAscending: "قم بالتفعيل للترتيب تصاعديًا.",
       },
-      sortBy: "ترتيب حسب"
+      sortBy: "ترتيب حسب",
     },
     dataFooter: {
       itemsPerPageText: "مواد لكل صفحة:",
@@ -279,33 +279,33 @@ export default {
       prevPage: "الصفحة السابقة",
       firstPage: "الصفحة الأولى",
       lastPage: "آخر صفحة",
-      pageText: "{0} - {1} من {2}"
+      pageText: "{0} - {1} من {2}",
     },
     datePicker: {
       itemsSelected: "تم تحديد {0}",
       nextMonthAriaLabel: "الشهر القادم",
       nextYearAriaLabel: "العام القادم",
       prevMonthAriaLabel: "الشهر الماضى",
-      prevYearAriaLabel: "السنة الماضية"
+      prevYearAriaLabel: "السنة الماضية",
     },
     noDataText: "لا تتوافر بيانات",
     carousel: {
       prev: "المرئية السابقة",
       next: "المرئي التالي",
       ariaLabel: {
-        delimiter: "شريحة الرف الدائري {0} من {1}"
-      }
+        delimiter: "شريحة الرف الدائري {0} من {1}",
+      },
     },
     calendar: {
-      moreEvents: "{0} أخرى"
+      moreEvents: "{0} أخرى",
     },
     fileInput: {
       counter: "{0} ملفات",
-      counterSize: "{0} من الملفات (إجمالي {1})"
+      counterSize: "{0} من الملفات (إجمالي {1})",
     },
     timePicker: {
       am: "AM",
-      pm: "PM"
+      pm: "PM",
     },
     pagination: {
       ariaLabel: {
@@ -313,9 +313,9 @@ export default {
         next: "الصفحة التالية",
         previous: "الصفحة السابقة",
         page: "الانتقال إلى الصفحة {0}",
-        currentPage: "الصفحة الحالية ، الصفحة {0}"
-      }
-    }
+        currentPage: "الصفحة الحالية ، الصفحة {0}",
+      },
+    },
   },
   settings: {
     siteInformation: "معلومات الموقع",
@@ -340,7 +340,7 @@ export default {
     modelsNotifications: "نماذج الإشعارات",
     email: "بريد",
     emailAndNotifications: "بريد وإشعارات",
-    newDetection: "كشف جديد"
+    newDetection: "كشف جديد",
   },
   stations: {
     station: "موقع",
@@ -360,7 +360,7 @@ export default {
     map: "خريطة",
     no: "لا يوجد",
     yes: "يوجد",
-    region: "المنطقة"
+    region: "المنطقة",
   },
   types: {
     detection_type: "نوع الاكتشاف",
@@ -370,12 +370,12 @@ export default {
     createDetectionType: "انشاء نوع اكتشاف",
     name: "الاسم",
     nameOnScreen: "الإسم على الشاشة",
-    editDetectionType: "تعديل نوع الاكتشاف"
+    editDetectionType: "تعديل نوع الاكتشاف",
   },
   drones: {
     dronesSettings: "إعدادات الطائرات",
     valid: "صالح",
-    invalid: "غير صالح"
+    invalid: "غير صالح",
   },
   users: {
     rolesList: "قائمة الصلاحيات",
@@ -439,7 +439,7 @@ export default {
     Gender: "النوع",
     Male: "ذكر",
     Female: "انثى",
-    Other: "آخرى"
+    Other: "آخرى",
   },
   cases: {
     caseType: "نوع القضية",
@@ -504,7 +504,7 @@ export default {
     Gender: "النوع",
     Male: "ذكر",
     Female: "انثى",
-    Other: "آخرى"
+    Other: "آخرى",
   },
 
   departments: {
@@ -517,7 +517,7 @@ export default {
     createTemplate: "إضافة نموذج",
     updateTemplate: "تعديل نموذج",
     basic_data: "البيانات الأساسية",
-    template_edit: "تكوين النموذج"
+    template_edit: "تكوين النموذج",
   },
   builder: {
     page: "صفحة",
@@ -533,7 +533,7 @@ export default {
     attachment: "مرفق",
   },
   buttons: {
-    save: "حفظ التغيرات"
+    save: "حفظ التغيرات",
   },
   charts: {
     Station1: "موقع 1",
@@ -550,7 +550,7 @@ export default {
     drone5: "طائرة 5",
     drone6: "طائرة 6",
     drone7: "طائرة 7",
-    drone8: "طائرة 8"
+    drone8: "طائرة 8",
   },
   tables: {
     name: "الإسم",
@@ -560,7 +560,7 @@ export default {
     status: "الحالة",
     detectionType: "نوع الاكتشاف",
     openFile: "فتح الملف",
-    id: "الرقم التعريفي",
+    id: "الرقم التسلسلى",
     serial: "الرقم التسلسلي",
     date: "التاريخ",
     time: "الوقت",
@@ -582,8 +582,15 @@ export default {
     disabled: "التفعيل",
     download: "تحميل الملف",
     location: "الموقع",
-    description: 'الوصف',
-    templates: "النماذج"
+    description: "الوصف",
+    templates: "النماذج",
+    user: "المستفيد",
+    assigner: "المكلف",
+    organization: "المنظمة",
+    department: "القسم",
+    priority: "الاولوية",
+    start_date: "تاريخ البداية",
+    end_date: "تاريخ النهاية",
   },
   texts: {
     editor: "محرر",
@@ -626,7 +633,7 @@ export default {
     NoAdminControls: "لا توجد ضوابط إدارية",
     ViewPayoutsOnly: "عرض المدفوعات فقط",
     ViewDisputesOnly: "عرض النزاعات فقط",
-    ResponseToCustomerFeedback: "الرد على ملاحظات العملاء"
+    ResponseToCustomerFeedback: "الرد على ملاحظات العملاء",
   },
   general: {
     count: "الاجمالى",
@@ -717,7 +724,11 @@ export default {
       "حدد تقريرًا مثبتًا واحدا على الأقل أو أضف مثبت جديدا",
     statistics: "الاحصائيات",
     no_data_available: "لا يوجد بيانات",
-    update: 'تحديث'
+    update: "تحديث",
+    saveChanges: "حفظ التغيرات",
+    required_input: "هذا الحقل مطلوب",
+    start_date: "تاريخ البداية",
+    end_date: "تاريخ النهاية",
   },
   reports: {
     buildReport: "انشاء تقرير",
@@ -762,14 +773,14 @@ export default {
     editPinnedReports: "تعديل التقارير المثبتة",
     editPinned: "تعديل التقرير المثبت",
     draftedReports: " التقارير المسودة",
-    editDraft: "تعديل التقرير المسود"
+    editDraft: "تعديل التقرير المسود",
   },
   messages: {
-    welcome: "مرحبا"
+    welcome: "مرحبا",
   },
   organizations: {
     organizationsList: "قائمة المنظمات",
-    organizationsManagement: 'ادارة المنظمات',
+    organizationsManagement: "ادارة المنظمات",
     createOrganizer: "انشاء منظمة ",
     orgName: "اسم المنظمة",
     orgDesc: "وصف المنظمة",
@@ -777,5 +788,33 @@ export default {
     confirmDeleteOrg: "هل انت متأكد من حذف هذه المنظمة ؟",
     confirmDeleteSelectedOrg: "هل انت متأكد من حذف المنظمات المحددة ؟",
     editOrg: "تحديث منظمة",
-  }
+  },
+  documents: {
+    documentsList: "قائمة المستندات",
+    documentsManagement: "ادارة المستندات",
+    createDocument: "انشاء مستند ",
+    docName: "اسم المستند",
+    docDesc: "وصف المستند",
+    createDoc: "انشاء مستند",
+    confirmDeleteDoc: "هل انت متأكد من حذف هذه المستند ؟",
+    confirmDeleteSelectedDoc: "هل انت متأكد من حذف المستندات المحددة ؟",
+    editDoc: "تحديث مستند",
+    status: "الحالة",
+    priority: "الاولوية",
+    types: "النوع",
+  },
+  tasks: {
+    tasksList: "قائمة المهام",
+    tasksManagement: "ادارة المهام",
+    createTask: "انشاء مهمة ",
+    taskName: "اسم المهمة",
+    taskDesc: "وصف المهمة",
+    createTask: "انشاء المهمة",
+    confirmDeleteTask: "هل انت متأكد من حذف هذه المهمة ؟",
+    confirmDeleteSelectedTask: "هل انت متأكد من حذف المهام المحددة ؟",
+    editTask: "تحديث المهمة",
+    status: "الحالة",
+    priority: "الاولوية",
+    types: "النوع",
+  },
 };
