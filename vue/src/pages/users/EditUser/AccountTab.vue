@@ -69,7 +69,7 @@
                     :error-messages="errors['email']"
                   ></v-text-field>
                 </v-col>
-                <v-col cols="6">
+                <!-- <v-col cols="6">
                   <v-select
                     label="Select"
                     dense
@@ -85,7 +85,7 @@
                     multiple
                     outlined
                   ></v-select>
-                </v-col>
+                </v-col> -->
               </v-row>
               <v-row>
                 <v-col cols="6">
