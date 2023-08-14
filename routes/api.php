@@ -128,6 +128,7 @@ Route::group(['prefix' => 'v1'], function () {
         Route::get('get-forms', [FormsController::class, 'getFormsByTemplate']);
         Route::get('get-form/{formId}', [FormsController::class, 'listForm']);
         Route::post('store-form-fill', [FormsController::class, 'storeFormFill']);
+        Route::put('update-form-fill/{id}', [FormsController::class, 'updateFormFill']);
         Route::get('get-form-Requests', [FormsController::class, 'getFormRequest']);
         Route::get('get-form-Requests/{id}', [FormsController::class, 'getFormRequestfill']);
         Route::post('assign-request', [FormsController::class, 'assignRequest']);

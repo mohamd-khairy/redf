@@ -197,34 +197,8 @@ class FormsController extends Controller
                 'user_id' => auth()->user()->id,
                 'status' => FormRequestStatus::PENDING, // Set the initial status to "pending"
             ]);
+            $this->processFormPages($request, $formRequest);
 
-            $pagesInput = $request->input('pages', []);
-
-            if (is_string($pagesInput)) {
-                $pages = json_decode($pagesInput, true);
-            } else {
-                $pages = $pagesInput;
-            }
-
-            foreach ($pages as $page) {
-                $pageItems = $page['items'] ?? [];
-                foreach ($pageItems as $pageItem) {
-                    // Check if the type is "file"
-                    if ($pageItem['type'] === 'file') {
-                        $decodedValue = UploadService::store($pageItem['value'], 'formPages');
-                    } else {
-                        $decodedValue = $pageItem['value'];
-                    }
-
-                    $formPageItemFill = new FormPageItemFill([
-                        'value' => $decodedValue,
-                        'form_page_item_id' => $pageItem['form_page_item_id'],
-                        'user_id' => auth()->user()->id,
-                        'form_request_id' => $formRequest->id,
-                    ]);
-                    $formPageItemFill->save();
-                }
-            }
             DB::commit();
             return responseSuccess([], 'Form Fill has been successfully deleted');
         } catch (\Throwable $th) {
@@ -232,7 +206,55 @@ class FormsController extends Controller
             return responseFail($th->getMessage());
         }
     }
+    public function updateFormFill(Request $request,$id)
+    {
+        try {
+            DB::beginTransaction();
+            // Find the existing form request
+            $formRequest = FormRequest::findOrFail($id);
 
+            // Delete existing form page item fills for this form request
+            FormPageItemFill::where('form_request_id', $formRequest->id)->delete();
+            $this->processFormPages($request, $formRequest);
+
+
+            DB::commit();
+            return responseSuccess([], 'Form Fill has been successfully updated');
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return responseFail($th->getMessage());
+        }
+    }
+    private function processFormPages(Request $request, FormRequest $formRequest)
+    {
+        $pagesInput = $request->input('pages', []);
+
+        if (is_string($pagesInput)) {
+            $pages = json_decode($pagesInput, true);
+        } else {
+            $pages = $pagesInput;
+        }
+
+        foreach ($pages as $page) {
+            $pageItems = $page['items'] ?? [];
+            foreach ($pageItems as $pageItem) {
+                // Check if the type is "file"
+                if ($pageItem['type'] === 'file') {
+                    $decodedValue = UploadService::store($pageItem['value'], 'formPages');
+                } else {
+                    $decodedValue = $pageItem['value'];
+                }
+
+                $formPageItemFill = new FormPageItemFill([
+                    'value' => $decodedValue,
+                    'form_page_item_id' => $pageItem['form_page_item_id'],
+                    'user_id' => auth()->user()->id,
+                    'form_request_id' => $formRequest->id,
+                ]);
+                $formPageItemFill->save();
+            }
+        }
+    }
     public function getFormRequest(PageRequest $request)
     {
         try {
