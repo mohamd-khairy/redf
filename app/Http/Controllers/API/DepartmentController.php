@@ -37,7 +37,7 @@ class DepartmentController extends Controller
             SortFilters::class,
         ])->thenReturn();
 
-        $data = $data->paginate($request->pageSize ?? 15);
+        $data = request('pageSize') ? $data->paginate(request('pageSize',15)) : $data->get();
 
         return responseSuccess(['departments' => $data]);
     }
