@@ -31,7 +31,7 @@ const actions = {
     const response = await axios.get("all-logs", {
       params: {
         search: data.search,
-        pageSize: data.pageSize,
+        page_size: data.pageSize,
         page: data.pageNumber,
         sortDirection: data.sortDirection,
         sortCoulmn: data.sortColumn,

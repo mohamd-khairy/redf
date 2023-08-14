@@ -1,6 +1,6 @@
 <template>
-    <div class="d-flex flex-column flex-grow-1">
-        <v-card>
+    <div class="d-flex flex-column flex-grow-1 mb-5">
+        <v-card class="mb-5">
             <!-- templates list -->
             <v-row dense class="pa-2 align-center">
                 <v-col cols="6">
@@ -46,7 +46,7 @@
             </v-row>
             <v-data-table show-select v-model="selectedtemplates" :headers="headers" :items="templateItems"
                 :options.sync="options" class="flex-grow-1" :loading="isLoading" :page="page" :pageCount="numberOfPages"
-                :server-items-length="totaltemplates">
+                :server-items-length="totalItems">
                 <template v-slot:item.id="{ item }">
                     <div class="font-weight-bold">
                         # <copy-label :text="templateItems.indexOf(item) + 1 + ''" />
@@ -102,7 +102,7 @@ export default {
     data() {
         return {
             page: 1,
-            totaltemplates: 0,
+            totalItems: 0,
             numberOfPages: 0,
             options: {},
             isLoading: false,
@@ -118,7 +118,7 @@ export default {
             ],
 
             searchQuery: "",
-            selectedtemplates: [],
+            selectedTemplates: [],
             templateItems: [],
             headers: [
                 {
@@ -199,11 +199,11 @@ export default {
                     this.isLoading = false;
                     if (itemsPerPage != -1) {
                         this.templateItems = this.actvs.activityLogs.data;
-                        this.totaltemplates = this.actvs.total;
-                        this.numberOfPages = this.actvs.last_page;
+                        this.totalItems = this.actvs.activityLogs.total;
+                        this.numberOfPages = this.actvs.activityLogs.last_page;
                     } else {
                         this.templateItems = this.actvs;
-                        this.totaltemplates = this.actvs.length;
+                        this.totalItems = this.actvs.length;
                         this.numberOfPages = 1;
                     }
 
