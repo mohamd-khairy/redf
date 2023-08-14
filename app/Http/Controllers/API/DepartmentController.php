@@ -78,7 +78,6 @@ class DepartmentController extends Controller
      */
     public function update(Request $request, $id)
     {
-
         $department = Department::findOrFail($id);
 
         $request->validate([
