@@ -43,20 +43,34 @@
                       <v-file-input
                         outlined
                         dense
-                        counter
                         show-size
-                        :value="loadFile(input.value)"
                         :label="getInputLabel(input)"
                         @change="(file) => handleFileUpload(file, input)"
+                        @click:clear="handleFileClear(input)"
                         :required="input.required"
                         :rules="input.required ? [requiredRule] : []"
                         :error-messages="errorMessage(input)"
                       >
                       </v-file-input>
-                      <img v-if="fileType(input.value)==='png' || fileType(input.value)==='jpg' || fileType(input.value)==='jpeg'" width="50" height="50" :src="input.value" alt="file preview">
-                      <a v-else-if="fileType(input.value)==='pdf'" :href="input.value" target="_blank">PDF</a>
-                      <a v-else-if="fileType(input.value)==='doc' || fileType(input.value)==='docx'" :href="input.value" target="_blank">Word</a>
-                      <a v-else-if="fileType(input.value)==='xls' || fileType(input.value)==='xlsx'" :href="input.value" target="_blank">Excel</a>
+                      <div class="mt-1 d-flex justify-content-between align-item-center" v-if="input.preview && input.preview === input.value">
+                        <h6>{{fileInfo(input.preview).name}}</h6>
+                        <img v-if="fileInfo(input.preview).type==='png' || fileInfo(input.preview).type==='jpg' || fileInfo(input.preview).type==='jpeg'" width="50" height="50" :src="input.preview" alt="file preview">
+                      <a v-else-if="fileInfo(input.preview).type==='pdf'" :href="input.preview" target="_blank">
+                        <v-icon>
+                          mdi-file-pdf-box
+                        </v-icon>
+                      </a>
+                      <a v-else-if="fileInfo(input.preview).type==='doc' || fileInfo(input.preview).type==='docx'" :href="input.preview" target="_blank">
+                        <v-icon>
+                          mdi-file-word-outline
+                        </v-icon>
+                      </a>
+                      <a v-else-if="fileInfo(input.preview).type==='xls' || fileInfo(input.preview).type==='xlsx'" :href="input.preview" target="_blank">
+                        <v-icon>
+                          mdi-file-excel
+                        </v-icon>
+                      </a>
+                      </div>
                     </template>
                     <template v-else-if="input.type === 'select'">
                       <v-select
@@ -192,12 +206,22 @@ export default {
         };
       }
     },
-    fileType(filePath){
-      const fileType = filePath.split(".").pop();
-      return fileType
+    fileInfo(filePath){
+      const filePathArr = filePath.split(".")
+      const fileInfo = filePathArr.pop();
+      const fileName = filePath.split('/').pop();
+      const info = {name: fileName || '', type:fileInfo || ''}
+      return info
+    },
+
+    handleFileClear(input){
+      if(input.preview){
+        input.value = input.preview
+      }
     },
     loadFile(filePath, input) {
-      const fileType = filePath.split(".").pop();
+      console.log(input);
+
       fetch("/"+filePath)
         .then(response => response.blob())
         .then(blob => {
@@ -212,6 +236,7 @@ export default {
     },
     async saveForm() {
       const { id } = this.$route.params;
+
       this.isSubmitingForm = true;
       if (await this.validateFormData()) {
         await this.updatePages(id);

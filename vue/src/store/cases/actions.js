@@ -146,6 +146,9 @@ const actions = {
     for (const obj of pageTabs) {
       for (const item of obj.items) {
         item.value = inputValuesObj[item.id];
+        if(item.type === 'file'){
+          item.preview = inputValuesObj[item.id]
+        }
       }
   }
 
@@ -163,7 +166,7 @@ const actions = {
       );
     });
   },
-  async updatePages({ state }, formId) {
+  async savePages({ state }, formId) {
     try {
       const customFormData = {
         id: state.selectedForm.id,
@@ -190,6 +193,42 @@ const actions = {
         bodyFormData.set(key, JSON.stringify(value));
       }
       const response = await axios.post(`store-form-fill`, bodyFormData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+    } catch (error) {
+      console.error("Error saving form data:", error);
+    }
+  },
+  async updatePages({ state }, formId) {
+    try {
+      const customFormData = {
+        id: state.selectedForm.id,
+        name: state.selectedForm.name,
+        pages: state.pagesValues.map((page) => ({
+          id: page.id,
+          title: page.title,
+          items: page.items
+            .filter((input) => input.value)
+            .map((input) => {
+              return {
+                form_page_item_id: input.id,
+                value: input.value,
+                type: input.type,
+              };
+            }),
+        })),
+      };
+
+      const bodyFormData = new FormData();
+
+      for (const key in customFormData) {
+        let value = customFormData[key];
+        bodyFormData.set(key, JSON.stringify(value));
+        bodyFormData.set('_method', 'PUT');
+      }
+      const response = await axios.post(`update-form-fill/${formId}`, bodyFormData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
