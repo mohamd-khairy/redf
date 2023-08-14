@@ -27,6 +27,7 @@ use Illuminate\Support\Facades\Storage;
 use App\Http\Requests\CreateFormRequest;
 use App\Http\Requests\FormUpdateRequest;
 use App\Http\Resources\FormItemResource;
+use App\Services\UploadService;
 
 class FormsController extends Controller
 {
@@ -196,40 +197,8 @@ class FormsController extends Controller
                 'user_id' => auth()->user()->id,
                 'status' => FormRequestStatus::PENDING, // Set the initial status to "pending"
             ]);
+            $this->processFormPages($request, $formRequest);
 
-            $pagesInput = $request->input('pages', []);
-
-            if (is_string($pagesInput)) {
-                $pages = json_decode($pagesInput, true);
-            } else {
-                $pages = $pagesInput;
-            }
-
-            foreach ($pages as $page) {
-                $pageItems = $page['items'] ?? [];
-                foreach ($pageItems as $pageItem) {
-                    // Check if the type is "file"
-                    if ($pageItem['type'] === 'file') {
-                        // Decode the base64 value
-                        $fileName = $this->generateUniqueFileName($pageItem['value']);
-                        $decodedValue = 'formPages/' . $fileName;
-                        $file = explode(',', $pageItem['value'])[1];
-
-                        $fileDataDecode = base64_decode($file);
-                        Storage::disk('public')->put($decodedValue, $fileDataDecode);
-                    } else {
-                        // Use the value as is
-                        $decodedValue = $pageItem['value'];
-                    }
-                    $formPageItemFill = new FormPageItemFill([
-                        'value' => $decodedValue,
-                        'form_page_item_id' => $pageItem['form_page_item_id'],
-                        'user_id' => auth()->user()->id,
-                        'form_request_id' => $formRequest->id,
-                    ]);
-                    $formPageItemFill->save();
-                }
-            }
             DB::commit();
             return responseSuccess([], 'Form Fill has been successfully deleted');
         } catch (\Throwable $th) {
@@ -237,30 +206,63 @@ class FormsController extends Controller
             return responseFail($th->getMessage());
         }
     }
-    private function generateUniqueFileName($originalFileName)
+    public function updateFormFill(Request $request,$id)
     {
-        $extension = explode('/', mime_content_type($originalFileName))[1];
+        try {
+            DB::beginTransaction();
+            // Find the existing form request
+            $formRequest = FormRequest::findOrFail($id);
 
-        if ($extension === 'vnd.openxmlformats-officedocument.spreadsheetml.sheet') {
-            $extension = 'xlsx';
-        } elseif ($extension === 'octet-stream' || $extension === 'vnd.openxmlformats-officedocument.wordprocessingml.document') {
-            $extension = 'docx';
-        } elseif ($extension === 'plain') {
-            $extension = 'txt';
+            // Delete existing form page item fills for this form request
+            FormPageItemFill::where('form_request_id', $formRequest->id)->delete();
+            $this->processFormPages($request, $formRequest);
+
+
+            DB::commit();
+            return responseSuccess([], 'Form Fill has been successfully updated');
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return responseFail($th->getMessage());
+        }
+    }
+    private function processFormPages(Request $request, FormRequest $formRequest)
+    {
+        $pagesInput = $request->input('pages', []);
+
+        if (is_string($pagesInput)) {
+            $pages = json_decode($pagesInput, true);
         } else {
-            $extension = explode('/', mime_content_type($originalFileName))[1];
+            $pages = $pagesInput;
         }
 
-        return uniqid() . '_' . Str::random(8) . '.' . $extension;
-    }
+        foreach ($pages as $page) {
+            $pageItems = $page['items'] ?? [];
+            foreach ($pageItems as $pageItem) {
+                // Check if the type is "file"
+                if ($pageItem['type'] === 'file') {
+                    $decodedValue = UploadService::store($pageItem['value'], 'formPages');
+                } else {
+                    $decodedValue = $pageItem['value'];
+                }
 
+                $formPageItemFill = new FormPageItemFill([
+                    'value' => $decodedValue,
+                    'form_page_item_id' => $pageItem['form_page_item_id'],
+                    'user_id' => auth()->user()->id,
+                    'form_request_id' => $formRequest->id,
+                ]);
+                $formPageItemFill->save();
+            }
+        }
+    }
     public function getFormRequest(PageRequest $request)
     {
         try {
-            $query = FormRequest::with('form.pages.items', 'user', 'form_page_item_fill')
+            $query = FormRequest::with('form.pages.items', 'user','formAssignedRequests', 'form_page_item_fill')
                 ->whereHas('form', function ($q) use ($request) {
                     $q->where('template_id', $request->template_id);
                 });
+
 
             $data = app(Pipeline::class)->send($query)->through([
                 SortFilters::class,

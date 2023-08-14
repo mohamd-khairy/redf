@@ -20,6 +20,8 @@ return new class extends Migration
             $table->string('status');
             $table->text('details')->nullable();
             $table->timestamps();
+            $table->softDeletes();
+
             // Foreign key relationship with forms table
             $table->foreign('form_id')->references('id')->on('forms')->onDelete('cascade');
         });

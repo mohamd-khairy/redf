@@ -40,4 +40,9 @@ class FormRequest extends Model
     {
         return $this->belongsTo(Form::class);
     }
+
+    public function formAssignedRequests()
+    {
+        return $this->hasMany(FormAssignRequest::class)->whereNot('status','deleted');
+    }
 }
