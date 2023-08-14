@@ -40,7 +40,7 @@ class UserController extends Controller
             SortFilters::class,
         ])->thenReturn();
 
-        $data = request('pageSize') == -1 ?  $data->get() : $data->paginate(request('pageSize',15));
+        $data = request('pageSize') == -1 ?  $data->get() : $data->paginate(request('pageSize', 15));
 
         return responseSuccess(['users' => $data]);
     }
@@ -54,8 +54,6 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-
-
         $validate = Validator::make($request->all(), [
             'name' => 'required|string',
             'email' => 'required|email|unique:users,email',
@@ -132,9 +130,7 @@ class UserController extends Controller
             $data['avatar'] = UploadService::store($request->avatar, 'profile');
         }
 
-
         $user->update($data);
-
 
         if ($request->has('roles')) {
             $role = Role::find($request->input('roles'));
@@ -205,7 +201,7 @@ class UserController extends Controller
             SortFilters::class,
         ])->thenReturn();
 
-        $data = request('pageSize') == -1 ?  $data->get() : $data->paginate(request('pageSize',15));
+        $data = request('pageSize') == -1 ?  $data->get() : $data->paginate(request('pageSize', 15));
 
         return responseSuccess(['users' => $data]);
     }
@@ -217,22 +213,24 @@ class UserController extends Controller
         if ($request->has('type')) {
             $query->where('type', $request->type);
         }
+
         $data = app(Pipeline::class)->send($query)->through([
             SearchFilters::class,
             SortFilters::class,
-        ])->thenReturn();
-
-        $data = request('pageSize') == -1 ?  $data->get() : $data->paginate(request('pageSize',15));
+        ])->thenReturn()->get();
 
         return responseSuccess(['users' => $data]);
     }
-    public function user_employee(Request $request){
-        $query = User::where('type','employee');
+
+    public function user_employee(Request $request)
+    {
+        $query = User::where('type', 'employee');
+
         $data = app(Pipeline::class)->send($query)->through([
             SearchFilters::class,
             SortFilters::class,
-        ])->thenReturn();
-        $data = $data->paginate(request('pageSize', 15));
+        ])->thenReturn()->get();
+
         return responseSuccess(['users' => $data]);
     }
 }
