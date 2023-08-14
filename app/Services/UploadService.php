@@ -24,10 +24,10 @@ class UploadService
 
                 if (is_string($item)) {
 
-                    $file = UploadService::generateUniqueFileName($item);
+                    $file = $path . '/' . UploadService::generateUniqueFileName($item);
 
-                    if (Storage::disk($disk)->put($file, base64_decode($item))) {
-                        $paths[] = $path . '/' . $file;
+                    if (Storage::disk($disk)->put($file, base64_decode(explode(',', mime_content_type($item))[1]))) {
+                        $paths[] =  $file;
                     }
                 } else {
                     $paths[] = Storage::disk($disk)->putFile($path, $item);
