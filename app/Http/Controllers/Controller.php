@@ -14,21 +14,16 @@ class Controller extends BaseController
     public function actions()
     {
         $ids = is_array(request('ids', [])) ? request('ids', []) : explode(',', request('ids', ''));
-        $action = request('action');
-        $value = request('value');
 
-        if ($action && !is_null($value)) {
-            $users = $this->model::whereIn('id', $ids);
+        $model = $this->model;
 
-            switch ($action) {
-                case 'delete':
-                    $users->delete();
-                    break;
-            }
+        if ($model) {
 
-            return responseSuccess([], 'action set successfully');
+            $item = $model::whereIn('id', $ids);
+
+            $item->delete();
         }
 
-        return responseFail('this action is not available');
+        return responseSuccess([], 'action set successfully');
     }
 }
