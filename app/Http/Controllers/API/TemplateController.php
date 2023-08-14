@@ -46,7 +46,7 @@ class TemplateController extends Controller
             SortFilters::class,
         ])->thenReturn();
 
-        $data = request('pageSize') ? $data->paginate(request('pageSize',15)) : $data->get();
+        $data = request('pageSize') == -1 ?  $data->get() : $data->paginate(request('pageSize',15));
 
         return responseSuccess(['templates' => $data]);
     }
