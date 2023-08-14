@@ -35,7 +35,7 @@ class DraftController extends Controller
         ])->thenReturn();
 
 
-        $data = $data->paginate($request->pageSize ?? 15);
+        $data = request('pageSize') == -1 ?  $data->get() : $data->paginate(request('pageSize',15));
 
         return responseSuccess([
             'title' => __('dashboard.draft_reports'),

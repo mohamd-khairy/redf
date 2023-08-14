@@ -12,6 +12,8 @@ use Illuminate\Support\Facades\Validator;
 
 class RoleController extends Controller
 {
+    public $model = Role::class;
+
     public function __construct()
     {
         $this->middleware(['auth']);

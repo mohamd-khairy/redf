@@ -16,6 +16,8 @@ use Illuminate\Validation\ValidationException;
 
 class TemplateController extends Controller
 {
+    public $model = Template::class;
+
     public function __construct()
     {
         // $this->middleware(['auth']);
@@ -46,7 +48,7 @@ class TemplateController extends Controller
             SortFilters::class,
         ])->thenReturn();
 
-        $data = $data->paginate($request->pageSize ?? 15);
+        $data = request('pageSize') == -1 ?  $data->get() : $data->paginate(request('pageSize',15));
 
         return responseSuccess(['templates' => $data]);
     }

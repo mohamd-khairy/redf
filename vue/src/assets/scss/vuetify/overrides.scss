@@ -716,19 +716,37 @@
 }
 
 .e-tab .e-tab-header .e-indicator {
+  background: #fff !important;
+}
+
+.e-tab .e-tab-header {
   background: #014c4f !important;
 }
 
-.page-dynamic .e-content.e-lib.e-touch .element .context-menu-list {
+.e-tab .e-tab-header input,
+.e-tab .e-tab-header span {
+  color      : #fff !important;
+  font-weight: bold;
+}
+
+.e-tab .e-tab-header .e-toolbar-item .e-icons.e-close-icon {
+  margin  : 0 !important;
   position: absolute;
-  top     : 0%;
-  right   : 0%;
-  width   : 300px;
-  z-index : 99;
+  top     : 9%;
+  left    : 3%;
+}
+
+.page-dynamic .e-content.e-lib.e-touch .element .context-menu-list {
+  position : absolute;
+  top      : 20% !important;
+  left     : 2.5% !important;
+  max-width: 300px;
+  z-index  : 99;
 }
 
 .page-dynamic .e-content.e-lib.e-touch .element {
-  position: relative;
+  position  : relative;
+  margin-top: 40px;
 }
 
 .page-dynamic .rowe-item.e-active {

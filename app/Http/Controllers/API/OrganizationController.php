@@ -15,6 +15,8 @@ use Illuminate\Validation\ValidationException;
 
 class OrganizationController extends Controller
 {
+    public $model = Organization::class;
+
     public function __construct()
     {
         $this->middleware(['auth']);
@@ -37,7 +39,7 @@ class OrganizationController extends Controller
             SortFilters::class,
         ])->thenReturn();
 
-        $data = $data->paginate($request->pageSize ?? 15);
+        $data = request('pageSize') == -1 ?  $data->get() : $data->paginate(request('pageSize',15));
 
         return responseSuccess(['organizations' => $data]);
     }

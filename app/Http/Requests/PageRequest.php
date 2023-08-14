@@ -28,14 +28,4 @@ class PageRequest extends FormRequest
             'pageSize' => 'nullable|min:1',
         ];
     }
-
-    protected function prepareForValidation()
-    {
-        $input = $this->all();
-
-        // Modify or preprocess the input data here
-        $input['pageSize'] = request('pageSize') == -1 ? "1000000" : request('pageSize', 15);
-
-        $this->replace($input);
-    }
 }

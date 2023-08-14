@@ -20,7 +20,7 @@ export default {
 <style scoped>
 .pageTitle {
   position: absolute;
-  top: 30px;
+  top: 40px;
   text-align: center;
   width: 120px;
   white-space: pre-wrap;
@@ -35,6 +35,4 @@ export default {
   background: rgba(0, 0, 0, 0);
   text-align: center;
 }
-
-
 </style>

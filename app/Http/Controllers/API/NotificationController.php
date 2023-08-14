@@ -11,6 +11,8 @@ use Illuminate\Support\Facades\Validator;
 
 class NotificationController extends Controller
 {
+    public $model = Notification::class;
+
     public function __construct()
     {
         $this->middleware(['auth']);
