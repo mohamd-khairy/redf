@@ -53,6 +53,14 @@
                     </div>
                 </template>
 
+                <template v-slot:item.causer_type="{ item }">
+                    <div>{{ item.causer_type !== null ? item.causer_type : '-' }}</div>
+                </template>
+
+                <template v-slot:item.causer_id="{ item }">
+                    <div>{{ item.causer_id !== null ? item.causer_id : '-' }}</div>
+                </template>
+
                 <template v-slot:item.created_at="{ item }">
                     <div>{{ item.created_at | formatDate("lll") }}</div>
                 </template>
@@ -118,12 +126,24 @@ export default {
                     value: "id"
                 },
                 {
-                    text: this.$t("tables.name"),
-                    value: "log_name"
-                },
-                {
                     text: this.$t("tables.description"),
                     value: "description"
+                },
+                {
+                    text: this.$t("tables.subject_type"),
+                    value: "subject_type"
+                },
+                {
+                    text: this.$t("tables.subject_id"),
+                    value: "subject_id"
+                },
+                {
+                    text: this.$t("tables.template"),
+                    value: "causer_type"
+                },
+                {
+                    text: this.$t("tables.causer_id"),
+                    value: "causer_id"
                 },
                 {
                     text: this.$t("tables.created"),

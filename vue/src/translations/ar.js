@@ -599,6 +599,11 @@ export default {
     priority: "الاولوية",
     start_date: "تاريخ البداية",
     end_date: "تاريخ النهاية",
+    subject_type: "نوع الموضوع",
+    subject_id: "معرف الموضوع",
+    template: "نموذج",
+    causer_id: "معرف المستفيد",
+    // causer_type: "",
   },
   texts: {
     editor: "محرر",

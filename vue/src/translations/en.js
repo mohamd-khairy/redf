@@ -592,6 +592,10 @@ export default {
     priority: "Priority",
     start_date: "Start Date",
     end_date: "End Date",
+    subject_type: "Subject Type",
+    subject_id: "Subject ID",
+    template: "Template",
+    causer_id: "Causer ID",
   },
   texts: {
     editor: "Editor",
