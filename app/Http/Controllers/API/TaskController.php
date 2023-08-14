@@ -39,7 +39,7 @@ class TaskController extends Controller
             SortFilters::class,
         ])->thenReturn();
 
-        $data = $data->paginate(request('pageSize', 15));
+        $data = $data->paginate($request->pageSize ?? 15);
 
         return responseSuccess(['tasks' => $data]);
     }

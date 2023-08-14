@@ -22,7 +22,9 @@ use Illuminate\Support\Facades\Storage;
 use App\Http\Requests\CreateFormRequest;
 use App\Http\Requests\FormAssignRequest;
 use App\Http\Requests\FormUpdateRequest;
+use App\Http\Requests\PageRequest;
 use App\Http\Resources\FormItemResource;
+use Throwable;
 
 class FormsController extends Controller
 {
@@ -265,7 +267,7 @@ class FormsController extends Controller
         return uniqid() . '_' . Str::random(8) . '.' . $extension;
     }
 
-    public function getFormRequest(Request $request)
+    public function getFormRequest(PageRequest $request)
     {
         try {
             $query = FormRequest::with('form.pages.items', 'user', 'form_page_item_fill')
@@ -273,13 +275,13 @@ class FormsController extends Controller
                     $q->where('template_id', $request->template_id);
                 });
 
-            $formRequests = app(Pipeline::class)->send($query)->through([
+            $data = app(Pipeline::class)->send($query)->through([
                 SortFilters::class,
             ])->thenReturn();
 
-            $formRequests = $formRequests->paginate(request('page_size', 10));
+            $data = $data->paginate($request->pageSize ?? 15);
 
-            return responseSuccess($formRequests, 'Form requests retrieved successfully');
+            return responseSuccess($data, 'Form requests retrieved successfully');
         } catch (\Throwable $e) {
             // dd($e->getMed);
             // Return an error response if something goes wrong
@@ -331,8 +333,7 @@ class FormsController extends Controller
                 FormRequest::where('id', $form_request_id)->update(['status' => 'processing']);
             }
             return responseSuccess(['assignNew' => $assignNew]);
-        } catch (Exception $e) {
-            return $e;
+        } catch (Throwable $e) {
             return response()->json(['message' => 'Unknown error', $e], 500);
         }
     }

@@ -3,6 +3,7 @@
 namespace Modules\Report\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\PageRequest;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -26,23 +27,17 @@ class PinnedController extends Controller
         // $this->middleware('permission:indashboard-pinned_report', ['only' => ['status']]);
     }
 
-    public function index()
+    public function index(PageRequest $request)
     {
-        $page_size = request('pageSize', 15);
-
-        $pinned = app(Pipeline::class)->send(PinnedReport::primary()->with('createdBy')->withCount('charts'))->through([
+        $data = app(Pipeline::class)->send(PinnedReport::primary()->with('createdBy')->withCount('charts'))->through([
             GeneralFilters::class
         ])->thenReturn();
 
-        if ($page_size == -1) {
-            $pinned = $pinned->get();
-        } else {
-            $pinned = $pinned->paginate($page_size);
-        }
+        $data = $data->paginate($request->pageSize ?? 15);
 
         return responseSuccess([
             'title' => __('dashboard.pinned_reports'),
-            'pinneds' => $pinned
+            'pinneds' => $data
         ]);
     }
 

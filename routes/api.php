@@ -27,7 +27,6 @@ Route::group(['prefix' => 'v1'], function () {
         Route::apiResource('users', UserController::class);
         Route::get('get-users', [UserController::class, 'get_users']);
         Route::get('user-type', [UserController::class, 'user_type']);
-
     });
 
     /*********************VerificationController***************** */
@@ -93,7 +92,6 @@ Route::group(['prefix' => 'v1'], function () {
      Route::group(['middleware' => 'auth:sanctum'], function () {
         Route::apiResource('documents', DocumentController::class);
     });
-
 
     /*********************FormsController***************** */
     Route::group(['middleware' => 'auth:sanctum'], function () {
