@@ -21,17 +21,16 @@ class UploadService
         $paths = [];
         if (!empty($items)) {
             foreach ($items as $name => $item) {
-                if (is_file($item)) {
-                    $paths[] = Storage::disk($disk)->putFile($path, $item);
 
-                } elseif (is_string($item) && is_base64($item)) {
+                if (is_string($item)) {
 
-                    $name = is_numeric($name) ? (Str::random(10) . time()) : $name;
-                    $path .= "/$name.jpg";
+                    $file = UploadService::generateUniqueFileName($item);
 
-                    if (Storage::disk($disk)->put($path, base64_decode($item))) {
-                        $paths[] = $path;
+                    if (Storage::disk($disk)->put($file, base64_decode($item))) {
+                        $paths[] = $path . '/' . $file;
                     }
+                } else {
+                    $paths[] = Storage::disk($disk)->putFile($path, $item);
                 }
             }
         }
@@ -55,5 +54,23 @@ class UploadService
         }
 
         return true;
+    }
+
+    public static function generateUniqueFileName($originalFileName)
+    {
+        // && is_base64($item)
+        $extension = explode('/', mime_content_type($originalFileName))[1];
+
+        if ($extension === 'vnd.openxmlformats-officedocument.spreadsheetml.sheet') {
+            $extension = 'xlsx';
+        } elseif ($extension === 'octet-stream' || $extension === 'vnd.openxmlformats-officedocument.wordprocessingml.document') {
+            $extension = 'docx';
+        } elseif ($extension === 'plain') {
+            $extension = 'txt';
+        } else {
+            $extension = explode('/', mime_content_type($originalFileName))[1];
+        }
+
+        return uniqid() . '_' . Str::random(8) . '.' . $extension;
     }
 }

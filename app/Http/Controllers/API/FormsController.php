@@ -27,6 +27,7 @@ use Illuminate\Support\Facades\Storage;
 use App\Http\Requests\CreateFormRequest;
 use App\Http\Requests\FormUpdateRequest;
 use App\Http\Resources\FormItemResource;
+use App\Services\UploadService;
 
 class FormsController extends Controller
 {
@@ -210,17 +211,11 @@ class FormsController extends Controller
                 foreach ($pageItems as $pageItem) {
                     // Check if the type is "file"
                     if ($pageItem['type'] === 'file') {
-                        // Decode the base64 value
-                        $fileName = $this->generateUniqueFileName($pageItem['value']);
-                        $decodedValue = 'formPages/' . $fileName;
-                        $file = explode(',', $pageItem['value'])[1];
-
-                        $fileDataDecode = base64_decode($file);
-                        Storage::disk('public')->put($decodedValue, $fileDataDecode);
+                        $decodedValue = UploadService::store($pageItem['value'], 'formPages');
                     } else {
-                        // Use the value as is
                         $decodedValue = $pageItem['value'];
                     }
+
                     $formPageItemFill = new FormPageItemFill([
                         'value' => $decodedValue,
                         'form_page_item_id' => $pageItem['form_page_item_id'],
@@ -236,22 +231,6 @@ class FormsController extends Controller
             DB::rollBack();
             return responseFail($th->getMessage());
         }
-    }
-    private function generateUniqueFileName($originalFileName)
-    {
-        $extension = explode('/', mime_content_type($originalFileName))[1];
-
-        if ($extension === 'vnd.openxmlformats-officedocument.spreadsheetml.sheet') {
-            $extension = 'xlsx';
-        } elseif ($extension === 'octet-stream' || $extension === 'vnd.openxmlformats-officedocument.wordprocessingml.document') {
-            $extension = 'docx';
-        } elseif ($extension === 'plain') {
-            $extension = 'txt';
-        } else {
-            $extension = explode('/', mime_content_type($originalFileName))[1];
-        }
-
-        return uniqid() . '_' . Str::random(8) . '.' . $extension;
     }
 
     public function getFormRequest(PageRequest $request)

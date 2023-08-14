@@ -13,6 +13,7 @@ use Illuminate\Pipeline\Pipeline;
 use App\Http\Requests\PageRequest;
 use App\Http\Requests\TaskRequest;
 use App\Http\Controllers\Controller;
+use App\Services\UploadService;
 use Illuminate\Support\Facades\Storage;
 
 class TaskController extends Controller
@@ -64,12 +65,10 @@ class TaskController extends Controller
             $task = Task::create($validatedData);
             // Handle the file upload
             if ($request->hasFile('file')) {
+
                 $file = $request->file('file');
                 $filename = $file->getClientOriginalName();
-                $filePath = Storage::putFileAs('task', $file, $filename);
-
-
-                Storage::disk('public')->put($filePath, $file);
+                $filePath = UploadService::store($file, 'tasks');
 
                 // Create a new file record
                 $fileRecord = new File([
@@ -123,12 +122,7 @@ class TaskController extends Controller
         if ($request->hasFile('file')) {
             $file = $request->file('file');
             $filename = $file->getClientOriginalName();
-
-            $filePath = Storage::putFileAs('task', $file, $filename);
-
-
-            Storage::disk('public')->put($filePath, $file);
-
+            $filePath = UploadService::store($file, 'tasks');
 
             // Create a new file record
             $fileRecord = new File([
