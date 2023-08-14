@@ -28,6 +28,7 @@ use Throwable;
 
 class FormsController extends Controller
 {
+    public $model = Form::class;
 
     public function __construct()
     {
@@ -196,7 +197,6 @@ class FormsController extends Controller
 
     public function storeFormFill(Request $request)
     {
-
         try {
             DB::beginTransaction();
 
@@ -214,7 +214,6 @@ class FormsController extends Controller
             } else {
                 $pages = $pagesInput;
             }
-
 
             foreach ($pages as $page) {
                 $pageItems = $page['items'] ?? [];
@@ -250,8 +249,6 @@ class FormsController extends Controller
     }
     private function generateUniqueFileName($originalFileName)
     {
-
-
         $extension = explode('/', mime_content_type($originalFileName))[1];
 
         if ($extension === 'vnd.openxmlformats-officedocument.spreadsheetml.sheet') {

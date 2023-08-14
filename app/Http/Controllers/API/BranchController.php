@@ -10,9 +10,12 @@ use Illuminate\Pipeline\Pipeline;
 use App\Http\Requests\PageRequest;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\BrancheRequest;
+use Throwable;
 
 class BranchController extends Controller
 {
+    public $model = Branch::class;
+
     public function index(PageRequest $request)
     {
         $branches = Branch::query();

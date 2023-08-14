@@ -16,6 +16,8 @@ use Illuminate\Validation\ValidationException;
 
 class TemplateController extends Controller
 {
+    public $model = Template::class;
+
     public function __construct()
     {
         // $this->middleware(['auth']);

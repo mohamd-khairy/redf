@@ -15,6 +15,8 @@ use Illuminate\Support\Facades\Validator;
 
 class UserController extends Controller
 {
+    public $model = User::class;
+
     public function __construct()
     {
         $this->middleware(['auth']);
@@ -172,26 +174,6 @@ class UserController extends Controller
         return responseSuccess([], 'User has been successfully deleted');
     }
 
-    public function actions()
-    {
-        $ids = is_array(request('ids', [])) ? request('ids', []) : explode(',', request('ids', ''));
-        $action = request('action');
-        $value = request('value');
-
-        if ($action && !is_null($value)) {
-            $users = User::whereIn('id', $ids);
-
-            switch ($action) {
-                case 'delete':
-                    $users->delete();
-                    break;
-            }
-
-            return responseSuccess([], 'action set successfully');
-        }
-
-        return responseFail('this action is not available');
-    }
     public function get_users(PageRequest $request)
     {
         $query = User::whereNot('type', 'employee')->whereHas('roles', function ($q) {

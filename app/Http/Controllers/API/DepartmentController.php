@@ -15,6 +15,8 @@ use Throwable;
 
 class DepartmentController extends Controller
 {
+    public $model = Department::class;
+
     public function __construct()
     {
         // $this->middleware(['auth']);

@@ -15,6 +15,8 @@ use Illuminate\Validation\ValidationException;
 
 class OrganizationController extends Controller
 {
+    public $model = Organization::class;
+
     public function __construct()
     {
         $this->middleware(['auth']);
