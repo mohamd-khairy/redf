@@ -13,6 +13,7 @@ use App\Http\Controllers\api\DocumentController;
 use App\Http\Controllers\Api\TemplateController;
 use App\Http\Controllers\Api\DepartmentController;
 use App\Http\Controllers\API\PermissionController;
+use App\Http\Controllers\Api\FormSessionController;
 use App\Http\Controllers\API\NotificationController;
 use App\Http\Controllers\Api\OrganizationController;
 use App\Http\Controllers\API\VerificationController;
@@ -94,6 +95,12 @@ Route::group(['prefix' => 'v1'], function () {
     Route::group(['middleware' => 'auth:sanctum'], function () {
         Route::apiResource('tasks', TaskController::class);
     });
+
+      /*********************FormSessionsController***************** */
+      Route::group(['middleware' => 'auth:sanctum'], function () {
+        Route::apiResource('formSessions', FormSessionController::class);
+    });
+
 
      /*********************DocumentController***************** */
      Route::group(['middleware' => 'auth:sanctum'], function () {
