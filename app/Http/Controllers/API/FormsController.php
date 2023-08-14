@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\API;
 
+use Throwable;
 use Carbon\Carbon;
 use App\Models\Form;
 use App\Models\FormPage;
@@ -13,22 +14,27 @@ use Illuminate\Http\Request;
 use App\Models\AssignRequest;
 use App\Enums\FormRequestStatus;
 use App\Models\FormPageItemFill;
+use App\Http\Requests\FormAssign;
+use App\Models\FormAssignRequest;
 use Illuminate\Pipeline\Pipeline;
+use App\Http\Requests\PageRequest;
 use Illuminate\Support\Facades\DB;
+use App\Enums\FormAssignRequestType;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\FormResource;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Requests\CreateFormRequest;
-use App\Http\Requests\FormAssignRequest;
 use App\Http\Requests\FormUpdateRequest;
 use App\Http\Resources\FormItemResource;
 
 class FormsController extends Controller
 {
+    public $model = Form::class;
 
     public function __construct()
     {
+        $this->middleware(['auth']);
         // $this->middleware('permission:list-form|edit-form|create-form|delete-form', ['only' => ['index', 'store']]);
         // $this->middleware('permission:create-form', ['only' => ['store']]);
         // $this->middleware('permission:edit-form', ['only' => ['edit', 'update']]);
@@ -80,68 +86,55 @@ class FormsController extends Controller
         }
     }
 
-    public function updateFormBasic($id, Request $request)
-    {
-        try {
-            DB::beginTransaction();
-            $form = Form::find($id);
-
-            if (!$form) {
-                return responseFail('there is no form with this id');
-            }
-            $data = $form->update($request->only('name', 'description'));
-            DB::commit();
-            return responseSuccess(new FormItemResource($form));
-        } catch (\Throwable $th) {
-            Db::rollBack();
-            // throw $th;
-            return responseFail($th->getMessage());
-        }
-    }
-
     public function update($request, $form)
     {
         // update form
         $data = $request->all();
         $data['user_id'] = Auth::id();
         $form->update($data);
-
         // delete old form pages
         $form->pages()->each(function ($page) {
             $page->items()->delete();
         });
-
         $form->pages()->delete();
-
         // create new form pages with new elements
         $pagesData = $request->input('pages');
         foreach ($pagesData as $pageData) {
-            $page = new FormPage([
-                'title' => $pageData['title']['title'],
-                'editable' =>  $pageData['title']['editing'] == false ? 0 : 1
-            ]);
+
+            $page = new FormPage(['title' => $pageData['title']['title'], 'editable' =>  $pageData['title']['editing'] == false ? 0 : 1]);
             $form->pages()->save($page);
 
             if (isset($pageData['items']) && is_array($pageData['items'])) {
                 foreach ($pageData['items'] as $itemData) {
-                    // Serialize the 'childList' array to a JSON string
-                    $item = new FormPageItem([
-                        'type' => $itemData['type'],
-                        'label' => $itemData['label'],
-                        'notes' => $itemData['notes'],
-                        'width' => $itemData['width'],
-                        'height' => $itemData['height'],
-                        'enabled' => $itemData['enabled'],
-                        'required' => $itemData['required'],
-                        'website_view' => $itemData['website_view'],
-                        'childList' => isset($itemData['childList']) ? json_encode($itemData['childList']) : null // Save the serialized string
-                    ]);
+
+                    $item = new FormPageItem(collect($itemData)->only(['type', 'label', 'notes', 'width', 'height', 'enabled', 'required', 'website_view', 'childList'])->toArray());
                     $page->items()->save($item);
                 }
             }
         }
-
         return $form->refresh();
+    }
+
+    public function updateFormBasic($id, Request $request)
+    {
+        try {
+            DB::beginTransaction();
+
+            $form = Form::find($id);
+
+            if (!$form) {
+                return responseFail('there is no form with this id');
+            }
+            $data = $form->update($request->only('name', 'description'));
+
+            DB::commit();
+
+            return responseSuccess(new FormItemResource($form));
+        } catch (\Throwable $th) {
+            Db::rollBack();
+            // throw $th;
+            return responseFail($th->getMessage());
+        }
     }
 
     public function deleteForm($id)
@@ -194,7 +187,6 @@ class FormsController extends Controller
 
     public function storeFormFill(Request $request)
     {
-
         try {
             DB::beginTransaction();
 
@@ -212,7 +204,6 @@ class FormsController extends Controller
             } else {
                 $pages = $pagesInput;
             }
-
 
             foreach ($pages as $page) {
                 $pageItems = $page['items'] ?? [];
@@ -248,8 +239,6 @@ class FormsController extends Controller
     }
     private function generateUniqueFileName($originalFileName)
     {
-
-
         $extension = explode('/', mime_content_type($originalFileName))[1];
 
         if ($extension === 'vnd.openxmlformats-officedocument.spreadsheetml.sheet') {
@@ -265,7 +254,7 @@ class FormsController extends Controller
         return uniqid() . '_' . Str::random(8) . '.' . $extension;
     }
 
-    public function getFormRequest(Request $request)
+    public function getFormRequest(PageRequest $request)
     {
         try {
             $query = FormRequest::with('form.pages.items', 'user', 'form_page_item_fill')
@@ -273,13 +262,13 @@ class FormsController extends Controller
                     $q->where('template_id', $request->template_id);
                 });
 
-            $formRequests = app(Pipeline::class)->send($query)->through([
+            $data = app(Pipeline::class)->send($query)->through([
                 SortFilters::class,
             ])->thenReturn();
 
-            $formRequests = $formRequests->paginate(request('page_size', 10));
+            $data = request('pageSize') == -1 ?  $data->get() : $data->paginate(request('pageSize', 15));
 
-            return responseSuccess($formRequests, 'Form requests retrieved successfully');
+            return responseSuccess($data, 'Form requests retrieved successfully');
         } catch (\Throwable $e) {
             // dd($e->getMed);
             // Return an error response if something goes wrong
@@ -300,7 +289,7 @@ class FormsController extends Controller
         }
     }
 
-    public function assignRequest(FormAssignRequest $request)
+    public function assignRequest(FormAssign $request)
     {
         try {
             $form_request_ids = $request->form_request_id;
@@ -308,7 +297,7 @@ class FormsController extends Controller
             $formattedDate = Carbon::createFromFormat('Y-m-d', $dateFromRequest)->toDateString();
             // check if  form_request_id has record or not
             foreach ($form_request_ids as $form_request_id) {
-                $checkIfAssigned = AssignRequest::where('form_request_id', $form_request_id)->where('status', 'active')->first();
+                $checkIfAssigned = FormAssignRequest::where('form_request_id', $form_request_id)->where('status', 'active')->first();
 
                 if ($checkIfAssigned) {
                     if ($checkIfAssigned->status !== "deleted") {
@@ -319,20 +308,20 @@ class FormsController extends Controller
                 }
                 $form_user_id = Form::where('id', $form_request_id)->pluck('user_id');
 
-                $assignNew = AssignRequest::create([
+                $assignNew = FormAssignRequest::create([
                     'form_request_id' => $form_request_id,
                     'user_id' => $request->user_id,
                     'date' => $formattedDate,
                     'assigner_id' => Auth::user()->id,
                     'status' => 'active',
                     'form_user_id' => $form_user_id,
+                    'type' => FormAssignRequestType::EMPLOYEE,
                 ]);
                 // dd(FormRequest::where('id', $form_request_id)->get());
                 FormRequest::where('id', $form_request_id)->update(['status' => 'processing']);
             }
             return responseSuccess(['assignNew' => $assignNew]);
-        } catch (Exception $e) {
-            return $e;
+        } catch (Throwable $e) {
             return response()->json(['message' => 'Unknown error', $e], 500);
         }
     }

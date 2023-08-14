@@ -7,11 +7,13 @@ use App\Http\Controllers\API\RoleController;
 use App\Http\Controllers\Api\TaskController;
 use App\Http\Controllers\API\UserController;
 use App\Http\Controllers\API\FormsController;
+use App\Http\Controllers\Api\BranchController;
 use App\Http\Controllers\API\SettingController;
 use App\Http\Controllers\api\DocumentController;
 use App\Http\Controllers\Api\TemplateController;
 use App\Http\Controllers\Api\DepartmentController;
 use App\Http\Controllers\API\PermissionController;
+use App\Http\Controllers\Api\FormSessionController;
 use App\Http\Controllers\API\NotificationController;
 use App\Http\Controllers\Api\OrganizationController;
 use App\Http\Controllers\API\VerificationController;
@@ -27,7 +29,7 @@ Route::group(['prefix' => 'v1'], function () {
         Route::apiResource('users', UserController::class);
         Route::get('get-users', [UserController::class, 'get_users']);
         Route::get('user-type', [UserController::class, 'user_type']);
-
+        Route::get('user-employee', [UserController::class, 'user_employee']);
     });
 
     /*********************VerificationController***************** */
@@ -38,16 +40,19 @@ Route::group(['prefix' => 'v1'], function () {
 
     /*********************RoleController***************** */
     Route::group(['middleware' => 'auth:sanctum'], function () {
+        Route::get('roles/actions', [RoleController::class, 'actions']);
         Route::apiResource('roles', RoleController::class);
     });
 
-       /*********************logsController***************** */
+    /*********************logsController***************** */
     Route::group(['middleware' => 'auth:sanctum'], function () {
+        Route::get('logs/actions', [LogController::class, 'actions']);
         Route::get('all-logs', [LogController::class, 'all_logs']);
     });
 
     /*********************PermissionController***************** */
     Route::group(['middleware' => 'auth:sanctum'], function () {
+        Route::get('permissions/actions', [PermissionController::class, 'actions']);
         Route::get('permissions', [PermissionController::class, 'permissions']);
         Route::apiResource('permission', PermissionController::class);
     });
@@ -64,39 +69,57 @@ Route::group(['prefix' => 'v1'], function () {
 
     /*********************NotificationController***************** */
     Route::group(['middleware' => 'auth:sanctum'], function () {
+        Route::get('notifications/actions', [NotificationController::class, 'actions']);
         Route::get('notifications', [NotificationController::class, 'index']);
         Route::post('notifications', [NotificationController::class, 'update']);
     });
 
     /*********************DepartmentController***************** */
     Route::group(['middleware' => 'auth:sanctum'], function () {
+        Route::get('departments/actions', [DepartmentController::class, 'actions']);
         Route::apiResource('departments', DepartmentController::class);
+    });
+
+    /*********************BranchController***************** */
+    Route::group(['middleware' => 'auth:sanctum'], function () {
+        Route::get('branches/actions', [BranchController::class, 'actions']);
+        Route::apiResource('branches', BranchController::class);
     });
 
     /*********************OrganizationController***************** */
     Route::group(['middleware' => 'auth:sanctum'], function () {
+        Route::get('organizations/actions', [OrganizationController::class, 'actions']);
         Route::apiResource('organizations', OrganizationController::class);
     });
 
     /*********************TemplateController***************** */
     Route::group(['middleware' => 'auth:sanctum'], function () {
-        Route::get('get-template-type', [TemplateController::class , 'getTemplatesType']);
+        Route::get('templates/actions', [TemplateController::class, 'actions']);
+        Route::get('get-template-type', [TemplateController::class, 'getTemplatesType']);
         Route::apiResource('templates', TemplateController::class);
     });
 
     /*********************TasksController***************** */
     Route::group(['middleware' => 'auth:sanctum'], function () {
+        Route::get('tasks/actions', [TaskController::class, 'actions']);
         Route::apiResource('tasks', TaskController::class);
     });
 
-     /*********************DocumentController***************** */
-     Route::group(['middleware' => 'auth:sanctum'], function () {
-        Route::apiResource('documents', DocumentController::class);
+      /*********************FormSessionsController***************** */
+      Route::group(['middleware' => 'auth:sanctum'], function () {
+        Route::apiResource('formSessions', FormSessionController::class);
     });
 
 
+    /*********************DocumentController***************** */
+    Route::group(['middleware' => 'auth:sanctum'], function () {
+        Route::get('documents/actions', [DocumentController::class, 'actions']);
+        Route::apiResource('documents', DocumentController::class);
+    });
+
     /*********************FormsController***************** */
     Route::group(['middleware' => 'auth:sanctum'], function () {
+        Route::get('forms/actions', [FormsController::class, 'actions']);
         Route::get('all-form', [FormsController::class, 'allForm']);
         Route::post('create-form', [FormsController::class, 'createForm']);
         Route::put('update-form-basic/{id}', [FormsController::class, 'updateFormBasic']);
@@ -109,6 +132,5 @@ Route::group(['prefix' => 'v1'], function () {
         Route::get('get-form-Requests/{id}', [FormsController::class, 'getFormRequestfill']);
         Route::post('assign-request', [FormsController::class, 'assignRequest']);
         Route::get('all-forms', [FormsController::class, 'allForm']);
-
     });
 });

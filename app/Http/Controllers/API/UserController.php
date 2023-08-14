@@ -15,6 +15,8 @@ use Illuminate\Support\Facades\Validator;
 
 class UserController extends Controller
 {
+    public $model = User::class;
+
     public function __construct()
     {
         $this->middleware(['auth']);
@@ -32,7 +34,7 @@ class UserController extends Controller
     public function index(PageRequest $request)
     {
         $query = User::with(['roles', 'permissions'])->whereHas('roles', function ($q) {
-            $q->where('name', '!=', 'root'); //->where('name', '!=', 'admin');
+            $q->where('name', '!=', 'root')->where('name', '!=', 'admin');
         })->where('id', '!=', auth()->id());
 
         $data = app(Pipeline::class)->send($query)->through([
@@ -40,7 +42,7 @@ class UserController extends Controller
             SortFilters::class,
         ])->thenReturn();
 
-        $data = $data->paginate(request('pageSize', 15));
+        $data = request('pageSize') == -1 ?  $data->get() : $data->paginate(request('pageSize', 15));
 
         return responseSuccess(['users' => $data]);
     }
@@ -54,8 +56,6 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-
-
         $validate = Validator::make($request->all(), [
             'name' => 'required|string',
             'email' => 'required|email|unique:users,email',
@@ -75,7 +75,6 @@ class UserController extends Controller
         if ($request->file('avatar')) {
             $data['avatar'] = UploadService::store($request->avatar, 'profile');
         }
-
 
         $user = User::create($data);
 
@@ -106,7 +105,7 @@ class UserController extends Controller
      */
     public function update(Request $request, $id)
     {
-         $validate = Validator::make($request->all(), [
+        $validate = Validator::make($request->all(), [
             'password' => 'nullable|min:8',
             'confirm_password' => 'same:password',
             'name' => 'nullable|string',
@@ -132,13 +131,11 @@ class UserController extends Controller
             $data['avatar'] = UploadService::store($request->avatar, 'profile');
         }
 
-
         $user->update($data);
-
 
         if ($request->has('roles')) {
             $role = Role::find($request->input('roles'));
-             if ($role) {
+            if ($role) {
                 $user->roles()->sync([$role->id]);
             } else {
                 return responseSuccess("role not found");
@@ -176,47 +173,51 @@ class UserController extends Controller
         return responseSuccess([], 'User has been successfully deleted');
     }
 
-    public function actions()
+    public function get_users(PageRequest $request)
     {
-        $ids = is_array(request('ids', [])) ? request('ids', []) : explode(',', request('ids', ''));
-        $action = request('action');
-        $value = request('value');
+        $query = User::whereNot('type', 'employee')->whereHas('roles', function ($q) {
+            $q->where('name', '!=', 'root')->where('name', '!=', 'admin');
+        });
 
-        if ($action && !is_null($value)) {
-            $users = User::whereIn('id', $ids);
-
-            switch ($action) {
-                case 'delete':
-                    $users->delete();
-                    break;
-            }
-
-            return responseSuccess([], 'action set successfully');
-        }
-
-        return responseFail('this action is not available');
-    }
-    public function get_users(Request $request){
-        $query = User::whereNot('type','employee');
         $data = app(Pipeline::class)->send($query)->through([
             SearchFilters::class,
             SortFilters::class,
         ])->thenReturn();
-        $data = $data->paginate(request('pageSize', 15));
+
+        $data = request('pageSize') == -1 ?  $data->get() : $data->paginate(request('pageSize', 15));
+
         return responseSuccess(['users' => $data]);
     }
 
-    public function user_type(Request $request){
-        $query = User::query();
+    public function user_type(PageRequest $request)
+    {
+        $query = User::whereHas('roles', function ($q) {
+            $q->where('name', '!=', 'root')->where('name', '!=', 'admin');
+        });
         // Check if the "type" parameter is present in the request
         if ($request->has('type')) {
             $query->where('type', $request->type);
         }
+
         $data = app(Pipeline::class)->send($query)->through([
             SearchFilters::class,
             SortFilters::class,
-        ])->thenReturn();
-        $data = $data->paginate(request('pageSize', 15));
+        ])->thenReturn()->get();
+
+        return responseSuccess(['users' => $data]);
+    }
+
+    public function user_employee(Request $request)
+    {
+        $query = User::where('type', 'employee')->whereHas('roles', function ($q) {
+            $q->where('name', '!=', 'root')->where('name', '!=', 'admin');
+        });
+
+        $data = app(Pipeline::class)->send($query)->through([
+            SearchFilters::class,
+            SortFilters::class,
+        ])->thenReturn()->get();
+
         return responseSuccess(['users' => $data]);
     }
 }

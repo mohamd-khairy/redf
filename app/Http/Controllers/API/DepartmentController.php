@@ -15,6 +15,8 @@ use Throwable;
 
 class DepartmentController extends Controller
 {
+    public $model = Department::class;
+
     public function __construct()
     {
         // $this->middleware(['auth']);
@@ -37,7 +39,7 @@ class DepartmentController extends Controller
             SortFilters::class,
         ])->thenReturn();
 
-        $data = $data->paginate(request('pageSize', 15));
+        $data = request('pageSize') == -1 ?  $data->get() : $data->paginate(request('pageSize',15));
 
         return responseSuccess(['departments' => $data]);
     }
@@ -62,6 +64,11 @@ class DepartmentController extends Controller
         }
     }
 
+    public function show($id)
+    {
+        $department = Department::findOrFail($id);
+        return responseSuccess($department, 'department has been successfully showed');
+    }
 
 
     /**
@@ -73,7 +80,6 @@ class DepartmentController extends Controller
      */
     public function update(Request $request, $id)
     {
-
         $department = Department::findOrFail($id);
 
         $request->validate([

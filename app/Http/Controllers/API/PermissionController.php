@@ -13,6 +13,8 @@ use Illuminate\Support\Facades\Validator;
 
 class PermissionController extends Controller
 {
+    public $model = Permission::class;
+
     public function __construct()
     {
         $this->middleware(['auth']);

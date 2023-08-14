@@ -28,7 +28,7 @@ import "./plugins/echo";
 import "./plugins/globals";
 import '@mdi/font/css/materialdesignicons.min.css'
 import "@syncfusion/ej2-base/styles/material.css";
-import '@syncfusion/ej2-vue-grids/styles/material.css';
+// import '@syncfusion/ej2-vue-grids/styles/material.css';
 
 
 import { TabPlugin } from '@syncfusion/ej2-vue-navigations';
@@ -40,7 +40,7 @@ import { enableRipple } from '@syncfusion/ej2-base';
 enableRipple(true);
 Vue.use(DropDownButtonPlugin);
 
-import { ChartPlugin} from "@syncfusion/ej2-vue-charts";
+import { ChartPlugin } from "@syncfusion/ej2-vue-charts";
 
 Vue.use(ChartPlugin);
 

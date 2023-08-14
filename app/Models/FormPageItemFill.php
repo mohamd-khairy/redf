@@ -26,7 +26,7 @@ class FormPageItemFill extends Model
     {
         return LogOptions::defaults()->logOnly(self::getFillable());
     }
-    
+
     public function form_requests()
     {
         return $this->belongsTo(FormRequest::class);
@@ -37,4 +37,11 @@ class FormPageItemFill extends Model
         return $this->belongsTo(FormPageItem::class);
     }
 
+    public function getValueAttribute($value)
+    {
+        if (file_exists('storage/' . $value)) {
+            return url('storage/' . $value);
+        }
+        return $value;
+    }
 }
