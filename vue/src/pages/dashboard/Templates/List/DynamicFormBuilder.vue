@@ -202,6 +202,10 @@ export default {
       let prev = current.previousElementSibling
 
       let parent = document.querySelector('.e-content>.e-active')
+      console.log(`clicked up =>`);
+      console.log(current);
+      console.log(prev);
+      console.log(parent);
 
       if (parent.firstChild.nextSibling !== current) {
         // swap html
@@ -216,6 +220,8 @@ export default {
       }
     },
     moveDown(e, x, y) {
+      console.log("clicked down");
+
       let current = e.target.closest('.element')
       let next = current.nextElementSibling
 

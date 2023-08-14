@@ -7,8 +7,8 @@
     <div class="col-1 cursor-pointer pt-0" @click="menuOpen = !menuOpen" v-if="!reviewing && !filling">
       <i class="v-icon notranslate mdi mdi-dots-horizontal"></i>
     </div>
-    <div v-if="!reviewing && !filling" @click="moveUp($event, referenceX, referenceY)" class="col-2 pt-0 moving-tool">
-      <span class="moving-up text-center">
+    <div v-if="!reviewing && !filling" class="col-2 pt-0 moving-tool">
+      <span class="moving-up text-center" @click="moveUp($event, referenceX, referenceY)">
         <i class="v-icon notranslate mdi mdi-arrow-up-bold-box-outline"></i>
         <!-- <v-icon> mdi-arrow-up-bold-box-outline </v-icon> -->
       </span>
