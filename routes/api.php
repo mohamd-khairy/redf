@@ -7,6 +7,7 @@ use App\Http\Controllers\API\RoleController;
 use App\Http\Controllers\Api\TaskController;
 use App\Http\Controllers\API\UserController;
 use App\Http\Controllers\API\FormsController;
+use App\Http\Controllers\Api\BranchController;
 use App\Http\Controllers\API\SettingController;
 use App\Http\Controllers\api\DocumentController;
 use App\Http\Controllers\Api\TemplateController;
@@ -27,7 +28,7 @@ Route::group(['prefix' => 'v1'], function () {
         Route::apiResource('users', UserController::class);
         Route::get('get-users', [UserController::class, 'get_users']);
         Route::get('user-type', [UserController::class, 'user_type']);
-
+        Route::get('user-employee', [UserController::class, 'user_employee']);
     });
 
     /*********************VerificationController***************** */
@@ -73,6 +74,11 @@ Route::group(['prefix' => 'v1'], function () {
         Route::apiResource('departments', DepartmentController::class);
     });
 
+    /*********************BranchController***************** */
+      Route::group(['middleware' => 'auth:sanctum'], function () {
+        Route::apiResource('branches', BranchController::class);
+    });
+
     /*********************OrganizationController***************** */
     Route::group(['middleware' => 'auth:sanctum'], function () {
         Route::apiResource('organizations', OrganizationController::class);
@@ -93,7 +99,6 @@ Route::group(['prefix' => 'v1'], function () {
      Route::group(['middleware' => 'auth:sanctum'], function () {
         Route::apiResource('documents', DocumentController::class);
     });
-
 
     /*********************FormsController***************** */
     Route::group(['middleware' => 'auth:sanctum'], function () {

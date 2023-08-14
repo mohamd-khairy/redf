@@ -3,6 +3,8 @@
 namespace Modules\Report\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\PageRequest;
+use App\Models\Department;
 use App\Models\Location;
 use App\Models\Site;
 use Illuminate\Http\JsonResponse;
@@ -26,23 +28,18 @@ class DraftController extends Controller
         // $this->middleware('permission:delete-draft_report', ['only' => ['destroy']]);
     }
 
-    public function index()
+    public function index(PageRequest $request)
     {
-        $page_size = request('pageSize', 15);
-
-        $drafts = app(Pipeline::class)->send(DraftReport::primary()->with('createdBy'))->through([
+        $data = app(Pipeline::class)->send(DraftReport::primary()->with('createdBy'))->through([
             GeneralFilters::class
         ])->thenReturn();
 
-        if ($page_size == -1) {
-            $drafts = $drafts->get();
-        } else {
-            $drafts = $drafts->paginate($page_size);
-        }
+
+        $data = request('pageSize') == -1 ?  $data->get() : $data->paginate(request('pageSize',15));
 
         return responseSuccess([
             'title' => __('dashboard.draft_reports'),
-            'drafts' => $drafts
+            'drafts' => $data
         ]);
     }
 
@@ -57,7 +54,7 @@ class DraftController extends Controller
             if ($request->site_ids) {
                 $catId = (is_array($request->site_ids) ? $request->site_ids : (is_array(json_decode($request->site_ids)) ? json_decode($request->site_ids) : explode(',', $request->site_ids)));
             } else {
-                $catId = [Location::latest()->first('id')->toArray()['id']];
+                $catId = [Department::latest()->first('id')->toArray()['id']];
             }
 
             if ($data['time_type'] == 'dynamic') {

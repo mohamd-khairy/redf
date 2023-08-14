@@ -39,7 +39,7 @@ class DocumentController extends Controller
             SortFilters::class,
         ])->thenReturn();
 
-        $data = $data->paginate(request('pageSize', 15));
+        $data = request('pageSize') == -1 ?  $data->get() : $data->paginate(request('pageSize',15));
 
         return responseSuccess(['documents' => $data]);
     }

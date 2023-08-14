@@ -29,6 +29,10 @@ class FormPageItem extends Model
         'form_page_id',
     ];
 
+    protected $casts = [
+        'childList' => 'array',
+    ];
+
     public function getActivitylogOptions(): LogOptions
     {
         return LogOptions::defaults()->logOnly(self::getFillable());
