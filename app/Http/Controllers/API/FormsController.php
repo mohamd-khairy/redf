@@ -34,6 +34,7 @@ class FormsController extends Controller
 
     public function __construct()
     {
+        $this->middleware(['auth']);
         // $this->middleware('permission:list-form|edit-form|create-form|delete-form', ['only' => ['index', 'store']]);
         // $this->middleware('permission:create-form', ['only' => ['store']]);
         // $this->middleware('permission:edit-form', ['only' => ['edit', 'update']]);
@@ -84,6 +85,7 @@ class FormsController extends Controller
             return responseFail($th->getMessage());
         }
     }
+
     public function update($request, $form)
     {
         // update form
@@ -98,43 +100,35 @@ class FormsController extends Controller
         // create new form pages with new elements
         $pagesData = $request->input('pages');
         foreach ($pagesData as $pageData) {
-            $page = new FormPage([
-                'title' => $pageData['title']['title'],
-                'editable' =>  $pageData['title']['editing'] == false ? 0 : 1
-            ]);
+
+            $page = new FormPage(['title' => $pageData['title']['title'], 'editable' =>  $pageData['title']['editing'] == false ? 0 : 1]);
             $form->pages()->save($page);
 
             if (isset($pageData['items']) && is_array($pageData['items'])) {
                 foreach ($pageData['items'] as $itemData) {
-                    // Serialize the 'childList' array to a JSON string
-                    $item = new FormPageItem([
-                        'type' => $itemData['type'],
-                        'label' => $itemData['label'],
-                        'notes' => $itemData['notes'],
-                        'width' => $itemData['width'],
-                        'height' => $itemData['height'],
-                        'enabled' => $itemData['enabled'],
-                        'required' => $itemData['required'],
-                        'website_view' => $itemData['website_view'],
-                        'childList' => isset($itemData['childList']) ? json_encode($itemData['childList']) : null // Save the serialized string
-                    ]);
+
+                    $item = new FormPageItem(collect($itemData)->only(['type', 'label', 'notes', 'width', 'height', 'enabled', 'required', 'website_view', 'childList'])->toArray());
                     $page->items()->save($item);
                 }
             }
         }
         return $form->refresh();
     }
+
     public function updateFormBasic($id, Request $request)
     {
         try {
             DB::beginTransaction();
+
             $form = Form::find($id);
 
             if (!$form) {
                 return responseFail('there is no form with this id');
             }
             $data = $form->update($request->only('name', 'description'));
+
             DB::commit();
+
             return responseSuccess(new FormItemResource($form));
         } catch (\Throwable $th) {
             Db::rollBack();
@@ -273,7 +267,7 @@ class FormsController extends Controller
                 SortFilters::class,
             ])->thenReturn();
 
-            $data = request('pageSize') == -1 ?  $data->get() : $data->paginate(request('pageSize',15));
+            $data = request('pageSize') == -1 ?  $data->get() : $data->paginate(request('pageSize', 15));
 
             return responseSuccess($data, 'Form requests retrieved successfully');
         } catch (\Throwable $e) {

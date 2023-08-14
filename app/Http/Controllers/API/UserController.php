@@ -34,7 +34,7 @@ class UserController extends Controller
     public function index(PageRequest $request)
     {
         $query = User::with(['roles', 'permissions'])->whereHas('roles', function ($q) {
-            $q->where('name', '!=', 'root'); //->where('name', '!=', 'admin');
+            $q->where('name', '!=', 'root')->where('name', '!=', 'admin');
         })->where('id', '!=', auth()->id());
 
         $data = app(Pipeline::class)->send($query)->through([
@@ -75,7 +75,6 @@ class UserController extends Controller
         if ($request->file('avatar')) {
             $data['avatar'] = UploadService::store($request->avatar, 'profile');
         }
-
 
         $user = User::create($data);
 
