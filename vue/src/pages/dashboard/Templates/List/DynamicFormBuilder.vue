@@ -124,6 +124,20 @@ import Tabs from '../../../../components/dynamic-elements/Tabs.vue';
 import "@syncfusion/ej2-base/styles/material.css";
 import "@syncfusion/ej2-vue-navigations/styles/material.css";
 
+import "@syncfusion/ej2-buttons/styles/material.css";
+import "@syncfusion/ej2-popups/styles/material.css";
+
+import '@syncfusion/ej2-vue-grids/styles/material.css';
+
+// import "@syncfusion/ej2-icons/styles/material.css";
+// import "@syncfusion/ej2-icons/styles/bootstrap.css";
+// import "@syncfusion/ej2-icons/styles/bootstrap4.css";
+// import "@syncfusion/ej2-icons/styles/bootstrap5.css";
+// import "@syncfusion/ej2-icons/styles/material3.css";
+
+
+
+
 import PageTitle from "./dynamic-elements/PageTitle";
 import TextElement from './dynamic-elements/TextElement'
 import LabelElement from "./dynamic-elements/LabelElement";
@@ -1171,9 +1185,23 @@ export default {
   width: 50% !important;
 }
 
+</style>
+<style>
+.e-tab .e-tab-header.e-close-show .e-icons {
+  font-family: "e-icons" !important;
+  font-style: normal;
+  font-variant: normal;
+  font-variant-ligatures: normal;
+  font-variant-caps: normal;
+  font-variant-numeric: normal;
+  font-variant-east-asian: normal;
+  font-variant-alternates: normal;
+  font-weight: normal;
+  line-height: 1;
+  text-transform: none;
+}
 
-#e-item-TabInstance_0,
-#e-item-TabInstance_1 .e-icons.e-close-icon {
+#e-item-TabInstance_0, #e-item-TabInstance_1 .e-icons.e-close-icon {
   display: none;
 }
 
@@ -1201,7 +1229,8 @@ export default {
 .e-tab .e-tab-header .e-toolbar-item .e-tab-wrap {
   height: 36px;
   padding: 0 18px;
-  margin-top: -20px;
+  margin-top: -38px;
+  margin-left: 40px;
   width: 100%;
 }
 
@@ -1210,12 +1239,10 @@ export default {
   margin: 10px 0;
   padding: 0 5px;
 }
-
 .element .menu-icon {
   width: 24px;
   padding: 0;
 }
-
 .element .moving-tool {
   padding: 0;
   width: 24px;
@@ -1223,27 +1250,22 @@ export default {
   position: relative;
   margin: 0;
 }
-
 .element .context-menu-item {
   line-height: 24px;
   padding: 0 !important;
 }
-
 .element .context-menu-item span {
   padding: 0 !important;
 }
-
 .element .context-menu-root {
   width: max-content;
   top: 25px;
   z-index: 9;
   padding: 5px;
 }
-
 .element .hidden {
   display: none;
 }
-
 .element .form-control-sm {
   padding: 3px;
   margin: 0;
@@ -1251,7 +1273,6 @@ export default {
   float: right;
   width: 110px;
 }
-
 .element .notes-text {
   position: absolute;
   top: 0;
@@ -1261,15 +1282,12 @@ export default {
   background: #f9f9f9;
   padding: 5px;
 }
-
 .element .ml-5 {
   margin-left: 5px;
 }
-
 .element .text-right {
   text-align: right;
 }
-
 .rotate-90 {
   transform: rotate(90deg);
 }
