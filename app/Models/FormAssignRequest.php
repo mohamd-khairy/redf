@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class AssignRequest extends Model
+class FormAssignRequest extends Model
 {
     use HasFactory;
     protected $fillable = [
@@ -13,6 +13,7 @@ class AssignRequest extends Model
         'form_request_id',
         'assigner_id',
         'date',
+        'type',
         'status'
     ];
     protected $casts = [

@@ -13,11 +13,12 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('assign_requests', function (Blueprint $table) {
+        Schema::create('form_assign_requests', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('form_request_id');
             $table->unsignedBigInteger('assigner_id');
+            $table->string('type')->nullable();
             $table->string('status')->nullable();
             $table->date('date');
             $table->foreign('user_id')->references('id')->on('users')

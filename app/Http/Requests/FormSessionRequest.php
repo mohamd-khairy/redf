@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class FormAssignRequest extends FormRequest
+class FormSessionRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -23,15 +23,11 @@ class FormAssignRequest extends FormRequest
      */
     public function rules()
     {
-        $id = $this->request->get('id');
-
         return [
-            'form_request_id' => 'required|array',
-            'user_id' => 'required',
-            'assigner_id' => 'required',
-            'date' => 'required',
+            'form_id' => 'required|exists:forms,id',
+            'date' => 'required|date',
+            'status' => 'required|string',
+            'details' => 'nullable|string',
         ];
-
-
     }
 }

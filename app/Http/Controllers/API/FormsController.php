@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\API;
 
+use Throwable;
 use Carbon\Carbon;
 use App\Models\Form;
 use App\Models\FormPage;
@@ -13,18 +14,19 @@ use Illuminate\Http\Request;
 use App\Models\AssignRequest;
 use App\Enums\FormRequestStatus;
 use App\Models\FormPageItemFill;
+use App\Http\Requests\FormAssign;
+use App\Models\FormAssignRequest;
 use Illuminate\Pipeline\Pipeline;
+use App\Http\Requests\PageRequest;
 use Illuminate\Support\Facades\DB;
+use App\Enums\FormAssignRequestType;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\FormResource;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Requests\CreateFormRequest;
-use App\Http\Requests\FormAssignRequest;
 use App\Http\Requests\FormUpdateRequest;
-use App\Http\Requests\PageRequest;
 use App\Http\Resources\FormItemResource;
-use Throwable;
 
 class FormsController extends Controller
 {
@@ -90,14 +92,11 @@ class FormsController extends Controller
         $data = $request->all();
         $data['user_id'] = Auth::id();
         $form->update($data);
-
         // delete old form pages
         $form->pages()->each(function ($page) {
             $page->items()->delete();
         });
-
         $form->pages()->delete();
-
         // create new form pages with new elements
         $pagesData = $request->input('pages');
         foreach ($pagesData as $pageData) {
@@ -113,7 +112,6 @@ class FormsController extends Controller
                 }
             }
         }
-
         return $form->refresh();
     }
 
@@ -291,7 +289,7 @@ class FormsController extends Controller
         }
     }
 
-    public function assignRequest(FormAssignRequest $request)
+    public function assignRequest(FormAssign $request)
     {
         try {
             $form_request_ids = $request->form_request_id;
@@ -299,7 +297,7 @@ class FormsController extends Controller
             $formattedDate = Carbon::createFromFormat('Y-m-d', $dateFromRequest)->toDateString();
             // check if  form_request_id has record or not
             foreach ($form_request_ids as $form_request_id) {
-                $checkIfAssigned = AssignRequest::where('form_request_id', $form_request_id)->where('status', 'active')->first();
+                $checkIfAssigned = FormAssignRequest::where('form_request_id', $form_request_id)->where('status', 'active')->first();
 
                 if ($checkIfAssigned) {
                     if ($checkIfAssigned->status !== "deleted") {
@@ -310,13 +308,14 @@ class FormsController extends Controller
                 }
                 $form_user_id = Form::where('id', $form_request_id)->pluck('user_id');
 
-                $assignNew = AssignRequest::create([
+                $assignNew = FormAssignRequest::create([
                     'form_request_id' => $form_request_id,
                     'user_id' => $request->user_id,
                     'date' => $formattedDate,
                     'assigner_id' => Auth::user()->id,
                     'status' => 'active',
                     'form_user_id' => $form_user_id,
+                    'type' => FormAssignRequestType::EMPLOYEE,
                 ]);
                 // dd(FormRequest::where('id', $form_request_id)->get());
                 FormRequest::where('id', $form_request_id)->update(['status' => 'processing']);
