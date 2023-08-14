@@ -219,4 +219,13 @@ class UserController extends Controller
         $data = $data->paginate(request('pageSize', 15));
         return responseSuccess(['users' => $data]);
     }
+    public function user_employee(Request $request){
+        $query = User::where('type','employee');
+        $data = app(Pipeline::class)->send($query)->through([
+            SearchFilters::class,
+            SortFilters::class,
+        ])->thenReturn();
+        $data = $data->paginate(request('pageSize', 15));
+        return responseSuccess(['users' => $data]);
+    }
 }
