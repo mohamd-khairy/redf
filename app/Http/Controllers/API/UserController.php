@@ -194,7 +194,9 @@ class UserController extends Controller
     }
     public function get_users(PageRequest $request)
     {
-        $query = User::whereNot('type', 'employee');
+        $query = User::whereNot('type', 'employee')->whereHas('roles', function ($q) {
+            $q->where('name', '!=', 'root')->where('name', '!=', 'admin');
+        });
 
         $data = app(Pipeline::class)->send($query)->through([
             SearchFilters::class,
@@ -208,7 +210,9 @@ class UserController extends Controller
 
     public function user_type(PageRequest $request)
     {
-        $query = User::query();
+        $query = User::whereHas('roles', function ($q) {
+            $q->where('name', '!=', 'root')->where('name', '!=', 'admin');
+        });
         // Check if the "type" parameter is present in the request
         if ($request->has('type')) {
             $query->where('type', $request->type);
@@ -224,7 +228,9 @@ class UserController extends Controller
 
     public function user_employee(Request $request)
     {
-        $query = User::where('type', 'employee');
+        $query = User::where('type', 'employee')->whereHas('roles', function ($q) {
+            $q->where('name', '!=', 'root')->where('name', '!=', 'admin');
+        });
 
         $data = app(Pipeline::class)->send($query)->through([
             SearchFilters::class,
