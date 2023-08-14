@@ -1206,8 +1206,8 @@ export default {
 }
 
 .e-tab .e-tab-header.e-close-show .e-icons.e-close-icon {
-  margin-top: -25px;
-  margin-right: -15px;
+  margin-top: -10px;
+  margin-right: 100%;
 }
 
 #dynamic-form-builder-tools {
@@ -1230,8 +1230,8 @@ export default {
   height: 36px;
   padding: 0 18px;
   margin-top: -38px;
-  margin-left: 40px;
-  width: 100%;
+  /* margin-left: 40px; */
+  width: 120px;
 }
 
 .element {
@@ -1248,9 +1248,14 @@ export default {
 .element .moving-tool {
   padding: 0;
   width: 24px;
-  top: -20px;
+  /* top: -20px; */
   position: relative;
   margin: 0;
+}
+
+.element .moving-tool .moving-up,
+.element .moving-tool .moving-down {
+  cursor: pointer !important;
 }
 
 .element .context-menu-item {
@@ -1260,6 +1265,10 @@ export default {
 
 .element .context-menu-item span {
   padding: 0 !important;
+}
+
+.form-control-custom {
+  text-align: center !important;
 }
 
 .element .context-menu-root {

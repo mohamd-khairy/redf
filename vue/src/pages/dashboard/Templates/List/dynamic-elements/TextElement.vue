@@ -14,7 +14,7 @@
     </span>
 
     <div v-if="!reviewing && !filling" class="col-1 moving-tool">
-      <span class="moving-up text-center">
+      <span class="moving-up text-center" @click="moveUp($event, referenceX, referenceY)">
         <i class="v-icon notranslate mdi mdi-arrow-up-bold-box-outline"></i>
         <!-- <v-icon> mdi-arrow-up-bold-box-outline </v-icon> -->
       </span>
