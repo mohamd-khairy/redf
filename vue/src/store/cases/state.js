@@ -12,6 +12,7 @@ const state = {
   event: {},
   liveMode: false,
   pages: [],
+  pagesValues: [],
   selectedForm: {
     name: "",
     id: null,

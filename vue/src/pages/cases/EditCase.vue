@@ -2,13 +2,13 @@
   <div class="d-flex flex-column flex-grow-1">
     <v-card v-if="!initialLoading">
       <v-tabs v-model="activeTab">
-        <v-tab v-for="(tab, index) in pages" :key="index">{{
+        <v-tab v-for="(tab, index) in pagesValues" :key="index">{{
           tab.title
         }}</v-tab>
       </v-tabs>
       <v-card-text>
         <v-tabs-items v-model="activeTab">
-          <v-tab-item v-for="(tab, tabIndex) in pages" :key="tabIndex">
+          <v-tab-item v-for="(tab, tabIndex) in pagesValues" :key="tabIndex">
             <v-form>
               <v-container>
                 <v-row dense>
@@ -39,12 +39,13 @@
                         :error-messages="errorMessage(input)"
                       ></v-textarea>
                     </template>
-                    <template v-else-if="input.type === 'file'">
+                    <template v-else-if="input.type === 'file'" >
                       <v-file-input
                         outlined
                         dense
                         counter
                         show-size
+                        :value="loadFile(input.value)"
                         :label="getInputLabel(input)"
                         @change="(file) => handleFileUpload(file, input)"
                         :required="input.required"
@@ -52,6 +53,10 @@
                         :error-messages="errorMessage(input)"
                       >
                       </v-file-input>
+                      <img v-if="fileType(input.value)==='png' || fileType(input.value)==='jpg' || fileType(input.value)==='jpeg'" width="50" height="50" :src="input.value" alt="file preview">
+                      <a v-else-if="fileType(input.value)==='pdf'" :href="input.value" target="_blank">PDF</a>
+                      <a v-else-if="fileType(input.value)==='doc' || fileType(input.value)==='docx'" :href="input.value" target="_blank">Word</a>
+                      <a v-else-if="fileType(input.value)==='xls' || fileType(input.value)==='xlsx'" :href="input.value" target="_blank">Excel</a>
                     </template>
                     <template v-else-if="input.type === 'select'">
                       <v-select
@@ -135,18 +140,18 @@ export default {
     });
   },
   computed: {
-    ...mapState("cases", ["pages", "selectedForm"]),
+    ...mapState("cases", ["pagesValues", "selectedForm"]),
   },
   methods: {
     ...mapActions("app", ["setBreadCrumb"]),
-    ...mapActions("cases", ["getPages", "validateFormData", "updatePages"]),
+    ...mapActions("cases", ["getPagesValues", "validateFormData", "updatePages"]),
     init() {
       const { id } = this.$route.params;
       if (!id) {
         this.$router.push({ name: "dashboard-analytics" });
       }
       this.initialLoading = true;
-      this.getPages(id)
+      this.getPagesValues(id)
         .then((_) => {
           this.breadcrumbs.push({
             text: this.$t(this.selectedForm.name),
@@ -156,24 +161,13 @@ export default {
             pageTitle: this.$t("cases.casesList"),
           });
 
-          console.log(this.pages);
+          console.log(this.pagesValues);
         })
         .finally((_) => {
           this.initialLoading = false;
         });
     },
-    handleFileUpload(file, input) {
-      if (file) {
-        const fileName = file.name.split(".")[0];
-        const fileExtension = file.name.split(".")[1];
-        input["file_name"] = fileName + "." + fileExtension;
-        const reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onload = function () {
-          input["value"] = reader.result;
-        };
-      }
-    },
+
     getInputLabel(input) {
       const inputLabel = input.label;
       const isRequired = input.required;
@@ -187,6 +181,34 @@ export default {
     errorMessage(input) {
       const msg = this.$t("general.required_input");
       return this.showErrors && input.required && !input.value ? [msg] : [];
+    },
+    handleFileUpload(file, input) {
+      if (file) {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = function () {
+          input["value"] = reader.result;
+
+        };
+      }
+    },
+    fileType(filePath){
+      const fileType = filePath.split(".").pop();
+      return fileType
+    },
+    loadFile(filePath, input) {
+      const fileType = filePath.split(".").pop();
+      fetch("/"+filePath)
+        .then(response => response.blob())
+        .then(blob => {
+          const file = new File([blob], 'photo.png', { type: 'image/png' });
+          this.handleFileUpload(file, input)
+          return file
+
+        })
+        .catch(error => {
+          console.error('Error loading file:', error);
+        });
     },
     async saveForm() {
       const { id } = this.$route.params;

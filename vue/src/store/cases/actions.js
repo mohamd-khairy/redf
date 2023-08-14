@@ -131,6 +131,31 @@ const actions = {
       id: selectedFormId,
     });
   },
+  async getPagesValues({ commit }, formId) {
+    const response = await axios.get(`get-form-Requests/${formId}`);
+    console.log( "pages", response?.data.data);
+    let pageTabs = response?.data.data.form.pages;
+    const inputValues = response?.data.data.form_page_item_fill;
+    const selectedFormName = response?.data.data.form.name;
+    const selectedFormId = response?.data.data.form.id;
+
+    const inputValuesObj = {}
+    inputValues.forEach(({form_page_item_id, value}) => {
+      inputValuesObj[form_page_item_id] = value
+    })
+    for (const obj of pageTabs) {
+      for (const item of obj.items) {
+        item.value = inputValuesObj[item.id];
+      }
+  }
+
+
+    commit("SET_PAGES_VALUES", pageTabs);
+    commit("SET_SELECTED_FORM", {
+      name: selectedFormName,
+      id: selectedFormId,
+    });
+  },
   validateFormData({ state }) {
     return state.pages.every((page) => {
       return page.items.every(
