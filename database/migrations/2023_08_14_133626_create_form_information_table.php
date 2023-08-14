@@ -13,16 +13,17 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('requesters', function (Blueprint $table) {
+        Schema::create('form_information', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('user_id'); // Assuming you have a users table
-            $table->string('civil_registry')->nullable();
-            $table->string('commercial_register')->nullable();
+            $table->unsignedBigInteger('form_id');
+            $table->string('possibility');
+            $table->text('details')->nullable();
             $table->timestamps();
             $table->softDeletes();
 
-            // Foreign key relationship with users table
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            // Foreign key relationship with forms table
+            $table->foreign('form_id')->references('id')->on('forms')->onDelete('cascade');
+
         });
     }
 
@@ -33,6 +34,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('requesters');
+        Schema::dropIfExists('form_information');
     }
 };
