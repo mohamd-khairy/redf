@@ -40,15 +40,27 @@
             </v-col>
             <v-col cols="6">
               <v-autocomplete
-                v-model="form.document_id"
-                :items="documents"
-                :label="$t('tasks.document')"
-                :error-messages="errors['document_id']"
+                v-model="form.form_id"
+                :items="forms"
+                :label="$t('tasks.form')"
+                :error-messages="errors['form_id']"
                 item-text="name"
                 item-value="id"
                 outlined
                 dense
               ></v-autocomplete>
+            </v-col>
+            <v-col cols="6">
+              <v-file-input
+                        outlined
+                        dense
+                        counter
+                        show-size
+                        :label="$t('tasks.document')"
+                        @change="(file) => handleFileUpload(file, input)"
+                        :error-messages="errors['document']"
+                      >
+                      </v-file-input>
             </v-col>
 
             <v-col cols="12" sm="6" md="6">
@@ -134,7 +146,8 @@ export default {
       form: {
         name: "",
         type: "",
-        document_id: null,
+        document_name: null,
+        document: null,
         user_id: null,
         assigner_id: null,
         due_date: "",
@@ -147,7 +160,7 @@ export default {
   },
   computed: {
     ...mapState("auth", ["user"]),
-    ...mapState("tasks", ["users", "documents"]),
+    ...mapState("tasks", ["users", "documents", "forms"]),
   },
   created() {
     this.setBreadCrumb({
@@ -159,7 +172,7 @@ export default {
 
   methods: {
     ...mapActions("app", ["setBreadCrumb"]),
-    ...mapActions("tasks", ["createTask", "getUsers", "getDocuments"]),
+    ...mapActions("tasks", ["createTask", "getUsers", "getForms"]),
     saveTask() {
       this.loading = true;
       this.errors = {};
@@ -179,14 +192,26 @@ export default {
         });
     },
     open() {
-      this.getUsers().then(() => {});
-      this.getDocuments().then(() => {});
+      this.getUsers()
+      this.getForms()
     },
     formatDate(date) {
       if (!date) return null;
 
       const [year, month, day] = date.split("-");
       return `${day}-${month}-${year}`;
+    },
+    handleFileUpload(file, input) {
+      if (file) {
+        const fileName = file.name.split(".")[0];
+        const fileExtension = file.name.split(".")[1];
+        this.form.document_name = fileName + "." + fileExtension;
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = function () {
+          this.form.document = reader.result;
+        };
+      }
     },
   },
 };

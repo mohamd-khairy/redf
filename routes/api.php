@@ -100,7 +100,6 @@ Route::group(['prefix' => 'v1'], function () {
         Route::apiResource('documents', DocumentController::class);
     });
 
-
     /*********************FormsController***************** */
     Route::group(['middleware' => 'auth:sanctum'], function () {
         Route::get('all-form', [FormsController::class, 'allForm']);
@@ -112,6 +111,7 @@ Route::group(['prefix' => 'v1'], function () {
         Route::get('get-form/{formId}', [FormsController::class, 'listForm']);
         Route::post('store-form-fill', [FormsController::class, 'storeFormFill']);
         Route::get('get-form-Requests', [FormsController::class, 'getFormRequest']);
+        Route::get('get-form-Requests/{id}', [FormsController::class, 'getFormRequestfill']);
         Route::post('assign-request', [FormsController::class, 'assignRequest']);
         Route::get('all-forms', [FormsController::class, 'allForm']);
 

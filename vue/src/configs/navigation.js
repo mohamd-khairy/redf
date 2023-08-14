@@ -74,6 +74,14 @@ export default {
       permission: "read-role",
       items: []
     },
+    {
+      icon: "mdi-chart-donut",
+      text: "activities",
+      key: "menu.activities",
+      link: "/activities",
+      permission: "read-role",
+      items: []
+    },
     // {
     //   icon: "mdi-history",
     //   text: "log",

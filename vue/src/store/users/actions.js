@@ -27,6 +27,19 @@ const actions = {
     const { users } = response?.data.data
     commit('SET_BENEFICIARIES', users)
   },
+  async getActivities({ commit }, data) {
+    const response = await axios.get("all-logs", {
+      params: {
+        search: data.search,
+        page_size: data.pageSize,
+        page: data.pageNumber,
+        sortDirection: data.sortDirection,
+        sortCoulmn: data.sortColumn,
+      }
+    });
+    const actvs = response.data.data
+    commit('SET_ACTIVITIES', actvs)
+  },
   async getUser({ commit }, id) {
     const response = await axios.get(`users/${id}`)
     const user = response?.data.data

@@ -175,15 +175,25 @@ export default {
           this.loading = false;
           const { name, type, document_id, user_id, assigner_id, due_date } =
             this.task ?? {};
-          this.form = { name, type, document_id, user_id, assigner_id, due_date };
+            this.dueDate = new Date(due_date)
+        .toISOString()
+        .substr(0, 10),
+          this.form = { name, type, document_id, user_id, assigner_id };
         })
         .catch(() => {
           this.loading = false;
         });
     },
+    formatDate(date) {
+      if (!date) return null;
+
+      const [year, month, day] = date.split("-");
+      return `${day}-${month}-${year}`;
+    },
     updateForm() {
       this.loading = true;
       this.errors = {};
+      this.form.due_date = this.formatDate(this.dueDate)
       this.updateTask(this.form)
         .then(() => {
           this.loading = false;

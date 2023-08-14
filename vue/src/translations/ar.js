@@ -242,6 +242,7 @@ export default {
     templatesTypes: "أنواع النماذج",
     casesManagement: "ادارة القضايا",
     requests: "الطلبات",
+    activities: "النشاطات"
   },
   breadcrumbs: {
     pipesList: "قائمة النماذج",
@@ -598,6 +599,11 @@ export default {
     priority: "الاولوية",
     start_date: "تاريخ البداية",
     end_date: "تاريخ النهاية",
+    subject_type: "نوع الموضوع",
+    subject_id: "معرف الموضوع",
+    template: "نموذج",
+    causer_id: "معرف المستفيد",
+    // causer_type: "",
   },
   texts: {
     editor: "محرر",
@@ -827,6 +833,6 @@ export default {
     document: "المستند",
     due_date: "تاريخ الاستحقاق",
     requested_from: "مكلفة من",
-
+    form: "النموذج"
   },
 };

@@ -37,7 +37,7 @@ class DepartmentController extends Controller
             SortFilters::class,
         ])->thenReturn();
 
-        $data = $data->paginate(request('pageSize', 15));
+        $data = $data->paginate($request->pageSize ?? 15);
 
         return responseSuccess(['departments' => $data]);
     }
@@ -62,6 +62,11 @@ class DepartmentController extends Controller
         }
     }
 
+    public function show($id)
+    {
+        $department = Department::findOrFail($id);
+        return responseSuccess($department, 'department has been successfully showed');
+    }
 
 
     /**

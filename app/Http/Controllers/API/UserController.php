@@ -40,7 +40,7 @@ class UserController extends Controller
             SortFilters::class,
         ])->thenReturn();
 
-        $data = $data->paginate(request('pageSize', 15));
+        $data = $data->paginate($request->pageSize ?? 15);
 
         return responseSuccess(['users' => $data]);
     }
@@ -106,7 +106,7 @@ class UserController extends Controller
      */
     public function update(Request $request, $id)
     {
-         $validate = Validator::make($request->all(), [
+        $validate = Validator::make($request->all(), [
             'password' => 'nullable|min:8',
             'confirm_password' => 'same:password',
             'name' => 'nullable|string',
@@ -138,7 +138,7 @@ class UserController extends Controller
 
         if ($request->has('roles')) {
             $role = Role::find($request->input('roles'));
-             if ($role) {
+            if ($role) {
                 $user->roles()->sync([$role->id]);
             } else {
                 return responseSuccess("role not found");
@@ -196,17 +196,22 @@ class UserController extends Controller
 
         return responseFail('this action is not available');
     }
-    public function get_users(Request $request){
-        $query = User::whereNot('type','employee');
+    public function get_users(PageRequest $request)
+    {
+        $query = User::whereNot('type', 'employee');
+
         $data = app(Pipeline::class)->send($query)->through([
             SearchFilters::class,
             SortFilters::class,
         ])->thenReturn();
-        $data = $data->paginate(request('pageSize', 15));
+
+        $data = $data->paginate($request->pageSize ?? 15);
+
         return responseSuccess(['users' => $data]);
     }
 
-    public function user_type(Request $request){
+    public function user_type(PageRequest $request)
+    {
         $query = User::query();
         // Check if the "type" parameter is present in the request
         if ($request->has('type')) {
@@ -216,7 +221,9 @@ class UserController extends Controller
             SearchFilters::class,
             SortFilters::class,
         ])->thenReturn();
-        $data = $data->paginate(request('pageSize', 15));
+
+        $data = $data->paginate($request->pageSize ?? 15);
+
         return responseSuccess(['users' => $data]);
     }
     public function user_employee(Request $request){

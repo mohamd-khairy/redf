@@ -22,7 +22,9 @@ use Illuminate\Support\Facades\Storage;
 use App\Http\Requests\CreateFormRequest;
 use App\Http\Requests\FormAssignRequest;
 use App\Http\Requests\FormUpdateRequest;
+use App\Http\Requests\PageRequest;
 use App\Http\Resources\FormItemResource;
+use Throwable;
 
 class FormsController extends Controller
 {
@@ -218,11 +220,11 @@ class FormsController extends Controller
                 $pageItems = $page['items'] ?? [];
                 foreach ($pageItems as $pageItem) {
                     // Check if the type is "file"
-            if ($pageItem['type'] === 'file') {
+                    if ($pageItem['type'] === 'file') {
                         // Decode the base64 value
                         $fileName = $this->generateUniqueFileName($pageItem['value']);
                         $decodedValue = 'formPages/' . $fileName;
-                        $file = explode(',',$pageItem['value'])[1];
+                        $file = explode(',', $pageItem['value'])[1];
 
                         $fileDataDecode = base64_decode($file);
                         Storage::disk('public')->put($decodedValue, $fileDataDecode);
@@ -252,24 +254,20 @@ class FormsController extends Controller
 
         $extension = explode('/', mime_content_type($originalFileName))[1];
 
-        if($extension === 'vnd.openxmlformats-officedocument.spreadsheetml.sheet'){
+        if ($extension === 'vnd.openxmlformats-officedocument.spreadsheetml.sheet') {
             $extension = 'xlsx';
-        }
-        elseif ($extension === 'octet-stream' || $extension === 'vnd.openxmlformats-officedocument.wordprocessingml.document')
-        {
+        } elseif ($extension === 'octet-stream' || $extension === 'vnd.openxmlformats-officedocument.wordprocessingml.document') {
             $extension = 'docx';
-        }
-        elseif ($extension === 'plain')
-        {
+        } elseif ($extension === 'plain') {
             $extension = 'txt';
-        }else{
+        } else {
             $extension = explode('/', mime_content_type($originalFileName))[1];
         }
 
         return uniqid() . '_' . Str::random(8) . '.' . $extension;
     }
 
-    public function getFormRequest(Request $request)
+    public function getFormRequest(PageRequest $request)
     {
         try {
             $query = FormRequest::with('form.pages.items', 'user', 'form_page_item_fill')
@@ -277,13 +275,26 @@ class FormsController extends Controller
                     $q->where('template_id', $request->template_id);
                 });
 
-            $formRequests = app(Pipeline::class)->send($query)->through([
+            $data = app(Pipeline::class)->send($query)->through([
                 SortFilters::class,
             ])->thenReturn();
 
-            $formRequests = $formRequests->paginate(request('page_size', 10));
+            $data = $data->paginate($request->pageSize ?? 15);
 
-            return responseSuccess($formRequests, 'Form requests retrieved successfully');
+            return responseSuccess($data, 'Form requests retrieved successfully');
+        } catch (\Throwable $e) {
+            // dd($e->getMed);
+            // Return an error response if something goes wrong
+            return responseFail($e->getMessage());
+        }
+    }
+
+    public function getFormRequestfill($id)
+    {
+        try {
+            $formfill = FormRequest::with('form.pages.items', 'user', 'form_page_item_fill')->find($id);
+
+            return responseSuccess($formfill, 'Form requests retrieved successfully');
         } catch (\Throwable $e) {
             // dd($e->getMed);
             // Return an error response if something goes wrong
@@ -297,9 +308,9 @@ class FormsController extends Controller
             $form_request_ids = $request->form_request_id;
             $dateFromRequest = $request->date;
             $formattedDate = Carbon::createFromFormat('Y-m-d', $dateFromRequest)->toDateString();
-             // check if  form_request_id has record or not
+            // check if  form_request_id has record or not
             foreach ($form_request_ids as $form_request_id) {
-                $checkIfAssigned = AssignRequest::where('form_request_id', $form_request_id)->where('status','active')->first();
+                $checkIfAssigned = AssignRequest::where('form_request_id', $form_request_id)->where('status', 'active')->first();
 
                 if ($checkIfAssigned) {
                     if ($checkIfAssigned->status !== "deleted") {
@@ -322,12 +333,8 @@ class FormsController extends Controller
                 FormRequest::where('id', $form_request_id)->update(['status' => 'processing']);
             }
             return responseSuccess(['assignNew' => $assignNew]);
-
-
-        } catch (Exception $e) {
-            return $e;
+        } catch (Throwable $e) {
             return response()->json(['message' => 'Unknown error', $e], 500);
         }
-
     }
 }

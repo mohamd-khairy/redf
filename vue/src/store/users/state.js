@@ -1,7 +1,8 @@
 const state = {
   users: [],
   beneficiaries: [],
-  user: {}
+  user: {},
+  actvs: [],
 }
 
 export default state

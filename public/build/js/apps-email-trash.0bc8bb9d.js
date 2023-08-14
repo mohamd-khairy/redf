@@ -1,1 +1,0 @@
-(window["webpackJsonp"]=window["webpackJsonp"]||[]).push([["apps-email-trash"],{2576:function(e,n,t){"use strict";t.r(n);var a=function(){var e=this,n=e.$createElement,t=e._self._c||n;return t("email-list")},l=[],s=t("681c"),i={components:{EmailList:s["a"]}},c=i,o=t("2877"),p=Object(o["a"])(c,a,l,!1,null,null,null);n["default"]=p.exports}}]);
