@@ -729,6 +729,13 @@
   font-weight: bold;
 }
 
+.e-tab .e-tab-header .e-toolbar-item .e-icons.e-close-icon {
+  margin  : 0 !important;
+  position: absolute;
+  top     : 9%;
+  left    : 3%;
+}
+
 .page-dynamic .e-content.e-lib.e-touch .element .context-menu-list {
   position : absolute;
   top      : 20% !important;
