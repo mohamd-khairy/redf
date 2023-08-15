@@ -450,7 +450,7 @@ export default {
   },
   cases: {
     caseType: "نوع القضية",
-    casesList: "قائمة القضايا",
+    casesList: "قائمة الطلبات",
     deleteRole: "مسح الصلاحية",
     createRole: "إنشاء صلاحية",
     createNewRole: "إنشاء صلاحية جديدة",
