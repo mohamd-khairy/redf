@@ -104,7 +104,9 @@ class FormsController extends Controller
                 'title' => $pageData['title']['title'],
                 'editable' => $pageData['title']['editing'] === false ? 0 : 1,
                 'items' => collect($pageData['items'] ?? [])->map(function ($itemData) {
+                    if (!$itemData['removed']) {
                     return collect($itemData)->only(['type', 'label', 'notes', 'width', 'height', 'enabled', 'required', 'website_view', 'childList'])->toArray();
+                    }
                 }),
             ];
         })->toArray());
@@ -189,7 +191,7 @@ class FormsController extends Controller
              return responseFail($th->getMessage());
         }
     }
-    public function updateFormFill(Request $request,$id)
+    public function updateFormFill(Request $request, $id)
     {
         try {
             return DB::transaction(function() use ($request,$id ){
@@ -226,7 +228,7 @@ class FormsController extends Controller
     public function getFormRequest(PageRequest $request)
     {
         try {
-            $query = FormRequest::with('form.pages.items', 'user','formAssignedRequests', 'form_page_item_fill')
+            $query = FormRequest::with('form.pages.items', 'user', 'formAssignedRequests', 'form_page_item_fill')
                 ->whereHas('form', function ($q) use ($request) {
                     $q->where('template_id', $request->template_id);
                 });
