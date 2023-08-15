@@ -39,7 +39,7 @@
                         :error-messages="errorMessage(input)"
                       ></v-textarea>
                     </template>
-                    <template v-else-if="input.type === 'file'" >
+                    <template v-else-if="input.type === 'file'">
                       <v-file-input
                         outlined
                         dense
@@ -52,24 +52,49 @@
                         :error-messages="errorMessage(input)"
                       >
                       </v-file-input>
-                      <div class="mt-1 d-flex justify-content-between align-item-center" v-if="input.preview && input.preview === input.value">
-                        <h6>{{fileInfo(input.preview).name}}</h6>
-                        <img v-if="fileInfo(input.preview).type==='png' || fileInfo(input.preview).type==='jpg' || fileInfo(input.preview).type==='jpeg'" width="50" height="50" :src="input.preview" alt="file preview">
-                      <a v-else-if="fileInfo(input.preview).type==='pdf'" :href="input.preview" target="_blank">
-                        <v-icon>
-                          mdi-file-pdf-box
-                        </v-icon>
-                      </a>
-                      <a v-else-if="fileInfo(input.preview).type==='doc' || fileInfo(input.preview).type==='docx'" :href="input.preview" target="_blank">
-                        <v-icon>
-                          mdi-file-word-outline
-                        </v-icon>
-                      </a>
-                      <a v-else-if="fileInfo(input.preview).type==='xls' || fileInfo(input.preview).type==='xlsx'" :href="input.preview" target="_blank">
-                        <v-icon>
-                          mdi-file-excel
-                        </v-icon>
-                      </a>
+                      <div
+                        class="mt-1 d-flex justify-content-between align-item-center"
+                        v-if="input.preview && input.preview === input.value"
+                      >
+                        <h6>{{ fileInfo(input.preview).name }}</h6>
+                        <img
+                          v-if="
+                            fileInfo(input.preview).type === 'png' ||
+                            fileInfo(input.preview).type === 'jpg' ||
+                            fileInfo(input.preview).type === 'jpeg'
+                          "
+                          width="50"
+                          height="50"
+                          :src="input.preview"
+                          alt="file preview"
+                        />
+                        <a
+                          v-else-if="fileInfo(input.preview).type === 'pdf'"
+                          :href="input.preview"
+                          target="_blank"
+                        >
+                          <v-icon> mdi-file-pdf-box </v-icon>
+                        </a>
+                        <a
+                          v-else-if="
+                            fileInfo(input.preview).type === 'doc' ||
+                            fileInfo(input.preview).type === 'docx'
+                          "
+                          :href="input.preview"
+                          target="_blank"
+                        >
+                          <v-icon> mdi-file-word-outline </v-icon>
+                        </a>
+                        <a
+                          v-else-if="
+                            fileInfo(input.preview).type === 'xls' ||
+                            fileInfo(input.preview).type === 'xlsx'
+                          "
+                          :href="input.preview"
+                          target="_blank"
+                        >
+                          <v-icon> mdi-file-excel </v-icon>
+                        </a>
                       </div>
                     </template>
                     <template v-else-if="input.type === 'select'">
@@ -133,12 +158,9 @@ export default {
       isSubmitingForm: false,
       breadcrumbs: [
         {
-          text: this.$t("menu.casesManagement"),
+          text: this.$t("menu.requests"),
           disabled: false,
           href: "#",
-        },
-        {
-          text: this.$t("menu.cases"),
         },
       ],
       activeTab: null,
@@ -148,17 +170,38 @@ export default {
   },
   created() {
     this.init();
-    this.setBreadCrumb({
-      breadcrumbs: this.breadcrumbs,
-      pageTitle: this.$t("cases.casesList"),
-    });
   },
   computed: {
     ...mapState("cases", ["pagesValues", "selectedForm"]),
+    ...mapState("app", ["navTemplates"]),
   },
   methods: {
     ...mapActions("app", ["setBreadCrumb"]),
-    ...mapActions("cases", ["getPagesValues", "validateFormData", "updatePages"]),
+    ...mapActions("cases", [
+      "getPagesValues",
+      "validateFormData",
+      "updatePages",
+    ]),
+    setCurrentBread() {
+      const { formType: currentFormId } = this.$route.params;
+      const currentPage = this.navTemplates.find((nav) => {
+        return nav.id === +currentFormId;
+      });
+      if (currentPage) {
+        this.breadcrumbs.push({
+          text: currentPage.title,
+          disabled: false,
+          href: `/cases/${currentFormId}`,
+        });
+      }
+      this.breadcrumbs.push({
+        text: this.$t("general.edit") + " " + this.selectedForm.name,
+      });
+      this.setBreadCrumb({
+        breadcrumbs: this.breadcrumbs,
+        pageTitle: this.$t("cases.casesList"),
+      });
+    },
     init() {
       const { id } = this.$route.params;
       if (!id) {
@@ -167,15 +210,7 @@ export default {
       this.initialLoading = true;
       this.getPagesValues(id)
         .then((_) => {
-          this.breadcrumbs.push({
-            text: this.$t(this.selectedForm.name),
-          });
-          this.setBreadCrumb({
-            breadcrumbs: this.breadcrumbs,
-            pageTitle: this.$t("cases.casesList"),
-          });
-
-          console.log(this.pagesValues);
+          this.setCurrentBread();
         })
         .finally((_) => {
           this.initialLoading = false;
@@ -202,46 +237,44 @@ export default {
         reader.readAsDataURL(file);
         reader.onload = function () {
           input["value"] = reader.result;
-
         };
       }
     },
-    fileInfo(filePath){
-      const filePathArr = filePath.split(".")
+    fileInfo(filePath) {
+      const filePathArr = filePath.split(".");
       const fileInfo = filePathArr.pop();
-      const fileName = filePath.split('/').pop();
-      const info = {name: fileName || '', type:fileInfo || ''}
-      return info
+      const fileName = filePath.split("/").pop();
+      const info = { name: fileName || "", type: fileInfo || "" };
+      return info;
     },
 
-    handleFileClear(input){
-      if(input.preview){
-        input.value = input.preview
+    handleFileClear(input) {
+      if (input.preview) {
+        input.value = input.preview;
       }
     },
     loadFile(filePath, input) {
       console.log(input);
 
-      fetch("/"+filePath)
-        .then(response => response.blob())
-        .then(blob => {
-          const file = new File([blob], 'photo.png', { type: 'image/png' });
-          this.handleFileUpload(file, input)
-          return file
-
+      fetch("/" + filePath)
+        .then((response) => response.blob())
+        .then((blob) => {
+          const file = new File([blob], "photo.png", { type: "image/png" });
+          this.handleFileUpload(file, input);
+          return file;
         })
-        .catch(error => {
-          console.error('Error loading file:', error);
+        .catch((error) => {
+          console.error("Error loading file:", error);
         });
     },
     async saveForm() {
       const { id } = this.$route.params;
-
+      const { formType: currentFormId } = this.$route.params;
       this.isSubmitingForm = true;
       if (await this.validateFormData()) {
         await this.updatePages(id);
         this.isSubmitingForm = false;
-        this.$router.push({ path: "/cases/1"})
+        this.$router.push({ path: `/cases/${currentFormId}` });
       } else {
         this.showErrors = true;
         this.isSubmitingForm = false;

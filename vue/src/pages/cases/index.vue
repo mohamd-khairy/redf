@@ -60,12 +60,10 @@
                 elevation="0"
                 v-bind="attrs"
                 v-on="on"
-                :to=formTypesUrl
+                :to="formTypesUrl"
                 v-can="'create-user'"
               >
-                <v-icon>
-                  mdi-plus
-                </v-icon>
+                <v-icon> mdi-plus </v-icon>
               </v-btn>
             </template>
             <span>{{ $t("cases.createCase") }}</span>
@@ -157,7 +155,7 @@
             <v-btn
               color="primary"
               icon
-              :to="`/cases/edit/${item.id}`"
+              :to="`/cases/${currentPageId}/edit/${item.id}`"
               v-can="'update-user'"
             >
               <v-icon>mdi-open-in-new</v-icon>
@@ -206,6 +204,7 @@ export default {
   },
   data() {
     return {
+      currentPageId: null,
       page: 1,
       total: 0,
       numberOfPages: 0,
@@ -213,13 +212,10 @@ export default {
       isLoading: false,
       breadcrumbs: [
         {
-          text: this.$t("menu.casesManagement"),
+          text: this.$t("menu.requests"),
           disabled: false,
           href: "#"
         },
-        {
-          text: this.$t("menu.cases")
-        }
       ],
 
       searchQuery: "",
@@ -249,22 +245,22 @@ export default {
     deep: true,
     searchQuery() {
       this.open();
-    }
+    },
+    navTemplates() {
+      this.setCurrentBread();
+    },
+    currentPageId() {
+      this.setCurrentBread();
+    },
   },
   computed: {
-    ...mapState("cases", ["formRequests"])
+    ...mapState("cases", ["formRequests"]),
+    ...mapState("app", ["navTemplates"]),
   },
   created() {
-    let {id} = this.$route.params;
-    this.formTypesUrl = '/cases/form-types/'+id
-    this.setBreadCrumb({
-      breadcrumbs: this.breadcrumbs,
-      pageTitle: this.$t("cases.casesList")
-    });
-    this.$root.$on("table_component", () => {
-      this.open();
-    });
-
+    let { id } = this.$route.params;
+    this.currentPageId = id;
+    this.formTypesUrl = `/cases/${id}/form-types`;
   },
   mounted() {
     // this.open()
@@ -273,13 +269,29 @@ export default {
     ...mapActions("cases", ["getFormRequests", "deleteUser", "deleteAll"]),
     ...mapActions("app", ["setBreadCrumb"]),
     search() {},
+    setCurrentBread() {
+      const currentPage = this.navTemplates.find((nav) => {
+        return nav.id === +this.currentPageId;
+      });
+      if (currentPage) {
+        this.breadcrumbs.push({
+          text: currentPage.title,
+          disabled: false,
+          href: "#",
+        });
+      }
+      this.setBreadCrumb({
+        breadcrumbs: this.breadcrumbs,
+        pageTitle: this.$t("cases.casesList"),
+      });
+    },
     open() {
       this.isLoading = true;
       let { page, itemsPerPage } = this.options;
       const direction = this.options.sortDesc[0] ? "asc" : "desc";
       let {id} = this.$route.params;
       let data = {
-        template_id:id,
+        template_id: id,
         search: this.searchQuery,
         pageSize: itemsPerPage,
         pageNumber: page,
@@ -313,7 +325,7 @@ export default {
       if (isConfirmed) {
         this.isLoading = true;
         this.deleteUser(id)
-          .then(response => {
+          .then((response) => {
             makeToast("success", response.data.message);
             this.open();
             this.isLoading = false;

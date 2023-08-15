@@ -9,7 +9,7 @@ const actions = {
       commit("showToast", {
         color: "black",
         message,
-        timeout: 3000
+        timeout: 3000,
       });
     });
   },
@@ -20,7 +20,7 @@ const actions = {
       commit("showToast", {
         color: "error",
         message: message + " " + error.message,
-        timeout: 10000
+        timeout: 10000,
       });
     });
   },
@@ -31,7 +31,7 @@ const actions = {
       commit("showToast", {
         color: "success",
         message,
-        timeout: 3000
+        timeout: 3000,
       });
     });
   },
@@ -45,7 +45,7 @@ const actions = {
         current_page: notifications.current_page,
         last_page: notifications.last_page,
         count,
-        moreItems: notifications.next_page_url ? true : false
+        moreItems: notifications.next_page_url ? true : false,
       });
     } catch (error) {
       console.log(error);
@@ -64,13 +64,13 @@ const actions = {
       current_page: notifications.current_page,
       last_page: notifications.last_page,
       count,
-      moreItems: notifications.next_page_url ? true : false
+      moreItems: notifications.next_page_url ? true : false,
     });
   },
   async notificationCounter({ commit }) {
     try {
       let response = await axios.post("notifications", {
-        action: "open"
+        action: "open",
       });
       commit("resetCounter");
     } catch (error) {
@@ -81,7 +81,7 @@ const actions = {
     try {
       let response = await axios.post("notifications", {
         action: "read",
-        ids
+        ids,
       });
       commit("readNotification", ids);
     } catch (error) {
@@ -113,11 +113,11 @@ const actions = {
         settings.push({
           key: key,
           value: configs[key],
-          group: "theme"
+          group: "theme",
         });
       }
       return await axios.post("settings", {
-        settings
+        settings,
       });
     } catch (error) {
       console.log(error);
@@ -126,7 +126,21 @@ const actions = {
   setBreadCrumb({ commit }, { breadcrumbs, pageTitle }) {
     commit("setPageTitle", pageTitle);
     commit("setBreadCrumb", breadcrumbs);
-  }
+  },
+  async getNavTemplate({ commit }) {
+    try {
+      const response = await axios.get(`get-template-type`);
+      const templates = response?.data.data;
+      const templateData = templates.map((template) => ({
+        title: template.name,
+        id: template.id,
+      }));
+
+      commit("SET_NAV_TEMPLATE", templateData);
+    } catch (error) {
+      console.error(error);
+    }
+  },
 };
 
 // const showToast = ({ state, commit }, message) => {

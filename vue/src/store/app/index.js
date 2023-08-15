@@ -12,7 +12,7 @@ const {
   isRTL = theme.isRTL,
   isContentBoxed = theme.isContentBoxed,
   isToolbarDetached = theme.isToolbarDetached,
-  toolbarTheme = theme.toolbarTheme
+  toolbarTheme = theme.toolbarTheme,
 } = localStorage.getItem("themeConfigs")
   ? JSON.parse(localStorage.getItem("themeConfigs"))
   : {};
@@ -21,6 +21,7 @@ const state = {
   pageTitle: "",
   breadcrumbs: [],
   product,
+  navTemplates: [],
 
   time,
 
@@ -41,7 +42,7 @@ const state = {
     current_page: 1,
     last_page: 0,
     count: 0,
-    moreItems: false
+    moreItems: false,
   },
 
   // App.vue main toast
@@ -49,13 +50,13 @@ const state = {
     show: false,
     color: "black",
     message: "",
-    timeout: 3000
-  }
+    timeout: 3000,
+  },
 };
 
 export default {
   namespaced: true,
   state,
   actions,
-  mutations
+  mutations,
 };

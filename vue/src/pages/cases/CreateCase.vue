@@ -114,12 +114,9 @@ export default {
       isSubmitingForm: false,
       breadcrumbs: [
         {
-          text: this.$t("menu.casesManagement"),
+          text: this.$t("menu.requests"),
           disabled: false,
           href: "#",
-        },
-        {
-          text: this.$t("menu.cases"),
         },
       ],
       activeTab: null,
@@ -129,17 +126,40 @@ export default {
   },
   created() {
     this.init();
+
     this.setBreadCrumb({
       breadcrumbs: this.breadcrumbs,
       pageTitle: this.$t("cases.casesList"),
     });
   },
+
   computed: {
     ...mapState("cases", ["pages", "selectedForm"]),
+    ...mapState("app", ["navTemplates"]),
   },
   methods: {
     ...mapActions("app", ["setBreadCrumb"]),
-    ...mapActions("cases", ["getPages", "validateFormData","savePages"]),
+    ...mapActions("cases", ["getPages", "validateFormData", "savePages"]),
+    setCurrentBread() {
+      const { formType: currentFormId } = this.$route.params;
+      const currentPage = this.navTemplates.find((nav) => {
+        return nav.id === +currentFormId;
+      });
+      if (currentPage) {
+        this.breadcrumbs.push({
+          text: currentPage.title,
+          disabled: false,
+          href: `/cases/${currentFormId}`,
+        });
+      }
+      this.breadcrumbs.push({
+        text: this.$t(this.selectedForm.name),
+      });
+      this.setBreadCrumb({
+        breadcrumbs: this.breadcrumbs,
+        pageTitle: this.$t("cases.casesList"),
+      });
+    },
     init() {
       const { id } = this.$route.params;
       if (!id) {
@@ -148,15 +168,7 @@ export default {
       this.initialLoading = true;
       this.getPages(id)
         .then((_) => {
-          this.breadcrumbs.push({
-            text: this.$t(this.selectedForm.name),
-          });
-          this.setBreadCrumb({
-            breadcrumbs: this.breadcrumbs,
-            pageTitle: this.$t("cases.casesList"),
-          });
-
-          console.log(this.pages);
+          this.setCurrentBread();
         })
         .finally((_) => {
           this.initialLoading = false;
@@ -190,11 +202,12 @@ export default {
     },
     async saveForm() {
       const { id } = this.$route.params;
+      const { formType: currentFormId } = this.$route.params;
       this.isSubmitingForm = true;
       if (await this.validateFormData()) {
         await this.savePages(id);
         this.isSubmitingForm = false;
-        this.$router.push({ path: "/cases/1"})
+        this.$router.push({ path: `/cases/${currentFormId}` });
       } else {
         this.showErrors = true;
         this.isSubmitingForm = false;

@@ -235,7 +235,7 @@ export default {
     review_and_audit: "Review and audit",
     casesManagement: "Cases Management",
     requests: "Requests",
-    activities: "Activities"
+    activities: "Activities",
   },
   breadcrumbs: {
     pipesList: "Pipes List",
@@ -467,7 +467,7 @@ export default {
       user: "User",
       employee: "Employee",
       governorate: "Governorate",
-    }
+    },
   },
   cases: {
     caseType: "Cases Type",
@@ -643,6 +643,7 @@ export default {
     ResponseToCustomerFeedback: "Response to Customer Feedback",
   },
   general: {
+    edit: "Edit",
     count: "Count",
     notice: "Notice",
     not_notice: "Not notice",

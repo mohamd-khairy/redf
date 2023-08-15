@@ -11,18 +11,18 @@ export default {
       message,
       color,
       timeout,
-      show: true
+      show: true,
     };
   },
-  hideToast: state => {
+  hideToast: (state) => {
     state.toast.show = false;
   },
-  resetToast: state => {
+  resetToast: (state) => {
     state.toast = {
       show: false,
       color: "black",
       message: "",
-      timeout: 3000
+      timeout: 3000,
     };
   },
 
@@ -90,12 +90,12 @@ export default {
     state.notifications.data = [value, ...state.notifications.data];
   },
 
-  resetCounter: state => {
+  resetCounter: (state) => {
     state.notifications.count = 0;
   },
 
   readNotification: (state, ids) => {
-    state.notifications.data.forEach(notification => {
+    state.notifications.data.forEach((notification) => {
       if (ids.includes(notification.id)) {
         notification.read_at = new Date().toISOString();
       }
@@ -106,5 +106,8 @@ export default {
   },
   setBreadCrumb: (state, breadcrumbs) => {
     state.breadcrumbs = breadcrumbs;
-  }
+  },
+  SET_NAV_TEMPLATE: (state, data) => {
+    state.navTemplates = data;
+  },
 };

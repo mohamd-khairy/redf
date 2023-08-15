@@ -450,7 +450,7 @@ export default {
   },
   cases: {
     caseType: "نوع القضية",
-    casesList: "قائمة القضايا",
+    casesList: "قائمة الطلبات",
     assignUser:"تعيين مستخدم",
     user:"مستفيد",
 
@@ -652,6 +652,7 @@ export default {
     ResponseToCustomerFeedback: "الرد على ملاحظات العملاء",
   },
   general: {
+    edit: "تعديل",
     count: "الاجمالى",
     title: "العنوان",
     minute: "دقيقة",
