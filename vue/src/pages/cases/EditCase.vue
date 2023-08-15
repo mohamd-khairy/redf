@@ -2,13 +2,13 @@
   <div class="d-flex flex-column flex-grow-1">
     <v-card v-if="!initialLoading">
       <v-tabs v-model="activeTab">
-        <v-tab v-for="(tab, index) in pages" :key="index">{{
+        <v-tab v-for="(tab, index) in pagesValues" :key="index">{{
           tab.title
         }}</v-tab>
       </v-tabs>
       <v-card-text>
         <v-tabs-items v-model="activeTab">
-          <v-tab-item v-for="(tab, tabIndex) in pages" :key="tabIndex">
+          <v-tab-item v-for="(tab, tabIndex) in pagesValues" :key="tabIndex">
             <v-form>
               <v-container>
                 <v-row dense>
@@ -39,19 +39,38 @@
                         :error-messages="errorMessage(input)"
                       ></v-textarea>
                     </template>
-                    <template v-else-if="input.type === 'file'">
+                    <template v-else-if="input.type === 'file'" >
                       <v-file-input
                         outlined
                         dense
-                        counter
                         show-size
                         :label="getInputLabel(input)"
                         @change="(file) => handleFileUpload(file, input)"
+                        @click:clear="handleFileClear(input)"
                         :required="input.required"
                         :rules="input.required ? [requiredRule] : []"
                         :error-messages="errorMessage(input)"
                       >
                       </v-file-input>
+                      <div class="mt-1 d-flex justify-content-between align-item-center" v-if="input.preview && input.preview === input.value">
+                        <h6>{{fileInfo(input.preview).name}}</h6>
+                        <img v-if="fileInfo(input.preview).type==='png' || fileInfo(input.preview).type==='jpg' || fileInfo(input.preview).type==='jpeg'" width="50" height="50" :src="input.preview" alt="file preview">
+                      <a v-else-if="fileInfo(input.preview).type==='pdf'" :href="input.preview" target="_blank">
+                        <v-icon>
+                          mdi-file-pdf-box
+                        </v-icon>
+                      </a>
+                      <a v-else-if="fileInfo(input.preview).type==='doc' || fileInfo(input.preview).type==='docx'" :href="input.preview" target="_blank">
+                        <v-icon>
+                          mdi-file-word-outline
+                        </v-icon>
+                      </a>
+                      <a v-else-if="fileInfo(input.preview).type==='xls' || fileInfo(input.preview).type==='xlsx'" :href="input.preview" target="_blank">
+                        <v-icon>
+                          mdi-file-excel
+                        </v-icon>
+                      </a>
+                      </div>
                     </template>
                     <template v-else-if="input.type === 'select'">
                       <v-select
@@ -135,18 +154,18 @@ export default {
     });
   },
   computed: {
-    ...mapState("cases", ["pages", "selectedForm"]),
+    ...mapState("cases", ["pagesValues", "selectedForm"]),
   },
   methods: {
     ...mapActions("app", ["setBreadCrumb"]),
-    ...mapActions("cases", ["getPages", "validateFormData", "updatePages"]),
+    ...mapActions("cases", ["getPagesValues", "validateFormData", "updatePages"]),
     init() {
       const { id } = this.$route.params;
       if (!id) {
         this.$router.push({ name: "dashboard-analytics" });
       }
       this.initialLoading = true;
-      this.getPages(id)
+      this.getPagesValues(id)
         .then((_) => {
           this.breadcrumbs.push({
             text: this.$t(this.selectedForm.name),
@@ -156,24 +175,13 @@ export default {
             pageTitle: this.$t("cases.casesList"),
           });
 
-          console.log(this.pages);
+          console.log(this.pagesValues);
         })
         .finally((_) => {
           this.initialLoading = false;
         });
     },
-    handleFileUpload(file, input) {
-      if (file) {
-        const fileName = file.name.split(".")[0];
-        const fileExtension = file.name.split(".")[1];
-        input["file_name"] = fileName + "." + fileExtension;
-        const reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onload = function () {
-          input["value"] = reader.result;
-        };
-      }
-    },
+
     getInputLabel(input) {
       const inputLabel = input.label;
       const isRequired = input.required;
@@ -188,8 +196,47 @@ export default {
       const msg = this.$t("general.required_input");
       return this.showErrors && input.required && !input.value ? [msg] : [];
     },
+    handleFileUpload(file, input) {
+      if (file) {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = function () {
+          input["value"] = reader.result;
+
+        };
+      }
+    },
+    fileInfo(filePath){
+      const filePathArr = filePath.split(".")
+      const fileInfo = filePathArr.pop();
+      const fileName = filePath.split('/').pop();
+      const info = {name: fileName || '', type:fileInfo || ''}
+      return info
+    },
+
+    handleFileClear(input){
+      if(input.preview){
+        input.value = input.preview
+      }
+    },
+    loadFile(filePath, input) {
+      console.log(input);
+
+      fetch("/"+filePath)
+        .then(response => response.blob())
+        .then(blob => {
+          const file = new File([blob], 'photo.png', { type: 'image/png' });
+          this.handleFileUpload(file, input)
+          return file
+
+        })
+        .catch(error => {
+          console.error('Error loading file:', error);
+        });
+    },
     async saveForm() {
       const { id } = this.$route.params;
+
       this.isSubmitingForm = true;
       if (await this.validateFormData()) {
         await this.updatePages(id);

@@ -139,7 +139,7 @@ export default {
   },
   methods: {
     ...mapActions("app", ["setBreadCrumb"]),
-    ...mapActions("cases", ["getPages", "validateFormData", "updatePages"]),
+    ...mapActions("cases", ["getPages", "validateFormData","savePages"]),
     init() {
       const { id } = this.$route.params;
       if (!id) {
@@ -192,7 +192,7 @@ export default {
       const { id } = this.$route.params;
       this.isSubmitingForm = true;
       if (await this.validateFormData()) {
-        await this.updatePages(id);
+        await this.savePages(id);
         this.isSubmitingForm = false;
         this.$router.push({ path: "/cases/1"})
       } else {
