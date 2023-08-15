@@ -56,16 +56,14 @@
             <template v-slot:activator="{ on, attrs }">
               <v-btn
                 color="primary"
-                class="mx-2 "
+                class="mx-2"
                 elevation="0"
                 v-bind="attrs"
                 v-on="on"
-                :to=formTypesUrl
+                :to="formTypesUrl"
                 v-can="'create-user'"
               >
-                <v-icon>
-                  mdi-plus
-                </v-icon>
+                <v-icon> mdi-plus </v-icon>
               </v-btn>
             </template>
             <span>{{ $t("cases.createCase") }}</span>
@@ -100,26 +98,26 @@
         </template>
 
         <template v-slot:item.user="{ item }">
-          <div>{{ item.user.name ?? '---' }}</div>
+          <div>{{ item.user.name ?? "---" }}</div>
         </template>
 
         <template v-slot:item.name="{ item }">
-          <div>{{ item.form.name ?? '---' }}</div>
+          <div>{{ item.form.name ?? "---" }}</div>
         </template>
 
-<!--        <template v-slot:item.email="{ item }">-->
-<!--          <div class="d-flex align-center py-1">-->
-<!--            <v-avatar size="32" class="elevation-1 grey lighten-3 ml-2">-->
-<!--              <v-img :src="item.avatar" />-->
-<!--            </v-avatar>-->
-<!--            <div class="ml-1 caption font-weight-bold">-->
-<!--              <copy-label :text="item.email" />-->
-<!--            </div>-->
-<!--          </div>-->
-<!--        </template>-->
+        <!--        <template v-slot:item.email="{ item }">-->
+        <!--          <div class="d-flex align-center py-1">-->
+        <!--            <v-avatar size="32" class="elevation-1 grey lighten-3 ml-2">-->
+        <!--              <v-img :src="item.avatar" />-->
+        <!--            </v-avatar>-->
+        <!--            <div class="ml-1 caption font-weight-bold">-->
+        <!--              <copy-label :text="item.email" />-->
+        <!--            </div>-->
+        <!--          </div>-->
+        <!--        </template>-->
 
         <template v-slot:item.user="{ item }">
-          <div>{{ item.user.name ?? '---' }}</div>
+          <div>{{ item.user.name ?? "---" }}</div>
         </template>
 
         <template v-slot:item.role="{ item }">
@@ -144,7 +142,7 @@
             <v-btn
               color="primary"
               icon
-              :to="`/cases/edit/${item.id}`"
+              :to="`/cases/${currentPageId}/edit/${item.id}`"
               v-can="'update-user'"
             >
               <v-icon>mdi-open-in-new</v-icon>
@@ -180,10 +178,11 @@ import emptyDataSvg from "@/assets/images/illustrations/empty-data.svg";
 export default {
   components: {
     CopyLabel,
-    emptyDataSvg
+    emptyDataSvg,
   },
   data() {
     return {
+      currentPageId: null,
       page: 1,
       total: 0,
       numberOfPages: 0,
@@ -191,13 +190,10 @@ export default {
       isLoading: false,
       breadcrumbs: [
         {
-          text: this.$t("menu.casesManagement"),
+          text: this.$t("menu.requests"),
           disabled: false,
-          href: "#"
+          href: "#",
         },
-        {
-          text: this.$t("menu.cases")
-        }
       ],
 
       searchQuery: "",
@@ -210,9 +206,9 @@ export default {
         { text: this.$t("tables.assigner"), value: "assigner" },
         { text: this.$t("tables.status"), value: "status" },
         { text: this.$t("tables.created"), value: "created_at" },
-        { text: "", sortable: false, align: "right", value: "action" }
+        { text: "", sortable: false, align: "right", value: "action" },
       ],
-      formTypesUrl:''
+      formTypesUrl: "",
     };
   },
   watch: {
@@ -220,23 +216,27 @@ export default {
     options: {
       handler() {
         this.open();
-      }
+      },
     },
     deep: true,
     searchQuery() {
       this.open();
-    }
+    },
+    navTemplates() {
+      this.setCurrentBread();
+    },
+    currentPageId() {
+      this.setCurrentBread();
+    },
   },
   computed: {
-    ...mapState("cases", ["formRequests"])
+    ...mapState("cases", ["formRequests"]),
+    ...mapState("app", ["navTemplates"]),
   },
   created() {
-    let {id} = this.$route.params;
-    this.formTypesUrl = '/cases/form-types/'+id
-    this.setBreadCrumb({
-      breadcrumbs: this.breadcrumbs,
-      pageTitle: this.$t("cases.casesList")
-    });
+    let { id } = this.$route.params;
+    this.currentPageId = id;
+    this.formTypesUrl = `/cases/${id}/form-types`;
   },
   mounted() {
     // this.open()
@@ -245,18 +245,34 @@ export default {
     ...mapActions("cases", ["getFormRequests", "deleteUser", "deleteAll"]),
     ...mapActions("app", ["setBreadCrumb"]),
     search() {},
+    setCurrentBread() {
+      const currentPage = this.navTemplates.find((nav) => {
+        return nav.id === +this.currentPageId;
+      });
+      if (currentPage) {
+        this.breadcrumbs.push({
+          text: currentPage.title,
+          disabled: false,
+          href: "#",
+        });
+      }
+      this.setBreadCrumb({
+        breadcrumbs: this.breadcrumbs,
+        pageTitle: this.$t("cases.casesList"),
+      });
+    },
     open() {
       this.isLoading = true;
       let { page, itemsPerPage } = this.options;
       const direction = this.options.sortDesc[0] ? "asc" : "desc";
-      let {id} = this.$route.params;
+      let { id } = this.$route.params;
       let data = {
-        template_id:id,
+        template_id: id,
         search: this.searchQuery,
         pageSize: itemsPerPage,
         pageNumber: page,
         sortDirection: direction,
-        sortColumn: this.options.sortBy[0] ?? ""
+        sortColumn: this.options.sortBy[0] ?? "",
       };
       this.getFormRequests(data)
         .then(() => {
@@ -281,7 +297,7 @@ export default {
       if (isConfirmed) {
         this.isLoading = true;
         this.deleteUser(id)
-          .then(response => {
+          .then((response) => {
             makeToast("success", response.data.message);
             this.open();
             this.isLoading = false;
@@ -298,18 +314,18 @@ export default {
       const { isConfirmed } = await ask("Are you sure to delete it?", "info");
       if (isConfirmed) {
         if (this.selected.length) {
-          this.selected.forEach(item => {
+          this.selected.forEach((item) => {
             ids.push(item.id);
           });
         }
         data = {
           ids: ids,
           action: "delete",
-          value: 1
+          value: 1,
         };
         this.isLoading = true;
         this.deleteAll(data)
-          .then(response => {
+          .then((response) => {
             makeToast("success", response.data.message);
             this.open();
             this.isLoading = false;
@@ -318,8 +334,8 @@ export default {
             this.isLoading = false;
           });
       }
-    }
-  }
+    },
+  },
 };
 </script>
 

@@ -55,12 +55,9 @@ export default {
     return {
       breadcrumbs: [
         {
-          text: this.$t("menu.cases"),
+          text: this.$t("menu.requests"),
           disabled: false,
           href: "#",
-        },
-        {
-          text: this.$t("cases.caseType"),
         },
       ],
       x: 0,
@@ -69,12 +66,18 @@ export default {
   },
   computed: {
     ...mapState("cases", ["forms"]),
+    ...mapState("app", ["navTemplates"]),
+  },
+  watch: {
+    navTemplates() {
+      this.setCurrentBread();
+    },
   },
   created() {
-    this.setBreadCrumb({
-      breadcrumbs: this.breadcrumbs,
-      pageTitle: this.$t("menu.cases"),
-    });
+    // this.setBreadCrumb({
+    //   breadcrumbs: this.breadcrumbs,
+    //   pageTitle: this.$t("menu.cases"),
+    // });
   },
   mounted() {
     this.open();
@@ -84,6 +87,26 @@ export default {
     ...mapActions("cases", ["getForms"]),
     ...mapActions("app", ["setBreadCrumb"]),
     searchUser() {},
+    setCurrentBread() {
+      const { id } = this.$route.params;
+
+      const currentPage = this.navTemplates.find((nav) => {
+        return nav.id === +id;
+      });
+
+      if (currentPage) {
+        this.breadcrumbs.push({
+          text: currentPage.title,
+          disabled: false,
+          href: `/cases/${id}`,
+        });
+        console.log(this.breadcrumbs);
+      }
+      this.setBreadCrumb({
+        breadcrumbs: this.breadcrumbs,
+        pageTitle: this.$t("cases.casesList"),
+      });
+    },
     open() {
       let { id } = this.$route.params;
       this.isLoading = true;
@@ -97,7 +120,8 @@ export default {
         });
     },
     openModels(id) {
-      this.$router.push("/cases/create/" + id);
+      let { id: formTypeId } = this.$route.params;
+      this.$router.push(`/cases/${formTypeId}/create/` + id);
     },
     mouseEnterFunction(e, path) {
       // console.log("mouseEnterEv");

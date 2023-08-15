@@ -242,7 +242,7 @@ export default {
     templatesTypes: "أنواع النماذج",
     casesManagement: "ادارة القضايا",
     requests: "الطلبات",
-    activities: "النشاطات"
+    activities: "النشاطات",
   },
   breadcrumbs: {
     pipesList: "قائمة النماذج",
@@ -446,7 +446,7 @@ export default {
       user: "مستخدم",
       employee: "موظف",
       governorate: "محافظة",
-    }
+    },
   },
   cases: {
     caseType: "نوع القضية",
@@ -649,6 +649,7 @@ export default {
     ResponseToCustomerFeedback: "الرد على ملاحظات العملاء",
   },
   general: {
+    edit: "تعديل",
     count: "الاجمالى",
     title: "العنوان",
     minute: "دقيقة",
@@ -833,6 +834,6 @@ export default {
     document: "المستند",
     due_date: "تاريخ الاستحقاق",
     requested_from: "مكلفة من",
-    form: "النموذج"
+    form: "النموذج",
   },
 };
