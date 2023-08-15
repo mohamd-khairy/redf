@@ -107,9 +107,10 @@ class FormsController extends Controller
 
             if (isset($pageData['items']) && is_array($pageData['items'])) {
                 foreach ($pageData['items'] as $itemData) {
-
-                    $item = new FormPageItem(collect($itemData)->only(['type', 'label', 'notes', 'width', 'height', 'enabled', 'required', 'website_view', 'childList'])->toArray());
-                    $page->items()->save($item);
+                    if (!$itemData['removed']) {
+                        $item = new FormPageItem(collect($itemData)->only(['type', 'label', 'notes', 'width', 'height', 'enabled', 'required', 'website_view', 'childList'])->toArray());
+                        $page->items()->save($item);
+                    }
                 }
             }
         }
@@ -206,7 +207,7 @@ class FormsController extends Controller
             return responseFail($th->getMessage());
         }
     }
-    public function updateFormFill(Request $request,$id)
+    public function updateFormFill(Request $request, $id)
     {
         try {
             DB::beginTransaction();
@@ -258,7 +259,7 @@ class FormsController extends Controller
     public function getFormRequest(PageRequest $request)
     {
         try {
-            $query = FormRequest::with('form.pages.items', 'user','formAssignedRequests', 'form_page_item_fill')
+            $query = FormRequest::with('form.pages.items', 'user', 'formAssignedRequests', 'form_page_item_fill')
                 ->whereHas('form', function ($q) use ($request) {
                     $q->where('template_id', $request->template_id);
                 });
