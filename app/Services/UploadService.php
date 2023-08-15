@@ -22,15 +22,17 @@ class UploadService
         if (!empty($items)) {
             foreach ($items as $name => $item) {
 
-                if (is_string($item)) {
+                if (is_string($item) && isset(explode(',', $item)[1])) {
 
                     $file = $path . '/' . UploadService::generateUniqueFileName($item);
 
                     if (Storage::disk($disk)->put($file, base64_decode(explode(',', $item)[1]))) {
-                        $paths[] = $path . '/' . $file;
+                        $paths[] = $file;
                     }
-                } else {
+                } else if (is_file($item)) {
                     $paths[] = Storage::disk($disk)->putFile($path, $item);
+                } else {
+                    $paths[] = $item;
                 }
             }
         }
