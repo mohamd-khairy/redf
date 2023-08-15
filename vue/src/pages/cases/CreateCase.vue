@@ -68,7 +68,7 @@
                     </template>
                     <template v-else-if="input.type === 'radio'">
                       <v-radio-group
-                        v-model="input.selectedOption"
+                        v-model="input.value"
                         :label="getInputLabel(input)"
                         :required="input.required"
                         :rules="input.required ? [requiredRule] : []"
@@ -81,6 +81,21 @@
                           :value="option.text"
                         ></v-radio>
                       </v-radio-group>
+                    </template>
+                    <template v-else-if="input.type === 'checkbox'">
+                      <label>
+                        {{ input.label }}
+                      </label>
+                      <v-checkbox
+                        v-for="(option, optionIndex) in input.childList"
+                        v-model="input.value"
+                        :label="option.text"
+                        :value="option.text"
+                        :required="input.required"
+                        :rules="input.required ? [requiredRule] : []"
+                        :error-messages="errorMessage(input)"
+                        :class="optionIndex > 0 ? 'mt-0' : ''"
+                      ></v-checkbox>
                     </template>
                   </v-col>
                 </v-row>
