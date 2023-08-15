@@ -472,6 +472,8 @@ export default {
   cases: {
     caseType: "Cases Type",
     casesList: "Cases List",
+    assignUser:"Assign User",
+    user:"User",
     deleteRole: "Delete Role",
     createRole: "Create Role",
     createNewRole: "Create New Role",

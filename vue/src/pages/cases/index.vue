@@ -122,6 +122,10 @@
           <div>{{ item.user.name ?? '---' }}</div>
         </template>
 
+        <template v-slot:item.assigner="{ item }">
+          <div>{{ item.form_assigned_requests[0]?.name ?? '---' }}</div>
+        </template>
+
         <template v-slot:item.role="{ item }">
           <v-chip
             label
@@ -141,6 +145,15 @@
 
         <template v-slot:item.action="{ item }">
           <div class="actions">
+            <v-btn
+              title="Assign"
+              @click="openAssignDialog(item.id)"
+              elevation="0"
+              color="primary"
+              icon
+            >
+              <v-icon>mdi-at</v-icon>
+            </v-btn>
             <v-btn
               color="primary"
               icon
@@ -168,6 +181,13 @@
           </div>
         </template>
       </v-data-table>
+
+
+      <assign
+        v-model="dialog"
+        :id="formId"
+      ></assign>
+
     </v-card>
   </div>
 </template>
@@ -177,8 +197,10 @@ import CopyLabel from "../../components/common/CopyLabel";
 import { mapActions, mapState } from "vuex";
 import { ask, makeToast } from "@/helpers";
 import emptyDataSvg from "@/assets/images/illustrations/empty-data.svg";
+import Assign from "@/pages/cases/Assign";
 export default {
   components: {
+    Assign,
     CopyLabel,
     emptyDataSvg
   },
@@ -212,7 +234,9 @@ export default {
         { text: this.$t("tables.created"), value: "created_at" },
         { text: "", sortable: false, align: "right", value: "action" }
       ],
-      formTypesUrl:''
+      formTypesUrl:'',
+      formId:0,
+      dialog: false,
     };
   },
   watch: {
@@ -237,6 +261,10 @@ export default {
       breadcrumbs: this.breadcrumbs,
       pageTitle: this.$t("cases.casesList")
     });
+    this.$root.$on("table_component", () => {
+      this.open();
+    });
+
   },
   mounted() {
     // this.open()
@@ -274,6 +302,10 @@ export default {
         .catch(() => {
           this.isLoading = false;
         });
+    },
+    openAssignDialog(id) {
+      this.dialog = true
+      this.formId = id
     },
     async deleteItem(id) {
       const { isConfirmed } = await ask("Are you sure to delete it?", "info");

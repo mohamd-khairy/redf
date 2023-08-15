@@ -323,7 +323,6 @@ export default {
       this.template.pages[this.current_tab].items[this.template.pages[this.current_tab].items.length] = checkboxElement.$data
     },
     addSelectElement() {
-      console.log('kkjjj')
       const selectElement = new _SelectElement()
       selectElement.moveUp = this.moveUp
       selectElement.moveDown = this.moveDown
