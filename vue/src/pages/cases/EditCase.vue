@@ -269,12 +269,12 @@ export default {
     },
     async saveForm() {
       const { id } = this.$route.params;
-
+      const { formType: currentFormId } = this.$route.params;
       this.isSubmitingForm = true;
       if (await this.validateFormData()) {
         await this.updatePages(id);
         this.isSubmitingForm = false;
-        this.$router.push({ path: "/cases/1" });
+        this.$router.push({ path: `/cases/${currentFormId}` });
       } else {
         this.showErrors = true;
         this.isSubmitingForm = false;
