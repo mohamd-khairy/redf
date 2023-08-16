@@ -94,9 +94,6 @@ class TaskController extends Controller
      */
     public function update(Request $request, $id)
     {
-
-        $task = Task::with('user:id,name', 'assigner:id,name', 'file')->findOrFail($id);
-
         $validatedData = $request->validate([
             'name' => 'sometimes|string|max:255',
             'type' => 'sometimes', // Enum values
@@ -110,6 +107,8 @@ class TaskController extends Controller
         ]);
 
         unset($validatedData['file']);
+
+        $task = Task::with('user:id,name', 'assigner:id,name', 'file')->findOrFail($id);
 
         $task->update($validatedData);
 
