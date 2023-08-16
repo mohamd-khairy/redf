@@ -19,10 +19,22 @@ class Template extends Model
         'name',
         'user_id',
         'type',
+        'icon'
     ];
 
     public function getActivitylogOptions(): LogOptions
     {
         return LogOptions::defaults()->logOnly(self::getFillable());
     }
+
+    public function forms()
+    {
+        return $this->hasMany(Form::class);
+    }
+
+    function requests()
+    {
+        return $this->hasManyThrough(FormRequest::class, Form::class);
+    }
+
 }

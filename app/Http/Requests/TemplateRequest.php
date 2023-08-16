@@ -26,6 +26,7 @@ class TemplateRequest extends FormRequest
     {
         return [
             "name" => ['nullable','min:3',"max:255"],
+            "icon" => ['nullable','min:3',"max:255"],
             // 'user_id' => [
             //     'required',
             //     'integer',

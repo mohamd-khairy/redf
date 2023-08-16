@@ -15,6 +15,7 @@ use App\Http\Controllers\Api\TemplateController;
 use App\Http\Controllers\Api\DepartmentController;
 use App\Http\Controllers\API\PermissionController;
 use App\Http\Controllers\Api\FormSessionController;
+use App\Http\Controllers\API\HomeController;
 use App\Http\Controllers\API\NotificationController;
 use App\Http\Controllers\Api\OrganizationController;
 use App\Http\Controllers\API\VerificationController;
@@ -32,6 +33,11 @@ Route::group(['prefix' => 'v1'], function () {
         Route::get('user-type', [UserController::class, 'user_type']);
         Route::get('user-employee', [UserController::class, 'user_employee']);
         Route::post('store-userInfo', [UserController::class, 'store_userInfo']);
+    });
+
+    /*********************HomeController***************** */
+    Route::group(['middleware' => 'auth:sanctum'], function () {
+        Route::get('index', [HomeController::class, 'index']);
     });
 
     /*********************VerificationController***************** */
@@ -81,7 +87,6 @@ Route::group(['prefix' => 'v1'], function () {
         Route::get('departments/actions', [DepartmentController::class, 'actions']);
         Route::get('user-department', [DepartmentController::class, 'user_department']);
         Route::apiResource('departments', DepartmentController::class);
-
     });
 
     /*********************BranchController***************** */
@@ -109,8 +114,8 @@ Route::group(['prefix' => 'v1'], function () {
         Route::apiResource('tasks', TaskController::class);
     });
 
-      /*********************FormSessionsController***************** */
-      Route::group(['middleware' => 'auth:sanctum'], function () {
+    /*********************FormSessionsController***************** */
+    Route::group(['middleware' => 'auth:sanctum'], function () {
         Route::apiResource('formSessions', FormSessionController::class);
     });
 
@@ -122,8 +127,8 @@ Route::group(['prefix' => 'v1'], function () {
     });
 
     /*********************CalenderController***************** */
-       Route::group(['middleware' => 'auth:sanctum'], function () {
-         Route::apiResource('calenders', CalenderController::class);
+    Route::group(['middleware' => 'auth:sanctum'], function () {
+        Route::apiResource('calenders', CalenderController::class);
     });
 
     /*********************FormsController***************** */
