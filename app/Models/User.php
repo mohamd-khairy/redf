@@ -30,7 +30,7 @@ class User extends Authenticatable implements MustVerifyEmail
      * @var array<int, string>
      */
     protected $fillable = [
-        'name', 'email', 'password', 'avatar',  'organization_id', 'department_id', 'type', 'website',
+        'name', 'email', 'phone','password', 'avatar',  'organization_id', 'department_id', 'type', 'website',
         'last_login', 'guid', 'domain'
     ];
 
@@ -68,9 +68,17 @@ class User extends Authenticatable implements MustVerifyEmail
 
         return null;
     }
-
     public function calenders()
     {
         return $this->hasMany(Calendar::class);
+    }
+    public function userInformation()
+    {
+        return $this->hasOne(UserInformation::class);
+    }
+
+    public function department()
+    {
+        return $this->belongsTo(Department::class);
     }
 }

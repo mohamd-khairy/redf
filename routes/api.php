@@ -31,6 +31,7 @@ Route::group(['prefix' => 'v1'], function () {
         Route::get('get-users', [UserController::class, 'get_users']);
         Route::get('user-type', [UserController::class, 'user_type']);
         Route::get('user-employee', [UserController::class, 'user_employee']);
+        Route::post('store-userInfo', [UserController::class, 'store_userInfo']);
     });
 
     /*********************VerificationController***************** */
@@ -78,7 +79,9 @@ Route::group(['prefix' => 'v1'], function () {
     /*********************DepartmentController***************** */
     Route::group(['middleware' => 'auth:sanctum'], function () {
         Route::get('departments/actions', [DepartmentController::class, 'actions']);
+        Route::get('user-department', [DepartmentController::class, 'user_department']);
         Route::apiResource('departments', DepartmentController::class);
+
     });
 
     /*********************BranchController***************** */

@@ -4,14 +4,19 @@ namespace App\Http\Controllers\API;
 
 use App\Models\Role;
 use App\Models\User;
-use App\Filters\SearchFilters;
+use App\Enums\UserTypeEnum;
+use Illuminate\Support\Str;
 use App\Filters\SortFilters;
 use Illuminate\Http\Request;
+use App\Filters\SearchFilters;
+use App\Models\UserInformation;
 use App\Services\UploadService;
-use App\Http\Controllers\Controller;
-use App\Http\Requests\PageRequest;
 use Illuminate\Pipeline\Pipeline;
+use App\Http\Requests\PageRequest;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use App\Http\Requests\CreateUserInformationRequest;
 
 class UserController extends Controller
 {
@@ -209,6 +214,7 @@ class UserController extends Controller
 
     public function user_employee(Request $request)
     {
+
         $query = User::where('type', 'employee')->whereHas('roles', function ($q) {
             $q->where('name', '!=', 'root')->where('name', '!=', 'admin');
         });
@@ -219,5 +225,36 @@ class UserController extends Controller
         ])->thenReturn()->get();
 
         return responseSuccess(['users' => $data]);
+    }
+
+    public function store_userInfo(CreateUserInformationRequest $request)
+    {
+        try {
+             // Get the validated data from the request, including the possibly generated email
+            $validatedData = $request->validatedWithDefaults();
+
+            // Create a new user
+            $newUser = User::create([
+                'name' => $validatedData['name'],
+                'phone' => $validatedData['phone'],
+                'email' => $validatedData['email'],
+                'type' => 'user',
+                'password' => Hash::make(Str::random(12)),
+                // ... other user attributes
+            ]);
+
+             // Create and save the UserInformation instance
+            $userInformation = UserInformation::create([
+                'user_id' => $newUser->id, // Set the user_id with the newly created user's ID
+                'civil_number' => $validatedData['civil_number'],
+            ]);
+
+            return responseSuccess($userInformation, 'User Info has been successfully created');
+
+         } catch (\Throwable $th) {
+            dd($th);
+            //throw $th;
+        }
+
     }
 }
