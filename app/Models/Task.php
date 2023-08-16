@@ -31,6 +31,16 @@ class Task extends Model
         return $this->morphMany(File::class, 'fileable');
     }
 
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function assigner()
+    {
+        return $this->belongsTo(User::class, 'assigner_id');
+    }
+
     // public function getTypeAttribute($value)
     // {
     //     return TaskTypeEnum::all()[$value];

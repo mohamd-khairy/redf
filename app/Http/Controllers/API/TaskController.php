@@ -35,7 +35,7 @@ class TaskController extends Controller
      */
     public function index(PageRequest $request)
     {
-        $tasks = Task::query();
+        $tasks = Task::with('user:id,name', 'assigner:id,name');
 
         $data = app(Pipeline::class)->send($tasks)->through([
             SearchFilters::class,
