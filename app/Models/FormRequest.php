@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Str;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
 
@@ -18,8 +19,22 @@ class FormRequest extends Model
         'message',
         'note',
         'form_id',
-        'user_id'
+        'user_id',
+        'form_request_number',
+        'name'
     ];
+
+    protected static function boot()
+    {
+        parent::boot();
+        // Add your code here
+        static::created(function ($model) {
+            $code = rand(100000, 999999);
+            $model->form_request_number = $code;
+            $model->name = $model->form->name . " ($code)";
+            $model->save();
+        });
+    }
 
     public function getActivitylogOptions(): LogOptions
     {
@@ -28,7 +43,7 @@ class FormRequest extends Model
 
     public function form_page_item_fill()
     {
-        return $this->hasMany(FormPageItemFill::class)->with('page_item');
+        return $this->hasMany(FormPageItemFill::class);
     }
 
     public function user()
@@ -43,6 +58,6 @@ class FormRequest extends Model
 
     public function formAssignedRequests()
     {
-        return $this->hasMany(FormAssignRequest::class)->whereNot('status','deleted');
+        return $this->hasMany(FormAssignRequest::class)->whereNot('status', 'deleted');
     }
 }
