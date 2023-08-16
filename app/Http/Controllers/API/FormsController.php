@@ -233,11 +233,12 @@ class FormsController extends Controller
     public function getFormRequest(PageRequest $request)
     {
         try {
-            $query = FormRequest::with('form.pages.items', 'user', 'formAssignedRequests', 'form_page_item_fill.page_item');
+            $query = FormRequest::with('form.pages.items', 'user', 'formAssignedRequests.assigner', 'form_page_item_fill.page_item');
 
             if (request('template_id')) {
                 $query = $query->whereHas('form', fn ($q) => $q->where('template_id', request('template_id')));
             }
+
 
             $data = app(Pipeline::class)->send($query)
                 ->through([SortFilters::class])
