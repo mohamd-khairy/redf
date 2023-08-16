@@ -111,7 +111,7 @@ class TaskController extends Controller
 
         unset($validatedData['file']);
 
-        $task->update($request->all());
+        $task->update($validatedData);
 
         // Handle the file update if a new file is provided
         if ($request->hasFile('file')) {
