@@ -106,7 +106,7 @@ class TaskController extends Controller
             'details' => 'sometimes|string',
             'share_with' => 'sometimes|string',
             'form_request_id' => 'sometimes|exists:forms,id',
-            'file' => 'sometimes|file|mimes:jpg,jpeg,png,pdf,docx',
+            'file' => 'nullable|file|mimes:jpg,jpeg,png,pdf,docx',
         ]);
 
         unset($validatedData['file']);
