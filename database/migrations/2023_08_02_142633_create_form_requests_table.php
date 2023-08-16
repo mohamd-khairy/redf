@@ -15,6 +15,8 @@ return new class extends Migration
     {
         Schema::create('form_requests', function (Blueprint $table) {
             $table->id();
+            $table->string('form_request_number')->nullable();
+            $table->string('name')->nullable();
             $table->unsignedBigInteger('user_id')->nullable();
             $table->unsignedBigInteger('form_id')->nullable();
             $table->text('note')->nullable();
