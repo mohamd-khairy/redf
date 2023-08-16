@@ -90,27 +90,27 @@ class FormsController extends Controller
     public function update($request, $form)
     {
         $form->update($request->all() + ['user_id' => Auth::id()]);
-
         // Delete old form pages and their items
         $form->pages()->each(function ($page) {
             $page->items()->delete();
             $page->delete();
         });
-
         // Create new form pages with new elements
-        $pagesData = $request->input('pages', []);
-        $form->pages()->createMany(collect($pagesData)->map(function ($pageData) {
-            return [
-                'title' => $pageData['title']['title'],
-                'editable' => $pageData['title']['editing'] === false ? 0 : 1,
-                'items' => collect($pageData['items'] ?? [])->map(function ($itemData) {
-                    if (!$itemData['removed']) {
-                    return collect($itemData)->only(['type', 'label', 'notes', 'width', 'height', 'enabled', 'required', 'website_view', 'childList'])->toArray();
-                    }
-                }),
-            ];
-        })->toArray());
+        $pagesData = $request->input('pages');
+        foreach ($pagesData as $pageData) {
 
+            $page = new FormPage(['title' => $pageData['title']['title'], 'editable' =>  $pageData['title']['editing'] == false ? 0 : 1]);
+            $form->pages()->save($page);
+
+            if (isset($pageData['items']) && is_array($pageData['items'])) {
+                foreach ($pageData['items'] as $itemData) {
+                    if (!isset($itemData['removed']) || !$itemData['removed']) {
+                        $item = new FormPageItem(collect($itemData)->only(['type', 'label', 'notes', 'width', 'height', 'enabled', 'required', 'website_view', 'childList'])->toArray());
+                        $page->items()->save($item);
+                    }
+                }
+            }
+        }
         return $form->refresh();
     }
 
@@ -150,7 +150,6 @@ class FormsController extends Controller
     {
         try {
             $template_id = $request->template_id;
-
             Form::when('template_id',function($q) use ($template_id){
                 return $q->where('template_id' , $template_id);
             })->get();
@@ -185,7 +184,7 @@ class FormsController extends Controller
                     'status' => FormRequestStatus::PENDING,
                 ]);
                 $this->processFormPages($request, $formRequest);
-                return responseSuccess([], 'Form Fill has been successfully deleted');
+                return responseSuccess([], 'Form Fill has been successfully Created');
             });
         } catch (\Throwable $th) {
              return responseFail($th->getMessage());
@@ -209,7 +208,6 @@ class FormsController extends Controller
     {
         $pagesInput = $request->input('pages', []);
         $pages = is_string($pagesInput) ? json_decode($pagesInput, true) : $pagesInput;
-
         $pageItems = collect($pages)->flatMap(fn ($page) => $page['items'] ?? []);
 
         $pageItems->each(function ($pageItem) use ($formRequest) {
@@ -229,20 +227,18 @@ class FormsController extends Controller
     {
         try {
             $query = FormRequest::with('form.pages.items', 'user', 'formAssignedRequests', 'form_page_item_fill')
-                ->whereHas('form', function ($q) use ($request) {
-                    $q->where('template_id', $request->template_id);
-                });
+                ->whereHas('form', fn ($q) => $q->where('template_id' , $request->template_id));
 
-
-            $data = app(Pipeline::class)->send($query)->through([
-                SortFilters::class,
-            ])->thenReturn();
+            $data = app(Pipeline::class)
+            ->send($query)
+            ->through([SortFilters::class])
+            ->thenReturn();
 
             $data = request('pageSize') == -1 ?  $data->get() : $data->paginate(request('pageSize', 15));
 
             return responseSuccess($data, 'Form requests retrieved successfully');
         } catch (\Throwable $e) {
-            // dd($e->getMed);
+
             // Return an error response if something goes wrong
             return responseFail($e->getMessage());
         }
@@ -264,25 +260,20 @@ class FormsController extends Controller
     public function assignRequest(FormAssign $request)
     {
         try {
-            $form_request_ids = $request->form_request_id;
-            $dateFromRequest = $request->date;
-            $formattedDate = Carbon::createFromFormat('Y-m-d', $dateFromRequest)->toDateString();
+            $formattedDate = Carbon::createFromFormat('Y-m-d', $request->date)->toDateString();
             // check if  form_request_id has record or not
-            foreach ($form_request_ids as $form_request_id) {
-                $checkIfAssigned = FormAssignRequest::where('form_request_id', $form_request_id)->where('status', 'active')->first();
-                if ($checkIfAssigned) {
-                    if ($checkIfAssigned->status !== "deleted") {
-                        $checkIfAssigned->update([
-                            'status' => "deleted",
-                        ]);
-                    }
-                }
+            foreach ($request->form_request_id as $form_request_id) {
+                FormAssignRequest::where('form_request_id', $form_request_id)
+                ->where('status', 'active')
+                ->where('status', '!=', 'deleted')
+                ->update(['status' => 'deleted']);
+
                 $form_user_id = Form::where('id', $form_request_id)->pluck('user_id');
                 $assignNew = FormAssignRequest::create([
                     'form_request_id' => $form_request_id,
                     'user_id' => $request->user_id,
                     'date' => $formattedDate,
-                    'assigner_id' => Auth::user()->id,
+                    'assigner_id' => auth()->id(),
                     'status' => 'active',
                     'form_user_id' => $form_user_id,
                     'type' => FormAssignRequestType::EMPLOYEE,

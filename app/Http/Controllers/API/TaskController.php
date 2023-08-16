@@ -105,7 +105,7 @@ class TaskController extends Controller
             'due_date' => 'sometimes|date',
             'details' => 'sometimes|string',
             'share_with' => 'sometimes|string',
-            'form_id' => 'sometimes|exists:forms,id',
+            'form_request_id' => 'sometimes|exists:forms,id',
             'file' => 'sometimes|file|mimes:jpg,jpeg,png,pdf,docx',
         ]);
 

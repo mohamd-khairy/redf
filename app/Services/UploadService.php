@@ -58,21 +58,40 @@ class UploadService
         return true;
     }
 
+    // public static function generateUniqueFileName($originalFileName)
+    // {
+    //     // && is_base64($item)
+    //     $extension = explode('/', mime_content_type($originalFileName))[1];
+
+    //     if ($extension === 'vnd.openxmlformats-officedocument.spreadsheetml.sheet') {
+    //         $extension = 'xlsx';
+    //     } elseif ($extension === 'octet-stream' || $extension === 'vnd.openxmlformats-officedocument.wordprocessingml.document') {
+    //         $extension = 'docx';
+    //     } elseif ($extension === 'plain') {
+    //         $extension = 'txt';
+    //     } else {
+    //         $extension = explode('/', mime_content_type($originalFileName))[1];
+    //     }
+
+    //     return uniqid() . '_' . Str::random(8) . '.' . $extension;
+    // }
     public static function generateUniqueFileName($originalFileName)
     {
-        // && is_base64($item)
-        $extension = explode('/', mime_content_type($originalFileName))[1];
+        $mimeType = mime_content_type($originalFileName);
 
-        if ($extension === 'vnd.openxmlformats-officedocument.spreadsheetml.sheet') {
-            $extension = 'xlsx';
-        } elseif ($extension === 'octet-stream' || $extension === 'vnd.openxmlformats-officedocument.wordprocessingml.document') {
-            $extension = 'docx';
-        } elseif ($extension === 'plain') {
-            $extension = 'txt';
-        } else {
-            $extension = explode('/', mime_content_type($originalFileName))[1];
-        }
+        $extensionMap = [
+            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' => 'xlsx',
+            'application/octet-stream' => 'docx', // or 'xlsx' based on your needs
+            'application/vnd.openxmlformats-officedocument.wordprocessingml.document' => 'docx',
+            'text/plain' => 'txt',
+        ];
+
+        $default_extension = explode('/', mime_content_type($originalFileName))[1];
+
+        $extension = $extensionMap[$mimeType] ?? $default_extension;
 
         return uniqid() . '_' . Str::random(8) . '.' . $extension;
     }
+
+
 }

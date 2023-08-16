@@ -9,6 +9,7 @@ use App\Http\Controllers\API\UserController;
 use App\Http\Controllers\API\FormsController;
 use App\Http\Controllers\Api\BranchController;
 use App\Http\Controllers\API\SettingController;
+use App\Http\Controllers\Api\CalenderController;
 use App\Http\Controllers\api\DocumentController;
 use App\Http\Controllers\Api\TemplateController;
 use App\Http\Controllers\Api\DepartmentController;
@@ -115,6 +116,11 @@ Route::group(['prefix' => 'v1'], function () {
     Route::group(['middleware' => 'auth:sanctum'], function () {
         Route::get('documents/actions', [DocumentController::class, 'actions']);
         Route::apiResource('documents', DocumentController::class);
+    });
+
+    /*********************CalenderController***************** */
+       Route::group(['middleware' => 'auth:sanctum'], function () {
+         Route::apiResource('calenders', CalenderController::class);
     });
 
     /*********************FormsController***************** */

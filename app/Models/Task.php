@@ -17,7 +17,7 @@ class Task extends Model
     public $inPermission = true;
 
     protected $fillable = [
-        'name', 'type', 'user_id', 'assigner_id', 'due_date', 'details', 'share_with', 'form_id',
+        'name', 'type', 'user_id', 'assigner_id', 'due_date', 'details', 'share_with', 'form_request_id',
     ];
 
     public function getActivitylogOptions(): LogOptions
