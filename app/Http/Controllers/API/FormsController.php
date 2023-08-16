@@ -150,9 +150,11 @@ class FormsController extends Controller
     {
         try {
             $template_id = $request->template_id;
-            Form::when('template_id',function($q) use ($template_id){
-                return $q->where('template_id' , $template_id);
+
+            $allForms = Form::when('template_id', function ($q) use ($template_id) {
+                return $q->where('template_id', $template_id);
             })->get();
+
             return responseSuccess(FormResource::collection($allForms));
         } catch (\Throwable $th) {
             // throw $th;
@@ -187,17 +189,21 @@ class FormsController extends Controller
                 return responseSuccess([], 'Form Fill has been successfully Created');
             });
         } catch (\Throwable $th) {
-             return responseFail($th->getMessage());
+            return responseFail($th->getMessage());
         }
     }
     public function updateFormFill(Request $request, $id)
     {
         try {
-            return DB::transaction(function() use ($request,$id ){
+            return DB::transaction(function () use ($request, $id) {
+
                 $formRequest = FormRequest::findOrFail($id);
+
                 // Delete existing form page item fills for this form request
                 FormPageItemFill::where('form_request_id', $formRequest->id)->delete();
+
                 $this->processFormPages($request, $formRequest);
+
                 return responseSuccess([], 'Form Fill has been successfully updated');
             });
         } catch (\Throwable $th) {
@@ -207,13 +213,15 @@ class FormsController extends Controller
     private function processFormPages(Request $request, FormRequest $formRequest)
     {
         $pagesInput = $request->input('pages', []);
+
         $pages = is_string($pagesInput) ? json_decode($pagesInput, true) : $pagesInput;
+
         $pageItems = collect($pages)->flatMap(fn ($page) => $page['items'] ?? []);
 
         $pageItems->each(function ($pageItem) use ($formRequest) {
-            $decodedValue = $pageItem['type'] === 'file'
-                ? UploadService::store($pageItem['value'], 'formPages')
-                : $pageItem['value'];
+
+            $decodedValue = $pageItem['type'] === 'file' ? UploadService::store($pageItem['value'], 'formPages') : $pageItem['value'];
+
             FormPageItemFill::create([
                 'value' => $decodedValue,
                 'form_page_item_id' => $pageItem['form_page_item_id'],
@@ -221,24 +229,23 @@ class FormsController extends Controller
                 'form_request_id' => $formRequest->id,
             ]);
         });
-
     }
     public function getFormRequest(PageRequest $request)
     {
         try {
             $query = FormRequest::with('form.pages.items', 'user', 'formAssignedRequests', 'form_page_item_fill')
-                ->whereHas('form', fn ($q) => $q->where('template_id' , $request->template_id));
+                ->when('template_id', function ($q) {
+                    return $q->whereHas('form', fn ($q) => $q->where('template_id', request('template_id')));
+                });
 
-            $data = app(Pipeline::class)
-            ->send($query)
-            ->through([SortFilters::class])
-            ->thenReturn();
+            $data = app(Pipeline::class)->send($query)
+                ->through([SortFilters::class])
+                ->thenReturn();
 
             $data = request('pageSize') == -1 ?  $data->get() : $data->paginate(request('pageSize', 15));
 
             return responseSuccess($data, 'Form requests retrieved successfully');
         } catch (\Throwable $e) {
-
             // Return an error response if something goes wrong
             return responseFail($e->getMessage());
         }
@@ -251,7 +258,6 @@ class FormsController extends Controller
 
             return responseSuccess($formfill, 'Form requests retrieved successfully');
         } catch (\Throwable $e) {
-            // dd($e->getMed);
             // Return an error response if something goes wrong
             return responseFail($e->getMessage());
         }
@@ -260,27 +266,33 @@ class FormsController extends Controller
     public function assignRequest(FormAssign $request)
     {
         try {
-            $formattedDate = Carbon::createFromFormat('Y-m-d', $request->date)->toDateString();
-            // check if  form_request_id has record or not
-            foreach ($request->form_request_id as $form_request_id) {
-                FormAssignRequest::where('form_request_id', $form_request_id)
-                ->where('status', 'active')
-                ->where('status', '!=', 'deleted')
-                ->update(['status' => 'deleted']);
+            return DB::transaction(function () use ($request) {
 
-                $form_user_id = Form::where('id', $form_request_id)->pluck('user_id');
-                $assignNew = FormAssignRequest::create([
-                    'form_request_id' => $form_request_id,
-                    'user_id' => $request->user_id,
-                    'date' => $formattedDate,
-                    'assigner_id' => auth()->id(),
-                    'status' => 'active',
-                    'form_user_id' => $form_user_id,
-                    'type' => FormAssignRequestType::EMPLOYEE,
-                ]);
-                FormRequest::where('id', $form_request_id)->update(['status' => 'processing']);
-            }
-            return responseSuccess(['assignNew' => $assignNew]);
+                $formattedDate = Carbon::createFromFormat('Y-m-d', $request->date)->toDateString();
+                // check if  form_request_id has record or not
+                foreach ($request->form_request_id as $form_request_id) {
+
+                    FormAssignRequest::where('form_request_id', $form_request_id)
+                        ->where('status', 'active')
+                        ->where('status', '!=', 'deleted')
+                        ->update(['status' => 'deleted']);
+
+                    $form_user_id = Form::where('id', $form_request_id)->pluck('user_id');
+
+                    $assignNew = FormAssignRequest::create([
+                        'form_request_id' => $form_request_id,
+                        'user_id' => $request->user_id,
+                        'date' => $formattedDate,
+                        'assigner_id' => auth()->id(),
+                        'status' => 'active',
+                        'form_user_id' => $form_user_id,
+                        'type' => FormAssignRequestType::EMPLOYEE,
+                    ]);
+
+                    FormRequest::where('id', $form_request_id)->update(['status' => 'processing']);
+                }
+                return responseSuccess(['assignNew' => $assignNew]);
+            });
         } catch (Throwable $e) {
             return response()->json(['message' => 'Unknown error', $e], 500);
         }
