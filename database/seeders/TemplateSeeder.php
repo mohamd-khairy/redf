@@ -20,17 +20,20 @@ class TemplateSeeder extends Seeder
             [
                 'id' => 1,
                 'name' => 'القضايا',
-                'user_id' => 1
+                'user_id' => 1,
+                'icon' => 'mdi-scale-balance',
             ],
             [
                 'id' => 2,
                 'name' => 'الاستشارات القانونية',
-                'user_id' => 1
+                'user_id' => 1,
+                'icon' => 'mdi-scale-balance',
             ],
             [
                 'id' => 3,
                 'name' => 'المراجعة والتدقيق',
-                'user_id' => 1
+                'user_id' => 1,
+                'icon' => 'mdi-scale-balance',
             ],
 
         ];

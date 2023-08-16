@@ -90,6 +90,7 @@ class TemplateController extends Controller
 
         $request->validate([
             'name' => 'nullable|string|min:3|max:255',
+            "icon" => ['nullable','min:3',"max:255"],
             // 'user_id' => [
             //     'required',
             //     'integer',

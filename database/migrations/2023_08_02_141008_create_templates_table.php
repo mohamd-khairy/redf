@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('name')->nullable();
             $table->enum('type', ['form', 'application'])->default('form');
             $table->unsignedBigInteger('user_id');
+            $table->string('icon')->nullable();
             $table->softDeletes();
             $table->timestamps();
 
