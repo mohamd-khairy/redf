@@ -35,7 +35,7 @@ class TaskController extends Controller
      */
     public function index(PageRequest $request)
     {
-        $tasks = Task::query();
+        $tasks = Task::with('user:id,name', 'assigner:id,name', 'file');
 
         $data = app(Pipeline::class)->send($tasks)->through([
             SearchFilters::class,
@@ -95,8 +95,8 @@ class TaskController extends Controller
     public function update(Request $request, $id)
     {
 
-        $task = Task::findOrFail($id);
-        $existingFiles = $task->files;
+        $task = Task::with('user:id,name', 'assigner:id,name', 'file')->findOrFail($id);
+
         $validatedData = $request->validate([
             'name' => 'sometimes|string|max:255',
             'type' => 'sometimes', // Enum values
@@ -111,15 +111,16 @@ class TaskController extends Controller
 
         unset($validatedData['file']);
 
-        // Delete the old file records
-        foreach ($existingFiles as $file) {
-            Storage::delete($file->path); // Delete the file from storage
-            $file->delete(); // Delete the file record from the database
-        }
         $task->update($request->all());
 
         // Handle the file update if a new file is provided
         if ($request->hasFile('file')) {
+
+            // Delete the old file records
+            $file = $task->file;
+            Storage::delete($file->path); // Delete the file from storage
+            $file->delete(); // Delete the file record from the database
+
             $file = $request->file('file');
             $filename = $file->getClientOriginalName();
             $filePath = UploadService::store($file, 'tasks');
@@ -140,7 +141,8 @@ class TaskController extends Controller
 
     public function show($id)
     {
-        $task = Task::findOrFail($id);
+        $task = Task::with('user:id,name', 'assigner:id,name', 'file')->findOrFail($id);
+
         return responseSuccess($task, 'task has been successfully showed');
     }
 
@@ -154,6 +156,7 @@ class TaskController extends Controller
     {
         $task = Task::findOrFail($id);
         $task->delete();
+
         return responseSuccess([], 'Task has been successfully deleted');
     }
 }

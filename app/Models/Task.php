@@ -26,9 +26,19 @@ class Task extends Model
     }
 
 
-    public function files()
+    public function file()
     {
-        return $this->morphMany(File::class, 'fileable');
+        return $this->morphOne(File::class, 'fileable');
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function assigner()
+    {
+        return $this->belongsTo(User::class, 'assigner_id');
     }
 
     // public function getTypeAttribute($value)
