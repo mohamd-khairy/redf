@@ -226,7 +226,6 @@ export default {
   data() {
     return {
       panel: [1],
-
       deleteDialog: false,
       disableDialog: false,
       avatar: {},
