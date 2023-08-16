@@ -34,7 +34,7 @@ class FormPageItemFill extends Model
 
     public function page_item()
     {
-        return $this->belongsTo(FormPageItem::class);
+        return $this->belongsTo(FormPageItem::class, 'form_page_item_id');
     }
 
     public function getValueAttribute($value)
