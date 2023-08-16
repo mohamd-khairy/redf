@@ -40,7 +40,7 @@ import { makeToast } from "@/helpers";
 export default {
   components: {
     AccountTab,
-    InformationTab
+    InformationTab,
   },
   data() {
     return {
@@ -50,7 +50,7 @@ export default {
         name: "",
         password: "",
         confirm_password: "",
-        avatar: "/images/avatars/avatar1.svg"
+        avatar: "/images/avatars/avatar1.svg",
       },
       tab: null,
       errors: {},
@@ -59,23 +59,23 @@ export default {
         {
           text: this.$t("menu.usersManagement"),
           disabled: false,
-          href: "#"
+          href: "#",
         },
         {
           text: this.$t("users.usersList"),
           to: "/users/list",
-          exact: true
+          exact: true,
         },
         {
-          text: this.$t("users.createUser")
-        }
-      ]
+          text: this.$t("users.createUser"),
+        },
+      ],
     };
   },
   created() {
     this.setBreadCrumb({
       breadcrumbs: this.breadcrumbs,
-      pageTitle: this.$t("users.createNewUser")
+      pageTitle: this.$t("users.createNewUser"),
     });
   },
   methods: {
@@ -85,19 +85,19 @@ export default {
       this.loading = true;
       this.errors = {};
       this.storeUser(form)
-        .then(response => {
+        .then((response) => {
           this.loading = false;
           makeToast("success", response.data.message);
           this.$router.push({ name: "users-list" });
         })
-        .catch(error => {
+        .catch((error) => {
           this.loading = false;
           if (error.response.status == 422) {
             const { errors } = error?.response?.data ?? {};
             this.errors = errors ?? {};
           }
         });
-    }
-  }
+    },
+  },
 };
 </script>
