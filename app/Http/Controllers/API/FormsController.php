@@ -153,6 +153,7 @@ class FormsController extends Controller
             Form::when('template_id',function($q) use ($template_id){
                 return $q->where('template_id' , $template_id);
             })->get();
+
             return responseSuccess(FormResource::collection($allForms));
         } catch (\Throwable $th) {
             // throw $th;

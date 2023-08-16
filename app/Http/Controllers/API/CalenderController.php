@@ -2,8 +2,14 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Http\Controllers\Controller;
+use App\Models\Calendar;
+use App\Filters\SortFilters;
 use Illuminate\Http\Request;
+use App\Filters\SearchFilters;
+use Illuminate\Pipeline\Pipeline;
+use App\Http\Requests\PageRequest;
+use App\Http\Controllers\Controller;
+use App\Http\Requests\CalendarRequest;
 
     class CalenderController extends Controller
 {
@@ -11,16 +17,21 @@ use Illuminate\Http\Request;
 
     public function index(PageRequest $request)
     {
-        $branches = Branch::query();
-
-        $data = app(Pipeline::class)->send($branches)->through([
-            SearchFilters::class,
+        $user = auth()->user();
+        if ($user->hasRole('root')) {
+            // Logic for root user
+            $calendars = Calendar::query();
+        } else {
+            // Logic for regular user
+            $calendars = $user->calenders()->getQuery();
+        }
+        $data = app(Pipeline::class)->send($calendars)->through([
             SortFilters::class,
         ])->thenReturn();
 
         $data = $data->paginate(request('pageSize', 15));
 
-        return responseSuccess(['branches' => $data]);
+        return responseSuccess(['calendars' => $data]);
     }
 
     /**
@@ -29,22 +40,18 @@ use Illuminate\Http\Request;
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(BrancheRequest $request)
+    public function store(CalendarRequest $request)
     {
 
         try {
-            $validatedData = $request->validated();
-            // Since validation passed, you can directly create the BRANCH.
-            $branch = Branch::create($validatedData);
-            return responseSuccess($branch, 'Branch has been successfully created');
+            $data = $request->validated();
+            $calendar = Calendar::create($data + ['user_id' => auth()->id()]);
+            return responseSuccess($calendar, 'Calender has been successfully created');
         } catch (Throwable $e) {
             // If validation fails, handle the validation errors here.
             return responseFail($e->getMessage());
         }
     }
-
-
-
     /**
      * Update the specified resource in storage.
      *
@@ -54,17 +61,19 @@ use Illuminate\Http\Request;
      */
     public function update(Request $request, $id)
     {
-
-        $branch = Branch::findOrFail($id);
+        $calender = Calendar::findOrFail($id);
 
         $request->validate([
-            'name' => 'nullable|string|max:255',
-            'description' => 'nullable|string|max:1000',
+            'calendarable_type' => 'sometimes|string',
+            'calendarable_id' => 'sometimes|integer',
+            'date' => 'sometimes|date',
+            'details' => 'sometimes|string',
+            'user_id' => 'sometimes|exists:users,id',
         ]);
 
-        $branch->update($request->all());
+        $calender->update($request->all());
 
-        return responseSuccess($branch, 'Branch has been successfully Updated');
+        return responseSuccess($calender, 'calender has been successfully Updated');
     }
 
     /**
@@ -75,8 +84,8 @@ use Illuminate\Http\Request;
      */
     public function destroy($id)
     {
-        $branch = Branch::findOrFail($id);
-        $branch->delete();
-        return responseSuccess([], 'branch has been successfully deleted');
+        $calendar = Calendar::findOrFail($id);
+        $calendar->delete();
+        return responseSuccess([], 'calendar has been successfully deleted');
     }
 }

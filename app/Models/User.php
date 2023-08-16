@@ -66,4 +66,9 @@ class User extends Authenticatable implements MustVerifyEmail
             return url('storage/' . $value);
         }
     }
+
+    public function calenders()
+    {
+        return $this->hasMany(Calendar::class);
+    }
 }
