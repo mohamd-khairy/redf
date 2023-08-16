@@ -21,6 +21,10 @@ const actions = {
     commit('SET_formRequests', formRequests)
   },
 
+  async assignRequest({commit}, data) {
+    console.log('data-->',data)
+    return await axios.post(`assign-request`, data)
+  },
 
   async getEvents({ commit }, data) {
     let config = {

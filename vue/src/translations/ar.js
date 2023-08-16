@@ -450,7 +450,10 @@ export default {
   },
   cases: {
     caseType: "نوع القضية",
-    casesList: "قائمة القضايا",
+    casesList: "قائمة الطلبات",
+    assignUser:"تعيين مستخدم",
+    user:"مستفيد",
+
     deleteRole: "مسح الصلاحية",
     createRole: "إنشاء صلاحية",
     createNewRole: "إنشاء صلاحية جديدة",
@@ -649,6 +652,7 @@ export default {
     ResponseToCustomerFeedback: "الرد على ملاحظات العملاء",
   },
   general: {
+    edit: "تعديل",
     count: "الاجمالى",
     title: "العنوان",
     minute: "دقيقة",

@@ -50,9 +50,18 @@
                     </v-btn>
                 </v-col>
             </v-row>
-            <v-data-table show-select v-model="selectedDepartments" :headers="headers" :items="departmentItems"
-                :options.sync="options" class="flex-grow-1" :loading="isLoading" :page="page" :pageCount="numberOfPages"
-                :server-items-length="totalDepartments">
+            <v-data-table
+              show-select
+              v-model="selectedDepartments"
+              :headers="headers"
+              :items="departmentItems"
+              :options.sync="options"
+              class="flex-grow-1"
+              :loading="isLoading"
+              :page="page"
+              :pageCount="numberOfPages"
+              :server-items-length="totalDepartments"
+            >
                 <template v-slot:item.id="{ item }">
                     <div class="font-weight-bold">
                         # <copy-label :text="departmentItems.indexOf(item) + 1 + ''" />
@@ -169,7 +178,7 @@ export default {
     methods: {
         ...mapActions("departments", ["getDepartments", "deleteDepartment"]),
         ...mapActions("app", ["setBreadCrumb"]),
-        searchdepartment() { },
+        searchDepartment() { },
         open() {
             this.isLoading = true;
             let { page, itemsPerPage } = this.options;
@@ -185,7 +194,7 @@ export default {
             this.getDepartments(data)
                 .then(() => {
                     this.isLoading = false;
-                    if (itemsPerPage != -1) {
+                    if (itemsPerPage !== -1) {
                         this.departmentItems = this.departments.data;
                         this.totalDepartments = this.departments.total;
                         this.numberOfPages = this.departments.last_page;

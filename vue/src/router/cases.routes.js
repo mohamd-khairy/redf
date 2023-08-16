@@ -1,48 +1,56 @@
-export default [{
-  path: '/cases/:id',
-  name: 'cases-list',
-  meta: {
-    title: 'menu.requests',
-    auth: true,
+export default [
+  {
+    path: "/cases/:id",
+    name: "cases-list",
+    meta: {
+      title: "menu.requests",
+      auth: true,
+    },
+    component: () =>
+      import(/* webpackChunkName: "cases-list" */ "@/pages/cases/index"),
   },
-  component: () => import(/* webpackChunkName: "cases-list" */ '@/pages/cases/index')
-},
-{
-  path: '/cases/form-types/:id',
-  name: 'form-types',
-  meta: {
-    title: 'menu.requests',
-    auth: true,
+  {
+    path: "/cases/:id/form-types",
+    name: "form-types",
+    meta: {
+      title: "menu.requests",
+      auth: true,
+    },
+    exact: true,
+    component: () =>
+      import(/* webpackChunkName: "form-types" */ "@/pages/cases/FormTypes"),
   },
-  exact: true,
-  component: () => import(/* webpackChunkName: "form-types" */ '@/pages/cases/FormTypes')
-},
-{
-  path: '/cases/create/:id',
-  name: 'cases-create',
-  meta: {
-    title: 'menu.requests',
-    auth: true,
-    // permissions: 'read-event'
+  {
+    path: "/cases/:formType/create/:id",
+    name: "cases-create",
+    meta: {
+      title: "menu.requests",
+      auth: true,
+      // permissions: 'read-event'
+    },
+    component: () =>
+      import(/* webpackChunkName: "pipes-list" */ "@/pages/cases/CreateCase"),
   },
-  component: () => import(/* webpackChunkName: "pipes-list" */ '@/pages/cases/CreateCase')
-},
-{
-  path: '/cases/edit/:id',
-  name: 'cases-create',
-  meta: {
-    title: 'menu.editCase',
-    auth: true,
-    // permissions: 'read-event'
+  {
+    path: "/cases/:formType/edit/:id",
+    name: "cases-create",
+    meta: {
+      title: "menu.editCase",
+      auth: true,
+      // permissions: 'read-event'
+    },
+    component: () =>
+      import(/* webpackChunkName: "pipes-list" */ "@/pages/cases/EditCase"),
   },
-  component: () => import(/* webpackChunkName: "pipes-list" */ '@/pages/cases/EditCase')
-},
-{
-  path: '/flights/show',
-  name: 'flights-show',
-  meta: {
-    auth: true
+  {
+    path: "/flights/show",
+    name: "flights-show",
+    meta: {
+      auth: true,
+    },
+    component: () =>
+      import(
+        /* webpackChunkName: "flights-show" */ "@/pages/flights/ShowPage.vue"
+      ),
   },
-  component: () => import(/* webpackChunkName: "flights-show" */ '@/pages/flights/ShowPage.vue')
-}
-]
+];

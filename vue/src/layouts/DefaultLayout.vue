@@ -1,15 +1,39 @@
 <template>
-  <div v-shortkey="['ctrl', '/']" class="d-flex flex-grow-1" @shortkey="onKeyup">
+  <div
+    v-shortkey="['ctrl', '/']"
+    class="d-flex flex-grow-1"
+    @shortkey="onKeyup"
+  >
     <!-- Navigation -->
-    <v-navigation-drawer v-model="drawer" app floating class="elevation-0 navigation-cont" :right="$vuetify.rtl"
-      :light="menuTheme === 'light'" :dark="menuTheme === 'dark'">
+    <v-navigation-drawer
+      v-model="drawer"
+      app
+      floating
+      class="elevation-0 navigation-cont"
+      :right="$vuetify.rtl"
+      :light="menuTheme === 'light'"
+      :dark="menuTheme === 'dark'"
+    >
       <!-- Navigation menu info -->
       <template v-slot:prepend>
         <div class="px-2 pt-2" style="height: 80px">
-          <div class="title font-weight-bold text-center text-uppercase " style="height: 100%;">
+          <div
+            class="title font-weight-bold text-center text-uppercase"
+            style="height: 100%"
+          >
             <!--            {{ product.name }}-->
-            <img :class="!websiteLogo ? 'd-none' : ''" :src="websiteLogo" :alt="websiteName"
-              style="width: 100%;max-width: 100%; height: auto;max-height: 100%; object-fit: cover;" />
+            <img
+              :class="!websiteLogo ? 'd-none' : ''"
+              :src="websiteLogo"
+              :alt="websiteName"
+              style="
+                width: 100%;
+                max-width: 100%;
+                height: auto;
+                max-height: 100%;
+                object-fit: cover;
+              "
+            />
             <!-- <img src="../assets/images/logo.png" alt=""
               style="width: 100%;max-width: 100%; height: auto;max-height: 100%; object-fit: cover;"> -->
           </div>
@@ -18,14 +42,24 @@
       </template>
 
       <!-- Navigation menu -->
-      <main-menu :menu="navigationPermissions" :pinned="pinnedReports" :templates="templateData" />
+      <main-menu
+        :menu="navigationPermissions"
+        :pinned="pinnedReports"
+        :templates="navTemplates"
+      />
 
       <!-- Navigation menu footer -->
       <template v-slot:append>
         <!-- Footer navigation links -->
         <div class="pa-1 text-center">
-          <v-btn v-for="(item, index) in navigation.footer" :key="index" :href="item.href" :target="item.target" small
-            text>
+          <v-btn
+            v-for="(item, index) in navigation.footer"
+            :key="index"
+            :href="item.href"
+            :target="item.target"
+            small
+            text
+          >
             {{ item.key ? $t(item.key) : item.text }}
           </v-btn>
         </div>
@@ -33,13 +67,27 @@
     </v-navigation-drawer>
 
     <!-- Toolbar -->
-    <v-app-bar app flat outlined prominent shrink-on-scroll :color="isToolbarDetached ? 'surface' : undefined"
-      :light="toolbarTheme === 'light'" :dark="toolbarTheme === 'dark'" :height="breadcrumbs.length > 1 ? 40 : 60">
-      <v-card class="flex-grow-1 d-flex fill-height" :class="[isToolbarDetached ? 'pa-1 mt-3 mx-1' : 'pa-0 ma-0']"
-        :flat="!isToolbarDetached">
+    <v-app-bar
+      app
+      flat
+      outlined
+      prominent
+      shrink-on-scroll
+      :color="isToolbarDetached ? 'surface' : undefined"
+      :light="toolbarTheme === 'light'"
+      :dark="toolbarTheme === 'dark'"
+      :height="breadcrumbs.length > 1 ? 40 : 60"
+    >
+      <v-card
+        class="flex-grow-1 d-flex fill-height"
+        :class="[isToolbarDetached ? 'pa-1 mt-3 mx-1' : 'pa-0 ma-0']"
+        :flat="!isToolbarDetached"
+      >
         <div class="d-flex flex-grow-1 align-center">
           <div class="d-flex flex-grow-1 align-start fill-height">
-            <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
+            <v-app-bar-nav-icon
+              @click.stop="drawer = !drawer"
+            ></v-app-bar-nav-icon>
             <v-app-bar-title>{{ pageTitle }}</v-app-bar-title>
 
             <!-- <v-spacer class="d-none d-lg-block"></v-spacer>
@@ -75,7 +123,13 @@
         <v-spacer></v-spacer>
         <div class="overline">
           Built with <v-icon small color="pink">mdi-heart</v-icon>
-          <a class="text-decoration-none" href="https://wakeb.tech" target="_blank"> Wakeb</a>
+          <a
+            class="text-decoration-none"
+            href="https://wakeb.tech"
+            target="_blank"
+          >
+            Wakeb</a
+          >
         </div>
       </v-footer>
     </v-main>
@@ -83,7 +137,7 @@
 </template>
 
 <script>
-import {mapActions, mapState} from "vuex";
+import { mapActions, mapState } from "vuex";
 
 // navigation menu configurations
 import config from "../configs";
@@ -100,7 +154,7 @@ export default {
     ToolbarUser,
     ToolbarApps,
     ToolbarLanguage,
-    ToolbarNotifications
+    ToolbarNotifications,
   },
   data() {
     return {
@@ -109,13 +163,14 @@ export default {
       // pinnedReports: [],
       templateData: [],
       navigation: config.navigation,
-      logo: "/images/logo.svg"
+      logo: "/images/logo.svg",
     };
   },
   created() {
     // this.getPinned();
     this.getSavedPinned();
-    this.getTemplateTypes();
+
+    this.getNavTemplate();
   },
   updated() {
     // this.setFavicon(this.websitefavIcon);
@@ -128,18 +183,19 @@ export default {
       "toolbarTheme",
       "isToolbarDetached",
       "breadcrumbs",
-      "pageTitle"
+      "pageTitle",
+      "navTemplates",
     ]),
     ...mapState("app", {
-      websiteLogo: state => {
+      websiteLogo: (state) => {
         if (!state.websiteLoginIcon) {
           return "/images/logo.svg";
         }
         return state.websiteLoginIcon;
       },
-      websitefavIcon: state => {
+      websitefavIcon: (state) => {
         const result = state.generalSettings.filter(
-          setting => setting.key === "website_favorite_place_icon"
+          (setting) => setting.key === "website_favorite_place_icon"
         );
 
         if (result.length > 0) {
@@ -147,24 +203,24 @@ export default {
         }
         return "/images/logo.svg";
       },
-      websiteName: state => {
+      websiteName: (state) => {
         if (!state.websiteName) {
           return " ";
         }
         return state.websiteName;
-      }
+      },
       // settingLoading: state => state.generalSettingLoading
     }),
     ...mapState("reports", ["pinnedReports"]),
     navigationPermissions() {
       let menus = [];
       let items = [];
-      this.navigation.menu.forEach(nav => {
+      this.navigation.menu.forEach((nav) => {
         let isAllowed = localStorage
           .getItem("user_permissions")
           ?.includes(nav.permission);
         if (nav.items.length > 0) {
-          items = nav.items.filter(item => {
+          items = nav.items.filter((item) => {
             let allowed = localStorage
               .getItem("user_permissions")
               ?.includes(item.permission);
@@ -175,40 +231,41 @@ export default {
         if (isAllowed || nav.items.length > 0) menus.push(nav);
       });
       return menus;
-    }
+    },
   },
   methods: {
     ...mapActions("reports", ["getSavedPinned"]),
+    ...mapActions("app", ["getNavTemplate"]),
     async getPinned() {
       try {
         const response = await this.$axios.get(`report/pinned`);
         const { pinneds } = response?.data.data;
-        const pinnedData = pinneds?.data.map(pin => ({
+        const pinnedData = pinneds?.data.map((pin) => ({
           title: pin.title,
-          id: pin.id
+          id: pin.id,
         }));
         this.pinnedReports = pinnedData;
       } catch (error) {
         console.error(error);
       }
     },
-    async getTemplateTypes() {
-      try {
-        const response = await this.$axios.get(`get-template-type`);
-        const templates = response?.data.data;
-        this.templateData = templates.map(template => ({
-          title: template.name,
-          id: template.id
-        }));
-      } catch (error) {
-        console.error(error);
-      }
-    },
+    // async getTemplateTypes() {
+    //   try {
+    //     const response = await this.$axios.get(`get-template-type`);
+    //     const templates = response?.data.data;
+    //     this.templateData = templates.map((template) => ({
+    //       title: template.name,
+    //       id: template.id,
+    //     }));
+    //   } catch (error) {
+    //     console.error(error);
+    //   }
+    // },
 
     onKeyup(e) {
       this.$refs.search.focus();
-    }
-  }
+    },
+  },
 };
 </script>
 
@@ -231,11 +288,16 @@ export default {
   background: #014c4f !important;
 }
 
-.v-menu__content .theme--light.v-list-item:not(.v-list-item--active):not(.v-list-item--disabled) {
+.v-menu__content
+  .theme--light.v-list-item:not(.v-list-item--active):not(
+    .v-list-item--disabled
+  ) {
   color: #000 !important;
 }
 
-.theme--light.v-list-item:not(.v-list-item--active):not(.v-list-item--disabled) {
+.theme--light.v-list-item:not(.v-list-item--active):not(
+    .v-list-item--disabled
+  ) {
   color: #fff !important;
 }
 
@@ -255,7 +317,6 @@ export default {
 }
 
 .navigation-cont .v-list-group--active .v-list-item--active .v-icon::before {
-
   color: #014c4f !important;
 }
 
@@ -272,7 +333,10 @@ export default {
   margin-top: 5px;
 }
 
-.navigation-cont .v-list-group.v-list-group--active .v-list-group__items .v-list-item--active:not(.v-list-group__header) {
+.navigation-cont
+  .v-list-group.v-list-group--active
+  .v-list-group__items
+  .v-list-item--active:not(.v-list-group__header) {
   border-color: transparent !important;
   margin-top: 5px;
   color: #014c4f !important;

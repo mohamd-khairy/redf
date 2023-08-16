@@ -60,12 +60,10 @@
                 elevation="0"
                 v-bind="attrs"
                 v-on="on"
-                :to=formTypesUrl
+                :to="formTypesUrl"
                 v-can="'create-user'"
               >
-                <v-icon>
-                  mdi-plus
-                </v-icon>
+                <v-icon> mdi-plus </v-icon>
               </v-btn>
             </template>
             <span>{{ $t("cases.createCase") }}</span>
@@ -122,6 +120,10 @@
           <div>{{ item.user.name ?? '---' }}</div>
         </template>
 
+        <template v-slot:item.assigner="{ item }">
+          <div>{{ item.form_assigned_requests[0]?.name ?? '---' }}</div>
+        </template>
+
         <template v-slot:item.role="{ item }">
           <v-chip
             label
@@ -142,9 +144,18 @@
         <template v-slot:item.action="{ item }">
           <div class="actions">
             <v-btn
+              title="Assign"
+              @click="openAssignDialog(item.id)"
+              elevation="0"
               color="primary"
               icon
-              :to="`/cases/edit/${item.id}`"
+            >
+              <v-icon>mdi-at</v-icon>
+            </v-btn>
+            <v-btn
+              color="primary"
+              icon
+              :to="`/cases/${currentPageId}/edit/${item.id}`"
               v-can="'update-user'"
             >
               <v-icon>mdi-open-in-new</v-icon>
@@ -168,6 +179,13 @@
           </div>
         </template>
       </v-data-table>
+
+
+      <assign
+        v-model="dialog"
+        :id="formId"
+      ></assign>
+
     </v-card>
   </div>
 </template>
@@ -177,13 +195,16 @@ import CopyLabel from "../../components/common/CopyLabel";
 import { mapActions, mapState } from "vuex";
 import { ask, makeToast } from "@/helpers";
 import emptyDataSvg from "@/assets/images/illustrations/empty-data.svg";
+import Assign from "@/pages/cases/Assign";
 export default {
   components: {
+    Assign,
     CopyLabel,
     emptyDataSvg
   },
   data() {
     return {
+      currentPageId: null,
       page: 1,
       total: 0,
       numberOfPages: 0,
@@ -191,13 +212,10 @@ export default {
       isLoading: false,
       breadcrumbs: [
         {
-          text: this.$t("menu.casesManagement"),
+          text: this.$t("menu.requests"),
           disabled: false,
           href: "#"
         },
-        {
-          text: this.$t("menu.cases")
-        }
       ],
 
       searchQuery: "",
@@ -212,7 +230,9 @@ export default {
         { text: this.$t("tables.created"), value: "created_at" },
         { text: "", sortable: false, align: "right", value: "action" }
       ],
-      formTypesUrl:''
+      formTypesUrl:'',
+      formId:0,
+      dialog: false,
     };
   },
   watch: {
@@ -225,18 +245,22 @@ export default {
     deep: true,
     searchQuery() {
       this.open();
-    }
+    },
+    navTemplates() {
+      this.setCurrentBread();
+    },
+    currentPageId() {
+      this.setCurrentBread();
+    },
   },
   computed: {
-    ...mapState("cases", ["formRequests"])
+    ...mapState("cases", ["formRequests"]),
+    ...mapState("app", ["navTemplates"]),
   },
   created() {
-    let {id} = this.$route.params;
-    this.formTypesUrl = '/cases/form-types/'+id
-    this.setBreadCrumb({
-      breadcrumbs: this.breadcrumbs,
-      pageTitle: this.$t("cases.casesList")
-    });
+    let { id } = this.$route.params;
+    this.currentPageId = id;
+    this.formTypesUrl = `/cases/${id}/form-types`;
   },
   mounted() {
     // this.open()
@@ -245,13 +269,29 @@ export default {
     ...mapActions("cases", ["getFormRequests", "deleteUser", "deleteAll"]),
     ...mapActions("app", ["setBreadCrumb"]),
     search() {},
+    setCurrentBread() {
+      const currentPage = this.navTemplates.find((nav) => {
+        return nav.id === +this.currentPageId;
+      });
+      if (currentPage) {
+        this.breadcrumbs.push({
+          text: currentPage.title,
+          disabled: false,
+          href: "#",
+        });
+      }
+      this.setBreadCrumb({
+        breadcrumbs: this.breadcrumbs,
+        pageTitle: this.$t("cases.casesList"),
+      });
+    },
     open() {
       this.isLoading = true;
       let { page, itemsPerPage } = this.options;
       const direction = this.options.sortDesc[0] ? "asc" : "desc";
       let {id} = this.$route.params;
       let data = {
-        template_id:id,
+        template_id: id,
         search: this.searchQuery,
         pageSize: itemsPerPage,
         pageNumber: page,
@@ -275,13 +315,17 @@ export default {
           this.isLoading = false;
         });
     },
+    openAssignDialog(id) {
+      this.dialog = true
+      this.formId = id
+    },
     async deleteItem(id) {
       const { isConfirmed } = await ask("Are you sure to delete it?", "info");
 
       if (isConfirmed) {
         this.isLoading = true;
         this.deleteUser(id)
-          .then(response => {
+          .then((response) => {
             makeToast("success", response.data.message);
             this.open();
             this.isLoading = false;

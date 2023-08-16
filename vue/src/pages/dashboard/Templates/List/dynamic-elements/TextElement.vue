@@ -98,6 +98,16 @@
         </i>
       </li>
       <li class="context-menu-item">
+<!--        <i class="material-icons">-->
+<!--          keyboard-->
+<!--        </i>-->
+        <span>Required</span>
+        <select v-model="required" class="width form-control-sm">
+          <option value="true">Yes</option>
+          <option value="false">No</option>
+        </select>
+      </li>
+      <li class="context-menu-item">
         <i class="v-icon notranslate mdi mdi-earth">
         </i>
         <span class="mx-2">Website View</span>
