@@ -39,12 +39,12 @@
             </v-col>
             <v-col cols="6">
               <v-autocomplete
-                v-model="form.form_id"
-                :items="forms"
-                :label="$t('tasks.form')"
-                :error-messages="errors['form_id']"
+                v-model="form.form_request_id"
+                :items="casesNames"
                 item-text="name"
                 item-value="id"
+                :label="$t('tasks.case')"
+                :error-messages="errors['form_id']"
                 outlined
                 dense
               ></v-autocomplete>
@@ -55,8 +55,10 @@
                 dense
                 counter
                 show-size
+                :v-model="form.file"
                 :label="$t('tasks.document')"
-                @change="(file) => handleFileUpload(file, input)"
+                @change="(file) => handleFileUpload(file)"
+                click:clear="handleRemoveFile"
                 :error-messages="errors['document']"
               >
               </v-file-input>
@@ -145,9 +147,9 @@ export default {
       form: {
         name: "",
         type: "",
-        document_name: null,
-        document: null,
+        form_request_id: "",
         user_id: null,
+        file: null,
         assigner_id: null,
         due_date: "",
       },
@@ -159,7 +161,7 @@ export default {
   },
   computed: {
     ...mapState("auth", ["user"]),
-    ...mapState("tasks", ["users", "documents", "forms"]),
+    ...mapState("tasks", ["users", "documents", "casesNames"]),
   },
   created() {
     this.setBreadCrumb({
@@ -171,7 +173,10 @@ export default {
 
   methods: {
     ...mapActions("app", ["setBreadCrumb"]),
-    ...mapActions("tasks", ["createTask", "getUsers", "getForms"]),
+    ...mapActions("tasks", ["createTask", "getUsers", "getCasesNames"]),
+    handleRemoveFile() {
+      this.form.file = null;
+    },
     saveTask() {
       this.loading = true;
       this.errors = {};
@@ -192,7 +197,7 @@ export default {
     },
     open() {
       this.getUsers();
-      this.getForms();
+      this.getCasesNames();
     },
     formatDate(date) {
       if (!date) return null;
@@ -204,12 +209,7 @@ export default {
       if (file) {
         const fileName = file.name.split(".")[0];
         const fileExtension = file.name.split(".")[1];
-        this.form.document_name = fileName + "." + fileExtension;
-        const reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onload = function () {
-          this.form.document = reader.result;
-        };
+        this.form.file = file;
       }
     },
   },

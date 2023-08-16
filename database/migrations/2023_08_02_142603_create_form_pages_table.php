@@ -16,6 +16,7 @@ return new class extends Migration
         Schema::create('form_pages', function (Blueprint $table) {
             $table->id();
             $table->string('title')->nullable();
+            $table->boolean('editable')->default(true);
             $table->unsignedBigInteger('form_id');
             $table->softDeletes();
             $table->timestamps();

@@ -40,7 +40,7 @@ class FormSessionController extends Controller
             // Since validation passed, you can directly create the formSession.
             $formSession = FormSession::create($validatedData);
             return responseSuccess($formSession, 'FormSession has been successfully created');
-        } catch (Throwable $e) {
+        } catch (\Throwable $e) {
             // If validation fails, handle the validation errors here.
             return responseFail($e->getMessage());
         }

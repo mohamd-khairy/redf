@@ -11,9 +11,9 @@ const mutations = {
   SET_DOCUMENTS(state, value) {
     state.documents = value;
   },
-  SET_FORMS(state, value){
-    state.forms = value;
-  }
+  SET_CASES_NAMES(state, value) {
+    state.casesNames = value;
+  },
 };
 
 export default mutations;

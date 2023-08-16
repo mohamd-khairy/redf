@@ -9,7 +9,7 @@
       v-model="drawer"
       app
       floating
-      class="elevation-0 navigation-cont"
+      class="elevation-0 navigation-cont custom-nav-cont"
       :right="$vuetify.rtl"
       :light="menuTheme === 'light'"
       :dark="menuTheme === 'dark'"
@@ -274,7 +274,7 @@ export default {
   box-shadow: 1px 1px 18px #ee44aa;
 }
 
-.v-navigation-drawer {
+.v-navigation-drawer.custom-nav-cont {
   /* background: color-mix(in srgb, #009390, #9cacac 40%) !important; */
   background: #014c4f !important;
 }
@@ -284,7 +284,7 @@ export default {
   /* background: #fff; */
 }
 
-.navigation-cont .v-navigation-drawer__content {
+.navigation-cont.custom-nav-cont .v-navigation-drawer__content {
   background: #014c4f !important;
 }
 
@@ -295,37 +295,47 @@ export default {
   color: #000 !important;
 }
 
-.theme--light.v-list-item:not(.v-list-item--active):not(
+.custom-nav-cont
+  .theme--light.v-list-item:not(.v-list-item--active):not(
     .v-list-item--disabled
   ) {
   color: #fff !important;
 }
 
-.navigation-cont .v-list--dense .v-list-item .v-icon::before {
+.navigation-cont.custom-nav-cont .v-list--dense .v-list-item .v-icon::before {
   color: #fff !important;
 }
 
-.navigation-cont .v-list--dense .v-list-item.active--text {
+.navigation-cont.custom-nav-cont .v-list--dense .v-list-item.active--text {
   background: #fff;
   color: #014c4f !important;
 }
 
 /* .v-list-group--active .v-list-item--active {} */
 
-.navigation-cont .v-list-group--active .v-list-item--active {
+.navigation-cont.custom-nav-cont .v-list-group--active .v-list-item--active {
   background: #fff;
 }
 
-.navigation-cont .v-list-group--active .v-list-item--active .v-icon::before {
+.navigation-cont.custom-nav-cont
+  .v-list-group--active
+  .v-list-item--active
+  .v-icon::before {
   color: #014c4f !important;
 }
 
-.navigation-cont .v-list-group--active .v-list-item--active .v-list-item {
+.navigation-cont.custom-nav-cont
+  .v-list-group--active
+  .v-list-item--active
+  .v-list-item {
   background: transparent !important;
   color: #014c4f !important;
 }
 
-.navigation-cont .v-list--dense .v-list-item.active--text .v-icon::before {
+.navigation-cont.custom-nav-cont
+  .v-list--dense
+  .v-list-item.active--text
+  .v-icon::before {
   color: #014c4f !important;
 }
 
@@ -333,7 +343,7 @@ export default {
   margin-top: 5px;
 }
 
-.navigation-cont
+.navigation-cont.custom-nav-cont
   .v-list-group.v-list-group--active
   .v-list-group__items
   .v-list-item--active:not(.v-list-group__header) {

@@ -94,9 +94,6 @@ class TaskController extends Controller
      */
     public function update(Request $request, $id)
     {
-
-        $task = Task::with('user:id,name', 'assigner:id,name', 'file')->findOrFail($id);
-
         $validatedData = $request->validate([
             'name' => 'sometimes|string|max:255',
             'type' => 'sometimes', // Enum values
@@ -106,12 +103,14 @@ class TaskController extends Controller
             'details' => 'sometimes|string',
             'share_with' => 'sometimes|string',
             'form_request_id' => 'sometimes|exists:forms,id',
-            'file' => 'sometimes|file|mimes:jpg,jpeg,png,pdf,docx',
+            'file' => 'nullable|file|mimes:jpg,jpeg,png,pdf,docx',
         ]);
 
         unset($validatedData['file']);
 
-        $task->update($request->all());
+        $task = Task::with('user:id,name', 'assigner:id,name', 'file')->findOrFail($id);
+
+        $task->update($validatedData);
 
         // Handle the file update if a new file is provided
         if ($request->hasFile('file')) {
