@@ -67,7 +67,7 @@ export default {
   components: {
     CopyLabel,
     AccountTab,
-    InformationTab
+    InformationTab,
   },
   data() {
     return {
@@ -78,17 +78,17 @@ export default {
         {
           text: this.$t("menu.usersManagement"),
           disabled: false,
-          href: "#"
+          href: "#",
         },
         {
           text: this.$t("users.usersList"),
           to: "/users/list",
-          exact: true
+          exact: true,
         },
         {
-          text: this.$t("users.editUser")
-        }
-      ]
+          text: this.$t("users.editUser"),
+        },
+      ],
     };
   },
   computed: {
@@ -98,15 +98,17 @@ export default {
       },
       set(val) {
         this.$store.commit("users/SET_USER", val);
-      }
-    }
+      },
+    },
   },
   created() {
     const { id } = this.$route.params;
-    const pageTitle = this.$t("users.editUser") + (this.user.name ? " - " + this.user.name : "");
+    const pageTitle =
+      this.$t("users.editUser") +
+      (this.user.name ? " - " + this.user.name : "");
     this.setBreadCrumb({
       breadcrumbs: this.breadcrumbs,
-      pageTitle
+      pageTitle,
     });
     this.loading = true;
     this.getUser(id)
@@ -136,20 +138,20 @@ export default {
       this.loading = true;
       this.errors = {};
       this.editUser(data)
-        .then(response => {
+        .then((response) => {
           this.loading = false;
           this.errors = {};
           makeToast("success", response.data.message);
           this.$router.push({ name: "users-list" });
         })
-        .catch(error => {
+        .catch((error) => {
           this.loading = false;
           if (error.response.status == 422) {
             const { errors } = error?.response?.data;
             this.errors = errors ?? {};
           }
         });
-    }
-  }
+    },
+  },
 };
 </script>
