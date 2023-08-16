@@ -28,7 +28,7 @@ class FormRequest extends Model
 
     public function form_page_item_fill()
     {
-        return $this->hasMany(FormPageItemFill::class);
+        return $this->hasMany(FormPageItemFill::class)->with('page_item');
     }
 
     public function user()
