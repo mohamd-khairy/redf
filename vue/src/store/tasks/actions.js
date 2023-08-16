@@ -52,8 +52,12 @@ const actions = {
     commit("SET_DOCUMENTS", documents.data);
   },
   async getForms({ commit }) {
-    const response = await axios.get("forms");
-
+    const response = await axios.get("get-form-Requests", {
+      params: {
+        pageSize: -1,
+      },
+    });
+    console.log(response?.data.data);
     const { forms } = response?.data.data;
     commit("SET_FORMS", forms.data);
   },

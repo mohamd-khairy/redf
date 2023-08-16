@@ -1,7 +1,6 @@
 <template>
   <div class="flex-grow-1">
     <div class="d-flex align-center py-3"></div>
-
     <v-card>
       <v-card-text class="p-3 roles">
         <v-form>
@@ -52,15 +51,15 @@
             </v-col>
             <v-col cols="6">
               <v-file-input
-                        outlined
-                        dense
-                        counter
-                        show-size
-                        :label="$t('tasks.document')"
-                        @change="(file) => handleFileUpload(file, input)"
-                        :error-messages="errors['document']"
-                      >
-                      </v-file-input>
+                outlined
+                dense
+                counter
+                show-size
+                :label="$t('tasks.document')"
+                @change="(file) => handleFileUpload(file, input)"
+                :error-messages="errors['document']"
+              >
+              </v-file-input>
             </v-col>
 
             <v-col cols="12" sm="6" md="6">
@@ -192,8 +191,8 @@ export default {
         });
     },
     open() {
-      this.getUsers()
-      this.getForms()
+      this.getUsers();
+      this.getForms();
     },
     formatDate(date) {
       if (!date) return null;
