@@ -65,6 +65,8 @@ class User extends Authenticatable implements MustVerifyEmail
         if ($value) {
             return url('storage/' . $value);
         }
+
+        return null;
     }
 
     public function calenders()

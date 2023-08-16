@@ -26,9 +26,9 @@ class Task extends Model
     }
 
 
-    public function files()
+    public function file()
     {
-        return $this->morphMany(File::class, 'fileable');
+        return $this->morphOne(File::class, 'fileable');
     }
 
     public function user()
