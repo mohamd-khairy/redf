@@ -95,7 +95,8 @@ class TaskController extends Controller
     public function update(Request $request, $id)
     {
 
-        $task = Task::findOrFail($id);
+        $task = Task::with('user:id,name', 'assigner:id,name', 'file')->findOrFail($id);
+
         $validatedData = $request->validate([
             'name' => 'sometimes|string|max:255',
             'type' => 'sometimes', // Enum values
@@ -140,7 +141,8 @@ class TaskController extends Controller
 
     public function show($id)
     {
-        $task = Task::findOrFail($id);
+        $task = Task::with('user:id,name', 'assigner:id,name', 'file')->findOrFail($id);
+
         return responseSuccess($task, 'task has been successfully showed');
     }
 
@@ -154,6 +156,7 @@ class TaskController extends Controller
     {
         $task = Task::findOrFail($id);
         $task->delete();
+
         return responseSuccess([], 'Task has been successfully deleted');
     }
 }
