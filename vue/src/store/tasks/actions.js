@@ -32,18 +32,39 @@ const actions = {
       },
     });
   },
-  async updateTask({ state }, form) {
+  async updateTask({ state }, formData) {
     const { id } = state?.task ?? {};
-    return await axios.put(`tasks/${id}`, form);
+    const bodyFormData = new FormData();
+
+    for (const key in formData) {
+      let value = formData[key];
+      bodyFormData.set(key, value);
+    }
+    bodyFormData.set("_method", "PUT");
+    return await axios.post(`tasks/${id}`, bodyFormData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
   },
-  async createTask({ commit }, data) {
-    return await axios.post("tasks", data);
+  async createTask({ commit }, formData) {
+    const bodyFormData = new FormData();
+
+    for (const key in formData) {
+      let value = formData[key];
+      bodyFormData.set(key, value);
+    }
+    return await axios.post(`tasks`, bodyFormData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
   },
   async getUsers({ commit }) {
-    const response = await axios.get("users");
-
+    const response = await axios.get("user-employee");
     const { users } = response?.data.data;
-    commit("SET_USERS", users.data);
+
+    commit("SET_USERS", users);
   },
   async getDocuments({ commit }) {
     const response = await axios.get("documents");
@@ -51,15 +72,15 @@ const actions = {
     const { documents } = response?.data.data;
     commit("SET_DOCUMENTS", documents.data);
   },
-  async getForms({ commit }) {
+  async getCasesNames({ commit }) {
     const response = await axios.get("get-form-Requests", {
       params: {
         pageSize: -1,
       },
     });
-    console.log(response?.data.data);
-    const { forms } = response?.data.data;
-    commit("SET_FORMS", forms.data);
+    const resData = response?.data.data;
+    const casesNames = resData.map((c) => ({ name: c.name, id: c.id }));
+    commit("SET_CASES_NAMES", casesNames);
   },
 };
 

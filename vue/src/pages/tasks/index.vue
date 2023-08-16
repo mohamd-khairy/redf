@@ -84,14 +84,16 @@
           {{ item.type }}
         </template>
 
-        <template v-slot:item.requested_from="{ item }">
-          {{ item.requested_from }}
+        <template v-slot:item.user="{ item }">
+          {{ item.user.name }}
         </template>
-        <template v-slot:item.assigned_to="{ item }">
-          {{ item.assigned_to }}
+        <template v-slot:item.assigner="{ item }">
+          {{ item.assigner.name }}
         </template>
-        <template v-slot:item.document_id="{ item }">
-          <div>{{ item.document_id }}</div>
+        <template v-slot:item.file="{ item }">
+          <a :href="item.file.path" target="_blank">
+            <v-icon> mdi-file </v-icon>
+          </a>
         </template>
         <template v-slot:item.due_date="{ item }">
           <div>{{ item.due_date | formatDate("lll") }}</div>
@@ -153,9 +155,9 @@ export default {
         { text: this.$t("tables.id"), value: "id" },
         { text: this.$t("tables.name"), value: "name" },
         { text: this.$t("tables.type"), value: "type" },
-        { text: this.$t("tasks.requested_from"), value: "user_id" },
-        { text: this.$t("tasks.assigned_to"), value: "assigner_id" },
-        { text: this.$t("tasks.document"), value: "document_id" },
+        { text: this.$t("tasks.requested_from"), value: "user" },
+        { text: this.$t("tasks.assigned_to"), value: "assigner" },
+        { text: this.$t("tasks.document"), value: "file" },
         { text: this.$t("tasks.due_date"), value: "due_date" },
         { text: "", sortable: false, align: "right", value: "action" },
       ],
