@@ -60,4 +60,14 @@ class FormRequest extends Model
     {
         return $this->hasMany(FormAssignRequest::class)->whereNot('status', 'deleted');
     }
+
+    public function formables()
+    {
+        return $this->morphMany(Formable::class, 'formable');
+    }
+
+    public function formRequestActions()
+    {
+        return $this->morphMany(FormRequestAction::class, 'formable');
+    }
 }

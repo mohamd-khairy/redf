@@ -2,16 +2,17 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Filters\SearchFilters;
-use App\Filters\SortFilters;
+use Throwable;
+use App\Models\User;
 use App\Models\Department;
+use App\Filters\SortFilters;
 use Illuminate\Http\Request;
+use App\Filters\SearchFilters;
+use Illuminate\Pipeline\Pipeline;
+use App\Http\Requests\PageRequest;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\DepartmentRequest;
-use App\Http\Requests\PageRequest;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Pipeline\Pipeline;
-use Throwable;
 
 class DepartmentController extends Controller
 {
@@ -103,5 +104,22 @@ class DepartmentController extends Controller
         $department = department::findOrFail($id);
         $department->delete();
         return responseSuccess([], 'department has been successfully deleted');
+    }
+
+    public function user_department(Request $request){
+        $user = User::where('id', $request->user_id)
+        ->with(['department', 'userInformation:id,civil_number,user_id'])
+        ->first();
+
+        if ($user) {
+            $department = $user->department; // Access the department relationship
+            $userInformation = $user->userInformation; // Access the userInformation relationship
+            return responseSuccess([
+                'department' => $department,
+                'userInformation' => $userInformation,
+             ], 'User Department has been Retrieved Successfully');
+
+        }
+        return response()->json(['message' => 'User not found'], 404);
     }
 }

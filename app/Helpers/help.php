@@ -1,11 +1,12 @@
 <?php
 
-use App\Models\Setting;
 use App\Models\User;
+use App\Models\Setting;
+use App\Models\Calendar;
+use Illuminate\Support\Str;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Str;
 
 if (!function_exists('setting')) {
     function setting($key = null, $value = null, $group = null)
@@ -169,5 +170,18 @@ if (!function_exists('resolvePhoto')) {
         return file_exists('storage/' . $image)  // Storage::exists($image)
             ? url('storage/' . $image)
             : $result;
+    }
+}
+
+if (!function_exists('saveCalendarFromRequest')) {
+    function saveCalendarFromRequest($request)
+    {
+        $data = $request->validate([
+            'calendarable_type' => 'nullable|string',
+            'calendarable_id' => 'nullable|integer',
+            'date' => 'required|date',
+            'details' => 'nullable|string',
+        ]);
+        return Calendar::create($data);
     }
 }
