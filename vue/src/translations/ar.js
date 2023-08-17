@@ -763,6 +763,9 @@ export default {
     caseNumber: "رقم القضية",
     case: "القضية",
     date: "التاريخ",
+    applicant: "مقدم الطلب",
+    pending: "قيد الانتظار",
+    processing: "قيد التجهيز",
   },
   reports: {
     buildReport: "انشاء تقرير",

@@ -246,7 +246,7 @@ const actions = {
   },
 
   async getCasePreview({ commit }, id) {
-    const response = await axios.get(`action-preview`);
+    const response = await axios.get(`action-preview/${id}`);
     const { formRequestActions } = response?.data?.data;
     return formRequestActions;
   },

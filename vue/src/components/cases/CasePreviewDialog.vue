@@ -44,11 +44,11 @@
               <v-col cols="12">
                 <v-expansion-panels multiple>
                   <v-expansion-panel>
-                    <v-expansion-panel-header>{{
-                      action.msg
-                    }}</v-expansion-panel-header>
+                    <v-expansion-panel-header>
+                      <h5>{{ action.msg }}</h5>
+                    </v-expansion-panel-header>
                     <v-expansion-panel-content>
-                      <v-row dense>
+                      <v-row class="mb-1" dense>
                         <v-col cols="12" sm="3">
                           <h6 class="mt-1 mb-0 c-h6">
                             {{ $t("general.case") }}
@@ -56,8 +56,9 @@
                         </v-col>
                         <v-col cols="12" sm="9">
                           <v-text-field
+                            dense
                             class="custom-disabled-input"
-                            :value="action.formable.name"
+                            :value="action?.formable?.form?.name || ''"
                             solo
                             label="Solo"
                             disabled
@@ -65,7 +66,7 @@
                           ></v-text-field>
                         </v-col>
                       </v-row>
-                      <v-row dense>
+                      <v-row class="mb-1" dense>
                         <v-col cols="12" sm="3">
                           <h6 class="mt-1 mb-0 c-h6">
                             {{ $t("general.caseNumber") }}
@@ -73,8 +74,9 @@
                         </v-col>
                         <v-col cols="12" sm="9">
                           <v-text-field
+                            dense
                             class="custom-disabled-input"
-                            :value="action.formable.form_request_number"
+                            :value="action?.formable?.form_request_number || ''"
                             solo
                             label="Solo"
                             disabled
@@ -82,8 +84,26 @@
                           ></v-text-field>
                         </v-col>
                       </v-row>
+                      <v-row class="mb-1" dense>
+                        <v-col cols="12" sm="3">
+                          <h6 class="mt-1 mb-0 c-h6">
+                            {{ $t("general.applicant") }}
+                          </h6>
+                        </v-col>
+                        <v-col cols="12" sm="9">
+                          <v-text-field
+                            class="custom-disabled-input"
+                            :value="action.formable?.user?.name || ''"
+                            solo
+                            label="Solo"
+                            disabled
+                            hide-details
+                            dense
+                          ></v-text-field>
+                        </v-col>
+                      </v-row>
 
-                      <v-row dense v-if="action?.formable?.note">
+                      <v-row class="mb-1" dense v-if="action?.formable?.note">
                         <v-col cols="12" sm="3">
                           <h6 class="mt-1 mb-0 c-h6">
                             {{ $t("general.note") }}
@@ -93,7 +113,7 @@
                         <v-col cols="12" sm="9">
                           <v-text-area
                             class="custom-disabled-input"
-                            :value="action.formable.note"
+                            :value="action?.formable?.note || ''"
                             solo
                             label="Solo"
                             disabled
@@ -101,7 +121,7 @@
                           ></v-text-area>
                         </v-col>
                       </v-row>
-                      <v-row dense>
+                      <v-row class="mb-1" dense>
                         <v-col cols="12" sm="3">
                           <h6 class="mt-1 mb-0 c-h6">
                             {{ $t("general.date") }}
@@ -115,6 +135,7 @@
                             label="Solo"
                             disabled
                             hide-details
+                            dense
                           ></v-text-field>
                         </v-col>
                       </v-row>
@@ -125,8 +146,12 @@
                           </h6>
                         </v-col>
                         <v-col cols="12" sm="9">
-                          <v-chip color="orange" label text-color="white">
-                            {{ action.formable.status }}
+                          <v-chip
+                            :color="getStatusColor(action?.formable?.status)"
+                            label
+                            text-color="white"
+                          >
+                            {{ $t(`general.${action?.formable?.status}`) }}
                           </v-chip>
                         </v-col>
                       </v-row>
@@ -196,6 +221,15 @@ export default {
     closeDialog() {
       this.$emit("closePrevDialog");
     },
+    getStatusColor(status) {
+      const colors = {
+        processing: "blue",
+        pending: "orange",
+        accepted: "green",
+      };
+
+      return colors[status] || "primary";
+    },
     formatDate(date) {
       if (!date) {
         return;
@@ -203,10 +237,9 @@ export default {
       return date.split("T")[0];
     },
     async getCaseTimeline(id) {
-      console.log("caseId", id);
       try {
         this.loading = true;
-        const response = await this.$axios.get(`action-preview`);
+        const response = await this.$axios.get(`action-preview/${id}`);
         const { formRequestActions } = response?.data?.data;
         this.formActions = formRequestActions;
       } catch (error) {
