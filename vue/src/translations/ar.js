@@ -766,6 +766,8 @@ export default {
     applicant: "مقدم الطلب",
     pending: "قيد الانتظار",
     processing: "قيد التجهيز",
+    active: "نشط",
+    assigner: "مكلفة من",
   },
   reports: {
     buildReport: "انشاء تقرير",

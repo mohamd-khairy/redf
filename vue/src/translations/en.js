@@ -752,6 +752,8 @@ export default {
     applicant: "Applicant",
     pending: "Pending",
     processing: "Processing",
+    active: "Active",
+    assigner: "Assigner",
   },
   reports: {
     buildReport: "Build Report",
