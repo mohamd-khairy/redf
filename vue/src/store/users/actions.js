@@ -1,7 +1,7 @@
 import axios from '@/plugins/axios'
 
 const actions = {
-  async getUserType({ commit }, data) {
+  async getUserType({ commit }) {
     return await axios.get("user-type");
   },
 

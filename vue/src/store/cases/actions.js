@@ -1,34 +1,46 @@
-import axios from "@/plugins/axios";
+import axios from '@/plugins/axios'
 
 const actions = {
-  async getForms({ commit }, id) {
+  async getForms({commit}, id) {
     const response = await axios.get(`get-forms`, {
       params: {
         template_id: id,
-      },
+      }
     });
-    const forms = response?.data.data;
-    commit("SET_FORMS", forms);
+    const forms = response?.data.data
+    commit('SET_FORMS', forms)
   },
 
-  async getFormRequests({ commit }, data) {
+  async getFormRequests({commit}, data) {
     const response = await axios.get(`get-form-Requests`, {
       params: {
         template_id: data.template_id,
-      },
+      }
     });
-    const formRequests = response?.data.data;
-    commit("SET_formRequests", formRequests);
+    const formRequests = response?.data.data
+    commit('SET_formRequests', formRequests)
   },
 
-  async assignRequest({ commit }, data) {
-    console.log("data-->", data);
-    return await axios.post(`assign-request`, data);
+  async userDepartment({commit}, data) {
+    return await axios.get(`user-department`, {
+      params: {
+        user_id: data.user_id,
+      }
+    });
+  },
+
+  async assignRequest({commit}, data) {
+    console.log('data-->',data)
+    return await axios.post(`assign-request`, data)
+  },
+
+  async createUser({commit}, form) {
+    return await axios.post(`store-userInfo`, form)
   },
 
   async getEvents({ commit }, data) {
     let config = {
-      responseType: data.export ? "blob" : "",
+      responseType: data.export ? 'blob' : '',
       params: {
         id: data.eventId,
         search: data.search,
@@ -43,71 +55,71 @@ const actions = {
         end_date: data.endDate,
         export: data.export,
       },
-    };
+    }
 
     const response = await axios.get(`events/${data.locationId}`, config);
-    const events = response?.data.data;
-    commit("SET_EVENTS", events);
-    return response;
+    const events = response?.data.data
+    commit('SET_EVENTS', events)
+    return response
   },
-  async getTypes({ commit }) {
-    const response = await axios.get(`types`);
-    const types = response?.data.data.types;
-    const statuses = response?.data.data.status;
-    const detectionTypes = response?.data.data.default_types;
-    commit("SET_TYPES", types);
-    commit("SET_STATUSES", statuses);
-    commit("SET_DETECTIONTYPES", detectionTypes);
+  async getTypes({commit}) {
+    const response = await axios.get(`types`)
+    const types = response?.data.data.types
+    const statuses = response?.data.data.status
+    const detectionTypes = response?.data.data.default_types
+    commit('SET_TYPES', types)
+    commit('SET_STATUSES', statuses)
+    commit('SET_DETECTIONTYPES', detectionTypes)
   },
   async getCards({ commit }, data) {
     const response = await axios.get(`events/${data.locationId}/cards`, {
       params: {
         start_date: data.startDate,
         end_date: data.endDate,
-      },
+      }
     });
     const cards = response?.data.data;
     commit("SET_CARDS", cards);
   },
-  async getEvent({ commit }, id) {
-    const response = await axios.get(`events/${id}`);
-    const event = response?.data.data;
-    commit("SET_EVENT", event);
+  async getEvent({commit}, id) {
+    const response = await axios.get(`events/${id}`)
+    const event = response?.data.data
+    commit('SET_EVENT', event)
   },
-  async getLocations({ commit }) {
-    const response = await axios.get(`location`);
-    const locations = response?.data.data;
-    commit("SET_LOCATIONS", locations);
+  async getLocations({commit}) {
+    const response = await axios.get(`location`)
+    const locations = response?.data.data
+    commit('SET_LOCATIONS', locations)
   },
-  async getNotes({ commit }, data) {
+  async getNotes({commit}, data) {
     const response = await axios.get(`notes/${data.locationId}`, {
       params: {
         search: data.search,
         pageSize: data.pageSize,
         page: data.pageNumber,
         sortDirection: data.sortDirection,
-        sortCoulmn: data.sortColumn,
-      },
+        sortCoulmn: data.sortColumn
+      }
     });
-    const notes = response?.data.data;
-    commit("SET_NOTES", notes);
+    const notes = response?.data.data
+    commit('SET_NOTES', notes)
   },
-  async deleteEvent({ commit, dispatch }, id) {
-    await axios.delete(`events/${id}`);
-    await dispatch("getEvents");
+  async deleteEvent({commit, dispatch}, id) {
+    await axios.delete(`events/${id}`)
+    await dispatch('getEvents')
   },
-  async takeAction({ commit }, data) {
+  async takeAction({commit}, data) {
     return await axios.get("events/actions", {
       params: {
         ids: data.ids,
         action: data.action,
-        value: data.value,
-      },
+        value: data.value
+      }
     });
   },
-  async updateEvent({ state }, form) {
-    const { id } = state?.event ?? {};
-    return await axios.post(`events/${id}/update`, form);
+  async updateEvent({state}, form) {
+    const {id} = state?.event ?? {}
+    return await axios.post(`events/${id}/update`, form)
   },
   async storeEvent({ commit }, data) {
     return await axios.post("events", data);
@@ -119,7 +131,7 @@ const actions = {
   },
   async setLiveModeState({ commit }, { locationId, liveModeState }) {
     const response = await axios.post(`live-mode/${locationId}`, {
-      live_mode: liveModeState ? 1 : 0,
+      live_mode: liveModeState ? 1 : 0
     });
     const live_mode = response?.data.data;
     commit("SET_LIVE_MODE", liveModeState);
@@ -137,24 +149,25 @@ const actions = {
   },
   async getPagesValues({ commit }, formId) {
     const response = await axios.get(`get-form-Requests/${formId}`);
-    console.log("pages", response?.data.data);
+    console.log( "pages", response?.data.data);
     let pageTabs = response?.data.data.form.pages;
     const inputValues = response?.data.data.form_page_item_fill;
     const selectedFormName = response?.data.data.form.name;
     const selectedFormId = response?.data.data.form.id;
 
-    const inputValuesObj = {};
-    inputValues.forEach(({ form_page_item_id, value }) => {
-      inputValuesObj[form_page_item_id] = value;
-    });
+    const inputValuesObj = {}
+    inputValues.forEach(({form_page_item_id, value}) => {
+      inputValuesObj[form_page_item_id] = value
+    })
     for (const obj of pageTabs) {
       for (const item of obj.items) {
         item.value = inputValuesObj[item.id];
-        if (item.type === "file") {
-          item.preview = inputValuesObj[item.id];
+        if(item.type === 'file'){
+          item.preview = inputValuesObj[item.id]
         }
       }
-    }
+  }
+
 
     commit("SET_PAGES_VALUES", pageTabs);
     commit("SET_SELECTED_FORM", {
@@ -168,6 +181,13 @@ const actions = {
         (input) => !input.required || (input.value && input.value.trim() !== "")
       );
     });
+  },
+  async saveRequestSide({ state }, data) {
+    try {
+      return await axios.post(`form-request-side`, data);
+    } catch (error) {
+      console.error("Error saving form data:", error);
+    }
   },
   async savePages({ state }, formId) {
     try {
@@ -195,7 +215,7 @@ const actions = {
         let value = customFormData[key];
         bodyFormData.set(key, JSON.stringify(value));
       }
-      const response = await axios.post(`store-form-fill`, bodyFormData, {
+      return await axios.post(`store-form-fill`, bodyFormData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -229,17 +249,13 @@ const actions = {
       for (const key in customFormData) {
         let value = customFormData[key];
         bodyFormData.set(key, JSON.stringify(value));
-        bodyFormData.set("_method", "PUT");
+        bodyFormData.set('_method', 'PUT');
       }
-      const response = await axios.post(
-        `update-form-fill/${formId}`,
-        bodyFormData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
+      const response = await axios.post(`update-form-fill/${formId}`, bodyFormData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
     } catch (error) {
       console.error("Error saving form data:", error);
     }
@@ -252,4 +268,4 @@ const actions = {
   },
 };
 
-export default actions;
+export default actions
