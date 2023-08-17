@@ -17,9 +17,9 @@ class LogController extends Controller
         return responseSuccess(['activityLogs' => $activityLogs]);
     }
     public function action_preview(Request $request){
-        // $formRequestActions = FormRequestAction::with('formable')->get();
-        $formRequestActions = FormRequestAction::whereHas('formable',function($q){
-        })->get();
+        $formRequestActions = FormRequestAction::with('formable')->get();
+        // $formRequestActions = FormRequestAction::whereHas('formable',function($q){
+        // })->get();
         return responseSuccess(['formRequestActions' => $formRequestActions]);
 
     }
