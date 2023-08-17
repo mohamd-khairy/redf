@@ -26,6 +26,10 @@ const actions = {
     return await axios.post(`assign-request`, data)
   },
 
+  async createUser({commit}, form) {
+    return await axios.post(`store-userInfo`, form)
+  },
+
   async getEvents({ commit }, data) {
     let config = {
       responseType: data.export ? 'blob' : '',

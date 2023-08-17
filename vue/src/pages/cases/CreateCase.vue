@@ -156,7 +156,7 @@
                   <v-row>
                     <v-col cols="12">
                       <v-select
-                        :items="users"
+                        :items="claimantUsers"
                         :label="$t('cases.claimant')"
                         :item-text="item => item.name"
                         :item-value="item => item.id"
@@ -171,7 +171,7 @@
                     </v-col>
                     <v-col cols="12">
                       <v-select
-                        :items="users"
+                        :items="defendantUsers"
                         :label="$t('cases.defendant')"
                         :item-text="item => item.name"
                         :item-value="item => item.id"
@@ -402,12 +402,27 @@ export default {
     this.init();
     this.fetchUsers()
     this.fetchDepartments()
+
+    this.$root.$on("userCreated", () => {
+      this.fetchUsers();
+    });
   },
 
   computed: {
     ...mapState("cases", ["pages", "selectedForm"]),
     ...mapState("auth", ["user"]),
     ...mapState("app", ["navTemplates"]),
+
+    defendantUsers(){
+      return this.sidesInfo.claimant_id ? this.users.filter(obj => {
+        return obj.id !== this.sidesInfo.claimant_id
+      }) : this.users
+    },
+    claimantUsers(){
+      return this.sidesInfo.defendant_id ? this.users.filter(obj => {
+        return obj.id !== this.sidesInfo.defendant_id
+      }) : this.users
+    },
   },
   methods: {
     ...mapActions("app", ["setBreadCrumb"]),
@@ -420,12 +435,28 @@ export default {
     removeDate(index) {
       this.caseAction.dates.splice(index, 1);
     },
+    removeFromDefendant(id){
+      this.defendantUsers = this.users
+      const newArr = this.defendantUsers.filter(object => {
+        return object.id !== id;
+      });
+      this.defendantUsers = newArr
+    },
+    removeFromClaimant(id){
+      this.claimantUsers = this.users
+      const newArr = this.claimantUsers.filter(object => {
+        return object.id !== id;
+      });
+      this.claimantUsers = newArr
+    },
     fetchUsers(){
       this.isLoading = true;
       this.getUserType()
         .then((response) => {
           this.isLoading = false;
           this.users = response.data.data.users
+          // this.claimantUsers = response.data.data.users
+          // this.defendantUsers = response.data.data.users
         })
         .catch(() => {
           this.isLoading = false;

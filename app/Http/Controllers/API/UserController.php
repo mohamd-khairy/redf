@@ -243,6 +243,8 @@ class UserController extends Controller
                 // ... other user attributes
             ]);
 
+            $newUser->assignRole('employee');
+
              // Create and save the UserInformation instance
             $userInformation = UserInformation::create([
                 'user_id' => $newUser->id, // Set the user_id with the newly created user's ID
