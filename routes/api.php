@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\api\LogController;
 use App\Http\Controllers\API\AuthController;
+use App\Http\Controllers\API\HomeController;
 use App\Http\Controllers\API\RoleController;
 use App\Http\Controllers\Api\TaskController;
 use App\Http\Controllers\API\UserController;
@@ -15,10 +16,10 @@ use App\Http\Controllers\Api\TemplateController;
 use App\Http\Controllers\Api\DepartmentController;
 use App\Http\Controllers\API\PermissionController;
 use App\Http\Controllers\Api\FormSessionController;
-use App\Http\Controllers\API\HomeController;
 use App\Http\Controllers\API\NotificationController;
 use App\Http\Controllers\Api\OrganizationController;
 use App\Http\Controllers\API\VerificationController;
+use App\Http\Controllers\Api\FormRequestSideController;
 
 Route::group(['prefix' => 'v1'], function () {
 
@@ -56,7 +57,7 @@ Route::group(['prefix' => 'v1'], function () {
     Route::group(['middleware' => 'auth:sanctum'], function () {
         Route::get('logs/actions', [LogController::class, 'actions']);
         Route::get('all-logs', [LogController::class, 'all_logs']);
-        Route::get('action-preview', [LogController::class, 'action_preview']);
+        Route::get('action-preview/{id}', [LogController::class, 'action_preview']);
     });
 
     /*********************PermissionController***************** */
@@ -132,6 +133,11 @@ Route::group(['prefix' => 'v1'], function () {
         Route::apiResource('calenders', CalenderController::class);
     });
 
+    /*********************CalenderController***************** */
+    Route::group(['middleware' => 'auth:sanctum'], function () {
+        Route::post('form-request-side', [FormRequestSideController::class , 'form_request_side']);
+    });
+
     /*********************FormsController***************** */
     Route::group(['middleware' => 'auth:sanctum'], function () {
         Route::get('forms/actions', [FormsController::class, 'actions']);
@@ -148,6 +154,7 @@ Route::group(['prefix' => 'v1'], function () {
         Route::get('get-form-Requests/{id}', [FormsController::class, 'getFormRequestfill']);
         Route::post('assign-request', [FormsController::class, 'assignRequest']);
         Route::put('assign-request/{id}', [FormsController::class, 'UpdateAssignRequest']);
+        Route::post('form-assign-request', [FormsController::class, 'FormAssignRequest']);
         Route::get('all-forms', [FormsController::class, 'allForm']);
     });
 });

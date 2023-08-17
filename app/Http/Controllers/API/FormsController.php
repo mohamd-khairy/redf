@@ -199,7 +199,7 @@ class FormsController extends Controller
                     'msg'=>'تم اضافه قضيه جديده',
                 ];
                 $calendar = saveFormRequestAction($actionData);
-                return responseSuccess([], 'Form Fill has been successfully Created');
+                return responseSuccess(['formRequest'=>$formRequest], 'Form Fill has been successfully Created');
             });
         } catch (\Throwable $th) {
             return responseFail($th->getMessage());
