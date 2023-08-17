@@ -6,7 +6,7 @@
     >
       <v-card>
         <v-card-title class="text-h5 d-flex justify-space-between align-center border-bottom">
-          {{ $t('cases.assignUser')}}
+          {{ $t('cases.addUser')}}
           <v-btn icon @click="dialog = false">
             <v-icon>
               mdi-close
@@ -16,26 +16,23 @@
 
         <v-card-text class="mt-4">
           <v-row>
-
-            <v-col cols="12">
-              <v-select
-                :items="users"
-                :label="$t('cases.employee')"
-                :item-text="item => item.name"
-                :item-value="item => item.id"
-                hide-details
-                v-model="form.user_id"
-              >
-              </v-select>
-            </v-col>
-            <v-col cols="12">
-              <v-text-field
-                v-model="form.date"
-                type="date"
-                :label="$t('general.selectDate')"
-              ></v-text-field>
-
-            </v-col>
+            <v-row>
+              <v-col cols="12">
+                <v-text-field type="number" v-model="user.id" :rules="[rules.required]" :label="$t('tables.id')"
+                              :error-messages="errors['id']"></v-text-field>
+              </v-col>
+              <v-col cols="12">
+                <v-text-field v-model="user.name" :rules="[rules.required]" :label="$t('tables.name')"
+                              :error-messages="errors['name']"></v-text-field>
+              </v-col>
+              <v-col cols="12">
+                <v-text-field v-model="user.phone" :rules="[rules.required]" :label="$t('tables.phone')"
+                              :error-messages="errors['phone']"></v-text-field>
+              </v-col>
+              <v-col cols="12">
+                <v-text-field v-model="user.email" type="email" :label="$t('tables.email')"></v-text-field>
+              </v-col>
+            </v-row>
           </v-row>
         </v-card-text>
         <v-divider></v-divider>
@@ -46,13 +43,13 @@
           <v-btn
             color="primary"
             class="mx-2"
-            @click="assignUser"
+            @click="updateEventMethod"
           >
             {{ $t('general.save') }}
           </v-btn>
 
           <v-btn
-            color="grey"
+            color="grey lighten-3"
 
             @click="dialog = false"
           >
@@ -64,24 +61,25 @@
   </v-row>
 </template>
 
-
 <script>
 import {mapActions, mapState} from "vuex";
 import {makeToast} from "@/helpers";
 
 export default {
-  name: "Assign",
+  name: "AddUserDialog",
 
   props: {
     value: Boolean,
     // eventItem: Object,
-    id: Number,
-    // requests: Array,
+    // id: Number,
   },
   data() {
     return {
-      form: {user_id:null, date: ""},
-      users:[],
+      user: {name:"", id: "", phone:"", email:"" },
+      rules: {
+        required: (value) => (value && Boolean(value)) || this.$t("general.fieldRequired")
+      },
+      errors: {},
     }
   },
   computed: {
@@ -93,17 +91,22 @@ export default {
         this.$emit('input', value)
       }
     },
+    event: {
+      get() {
+        return this.$store.state.events.event;
+      },
+      set(val) {
+        this.$store.commit("events/SET_EVENT", val);
+      }
+    },
   },
   watch:{
-    'requests'(){
-      // this.refresh()
+    'id'(){
+      this.refresh()
     }
   },
-  mounted() {
-    this.getEmployees()
-  },
   methods:{
-    ...mapActions('cases', ['assignRequest']),
+    ...mapActions('events', ['updateEvent']),
     refresh() {
       this.loading = true;
       this.event = this.eventItem
@@ -113,30 +116,14 @@ export default {
     fetchData: function(){
       this.$root.$emit('table_component')
     },
-    getEmployees(){
-      this.isLoading = true;
-      this.$axios.get('user-employee')
-        .then(response => {
-          this.users = response.data.data.users
-          this.isLoading = false;
-        })
-        .catch(error => {
-          this.isLoading = false;
-        })
-    },
-    assignUser() {
+    updateEventMethod() {
       this.loading = true;
       this.errors = {};
-      let requestIds = [];
-      // for (let i = 0; i < this.requests.length; i++) {
-        requestIds.push(this.id);
-      // }
-      let data = {
-        form_request_id: requestIds,
-        user_id:this.form.user_id,
-        date:this.form.date
-      }
-      this.assignRequest(data)
+      let formData = new FormData();
+      formData.append("file", this.form.file ?? null);
+      formData.append("notes", this.form.notes ?? '');
+      formData.append("status", this.form.status.value);
+      this.updateEvent(formData)
         .then((response) => {
           this.loading = false;
           this.dialog = false
@@ -155,7 +142,3 @@ export default {
   }
 }
 </script>
-
-<style scoped>
-
-</style>

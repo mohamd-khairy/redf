@@ -30,12 +30,25 @@
       </v-col>
     </v-row> -->
     <div v-if="!loading" class="draft-cont">
-      <show-builder-cards v-if="!loading && pinnedCards" :cards="pinnedCards" :outlined="true"></show-builder-cards>
+      <!-- <show-builder-cards
+        v-if="!loading && cards"
+        :cards="cards"
+        :outlined="true"
+      ></show-builder-cards> -->
+      <v-row>
+        <v-col v-for="card in cards" :key="card.id" cols="4">
+          <stat-cards :card="card" />
+        </v-col>
+      </v-row>
       <v-card v-if="!loading" class="mt-3">
         <v-row align="center" justify="center">
           <v-col cols="12" align="center" justify="center">
             <div class="py-3">
-              <img src="../../assets/images/demo/empty-box.png" alt="No Data" width="300">
+              <img
+                src="../../assets/images/demo/empty-box.png"
+                alt="No Data"
+                width="300"
+              />
               <h3 class="mb-3">{{ $t("general.no_data_available") }}</h3>
             </div>
           </v-col>
@@ -142,6 +155,7 @@ import lineChart from "../../components/dashboard/lineChart";
 import pie from "../../components/dashboard/pie";
 import tableCard from "../../components/dashboard/TableCard";
 import showBuilderCards from "@/pages/reports/builder/ShowBuilderCards";
+import StatCards from "../reports/builder/StatCards.vue";
 
 export default {
   name: "DashboardPage",
@@ -150,7 +164,8 @@ export default {
     lineChart,
     pie,
     tableCard,
-    showBuilderCards
+    showBuilderCards,
+    StatCards,
   },
   created() {
     // const { id } = this.$route.params;
@@ -159,29 +174,36 @@ export default {
     // }
     this.setBreadCrumb({
       breadcrumbs: this.breadcrumbs,
-      pageTitle: this.$t("menu.dashboard")
+      pageTitle: this.$t("menu.dashboard"),
     });
     this.fetchConfig();
     this.fetchPinned();
+    this.getStatCards();
   },
   data() {
     return {
       reports: {},
       loading: true,
       isLoading: false,
-      pinnedCards: {},
+      // pinnedCards: {},
+
       breadcrumbs: [
-        { text: this.$t("menu.dashboard"), disabled: false, href: "#" }
-      ]
+        { text: this.$t("menu.dashboard"), disabled: false, href: "#" },
+      ],
     };
   },
   computed: {
     ...mapState("reports", {
-      config: state => state.config
-    })
+      config: (state) => state.config,
+      cards: (state) => state.cards,
+    }),
   },
   methods: {
-    ...mapActions("reports", ["builderConfigs", "getPinnedActive"]),
+    ...mapActions("reports", [
+      "builderConfigs",
+      "getPinnedActive",
+      "getStatCards",
+    ]),
     ...mapActions("app", ["setBreadCrumb"]),
     fetchConfig() {
       this.isLoading = true;
@@ -197,12 +219,12 @@ export default {
     fetchPinned() {
       this.loading = true;
       this.getPinnedActive()
-        .then(response => {
+        .then((response) => {
           this.loading = false;
           const { report } = response?.data.data;
           this.reports = report;
 
-          const cardsArr = report.map(val => val.data.cards);
+          const cardsArr = report.map((val) => val.data.cards);
           const combined = cardsArr.reduce(
             (acc, curr) => ({ ...acc, ...curr }),
             {}
@@ -212,8 +234,8 @@ export default {
         .catch(() => {
           this.loading = false;
         });
-    }
-  }
+    },
+  },
 };
 </script>
 

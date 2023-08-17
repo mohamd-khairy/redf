@@ -4,12 +4,8 @@ const actions = {
   /* ----------------------------------------- Builder Report Page --------------------------------------------- */
   async getBuilderOptions({ commit }) {
     const response = await axios.get(`report/builder`);
-    const {
-      models,
-      report_types,
-      show_types,
-      time_types
-    } = response?.data.data;
+    const { models, report_types, show_types, time_types } =
+      response?.data.data;
     commit("SET_MODELS", models);
     commit("SET_REPORT_TYPES", report_types);
     commit("SET_SHOW_TYPES", show_types);
@@ -26,8 +22,8 @@ const actions = {
         type: payload.type,
         start: payload.start,
         end: payload.end,
-        types: payload.types
-      }
+        types: payload.types,
+      },
     });
     // const { data, filter } = response?.data
     // commit('SET_CHART_DATA', data)
@@ -58,8 +54,8 @@ const actions = {
         pageSize: payload.pageSize,
         page: payload.pageNumber,
         sortDirection: payload.sortDirection,
-        sortCoulmn: payload.sortColumn
-      }
+        sortCoulmn: payload.sortColumn,
+      },
     });
 
     const draftTitle = response?.data.data.title;
@@ -92,8 +88,8 @@ const actions = {
   async deleteAllDrafts({ commit }, data) {
     return await axios.get(`report/draft-actions`, {
       params: {
-        ids: data.ids
-      }
+        ids: data.ids,
+      },
     });
   },
 
@@ -106,8 +102,8 @@ const actions = {
         pageSize: payload.pageSize,
         page: payload.pageNumber,
         sortDirection: payload.sortDirection,
-        sortCoulmn: payload.sortColumn
-      }
+        sortCoulmn: payload.sortColumn,
+      },
     });
     const pinTitle = response?.data.data.title;
     const pinned = response?.data.data.pinneds;
@@ -118,7 +114,7 @@ const actions = {
 
   async updateStatus({ commit }, data) {
     return await axios.post(`report/pinned/${data.id}/status`, {
-      status: data.status
+      status: data.status,
     });
   },
 
@@ -137,8 +133,8 @@ const actions = {
   async deleteAllPinned({ commit }, data) {
     return await axios.get(`report/pinned-actions`, {
       params: {
-        ids: data.ids
-      }
+        ids: data.ids,
+      },
     });
   },
   async getRelatedPinned({ commit }, chartId) {
@@ -150,9 +146,9 @@ const actions = {
   async getSavedPinned({ commit }) {
     const response = await axios.get(`report/pinned`);
     const { pinneds } = response?.data.data;
-    const pinnedData = pinneds?.data.map(pin => ({
+    const pinnedData = pinneds?.data.map((pin) => ({
       title: pin.title,
-      id: pin.id
+      id: pin.id,
     }));
     commit("SET_PINNED_REPORTS", pinnedData);
   },
@@ -178,7 +174,14 @@ const actions = {
 
   async getPinnedActive({ commit }) {
     return await axios.get(`report/pinned-active`);
-  }
+  },
+  async getStatCards({ commit }) {
+    const response = await axios.get(`/index`);
+
+    const cards = response?.data.data;
+
+    commit("SET_CARDS_DATA", cards);
+  },
 };
 
 export default actions;

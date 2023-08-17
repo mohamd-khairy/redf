@@ -242,7 +242,7 @@ export default {
     templatesTypes: "أنواع النماذج",
     casesManagement: "ادارة القضايا",
     requests: "الطلبات",
-    activities: "النشاطات",
+    activities: "النشاطات"
   },
   breadcrumbs: {
     pipesList: "قائمة النماذج",
@@ -446,13 +446,27 @@ export default {
       user: "مستخدم",
       employee: "موظف",
       governorate: "محافظة",
-    },
+    }
   },
   cases: {
     caseType: "نوع القضية",
     casesList: "قائمة الطلبات",
-    assignUser: "تعيين مستخدم",
-    user: "مستفيد",
+    assignUser:"تعيين مستخدم",
+    user:"مستفيد",
+    employee:"الموظف المختص",
+    requesterInfo:"معلومات مقدم الطلب",
+    caseInfo:"معلومات القضية",
+    sidesInfo:"معلومات الأطراف",
+    caseActions:"اجراءات القضية",
+    claimant:"المدعى",
+    defendant:"المدعى عليه",
+    addUser:"اضافة مستفيد",
+    civil:"السجل المدنى / السجل التجارى",
+    amount:"المبلغ",
+    percentageLose:"احتمالية خسارة القضية",
+    action:"الاجراء",
+    courtDate:"ميعاد الجلسة",
+
 
     deleteRole: "مسح الصلاحية",
     createRole: "إنشاء صلاحية",

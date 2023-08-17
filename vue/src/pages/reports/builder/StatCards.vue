@@ -1,56 +1,32 @@
 <template>
-  <div class="mb-2">
-    <v-row dense>
-      <v-col cols="12">
-        <v-card class="general-stats-card">
-          <v-card-title class="mb-1">
-            {{ $t("general.statistics") }}
-          </v-card-title>
-          <v-card-text>
-            <!-- <v-row v-if="loading">
-              <v-col v-for="num in 7" :key="num">
-                <v-skeleton-loader type="list-item-avatar"></v-skeleton-loader>
-              </v-col>
-            </v-row> -->
-            <v-row>
-              <v-col
-                cols="6"
-                md="2"
-                lg="2"
-                v-for="(card, i) in cards"
-                :key="card.id"
-              >
-                <div class="d-flex" :id="card.id">
-                  <v-avatar
-                    size="42"
-                    class="me-3 v-avatar--variant-tonal"
-                    :class="getColor(card.name)"
-                    variant="tonal"
-                  >
-                    <!-- <component
+  <v-card class="general-stats-card">
+    <v-card-text>
+      <div class="d-flex" :id="card.id">
+        <v-avatar
+          size="42"
+          class="me-3 v-avatar--variant-tonal"
+          :class="getColor(card.name)"
+          variant="tonal"
+        >
+          <!-- <component
                       :is="key === 'count' ? 'total' : key"
                       v-if="isComponentRegistered(key)"
                     ></component> -->
-                    <v-icon>
-                      {{ card.icon }}
-                    </v-icon>
-                  </v-avatar>
-                  <div class="d-flex flex-column">
-                    <span class="text-h5 font-weight-medium">{{
-                      card.requests_count
-                    }}</span>
-                    <span class="text-caption">
-                      {{ card.name }}
-                    </span>
-                  </div>
-                </div>
-              </v-col>
-            </v-row>
-          </v-card-text>
-        </v-card>
-      </v-col>
-    </v-row>
-  </div>
+          <v-icon>
+            {{ card.icon }}
+          </v-icon>
+        </v-avatar>
+        <div class="d-flex flex-column">
+          <span class="text-h5 font-weight-medium">{{
+            card.requests_count
+          }}</span>
+          <span class="text-caption">
+            {{ card.name }}
+          </span>
+        </div>
+      </div>
+    </v-card-text>
+  </v-card>
 </template>
 
 <script>
@@ -84,7 +60,7 @@ export default {
   },
   name: "ShowBuilderCards",
   props: {
-    cards: Array,
+    card: Object,
     // loading: {
     //   type: Boolean,
     //   default: true

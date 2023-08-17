@@ -52,9 +52,12 @@ const mutations = {
   },
   DELETE_PIN(state, value) {
     state.pinnedReports = state.pinnedReports.filter(
-      pinned => pinned.id !== value
+      (pinned) => pinned.id !== value
     );
-  }
+  },
+  SET_CARDS_DATA(state, value) {
+    state.cards = value;
+  },
 };
 
 export default mutations;

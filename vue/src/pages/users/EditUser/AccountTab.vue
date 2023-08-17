@@ -17,29 +17,29 @@
         <v-card-title>{{ $t("users.basicInformation") }}</v-card-title>
         <v-card-text>
           <div class="d-flex flex-column flex-sm-row">
-<!--            <div>-->
-<!--              <v-img-->
-<!--                :src="user.avatar"-->
-<!--                aspect-ratio="1"-->
-<!--                class="blue-grey lighten-4 rounded elevation-3"-->
-<!--                max-width="90"-->
-<!--                max-height="90"-->
-<!--              ></v-img>-->
-<!--              <input-->
-<!--                type="file"-->
-<!--                accept="image/*"-->
-<!--                id="update-avatar"-->
-<!--                class="d-none"-->
-<!--              />-->
-<!--              <v-btn class="mt-1" @click.prevent="changeImage()" small>-->
-<!--                {{ $t("users.EditAvatar") }}-->
-<!--              </v-btn>-->
-<!--            </div>-->
+            <!--            <div>-->
+            <!--              <v-img-->
+            <!--                :src="user.avatar"-->
+            <!--                aspect-ratio="1"-->
+            <!--                class="blue-grey lighten-4 rounded elevation-3"-->
+            <!--                max-width="90"-->
+            <!--                max-height="90"-->
+            <!--              ></v-img>-->
+            <!--              <input-->
+            <!--                type="file"-->
+            <!--                accept="image/*"-->
+            <!--                id="update-avatar"-->
+            <!--                class="d-none"-->
+            <!--              />-->
+            <!--              <v-btn class="mt-1" @click.prevent="changeImage()" small>-->
+            <!--                {{ $t("users.EditAvatar") }}-->
+            <!--              </v-btn>-->
+            <!--            </div>-->
             <div class="flex-grow-1 pt-2 pa-sm-2">
               <v-row>
                 <v-col cols="6">
                   <v-text-field
-                    v-model="user.username"
+                    v-model="user.name"
                     :label="$t('tables.username')"
                     outlined
                     dense
@@ -74,7 +74,7 @@
                     label="Select"
                     :items="roles"
                     variant="underlined"
-                    class=" mx-1"
+                    class="mx-1"
                     :label="$t('tables.role')"
                     item-text="name"
                     item-value="id"
@@ -124,6 +124,23 @@
                     outlined
                     dense
                   ></v-text-field>
+                </v-col>
+              </v-row>
+              <v-row>
+                <v-col cols="6">
+                  <v-select
+                    label="Select"
+                    :items="types"
+                    outlined
+                    dense
+                    variant="underlined"
+                    class="mx-1"
+                    :label="$t('tables.type')"
+                    item-text="name"
+                    item-value="value"
+                    hide-details
+                    v-model="user.type"
+                  ></v-select>
                 </v-col>
               </v-row>
               <!-- <hr /> -->
@@ -199,12 +216,12 @@ export default {
     // },
     errors: {
       type: Object,
-      default: {}
+      default: {},
     },
     loading: {
       type: Boolean,
-      default: false
-    }
+      default: false,
+    },
   },
   data() {
     return {
@@ -214,13 +231,26 @@ export default {
       avatar: {},
       showPassword: false,
       selectedLocations: [],
-      roleId: '',
+      roleId: "",
+      types: [
+        { name: this.$t("users.types.company"), value: "company" },
+        { name: this.$t("users.types.employee"), value: "employee" },
+        { name: this.$t("users.types.user"), value: "user" },
+        { name: this.$t("users.types.governorate"), value: "governorate" },
+      ],
     };
   },
   computed: {
     ...mapState("roles", ["roles"]),
-    ...mapState("users", ["user"]),
-
+    // ...mapState("users", ["user"]),
+    user: {
+      get() {
+        return this.$store.state.users.user;
+      },
+      set(val) {
+        this.$store.commit("users/SET_USER", val);
+      },
+    },
   },
 
   methods: {
@@ -237,12 +267,16 @@ export default {
           this.isLoading = false;
         });
     },
-    fetchUser(){
+    fetchUser() {
       this.isLoading = true;
-      const { id } = this.$route.params
+      const { id } = this.$route.params;
       this.getUser(id)
         .then(() => {
-          this.roleId = (this.user.roles && this.user.roles.length > 0) ? this.user.roles[0].id : ''
+          this.roleId =
+            this.user.roles && this.user.roles.length > 0
+              ? this.user.roles[0].id
+              : "";
+
           this.isLoading = false;
         })
         .catch(() => {
@@ -253,14 +287,15 @@ export default {
       document.getElementById("update-avatar").click();
     },
     updateProfile() {
-      const { email, name, password, confirm_password, username ,roles} = this.user;
+      const { email, name, password, confirm_password, username, roles } =
+        this.user;
       let data = {
         email,
         name,
         password,
         confirm_password,
         username,
-        roles
+        roles,
       };
       if (this.avatar.length) {
         data["avatar"] = this.avatar[0];
@@ -287,10 +322,13 @@ export default {
         }
       }
       return form;
-    }
+    },
   },
   created() {
-    this.roleId = (this.user.roles && this.user.roles.length > 0) ? this.user.roles[0].id : ''
+    this.roleId =
+      this.user.roles && this.user.roles.length > 0
+        ? this.user.roles[0].id
+        : "";
   },
   mounted() {
     this.fetchRoles();
@@ -299,6 +337,6 @@ export default {
     // document.getElementById("update-avatar").addEventListener("change", e => {
     //   this.avatar = e.target.files;
     // });
-  }
+  },
 };
 </script>

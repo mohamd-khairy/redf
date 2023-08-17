@@ -5,13 +5,13 @@ const state = {
   time_types: [
     {
       key: "",
-      value: ""
+      value: "",
     },
     {
       dates: [],
       key: "",
-      value: ""
-    }
+      value: "",
+    },
   ],
   chartData: localStorage.getItem("builderData") ?? [],
   chartFilter: localStorage.getItem("builderFilter") ?? [],
@@ -25,7 +25,8 @@ const state = {
   pinTitle: "",
   showPin: {},
   pin: {},
-  pinnedReports: []
+  cards: [],
+  pinnedReports: [],
 };
 
 export default state;
