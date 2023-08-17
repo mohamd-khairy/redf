@@ -768,6 +768,8 @@ export default {
     processing: "قيد التجهيز",
     active: "نشط",
     assigner: "مكلفة من",
+    no_action_yet: "لم يتم اتخاذ اي اجراء في القضية حتي الان",
+    getting_data: "جاري جلب البيانات",
   },
   reports: {
     buildReport: "انشاء تقرير",

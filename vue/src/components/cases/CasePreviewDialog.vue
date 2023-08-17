@@ -5,17 +5,6 @@
     hide-overlay
     transition="dialog-bottom-transition"
   >
-    <template v-slot:activator="{ on, attrs }">
-      <v-btn
-        color="primary"
-        icon
-        v-bind="attrs"
-        v-on="on"
-        @click="getCaseTimeline()"
-      >
-        <v-icon>mdi-eye</v-icon>
-      </v-btn>
-    </template>
     <v-card>
       <v-toolbar dark color="primary">
         <v-toolbar-title>{{ $t("general.casePreview") }}</v-toolbar-title>
@@ -26,7 +15,22 @@
           </v-btn>
         </v-toolbar-items>
       </v-toolbar>
-      <v-card-text v-if="!loading">
+      <v-card-text v-if="loading" class="dialog-loading-cont">
+        <v-row align-content="center" justify="center">
+          <v-col class="text-subtitle-1 text-center" cols="12">
+            {{ $t("general.getting_data") }}
+          </v-col>
+          <v-col cols="12">
+            <v-progress-linear
+              color="primary accent-4"
+              indeterminate
+              rounded
+              height="6"
+            ></v-progress-linear>
+          </v-col>
+        </v-row>
+      </v-card-text>
+      <v-card-text v-if="!loading && formActions.length">
         <v-timeline>
           <v-timeline-item
             v-for="(action, i) in formActions"
@@ -60,6 +64,14 @@
           </v-timeline-item>
         </v-timeline>
       </v-card-text>
+      <v-card-text v-if="!loading && !formActions.length">
+        <div class="text-center mt-7 primary--text" color="primary">
+          <emptyDataSvg></emptyDataSvg>
+          <div class="dt-no_data">
+            {{ $t("general.no_action_yet") }}
+          </div>
+        </div>
+      </v-card-text>
     </v-card>
   </v-dialog>
 </template>
@@ -68,11 +80,13 @@
 import { mapActions } from "vuex";
 import FormRequest from "./caseTypes/FormRequest.vue";
 import FormAssignRequest from "./caseTypes/FormAssignRequest.vue";
+import emptyDataSvg from "@/assets/images/illustrations/empty-data.svg";
 
 export default {
   components: {
     FormRequest,
     FormAssignRequest,
+    emptyDataSvg,
   },
   props: {
     dialogVisible: Boolean,
@@ -143,5 +157,13 @@ export default {
 }
 .theme--light.v-input--is-disabled.custom-disabled-input input {
   color: rgba(0, 0, 0, 0.87) !important;
+}
+.dialog-loading-cont {
+  height: calc(100vh - 65px);
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
 }
 </style>

@@ -148,7 +148,7 @@
             <v-btn color="primary" icon @click="openCasePreviewDialog(item.id)">
               <v-icon>mdi-eye</v-icon>
             </v-btn>
-            <!-- <case-preview-dialog :caseId="item.id" /> -->
+
             <v-btn
               title="Assign"
               @click="openAssignDialog(item.id)"
