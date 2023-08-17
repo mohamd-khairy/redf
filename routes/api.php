@@ -56,6 +56,7 @@ Route::group(['prefix' => 'v1'], function () {
     Route::group(['middleware' => 'auth:sanctum'], function () {
         Route::get('logs/actions', [LogController::class, 'actions']);
         Route::get('all-logs', [LogController::class, 'all_logs']);
+        Route::get('action-preview', [LogController::class, 'action_preview']);
     });
 
     /*********************PermissionController***************** */
@@ -146,6 +147,7 @@ Route::group(['prefix' => 'v1'], function () {
         Route::get('get-form-Requests', [FormsController::class, 'getFormRequest']);
         Route::get('get-form-Requests/{id}', [FormsController::class, 'getFormRequestfill']);
         Route::post('assign-request', [FormsController::class, 'assignRequest']);
+        Route::put('assign-request/{id}', [FormsController::class, 'UpdateAssignRequest']);
         Route::get('all-forms', [FormsController::class, 'allForm']);
     });
 });

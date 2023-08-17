@@ -334,4 +334,8 @@ class FormsController extends Controller
             return response()->json(['message' => 'Unknown error', $e], 500);
         }
     }
+    public function UpdateAssignRequest(Request $request){
+
+        dd($request->all());
+    }
 }
