@@ -27,7 +27,6 @@ class LogController extends Controller
                 'form_id' => $action->formable->form,
             ];
         });
-
         return responseSuccess(['formRequestActions' => $formRequestActions]);
 
     }

@@ -260,6 +260,12 @@ const actions = {
       console.error("Error saving form data:", error);
     }
   },
+
+  async getCasePreview({ commit }, id) {
+    const response = await axios.get(`action-preview/${id}`);
+    const { formRequestActions } = response?.data?.data;
+    return formRequestActions;
+  },
 };
 
 export default actions
