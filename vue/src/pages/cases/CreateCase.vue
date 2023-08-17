@@ -130,12 +130,9 @@
           </v-card>
           <v-btn
             color="primary"
-            @click="e1 = 2"
+            @click="saveForm"
           >
             Continue
-          </v-btn>
-          <v-btn text>
-            Cancel
           </v-btn>
         </v-stepper-content>
         <v-stepper-content step="2">
@@ -166,6 +163,7 @@
                         v-model="sidesInfo.claimant_id"
                         :rules="[rules.required]"
                         :error-messages="errors['claimant_id']"
+                        @input="getUserDepartment"
                       >
                       </v-select>
                     </v-col>
@@ -193,6 +191,7 @@
                         hide-details
                         dense
                         outlined
+                        disabled
                         v-model="sidesInfo.department_id"
                       >
                       </v-select>
@@ -201,9 +200,8 @@
                       <v-text-field
                         type="number"
                         v-model="sidesInfo.civil"
-                        :rules="[rules.required]"
                         :label="$t('cases.civil')"
-                        :error-messages="errors['civil']"
+                        disabled
                         dense
                         outlined
                       ></v-text-field>
@@ -216,14 +214,11 @@
 
           <v-btn
             color="primary"
-            @click="e1 = 3"
+            @click="storeRequestSide"
           >
             Continue
           </v-btn>
 
-          <v-btn text>
-            Cancel
-          </v-btn>
         </v-stepper-content>
 
         <v-stepper-content step="3">
@@ -345,6 +340,7 @@
 <script>
 import { mapActions, mapState } from "vuex";
 import AddUserDialog from "@/pages/cases/AddUserDialog";
+import {makeToast} from "@/helpers";
 
 export default {
   name: "CreateCase",
@@ -428,26 +424,27 @@ export default {
     ...mapActions("app", ["setBreadCrumb"]),
     ...mapActions("users", ["getUserType"]),
     ...mapActions("departments", ["getDepartments"]),
-    ...mapActions("cases", ["getPages", "validateFormData", "savePages"]),
+    ...mapActions("cases", ["getPages", "validateFormData", "savePages",'userDepartment','saveRequestSide']),
     addDate(index) {
       this.caseAction.dates.push({ caseDate: ""});
     },
     removeDate(index) {
       this.caseAction.dates.splice(index, 1);
     },
-    removeFromDefendant(id){
-      this.defendantUsers = this.users
-      const newArr = this.defendantUsers.filter(object => {
-        return object.id !== id;
-      });
-      this.defendantUsers = newArr
-    },
-    removeFromClaimant(id){
-      this.claimantUsers = this.users
-      const newArr = this.claimantUsers.filter(object => {
-        return object.id !== id;
-      });
-      this.claimantUsers = newArr
+    getUserDepartment(id){
+      this.isLoading = true;
+      let data = {
+        user_id:id
+      }
+      this.userDepartment(data)
+        .then((response) => {
+          this.isLoading = false;
+          console.log(response)
+          // this.sidesInfo.department_id = response.data.data.users
+        })
+        .catch(() => {
+          this.isLoading = false;
+        });
     },
     fetchUsers(){
       this.isLoading = true;
@@ -537,13 +534,16 @@ export default {
       return this.showErrors && input.required && !input.value ? [msg] : [];
     },
     async saveForm() {
+      this.e1 = 2
+      return false
       const { id } = this.$route.params;
       const { formType: currentFormId } = this.$route.params;
       this.isSubmitingForm = true;
       if (await this.validateFormData()) {
-        await this.savePages(id);
-        this.isSubmitingForm = false;
-        this.$router.push({ path: `/cases/${currentFormId}` });
+        await this.savePages(id).then(response => {
+          this.isSubmitingForm = false;
+          makeToast("success", response.data.message);
+        })
       } else {
         this.showErrors = true;
         this.isSubmitingForm = false;
@@ -551,7 +551,30 @@ export default {
         console.log("some fields is required");
       }
     },
-    addUser(){
+    async storeRequestSide(){
+      this.e1 = 3
+      return false
+      this.isLoading = true;
+      let data = {
+        form_request_id:1,
+        claimant_id:this.sidesInfo.claimant_id,
+        defendant_id:this.sidesInfo.defendant_id
+      }
+
+      // if (await this.validateFormData()) {
+        await this.saveRequestSide(data)
+          .then((response) => {
+            this.isLoading = false;
+            makeToast("success", response.data.message);
+          })
+          .catch(() => {
+            this.isLoading = false;
+          });
+      // } else {
+      //   this.showErrors = true;
+      //   this.isSubmitingForm = false;
+      //   console.log("some fields is required");
+      // }
 
     }
   },
