@@ -199,6 +199,7 @@ class UserController extends Controller
         $query = User::whereHas('roles', function ($q) {
             $q->where('name', '!=', 'root')->where('name', '!=', 'admin');
         });
+
         // Check if the "type" parameter is present in the request
         if ($request->has('type')) {
             $query->where('type', $request->type);
@@ -245,7 +246,7 @@ class UserController extends Controller
 
             return responseSuccess($userInformation, 'User Info has been successfully created');
 
-        } catch (\Throwable $th) {
+        } catch (\Eception $th) {
             return $th->getMessage();
             // dd($th);
             //throw $th;

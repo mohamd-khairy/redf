@@ -16,10 +16,18 @@ class LogController extends Controller
         $activityLogs = Activity::paginate(request('page_size' , 10));
         return responseSuccess(['activityLogs' => $activityLogs]);
     }
-    public function action_preview(Request $request){
-        // $formRequestActions = FormRequestAction::with('formable')->get();
-        $formRequestActions = FormRequestAction::whereHas('formable',function($q){
-        })->get();
+    public function action_preview($id){
+
+        $formRequestActions = FormRequestAction::where('formable_id' , $id)->with(['formable.user'])->get();
+        $modifiedData = $formRequestActions->map(function ($action) {
+            return [
+                'id' => $action->id,
+                'msg' => $action->msg,
+                'user' => $action->formable->user,
+                'form_id' => $action->formable->form,
+            ];
+        });
+
         return responseSuccess(['formRequestActions' => $formRequestActions]);
 
     }
