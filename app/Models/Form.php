@@ -52,4 +52,14 @@ class Form extends Model
     {
         return $this->morphMany(FormRequestAction::class, 'formable');
     }
+
+    public function formRequests()
+    {
+        return $this->hasMany(FormRequest::class);
+    }
+
+    public function tasks()
+    {
+        return $this->hasManyThrough(Task::class, FormRequest::class);
+    }
 }

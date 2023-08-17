@@ -37,4 +37,5 @@ class Template extends Model
         return $this->hasManyThrough(FormRequest::class, Form::class);
     }
 
+
 }

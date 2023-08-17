@@ -232,20 +232,12 @@ class UserController extends Controller
         try {
              // Get the validated data from the request, including the possibly generated email
             $validatedData = $request->validatedWithDefaults();
-
             // Create a new user
-            $newUser = User::create([
-                'name' => $validatedData['name'],
-                'phone' => $validatedData['phone'],
-                'email' => $validatedData['email'],
-                'type' => 'user',
-                'password' => Hash::make(Str::random(12)),
-                // ... other user attributes
-            ]);
+            $newUser = User::create($validatedData + ['password' => Hash::make(Str::random(12)) ,'type'=>'user']);
+             // Create and save the UserInformation instance
 
             $newUser->assignRole('employee');
 
-             // Create and save the UserInformation instance
             $userInformation = UserInformation::create([
                 'user_id' => $newUser->id, // Set the user_id with the newly created user's ID
                 'civil_number' => $validatedData['civil_number'],
@@ -253,8 +245,9 @@ class UserController extends Controller
 
             return responseSuccess($userInformation, 'User Info has been successfully created');
 
-         } catch (\Throwable $th) {
-            dd($th);
+        } catch (\Throwable $th) {
+            return $th->getMessage();
+            // dd($th);
             //throw $th;
         }
 

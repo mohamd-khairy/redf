@@ -70,4 +70,9 @@ class FormRequest extends Model
     {
         return $this->morphMany(FormRequestAction::class, 'formable');
     }
+    public function tasks()
+    {
+        return $this->hasMany(Task::class, 'form_request_id');
+    }
+
 }

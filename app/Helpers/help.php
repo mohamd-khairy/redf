@@ -4,6 +4,7 @@ use App\Models\User;
 use App\Models\Setting;
 use App\Models\Calendar;
 use Illuminate\Support\Str;
+use App\Models\FormRequestAction;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Storage;
@@ -174,14 +175,29 @@ if (!function_exists('resolvePhoto')) {
 }
 
 if (!function_exists('saveCalendarFromRequest')) {
-    function saveCalendarFromRequest($request)
+    function saveCalendarFromRequest(array $data)
     {
-        $data = $request->validate([
+
+        $validatedData = validator($data, [
             'calendarable_type' => 'nullable|string',
             'calendarable_id' => 'nullable|integer',
             'date' => 'required|date',
             'details' => 'nullable|string',
-        ]);
-        return Calendar::create($data);
+            'user_id' => 'nullable|exists:users,id',
+        ])->validate();
+        return Calendar::create($validatedData);
+    }
+}
+
+if (!function_exists('saveFormRequestAction')) {
+    function saveFormRequestAction(array $data)
+    {
+
+        $validatedData = validator($data, [
+            'formable_type' => 'nullable|string',
+            'formable_id' => 'nullable|integer',
+            'msg' => 'required|string',
+        ])->validate();
+        return FormRequestAction::create($validatedData);
     }
 }
