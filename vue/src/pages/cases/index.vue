@@ -121,7 +121,7 @@
         </template>
 
         <template v-slot:item.assigner="{ item }">
-          <div>{{ item.form_assigned_requests[0]?.name ?? '---' }}</div>
+          <div>{{ item.form_assigned_requests[0]?.assigner.name ?? '---' }}</div>
         </template>
 
         <template v-slot:item.role="{ item }">
