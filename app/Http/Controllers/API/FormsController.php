@@ -70,8 +70,6 @@ class FormsController extends Controller
         }
     }
 
-
-
     public function updateForm($id, FormUpdateRequest $request)
     {
         try {
@@ -135,6 +133,7 @@ class FormsController extends Controller
             return responseFail($th->getMessage());
         }
     }
+
     public function deleteForm($id)
     {
         try {
@@ -191,24 +190,25 @@ class FormsController extends Controller
                 ]);
                 $this->processFormPages($request, $formRequest);
                 $calendarData = [
-                    'calendarable_id'=>$formRequest->id,
-                    'calendarable_type'=>FormRequest::class,
+                    'calendarable_id' => $formRequest->id,
+                    'calendarable_type' => FormRequest::class,
                     'user_id' => auth()->id(),
-                    'date'=>now(),
+                    'date' => now(),
                 ];
                 $calendar = saveCalendarFromRequest($calendarData);
                 $actionData = [
-                    'formable_id'=>$formRequest->id,
-                    'formable_type'=>FormRequest::class,
-                    'msg'=>'تم اضافه قضيه جديده',
+                    'formable_id' => $formRequest->id,
+                    'formable_type' => FormRequest::class,
+                    'msg' => 'تم اضافه قضيه جديده',
                 ];
                 $calendar = saveFormRequestAction($actionData);
-                return responseSuccess(['formRequest'=>$formRequest], 'Form Fill has been successfully Created');
+                return responseSuccess(['formRequest' => $formRequest], 'Form Fill has been successfully Created');
             });
         } catch (\Throwable $th) {
             return responseFail($th->getMessage());
         }
     }
+
     public function updateFormFill(Request $request, $id)
     {
         try {
@@ -221,16 +221,16 @@ class FormsController extends Controller
 
                 $this->processFormPages($request, $formRequest);
                 $calendarData = [
-                    'calendarable_id'=>$formRequest->id,
-                    'calendarable_type'=>FormRequest::class,
+                    'calendarable_id' => $formRequest->id,
+                    'calendarable_type' => FormRequest::class,
                     'user_id' => auth()->id(),
-                    'date'=>now(),
+                    'date' => now(),
                 ];
                 $calendar = saveCalendarFromRequest($calendarData);
                 $actionData = [
-                    'formable_id'=>$formRequest->id,
-                    'formable_type'=>FormRequest::class,
-                    'msg'=>'تم تحديث القضيه ',
+                    'formable_id' => $formRequest->id,
+                    'formable_type' => FormRequest::class,
+                    'msg' => 'تم تحديث القضيه ',
                 ];
                 $calendar = saveFormRequestAction($actionData);
                 return responseSuccess([], 'Form Fill has been successfully updated');
@@ -239,6 +239,7 @@ class FormsController extends Controller
             return responseFail($th->getMessage());
         }
     }
+
     private function processFormPages(Request $request, FormRequest $formRequest)
     {
         $pagesInput = $request->input('pages', []);
@@ -258,6 +259,7 @@ class FormsController extends Controller
             ]);
         });
     }
+
     public function getFormRequest(PageRequest $request)
     {
         try {
@@ -284,7 +286,7 @@ class FormsController extends Controller
     public function getFormRequestfill($id)
     {
         try {
-            $formfill = FormRequest::with('form.pages.items', 'user', 'form_page_item_fill')->find($id);
+            $formfill = FormRequest::with('form.pages.items', 'user', 'form_page_item_fill', 'formRequestInformation', 'formRequestSide')->find($id);
 
             return responseSuccess($formfill, 'Form requests retrieved successfully');
         } catch (\Throwable $e) {
@@ -298,7 +300,7 @@ class FormsController extends Controller
         try {
             return DB::transaction(function () use ($request) {
 
-                 $formattedDate = Carbon::createFromFormat('Y-m-d', $request->date)->toDateString();
+                $formattedDate = Carbon::createFromFormat('Y-m-d', $request->date)->toDateString();
                 // check if  form_request_id has record or not
                 foreach ($request->form_request_id as $form_request_id) {
                     FormAssignRequest::where('form_request_id', $form_request_id)
@@ -308,7 +310,7 @@ class FormsController extends Controller
 
                     $form_user_id = Form::where('id', $form_request_id)->pluck('user_id');
 
-                     $assignNew = FormAssignRequest::create([
+                    $assignNew = FormAssignRequest::create([
                         'form_request_id' => $form_request_id,
                         'user_id' => $request->user_id,
                         'date' => $formattedDate,
@@ -320,16 +322,16 @@ class FormsController extends Controller
                     FormRequest::where('id', $form_request_id)->update(['status' => 'processing']);
                 }
                 $calendarData = [
-                    'calendarable_id'=>$assignNew->id,
-                    'calendarable_type'=>FormAssignRequest::class,
+                    'calendarable_id' => $assignNew->id,
+                    'calendarable_type' => FormAssignRequest::class,
                     'user_id' => auth()->id(),
-                    'date'=>now(),
+                    'date' => now(),
                 ];
                 $calendar = saveCalendarFromRequest($calendarData);
                 $actionData = [
-                    'formable_id'=>$assignNew->id,
-                    'formable_type'=>FormAssignRequest::class,
-                    'msg'=>'تم اسناد القضيه ل موظف جديد',
+                    'formable_id' => $assignNew->id,
+                    'formable_type' => FormAssignRequest::class,
+                    'msg' => 'تم اسناد القضيه ل موظف جديد',
                 ];
                 $calendar = saveFormRequestAction($actionData);
                 return responseSuccess(['assignNew' => $assignNew]);
@@ -338,10 +340,12 @@ class FormsController extends Controller
             return responseFail($e->getMessage());
         }
     }
-    public function UpdateAssignRequest(Request $request){
+    public function UpdateAssignRequest(Request $request)
+    {
         dd($request->all());
     }
-    public function form_request_side(Request $request){
+    public function form_request_side(Request $request)
+    {
 
         $validatedData = $request->validate([
             'form_request_id' => 'required|exists:form_requests,id',
@@ -352,9 +356,9 @@ class FormsController extends Controller
         $formRequestSide = FormRequestSide::create($validatedData);
 
         return responseSuccess($formRequestSide, 'Form Request Side has been successfully Created');
-
     }
-    public function form_request_information(InformationRequest $request){
+    public function form_request_information(InformationRequest $request)
+    {
         try {
             DB::beginTransaction();
 
@@ -376,6 +380,5 @@ class FormsController extends Controller
             DB::rollBack();
             return responseFail($e->getMessage());
         }
-
     }
 }
