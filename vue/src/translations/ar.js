@@ -770,6 +770,7 @@ export default {
     assigner: "مكلفة من",
     no_action_yet: "لم يتم اتخاذ اي اجراء في القضية حتي الان",
     getting_data: "جاري جلب البيانات",
+    continue: "الاستمرار",
   },
   reports: {
     buildReport: "انشاء تقرير",

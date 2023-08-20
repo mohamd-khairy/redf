@@ -2,38 +2,30 @@
   <div class="d-flex flex-column flex-grow-1" style="margin: 50px">
     <v-stepper v-model="e1">
       <v-stepper-header>
-
-        <v-stepper-step
-          :complete="e1 > 1"
-          step="1"
-        >
-          {{ $t('cases.caseInfo') }}
+        <v-stepper-step :complete="e1 > 1" step="1">
+          {{ $t("cases.caseInfo") }}
         </v-stepper-step>
 
         <v-divider></v-divider>
 
-        <v-stepper-step
-          :complete="e1 > 2"
-          step="2"
-        >
-          {{ $t('cases.sidesInfo') }}
+        <v-stepper-step :complete="e1 > 2" step="2">
+          {{ $t("cases.sidesInfo") }}
         </v-stepper-step>
 
         <v-divider></v-divider>
 
         <v-stepper-step step="3">
-          {{ $t('cases.caseActions') }}
+          {{ $t("cases.caseActions") }}
         </v-stepper-step>
       </v-stepper-header>
 
       <v-stepper-items>
-
         <v-stepper-content step="1">
           <v-card class="mb-12" v-if="!initialLoading">
             <v-tabs v-model="activeTab">
               <v-tab v-for="(tab, index) in pages" :key="index">{{
-                  tab.title
-                }}</v-tab>
+                tab.title
+              }}</v-tab>
             </v-tabs>
             <v-card-text>
               <v-tabs-items v-model="activeTab">
@@ -118,21 +110,18 @@
                 </v-tab-item>
               </v-tabs-items>
             </v-card-text>
-<!--            <v-card-actions class="px-5 pb-4">-->
-<!--              <v-btn-->
-<!--                color="primary"-->
-<!--                :disabled="isSubmitingForm"-->
-<!--                :loading="isSubmitingForm"-->
-<!--                @click="saveForm"-->
-<!--              >{{ $t("general.saveChanges") }}</v-btn-->
-<!--              >-->
-<!--            </v-card-actions>-->
+            <!--            <v-card-actions class="px-5 pb-4">-->
+            <!--              <v-btn-->
+            <!--                color="primary"-->
+            <!--                :disabled="isSubmitingForm"-->
+            <!--                :loading="isSubmitingForm"-->
+            <!--                @click="saveForm"-->
+            <!--              >{{ $t("general.saveChanges") }}</v-btn-->
+            <!--              >-->
+            <!--            </v-card-actions>-->
           </v-card>
-          <v-btn
-            color="primary"
-            @click="saveForm"
-          >
-            Continue
+          <v-btn color="primary" @click="saveForm">
+            {{ $t("general.continue") }}
           </v-btn>
         </v-stepper-content>
         <v-stepper-content step="2">
@@ -140,10 +129,8 @@
             <v-card-title>
               <v-flex class="text-left">
                 <v-btn color="primary" large @click.stop="dialog = true">
-                  <v-icon>
-                    mdi-plus
-                  </v-icon>
-                  {{ $t('cases.addUser') }}
+                  <v-icon> mdi-plus </v-icon>
+                  {{ $t("cases.addUser") }}
                 </v-btn>
               </v-flex>
             </v-card-title>
@@ -155,8 +142,8 @@
                       <v-select
                         :items="claimantUsers"
                         :label="$t('cases.claimant')"
-                        :item-text="item => item.name"
-                        :item-value="item => item.id"
+                        :item-text="(item) => item.name"
+                        :item-value="(item) => item.id"
                         hide-details
                         dense
                         outlined
@@ -171,8 +158,8 @@
                       <v-select
                         :items="defendantUsers"
                         :label="$t('cases.defendant')"
-                        :item-text="item => item.name"
-                        :item-value="item => item.id"
+                        :item-text="(item) => item.name"
+                        :item-value="(item) => item.id"
                         hide-details
                         dense
                         outlined
@@ -186,8 +173,8 @@
                       <v-select
                         :items="departments"
                         :label="$t('tables.department')"
-                        :item-text="item => item.name"
-                        :item-value="item => item.id"
+                        :item-text="(item) => item.name"
+                        :item-value="(item) => item.id"
                         hide-details
                         dense
                         outlined
@@ -212,20 +199,14 @@
             </v-card-text>
           </v-card>
 
-          <v-btn
-            color="primary"
-            @click="storeRequestSide"
-          >
-            Continue
+          <v-btn color="primary" @click="storeRequestSide">
+            {{ $t("general.continue") }}
           </v-btn>
-
         </v-stepper-content>
 
         <v-stepper-content step="3">
           <v-card class="mb-12">
-            <v-card-title>
-
-            </v-card-title>
+            <v-card-title> </v-card-title>
             <v-card-text>
               <div class="d-flex flex-column flex-sm-row">
                 <div class="flex-grow-1 pt-2 pa-sm-2">
@@ -239,9 +220,7 @@
                         outlined
                       >
                         <template v-slot:append>
-                          <v-icon>
-                            mdi-cash
-                          </v-icon>
+                          <v-icon> mdi-cash </v-icon>
                         </template>
                       </v-text-field>
                     </v-col>
@@ -254,9 +233,7 @@
                         outlined
                       >
                         <template v-slot:append>
-                          <v-icon>
-                            mdi-percent
-                          </v-icon>
+                          <v-icon> mdi-percent </v-icon>
                         </template>
                       </v-text-field>
                     </v-col>
@@ -264,8 +241,8 @@
                       <v-select
                         :items="status"
                         :label="$t('tables.status')"
-                        :item-text="item => item.key"
-                        :item-value="item => item.value"
+                        :item-text="(item) => item.key"
+                        :item-value="(item) => item.value"
                         hide-details
                         dense
                         outlined
@@ -283,7 +260,7 @@
                       ></v-textarea>
                     </v-col>
                   </v-row>
-                  <v-row v-for="(date,k) in caseAction.dates" :key="k">
+                  <v-row v-for="(date, k) in caseAction.dates" :key="k">
                     <v-col cols="10">
                       <v-text-field
                         dense
@@ -297,21 +274,17 @@
                     <v-col cols="1">
                       <v-btn
                         @click="removeDate(k)"
-                        v-show="k || ( !k && caseAction.dates.length > 1)"
+                        v-show="k || (!k && caseAction.dates.length > 1)"
                       >
-                        <v-icon color="green">
-                          mdi-minus
-                        </v-icon>
+                        <v-icon color="green"> mdi-minus </v-icon>
                       </v-btn>
                     </v-col>
                     <v-col cols="1">
                       <v-btn
                         @click="addDate(k)"
-                        v-show="k == caseAction.dates.length-1"
+                        v-show="k == caseAction.dates.length - 1"
                       >
-                        <v-icon color="red">
-                          mdi-plus
-                        </v-icon>
+                        <v-icon color="red"> mdi-plus </v-icon>
                       </v-btn>
                     </v-col>
                   </v-row>
@@ -319,40 +292,33 @@
               </div>
             </v-card-text>
           </v-card>
-          <v-btn
-            color="primary"
-          >
-            Continue
-          </v-btn>
+          <v-btn color="primary"> {{ $t("general.save") }} </v-btn>
 
-          <v-btn text>
-            Cancel
-          </v-btn>
+          <v-btn text> Cancel </v-btn>
         </v-stepper-content>
       </v-stepper-items>
     </v-stepper>
 
     <add-user-dialog v-model="dialog"></add-user-dialog>
-
   </div>
 </template>
 
 <script>
 import { mapActions, mapState } from "vuex";
 import AddUserDialog from "@/pages/cases/AddUserDialog";
-import {makeToast} from "@/helpers";
+import { makeToast } from "@/helpers";
 
 export default {
   name: "CreateCase",
-  components: {AddUserDialog},
+  components: { AddUserDialog },
   data() {
     return {
       e1: 1,
       initialLoading: false,
       isLoading: false,
       isSubmitingForm: false,
-      users:[],
-      departments:[],
+      users: [],
+      departments: [],
       breadcrumbs: [
         {
           text: this.$t("menu.requests"),
@@ -363,30 +329,33 @@ export default {
       activeTab: null,
       requiredRule: (v) => !!v || this.$t("general.required_input"),
       showErrors: false,
-      sidesInfo:{
-        claimant_id:'',
-        defendant_id:'',
-        civil:'',
-        department_id:''
+      sidesInfo: {
+        claimant_id: "",
+        defendant_id: "",
+        civil: "",
+        department_id: "",
       },
-      caseAction:{
-        amount:'',
-        status:'',
-        percentage:'',
-        action:'',
-        dates:[{
-          caseDate:""
-        }]
+      caseAction: {
+        amount: "",
+        status: "",
+        percentage: "",
+        action: "",
+        dates: [
+          {
+            caseDate: "",
+          },
+        ],
       },
       dialog: false,
       rules: {
-        required: (value) => (value && Boolean(value)) || this.$t("general.fieldRequired")
+        required: (value) =>
+          (value && Boolean(value)) || this.$t("general.fieldRequired"),
       },
       errors: {},
-      status:[
-        {key:'error', value:0},
-        {key:'confirmed',value:1},
-        {key:'pending', value:2}
+      status: [
+        { key: "error", value: 0 },
+        { key: "confirmed", value: 1 },
+        { key: "pending", value: 2 },
       ],
     };
   },
@@ -396,8 +365,8 @@ export default {
       pageTitle: this.$t("cases.casesList"),
     });
     this.init();
-    this.fetchUsers()
-    this.fetchDepartments()
+    this.fetchUsers();
+    this.fetchDepartments();
 
     this.$root.$on("userCreated", () => {
       this.fetchUsers();
@@ -409,49 +378,60 @@ export default {
     ...mapState("auth", ["user"]),
     ...mapState("app", ["navTemplates"]),
 
-    defendantUsers(){
-      return this.sidesInfo.claimant_id ? this.users.filter(obj => {
-        return obj.id !== this.sidesInfo.claimant_id
-      }) : this.users
+    defendantUsers() {
+      return this.sidesInfo.claimant_id
+        ? this.users.filter((obj) => {
+            return obj.id !== this.sidesInfo.claimant_id;
+          })
+        : this.users;
     },
-    claimantUsers(){
-      return this.sidesInfo.defendant_id ? this.users.filter(obj => {
-        return obj.id !== this.sidesInfo.defendant_id
-      }) : this.users
+    claimantUsers() {
+      return this.sidesInfo.defendant_id
+        ? this.users.filter((obj) => {
+            return obj.id !== this.sidesInfo.defendant_id;
+          })
+        : this.users;
     },
   },
   methods: {
     ...mapActions("app", ["setBreadCrumb"]),
     ...mapActions("users", ["getUserType"]),
     ...mapActions("departments", ["getDepartments"]),
-    ...mapActions("cases", ["getPages", "validateFormData", "savePages",'userDepartment','saveRequestSide']),
+    ...mapActions("cases", [
+      "getPages",
+      "validateFormData",
+      "savePages",
+      "userDepartment",
+      "saveRequestSide",
+      "saveFormInformation",
+    ]),
     addDate(index) {
-      this.caseAction.dates.push({ caseDate: ""});
+      this.caseAction.dates.push({ caseDate: "" });
     },
     removeDate(index) {
       this.caseAction.dates.splice(index, 1);
     },
-    getUserDepartment(id){
+    getUserDepartment(id) {
       this.isLoading = true;
       let data = {
-        user_id:id
-      }
+        user_id: id,
+      };
       this.userDepartment(data)
         .then((response) => {
           this.isLoading = false;
-          console.log(response)
+          console.log(response);
           // this.sidesInfo.department_id = response.data.data.users
         })
         .catch(() => {
           this.isLoading = false;
         });
     },
-    fetchUsers(){
+    fetchUsers() {
       this.isLoading = true;
       this.getUserType()
         .then((response) => {
           this.isLoading = false;
-          this.users = response.data.data.users
+          this.users = response.data.data.users;
           // this.claimantUsers = response.data.data.users
           // this.defendantUsers = response.data.data.users
         })
@@ -459,15 +439,15 @@ export default {
           this.isLoading = false;
         });
     },
-    fetchDepartments(){
+    fetchDepartments() {
       this.isLoading = true;
       let data = {
-        pageSize:-1
-      }
+        pageSize: -1,
+      };
       this.getDepartments(data)
         .then((response) => {
           this.isLoading = false;
-          this.departments = response.data.data.departments
+          this.departments = response.data.data.departments;
         })
         .catch(() => {
           this.isLoading = false;
@@ -534,16 +514,17 @@ export default {
       return this.showErrors && input.required && !input.value ? [msg] : [];
     },
     async saveForm() {
-      this.e1 = 2
-      return false
+      this.e1 = 2;
+      return false;
       const { id } = this.$route.params;
       const { formType: currentFormId } = this.$route.params;
       this.isSubmitingForm = true;
       if (await this.validateFormData()) {
-        await this.savePages(id).then(response => {
+        await this.savePages(id).then((response) => {
           this.isSubmitingForm = false;
+          this.e1 = 2;
           makeToast("success", response.data.message);
-        })
+        });
       } else {
         this.showErrors = true;
         this.isSubmitingForm = false;
@@ -551,32 +532,54 @@ export default {
         console.log("some fields is required");
       }
     },
-    async storeRequestSide(){
-      this.e1 = 3
-      return false
+    async storeRequestSide() {
+      this.e1 = 3;
+      return false;
       this.isLoading = true;
       let data = {
-        form_request_id:1,
-        claimant_id:this.sidesInfo.claimant_id,
-        defendant_id:this.sidesInfo.defendant_id
-      }
+        form_request_id: 1,
+        claimant_id: this.sidesInfo.claimant_id,
+        defendant_id: this.sidesInfo.defendant_id,
+      };
 
       // if (await this.validateFormData()) {
-        await this.saveRequestSide(data)
-          .then((response) => {
-            this.isLoading = false;
-            makeToast("success", response.data.message);
-          })
-          .catch(() => {
-            this.isLoading = false;
-          });
+      await this.saveRequestSide(data)
+        .then((response) => {
+          this.isLoading = false;
+          makeToast("success", response.data.message);
+        })
+        .catch(() => {
+          this.isLoading = false;
+        });
       // } else {
       //   this.showErrors = true;
       //   this.isSubmitingForm = false;
       //   console.log("some fields is required");
       // }
+    },
+    async storeFormInformation() {
+      this.isLoading = true;
+      let data = {
+        form_request_id: 1,
+        claimant_id: this.sidesInfo.claimant_id,
+        defendant_id: this.sidesInfo.defendant_id,
+      };
 
-    }
+      // if (await this.validateFormData()) {
+      await this.saveFormInformation(data)
+        .then((response) => {
+          this.isLoading = false;
+          makeToast("success", response.data.message);
+        })
+        .catch(() => {
+          this.isLoading = false;
+        });
+      // } else {
+      //   this.showErrors = true;
+      //   this.isSubmitingForm = false;
+      //   console.log("some fields is required");
+      // }
+    },
   },
 };
 </script>

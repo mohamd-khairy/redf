@@ -2,7 +2,7 @@
   <div class="my-2">
     <div>
       <v-card>
-        <v-card-title>{{ $t('users.basicInformation') }}</v-card-title>
+        <v-card-title>{{ $t("users.basicInformation") }}</v-card-title>
         <v-card-text>
           <div class="d-flex flex-column flex-sm-row">
             <!--            <div>-->
@@ -16,43 +16,118 @@
             <div class="flex-grow-1 pt-2 pa-sm-2">
               <v-row>
                 <v-col cols="6">
-                  <v-text-field v-model="user.username" :rules="[rules.required]" :label="$t('tables.username')"
-                    :error-messages="errors['username']"></v-text-field>
+                  <v-text-field
+                    v-model="user.username"
+                    :rules="[rules.required]"
+                    :label="$t('tables.username')"
+                    outlined
+                    dense
+                    :error-messages="errors['username']"
+                  ></v-text-field>
                 </v-col>
                 <v-col cols="6">
-                  <v-text-field v-model="user.name" :rules="[rules.required]" :label="$t('tables.name')"
-                    :error-messages="errors['name']"></v-text-field>
-                </v-col>
-              </v-row>
-              <v-row>
-                <v-col cols="6">
-                  <v-text-field v-model="user.email" type="email" :rules="[rules.required]" :label="$t('tables.email')"
-                    :error-messages="errors['email']"></v-text-field>
-                </v-col>
-                <v-col cols="6">
-                  <v-select label="Select" :items="roles" variant="underlined" class=" mx-1" :label="$t('tables.role')"
-                    item-text="name" item-value="id" hide-details v-model="user.roles"></v-select>
-                </v-col>
-              </v-row>
-              <v-row>
-                <v-col cols="6">
-                  <v-text-field v-model="user.password" :label="$t('general.password')"
-                    :type="showPassword ? 'text' : 'password'" :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
-                    @click:append="showPassword = !showPassword" :rules="[rules.required]"
-                    :error-messages="errors['password']"></v-text-field>
-                </v-col>
-                <v-col cols="6">
-                  <v-text-field v-model="user.confirm_password" :label="$t('check.confirmation_password')" type="password"
-                    :error-messages="errors['confirm_password']"></v-text-field>
+                  <v-text-field
+                    v-model="user.name"
+                    :rules="[rules.required]"
+                    :label="$t('tables.name')"
+                    outlined
+                    dense
+                    :error-messages="errors['name']"
+                  ></v-text-field>
                 </v-col>
               </v-row>
               <v-row>
                 <v-col cols="6">
-                  <v-select label="Select"
-                    :items="[{ name: `${$t('users.types.company')}`, value: 'company' }, { name: `${$t('users.types.employee')}`, value: 'employee' },
-                    { name: `${$t('users.types.user')}`, value: 'user' }, { name: `${$t('users.types.governorate')}`, value: 'governorate' }]"
-                    variant="underlined" class=" mx-1" :label="$t('tables.type')" item-text="name" item-value="value"
-                    hide-details v-model="user.type"></v-select>
+                  <v-text-field
+                    v-model="user.email"
+                    type="email"
+                    :rules="[rules.required]"
+                    :label="$t('tables.email')"
+                    outlined
+                    dense
+                    :error-messages="errors['email']"
+                  ></v-text-field>
+                </v-col>
+                <v-col cols="6">
+                  <v-select
+                    label="Select"
+                    :items="roles"
+                    outlined
+                    dense
+                    class="mx-1"
+                    :label="$t('tables.role')"
+                    item-text="name"
+                    item-value="id"
+                    hide-details
+                    v-model="user.roles"
+                  ></v-select>
+                </v-col>
+              </v-row>
+              <v-row>
+                <v-col cols="6">
+                  <v-text-field
+                    v-model="user.password"
+                    :label="$t('general.password')"
+                    :type="showPassword ? 'text' : 'password'"
+                    :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
+                    @click:append="showPassword = !showPassword"
+                    :rules="[rules.required]"
+                    :error-messages="errors['password']"
+                    outlined
+                    dense
+                  ></v-text-field>
+                </v-col>
+                <v-col cols="6">
+                  <v-text-field
+                    v-model="user.confirm_password"
+                    :label="$t('check.confirmation_password')"
+                    type="password"
+                    :error-messages="errors['confirm_password']"
+                    outlined
+                    dense
+                  ></v-text-field>
+                </v-col>
+              </v-row>
+              <v-row>
+                <v-col cols="12" md="6">
+                  <v-select
+                    label="Select"
+                    :items="[
+                      {
+                        name: `${$t('users.types.company')}`,
+                        value: 'company',
+                      },
+                      {
+                        name: `${$t('users.types.employee')}`,
+                        value: 'employee',
+                      },
+                      { name: `${$t('users.types.user')}`, value: 'user' },
+                      {
+                        name: `${$t('users.types.governorate')}`,
+                        value: 'governorate',
+                      },
+                    ]"
+                    outlined
+                    dense
+                    :label="$t('tables.type')"
+                    item-text="name"
+                    item-value="value"
+                    hide-details
+                    v-model="user.type"
+                  ></v-select>
+                </v-col>
+                <v-col cols="12" md="6">
+                  <v-select
+                    label="Select"
+                    :items="departments"
+                    item-text="name"
+                    item-value="id"
+                    outlined
+                    dense
+                    :label="$t('tables.department')"
+                    hide-details
+                    v-model="user.department"
+                  ></v-select>
                 </v-col>
               </v-row>
 
@@ -69,7 +144,12 @@
               <!--              </div>-->
 
               <div class="mt-2">
-                <v-btn :loading="loading" :disabled="loading" @click="updateProfile" color="primary">
+                <v-btn
+                  :loading="loading"
+                  :disabled="loading"
+                  @click="updateProfile"
+                  color="primary"
+                >
                   {{ $t("general.save") }}
                 </v-btn>
               </div>
@@ -150,13 +230,23 @@
     <!-- disable modal -->
     <v-dialog v-model="disableDialog" max-width="290">
       <v-card>
-        <v-card-title class="headline">{{ $t('users.DisableUser') }}</v-card-title>
-        <v-card-text>{{ $t('users.Areyousureyouwanttodisablethisuser') }}</v-card-text>
+        <v-card-title class="headline">{{
+          $t("users.DisableUser")
+        }}</v-card-title>
+        <v-card-text>{{
+          $t("users.Areyousureyouwanttodisablethisuser")
+        }}</v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn @click="disableDialog = false">Cancel</v-btn>
-          <v-btn color="warning" @click="user.disabled = true; disableDialog = false">Disable{{ $t('users.DangerZone')
-          }}</v-btn>
+          <v-btn
+            color="warning"
+            @click="
+              user.disabled = true;
+              disableDialog = false;
+            "
+            >Disable{{ $t("users.DangerZone") }}</v-btn
+          >
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -164,12 +254,18 @@
     <!-- delete modal -->
     <v-dialog v-model="deleteDialog" max-width="290">
       <v-card>
-        <v-card-title class="headline">{{ $t('users.DeleteUser') }}</v-card-title>
-        <v-card-text>{{ $t('users.Areyousureyouwanttodeletethisuser') }}</v-card-text>
+        <v-card-title class="headline">{{
+          $t("users.DeleteUser")
+        }}</v-card-title>
+        <v-card-text>{{
+          $t("users.Areyousureyouwanttodeletethisuser")
+        }}</v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn @click="deleteDialog = false">Cancel</v-btn>
-          <v-btn color="error" @click="deleteDialog = false">{{ $t('users.Delete') }}</v-btn>
+          <v-btn color="error" @click="deleteDialog = false">{{
+            $t("users.Delete")
+          }}</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -183,11 +279,11 @@ export default {
   props: {
     user: {
       type: Object,
-      default: () => ({})
+      default: () => ({}),
     },
     errors: {
       type: Object,
-      default: () => { },
+      default: () => {},
     },
     loading: {
       type: Boolean,
@@ -202,16 +298,18 @@ export default {
       deleteDialog: false,
       disableDialog: false,
       rules: {
-        required: (value) => (value && Boolean(value)) || this.$t("general.fieldRequired")
-      }
-    }
+        required: (value) =>
+          (value && Boolean(value)) || this.$t("general.fieldRequired"),
+      },
+    };
   },
   computed: {
     ...mapState("roles", ["roles"]),
-
+    ...mapState("departments", ["departments"]),
   },
   methods: {
     ...mapActions("roles", ["getRoles"]),
+    ...mapActions("departments", ["getDepartments"]),
     fetchRoles() {
       this.isLoading = true;
       this.getRoles()
@@ -221,6 +319,16 @@ export default {
         .catch(() => {
           this.isLoading = false;
         });
+    },
+    init() {
+      this.fetchRoles();
+      this.getDepartments({
+        search: "",
+        pageSize: -1,
+        page: "",
+        sortDirection: "",
+        sortCoulmn: "",
+      }).then((_) => console.log(this.departments));
     },
     changeImage() {
       document.getElementById("update-avatar").click();
@@ -241,7 +349,8 @@ export default {
       return form;
     },
     updateProfile() {
-      const { email, name, password, confirm_password, username, roles, type } = this.user;
+      const { email, name, password, confirm_password, username, roles, type } =
+        this.user;
       let data = {
         email,
         name,
@@ -249,7 +358,7 @@ export default {
         confirm_password,
         username,
         roles,
-        type
+        type,
       };
       if (this.avatar.length) {
         data["avatar"] = this.avatar[0];
@@ -261,11 +370,11 @@ export default {
       this.avatar = {};
     },
   },
-  mounted() {
+  created() {
     // document.getElementById("update-avatar").addEventListener("change", (e) => {
     //   this.avatar = e.target.files;
     // });
-    this.fetchRoles()
+    this.init();
   },
-}
+};
 </script>
