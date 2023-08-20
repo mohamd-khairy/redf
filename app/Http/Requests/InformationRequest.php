@@ -28,6 +28,9 @@ class InformationRequest extends FormRequest
             'amount' => 'nullable|numeric',
             'percentage' => 'nullable|numeric',
             'details' => 'nullable|string',
+            'date' => 'required|date|after:today',
+            'status' => 'nullable',
+            'court' => 'nullable',
         ];
     }
 }
