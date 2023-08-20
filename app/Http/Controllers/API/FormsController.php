@@ -7,11 +7,13 @@ use Carbon\Carbon;
 use App\Models\Form;
 use App\Models\FormPage;
 use App\Models\FormRequest;
+use App\Models\FormSession;
 use Illuminate\Support\Str;
 use App\Filters\SortFilters;
 use App\Models\FormPageItem;
 use Illuminate\Http\Request;
 use App\Models\AssignRequest;
+use App\Services\UploadService;
 use App\Enums\FormRequestStatus;
 use App\Models\FormPageItemFill;
 use App\Http\Requests\FormAssign;
@@ -23,11 +25,12 @@ use App\Enums\FormAssignRequestType;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\FormResource;
 use Illuminate\Support\Facades\Auth;
+use App\Models\FormRequestInformation;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Requests\CreateFormRequest;
 use App\Http\Requests\FormUpdateRequest;
 use App\Http\Resources\FormItemResource;
-use App\Services\UploadService;
+use App\Http\Requests\InformationRequest;
 
 class FormsController extends Controller
 {
@@ -331,11 +334,39 @@ class FormsController extends Controller
                 return responseSuccess(['assignNew' => $assignNew]);
             });
         } catch (Throwable $e) {
-            return response()->json(['message' => 'Unknown error', $e], 500);
+            return responseFail($e->getMessage());
         }
     }
     public function UpdateAssignRequest(Request $request){
 
         dd($request->all());
+    }
+    public function form_request_information(InformationRequest $request){
+        try {
+            DB::beginTransaction();
+
+            $validatedData = $request->validated();
+
+            $formRequestInfo = FormRequestInformation::create($validatedData);
+
+            $sessionDates = $request->dates;
+
+            foreach ($sessionDates as $sessionDate) {
+                FormSession::create([
+                    'form_request_id' => $request->form_request_id,
+                    'date' => $sessionDate,
+                    'status' => 'accept',
+                    'details' => $request->details,
+                ]);
+            }
+
+            DB::commit();
+
+            return responseSuccess($formRequestInfo, 'Form Request Information and Sessions have been successfully created.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return responseFail($e->getMessage());
+        }
+
     }
 }

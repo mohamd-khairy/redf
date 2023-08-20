@@ -9,10 +9,10 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 class FormSession extends Model
 {
     use HasFactory, SoftDeletes;
-    protected $fillable = ['form_id', 'date', 'status', 'details'];
-    public function form()
+    protected $fillable = ['form_request_id', 'date', 'status', 'details'];
+    public function form_request()
     {
-        return $this->belongsTo(Form::class);
+        return $this->belongsTo(FormRequest::class);
     }
 
 }

@@ -13,8 +13,13 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('form_request_procedures', function (Blueprint $table) {
+        Schema::create('form_request_information', function (Blueprint $table) {
             $table->id();
+            $table->decimal('amount', 10, 2);
+            $table->decimal('percentage', 5, 2);
+             $table->text('details');
+            $table->unsignedBigInteger('form_request_id');
+            $table->foreign('form_request_id')->references('id')->on('form_requests')->onDelete('cascade');
             $table->timestamps();
         });
     }
