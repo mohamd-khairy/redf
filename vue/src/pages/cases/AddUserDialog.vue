@@ -18,15 +18,15 @@
           <v-row>
             <v-row>
               <v-col cols="12">
-                <v-text-field type="number" v-model="user.id" :rules="[rules.required]" :label="$t('tables.id')"
-                              :error-messages="errors['id']"></v-text-field>
+                <v-text-field type="number" v-model="user.civil_number" :rules="[rules.required]" :label="$t('cases.civil')"
+                              :error-messages="errors['civil_number']"></v-text-field>
               </v-col>
               <v-col cols="12">
                 <v-text-field v-model="user.name" :rules="[rules.required]" :label="$t('tables.name')"
                               :error-messages="errors['name']"></v-text-field>
               </v-col>
               <v-col cols="12">
-                <v-text-field v-model="user.phone" :rules="[rules.required]" :label="$t('tables.phone')"
+                <v-text-field type="number" v-model="user.phone" :rules="[rules.required]" :label="$t('tables.phone')"
                               :error-messages="errors['phone']"></v-text-field>
               </v-col>
               <v-col cols="12">
@@ -42,15 +42,14 @@
 
           <v-btn
             color="primary"
-            class="mx-2"
-            @click="updateEventMethod"
+            class="mx-1"
+            @click="save"
           >
             {{ $t('general.save') }}
           </v-btn>
 
           <v-btn
             color="grey lighten-3"
-
             @click="dialog = false"
           >
             {{ $t('general.cancel') }}
@@ -64,6 +63,7 @@
 <script>
 import {mapActions, mapState} from "vuex";
 import {makeToast} from "@/helpers";
+import axios from 'axios';
 
 export default {
   name: "AddUserDialog",
@@ -75,11 +75,12 @@ export default {
   },
   data() {
     return {
-      user: {name:"", id: "", phone:"", email:"" },
+      user: {name:"", civil_number: "", phone:"", email:"" },
       rules: {
         required: (value) => (value && Boolean(value)) || this.$t("general.fieldRequired")
       },
       errors: {},
+      loading: false,
     }
   },
   computed: {
@@ -101,12 +102,12 @@ export default {
     },
   },
   watch:{
-    'id'(){
-      this.refresh()
-    }
+    // 'id'(){
+    //   this.refresh()
+    // }
   },
   methods:{
-    ...mapActions('events', ['updateEvent']),
+    ...mapActions('cases', ['createUser']),
     refresh() {
       this.loading = true;
       this.event = this.eventItem
@@ -114,16 +115,18 @@ export default {
       this.form = { status,notes, id };
     },
     fetchData: function(){
-      this.$root.$emit('table_component')
+      this.$root.$emit('userCreated')
     },
-    updateEventMethod() {
+    save() {
       this.loading = true;
       this.errors = {};
-      let formData = new FormData();
-      formData.append("file", this.form.file ?? null);
-      formData.append("notes", this.form.notes ?? '');
-      formData.append("status", this.form.status.value);
-      this.updateEvent(formData)
+      let data = {
+        name:this.user.name,
+        civil_number: Number(this.user.civil_number),
+        phone: Number(this.user.phone),
+        email:this.user.email,
+      }
+      this.createUser(data)
         .then((response) => {
           this.loading = false;
           this.dialog = false

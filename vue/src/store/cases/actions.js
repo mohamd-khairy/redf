@@ -21,9 +21,21 @@ const actions = {
     commit('SET_formRequests', formRequests)
   },
 
+  async userDepartment({commit}, data) {
+    return await axios.get(`user-department`, {
+      params: {
+        user_id: data.user_id,
+      }
+    });
+  },
+
   async assignRequest({commit}, data) {
     console.log('data-->',data)
     return await axios.post(`assign-request`, data)
+  },
+
+  async createUser({commit}, form) {
+    return await axios.post(`store-userInfo`, form)
   },
 
   async getEvents({ commit }, data) {
@@ -170,6 +182,13 @@ const actions = {
       );
     });
   },
+  async saveRequestSide({ state }, data) {
+    try {
+      return await axios.post(`form-request-side`, data);
+    } catch (error) {
+      console.error("Error saving form data:", error);
+    }
+  },
   async savePages({ state }, formId) {
     try {
       const customFormData = {
@@ -196,7 +215,7 @@ const actions = {
         let value = customFormData[key];
         bodyFormData.set(key, JSON.stringify(value));
       }
-      const response = await axios.post(`store-form-fill`, bodyFormData, {
+      return await axios.post(`store-form-fill`, bodyFormData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -240,6 +259,12 @@ const actions = {
     } catch (error) {
       console.error("Error saving form data:", error);
     }
+  },
+
+  async getCasePreview({ commit }, id) {
+    const response = await axios.get(`action-preview/${id}`);
+    const { formRequestActions } = response?.data?.data;
+    return formRequestActions;
   },
 };
 
