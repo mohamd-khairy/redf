@@ -339,7 +339,6 @@ class FormsController extends Controller
         }
     }
     public function UpdateAssignRequest(Request $request){
-
         dd($request->all());
     }
     public function form_request_side(Request $request){
@@ -370,8 +369,6 @@ class FormsController extends Controller
                     'details' => $request->details,
                 ]);
             }
-
-
             DB::commit();
 
             return responseSuccess($formRequestInfo, 'Form Request Information and Sessions have been successfully created.');

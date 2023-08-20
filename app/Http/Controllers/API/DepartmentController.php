@@ -111,6 +111,7 @@ class DepartmentController extends Controller
         ->with(['department', 'userInformation:id,civil_number,user_id'])
         ->first();
 
+
         if ($user) {
             $department = $user->department; // Access the department relationship
             $userInformation = $user->userInformation; // Access the userInformation relationship

@@ -189,7 +189,7 @@ class FormSeeder extends Seeder
             'website_view' => 1,
             'notes' => '',
             'comment' => '',
-            'width' => 'col-4',
+            'width' => 'col-12',
             'input_type' => 'text',
             'height' => '',
             'length' => '500',

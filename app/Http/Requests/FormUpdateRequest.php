@@ -32,22 +32,22 @@ class FormUpdateRequest extends FormRequest
     {
 
         return [
-           'name' => 'required|string|unique:forms,name,' . request()->id,
+           'name' => 'nullable|string|unique:forms,name,' . request()->id,
            'pages' => 'required|array',
            'pages.*' => 'required|array',
            'pages.*.title.title' => 'required|string',
            'pages.*.title.editing' => 'required|boolean',
            'pages.*.items' => 'required|array',
            'pages.*.items.*' => 'required|array',
-           'pages.*.items.*.type' => 'required|in:line,radio,label,text,textarea,checkbox,select,table,tree,file',
-           'pages.*.items.*.label' => 'required|string',
+           'pages.*.items.*.type' => 'nullable|in:line,radio,label,text,textarea,checkbox,select,table,tree,file',
+           'pages.*.items.*.label' => 'nullable|string',
            'pages.*.items.*.excel_name' => 'nullable|string',
            'pages.*.items.*.notes' => 'nullable|string',
-           'pages.*.items.*.width' => 'required|numeric',
-           'pages.*.items.*.height' => 'required|numeric',
-           'pages.*.items.*.enabled' => 'required',
-           'pages.*.items.*.required' => 'required',
-           'pages.*.items.*.website_view' => 'required',
+           'pages.*.items.*.width' => 'nullable',
+           'pages.*.items.*.height' => 'nullable',
+           'pages.*.items.*.enabled' => 'nullable',
+           'pages.*.items.*.required' => 'nullable',
+           'pages.*.items.*.website_view' => 'nullable',
            'pages.*.items.*.childList' => 'sometimes|array|nullable',
         ];
     }
