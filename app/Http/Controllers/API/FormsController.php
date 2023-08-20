@@ -364,17 +364,21 @@ class FormsController extends Controller
             DB::beginTransaction();
 
             $validatedData = $request->validated();
-            if($validatedData['amount'] != null)
-            $formRequestInfo = $validatedData['amount'] != null ? FormRequestInformation::create($validatedData) : [];
-            $sessionDates = is_array($request->dates) ? $request->dates : json_decode($request->dates);
-            foreach ($sessionDates as $sessionDate) {
-                FormSession::create([
-                    'form_request_id' => $request->form_request_id,
-                    'date' => $sessionDate,
-                    'status' => $request->status,
-                    'details' => $request->details,
-                ]);
+            if ($validatedData['amount'] != null) {
+                $formRequestInfo = FormRequestInformation::create($validatedData);
+            } else {
+                $sessionDates = is_array($request->dates) ? $request->dates : json_decode($request->dates);
+                foreach ($sessionDates as $sessionDate) {
+                    FormSession::create([
+                        'form_request_id' => $request->form_request_id,
+                        'date' => $sessionDate,
+                        'status' => $request->status,
+                        'details' => $request->details,
+                    ]);
+                }
             }
+
+
             DB::commit();
             return responseSuccess($formRequestInfo, 'Form Request Information and Sessions have been successfully created.');
         } catch (\Exception $e) {
