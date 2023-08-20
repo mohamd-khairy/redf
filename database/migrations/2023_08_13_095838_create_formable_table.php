@@ -15,10 +15,10 @@ return new class extends Migration
     {
         Schema::create('formable', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('form_id');
+            $table->unsignedBigInteger('form_request_id');
             $table->morphs('formable');
             $table->timestamps();
-            $table->foreign('form_id')->references('id')->on('forms')->onDelete('cascade');
+            $table->foreign('form_request_id')->references('id')->on('forms')->onDelete('cascade');
 
         });
     }

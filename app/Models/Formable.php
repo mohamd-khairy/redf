@@ -8,10 +8,11 @@ use Illuminate\Database\Eloquent\Model;
 class Formable extends Model
 {
     use HasFactory;
-    protected $fillable = ['formable_type', 'formable_id','form_id'];
+    protected $table = "formable";
+    protected $fillable = ['formable_type', 'formable_id','form_request_id'];
 
     public function forms()
     {
-        return $this->morphToMany(Form::class, 'formable');
+        return $this->morphToMany(FormRequest::class, 'formable');
     }
 }

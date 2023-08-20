@@ -24,10 +24,10 @@ class InformationRequest extends FormRequest
     public function rules()
     {
         return [
-            'form_request_id' => 'required|exists:form_requests,id',
-            'amount' => 'required|numeric',
-            'percentage' => 'required|numeric',
-            'details' => 'required|string',
+            'form_request_id' => 'nullable|exists:form_requests,id',
+            'amount' => 'nullable|numeric',
+            'percentage' => 'nullable|numeric',
+            'details' => 'nullable|string',
         ];
     }
 }

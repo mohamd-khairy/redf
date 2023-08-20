@@ -243,17 +243,13 @@ class UserController extends Controller
             // Create and save the UserInformation instance
 
             $newUser->assignRole('employee');
-
             $userInformation = UserInformation::create([
                 'user_id' => $newUser->id, // Set the user_id with the newly created user's ID
                 'civil_number' => $validatedData['civil_number'],
             ]);
-
             return responseSuccess($userInformation, 'User Info has been successfully created');
         } catch (\Throwable $th) {
             return $th->getMessage();
-            // dd($th);
-            //throw $th;
         }
     }
 }

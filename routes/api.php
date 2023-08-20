@@ -151,10 +151,11 @@ Route::group(['prefix' => 'v1'], function () {
         Route::get('get-form-Requests/{id}', [FormsController::class, 'getFormRequestfill']);
         Route::post('assign-request', [FormsController::class, 'assignRequest']);
         Route::put('assign-request/{id}', [FormsController::class, 'UpdateAssignRequest']);
-        Route::post('form-assign-request', [FormsController::class, 'FormAssignRequest']);
         Route::get('all-forms', [FormsController::class, 'allForm']);
         Route::post('form-request-side', [FormsController::class , 'form_request_side']);
         Route::post('form-request-information', [FormsController::class , 'form_request_information']);
+
+        Route::post('form-assign-request', [FormsController::class, 'FormAssignRequest']);
 
     });
 });
