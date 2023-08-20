@@ -69,7 +69,6 @@ class TaskController extends Controller
                 $file = $request->file('file');
                 $filename = $file->getClientOriginalName();
                 $filePath = UploadService::store($file, 'tasks');
-
                 // Create a new file record
                 $fileRecord = new File([
                     'name' => $filename,

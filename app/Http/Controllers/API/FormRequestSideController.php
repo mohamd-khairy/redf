@@ -10,6 +10,7 @@ use App\Http\Controllers\Controller;
 class FormRequestSideController extends Controller
 {
     public function form_request_side(Request $request){
+
         $validatedData = $request->validate([
             'form_request_id' => 'required|exists:form_requests,id',
             'claimant_id' => ['required', 'exists:users,id'],
