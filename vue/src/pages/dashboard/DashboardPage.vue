@@ -42,7 +42,10 @@
       </v-row>
       <v-card v-if="!loading" class="mt-3">
         <v-row align="center" justify="center">
-          <v-col cols="12" align="center" justify="center">
+          <v-col cols="12">
+            <calendar />
+          </v-col>
+          <!-- <v-col cols="12" align="center" justify="center">
             <div class="py-3">
               <img
                 src="../../assets/images/demo/empty-box.png"
@@ -51,7 +54,7 @@
               />
               <h3 class="mb-3">{{ $t("general.no_data_available") }}</h3>
             </div>
-          </v-col>
+          </v-col> -->
         </v-row>
       </v-card>
     </div>
@@ -156,6 +159,7 @@ import pie from "../../components/dashboard/pie";
 import tableCard from "../../components/dashboard/TableCard";
 import showBuilderCards from "@/pages/reports/builder/ShowBuilderCards";
 import StatCards from "../reports/builder/StatCards.vue";
+import Calendar from "../../components/dashboard/Calendar.vue";
 
 export default {
   name: "DashboardPage",
@@ -166,6 +170,7 @@ export default {
     tableCard,
     showBuilderCards,
     StatCards,
+    Calendar,
   },
   created() {
     // const { id } = this.$route.params;

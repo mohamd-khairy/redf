@@ -97,12 +97,11 @@
           </div>
         </template>
 
-        <template v-slot:item.user="{ item }">
-          <div>{{ item.user.name ?? "---" }}</div>
-        </template>
-
         <template v-slot:item.name="{ item }">
-          <div>{{ item.form.name ?? "---" }}</div>
+          <div>{{ item.name ?? "---" }}</div>
+        </template>
+        <template v-slot:item.form_request_number="{ item }">
+          <div>{{ item.form_request_number ?? "---" }}</div>
         </template>
 
         <!--        <template v-slot:item.email="{ item }">-->
@@ -126,7 +125,7 @@
           </div>
         </template>
 
-        <template v-slot:item.role="{ item }">
+        <!-- <template v-slot:item.role="{ item }">
           <v-chip
             label
             small
@@ -137,7 +136,7 @@
           >
             {{ item.display_name }}
           </v-chip>
-        </template>
+        </template> -->
 
         <template v-slot:item.created_at="{ item }">
           <div>{{ item.created_at | formatDate("lll") }}</div>
@@ -231,6 +230,7 @@ export default {
       items: [],
       headers: [
         { text: this.$t("tables.id"), value: "id" },
+        { text: this.$t("tables.caseNumber"), value: "form_request_number" },
         { text: this.$t("tables.name"), value: "name" },
         { text: this.$t("tables.user"), value: "user" },
         { text: this.$t("tables.assigner"), value: "assigner" },

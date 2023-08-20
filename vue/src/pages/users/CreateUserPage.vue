@@ -50,6 +50,7 @@ export default {
         name: "",
         password: "",
         confirm_password: "",
+        department_id: "",
         avatar: "/images/avatars/avatar1.svg",
       },
       tab: null,

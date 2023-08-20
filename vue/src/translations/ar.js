@@ -619,6 +619,7 @@ export default {
     subject_id: "معرف الموضوع",
     template: "نموذج",
     causer_id: "معرف المستفيد",
+    caseNumber: "رقم القضية",
     // causer_type: "",
   },
   texts: {
@@ -770,6 +771,7 @@ export default {
     assigner: "مكلفة من",
     no_action_yet: "لم يتم اتخاذ اي اجراء في القضية حتي الان",
     getting_data: "جاري جلب البيانات",
+    continue: "الاستمرار",
   },
   reports: {
     buildReport: "انشاء تقرير",

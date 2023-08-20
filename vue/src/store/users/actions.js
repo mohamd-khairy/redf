@@ -45,7 +45,7 @@ const actions = {
     commit('SET_ACTIVITIES', actvs)
   },
   async getUser({ commit }, id) {
-    const response = await axios.get(`users/${id}`)
+    const response = await axios.get(`user`)
     const user = response?.data.data
     commit('SET_USER', user)
   },

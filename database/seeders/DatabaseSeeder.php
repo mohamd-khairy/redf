@@ -3,6 +3,8 @@
 namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+
+use App\Models\Department;
 use Illuminate\Database\Seeder;
 use Modules\Report\Database\Seeders\ReportDatabaseSeeder;
 
@@ -28,5 +30,6 @@ class DatabaseSeeder extends Seeder
         $this->call(TemplateSeeder::class);
         $this->call(FormSeeder::class);
         $this->call(ReportDatabaseSeeder::class);
+        $this->call(DepartmentSeeder::class);
     }
 }
