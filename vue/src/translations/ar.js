@@ -619,6 +619,7 @@ export default {
     subject_id: "معرف الموضوع",
     template: "نموذج",
     causer_id: "معرف المستفيد",
+    caseNumber: "رقم القضية",
     // causer_type: "",
   },
   texts: {

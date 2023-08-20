@@ -176,9 +176,9 @@
                         :item-text="(item) => item.name"
                         :item-value="(item) => item.id"
                         hide-details
+                        disabled
                         dense
                         outlined
-                        disabled
                         v-model="sidesInfo.department_id"
                       >
                       </v-select>
@@ -237,7 +237,7 @@
                         </template>
                       </v-text-field>
                     </v-col>
-                    <v-col cols="4">
+                    <!-- <v-col cols="4">
                       <v-select
                         :items="status"
                         :label="$t('tables.status')"
@@ -249,12 +249,12 @@
                         v-model="caseAction.status"
                       >
                       </v-select>
-                    </v-col>
+                    </v-col> -->
                     <v-col cols="12">
                       <v-textarea
                         :label="$t('cases.action')"
                         value=""
-                        v-model="caseAction.action"
+                        v-model="caseAction.details"
                         dense
                         outlined
                       ></v-textarea>
@@ -292,9 +292,11 @@
               </div>
             </v-card-text>
           </v-card>
-          <v-btn color="primary"> {{ $t("general.save") }} </v-btn>
+          <v-btn @click="storeFormInformation" color="primary">
+            {{ $t("general.save") }}
+          </v-btn>
 
-          <v-btn text> Cancel </v-btn>
+          <v-btn text> {{ $t("general.cancel") }} </v-btn>
         </v-stepper-content>
       </v-stepper-items>
     </v-stepper>
@@ -318,7 +320,8 @@ export default {
       isLoading: false,
       isSubmitingForm: false,
       users: [],
-      departments: [],
+      formRequestId: null,
+
       breadcrumbs: [
         {
           text: this.$t("menu.requests"),
@@ -337,9 +340,9 @@ export default {
       },
       caseAction: {
         amount: "",
-        status: "",
+        form_request_id: "",
         percentage: "",
-        action: "",
+        details: "",
         dates: [
           {
             caseDate: "",
@@ -377,6 +380,7 @@ export default {
     ...mapState("cases", ["pages", "selectedForm"]),
     ...mapState("auth", ["user"]),
     ...mapState("app", ["navTemplates"]),
+    ...mapState("departments", ["departments"]),
 
     defendantUsers() {
       return this.sidesInfo.claimant_id
@@ -419,8 +423,12 @@ export default {
       this.userDepartment(data)
         .then((response) => {
           this.isLoading = false;
-          console.log(response);
-          // this.sidesInfo.department_id = response.data.data.users
+          const userDepartmentId = response.data?.data?.department?.id || "";
+          const userCivilId =
+            response.data?.data?.userInformation?.civil_number || "";
+
+          this.sidesInfo.department_id = userDepartmentId;
+          this.sidesInfo.civil = userCivilId;
         })
         .catch(() => {
           this.isLoading = false;
@@ -447,7 +455,6 @@ export default {
       this.getDepartments(data)
         .then((response) => {
           this.isLoading = false;
-          this.departments = response.data.data.departments;
         })
         .catch(() => {
           this.isLoading = false;
@@ -514,14 +521,15 @@ export default {
       return this.showErrors && input.required && !input.value ? [msg] : [];
     },
     async saveForm() {
-      this.e1 = 2;
-      return false;
+      // this.e1 = 2;
+      // return false;
       const { id } = this.$route.params;
       const { formType: currentFormId } = this.$route.params;
       this.isSubmitingForm = true;
       if (await this.validateFormData()) {
         await this.savePages(id).then((response) => {
           this.isSubmitingForm = false;
+          this.formRequestId = response.data?.data?.formRequest?.id;
           this.e1 = 2;
           makeToast("success", response.data.message);
         });
@@ -533,11 +541,9 @@ export default {
       }
     },
     async storeRequestSide() {
-      this.e1 = 3;
-      return false;
       this.isLoading = true;
       let data = {
-        form_request_id: 1,
+        form_request_id: this.formRequestId,
         claimant_id: this.sidesInfo.claimant_id,
         defendant_id: this.sidesInfo.defendant_id,
       };
@@ -546,6 +552,7 @@ export default {
       await this.saveRequestSide(data)
         .then((response) => {
           this.isLoading = false;
+          this.e1 = 3;
           makeToast("success", response.data.message);
         })
         .catch(() => {
@@ -559,17 +566,25 @@ export default {
     },
     async storeFormInformation() {
       this.isLoading = true;
+      this.caseAction.dates = this.caseAction.dates.map(
+        (cdate) => cdate.caseDate
+      );
+      console.log(this.caseAction.dates);
       let data = {
-        form_request_id: 1,
-        claimant_id: this.sidesInfo.claimant_id,
-        defendant_id: this.sidesInfo.defendant_id,
+        form_request_id: this.formRequestId,
+        amount: this.caseAction.amount,
+        percentage: this.caseAction.percentage,
+        details: this.caseAction.details,
+        dates: this.caseAction.dates,
       };
 
       // if (await this.validateFormData()) {
       await this.saveFormInformation(data)
         .then((response) => {
           this.isLoading = false;
+          const { formType: currentFormId } = this.$route.params;
           makeToast("success", response.data.message);
+          this.$router.push(`/cases/${currentFormId}`);
         })
         .catch(() => {
           this.isLoading = false;

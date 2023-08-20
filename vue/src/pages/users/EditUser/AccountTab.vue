@@ -127,19 +127,31 @@
                 </v-col>
               </v-row>
               <v-row>
-                <v-col cols="6">
+                <v-col cols="12" md="6">
                   <v-select
                     label="Select"
                     :items="types"
                     outlined
                     dense
-                    variant="underlined"
                     class="mx-1"
                     :label="$t('tables.type')"
                     item-text="name"
                     item-value="value"
                     hide-details
                     v-model="user.type"
+                  ></v-select>
+                </v-col>
+                <v-col cols="12" md="6">
+                  <v-select
+                    label="Select"
+                    :items="departments"
+                    item-text="name"
+                    item-value="id"
+                    outlined
+                    dense
+                    :label="$t('tables.department')"
+                    hide-details
+                    v-model="user.department"
                   ></v-select>
                 </v-col>
               </v-row>
@@ -242,7 +254,7 @@ export default {
   },
   computed: {
     ...mapState("roles", ["roles"]),
-    // ...mapState("users", ["user"]),
+    ...mapState("departments", ["departments"]),
     user: {
       get() {
         return this.$store.state.users.user;
@@ -256,6 +268,7 @@ export default {
   methods: {
     ...mapActions("roles", ["getRoles"]),
     ...mapActions("users", ["getUser"]),
+    ...mapActions("departments", ["getDepartments"]),
 
     fetchRoles() {
       this.isLoading = true;
@@ -329,11 +342,12 @@ export default {
       this.user.roles && this.user.roles.length > 0
         ? this.user.roles[0].id
         : "";
-  },
-  mounted() {
+
     this.fetchRoles();
     this.fetchUser();
-
+    this.getDepartments();
+  },
+  mounted() {
     // document.getElementById("update-avatar").addEventListener("change", e => {
     //   this.avatar = e.target.files;
     // });

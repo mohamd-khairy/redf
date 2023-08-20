@@ -1,16 +1,13 @@
 <template>
   <v-row justify="center">
-    <v-dialog
-      v-model="dialog"
-      max-width="500"
-    >
+    <v-dialog v-model="dialog" max-width="500">
       <v-card>
-        <v-card-title class="text-h5 d-flex justify-space-between align-center border-bottom">
-          {{ $t('cases.addUser')}}
+        <v-card-title
+          class="text-h5 d-flex justify-space-between align-center border-bottom"
+        >
+          {{ $t("cases.addUser") }}
           <v-btn icon @click="dialog = false">
-            <v-icon>
-              mdi-close
-            </v-icon>
+            <v-icon> mdi-close </v-icon>
           </v-btn>
         </v-card-title>
 
@@ -18,41 +15,79 @@
           <v-row>
             <v-row>
               <v-col cols="12">
-                <v-text-field type="number" v-model="user.civil_number" :rules="[rules.required]" :label="$t('cases.civil')"
-                              :error-messages="errors['civil_number']"></v-text-field>
+                <v-text-field
+                  type="number"
+                  v-model="user.civil_number"
+                  outlined
+                  dense
+                  hide-details
+                  :rules="[rules.required]"
+                  :label="$t('cases.civil')"
+                  :error-messages="errors['civil_number']"
+                ></v-text-field>
               </v-col>
               <v-col cols="12">
-                <v-text-field v-model="user.name" :rules="[rules.required]" :label="$t('tables.name')"
-                              :error-messages="errors['name']"></v-text-field>
+                <v-text-field
+                  v-model="user.name"
+                  outlined
+                  dense
+                  hide-details
+                  :rules="[rules.required]"
+                  :label="$t('tables.name')"
+                  :error-messages="errors['name']"
+                ></v-text-field>
               </v-col>
               <v-col cols="12">
-                <v-text-field type="number" v-model="user.phone" :rules="[rules.required]" :label="$t('tables.phone')"
-                              :error-messages="errors['phone']"></v-text-field>
+                <v-text-field
+                  type="number"
+                  v-model="user.phone"
+                  :rules="[rules.required]"
+                  outlined
+                  dense
+                  hide-details
+                  :label="$t('tables.phone')"
+                  :error-messages="errors['phone']"
+                ></v-text-field>
               </v-col>
               <v-col cols="12">
-                <v-text-field v-model="user.email" type="email" :label="$t('tables.email')"></v-text-field>
+                <v-text-field
+                  type="email"
+                  v-model="user.email"
+                  :rules="[rules.required]"
+                  outlined
+                  dense
+                  hide-details
+                  :label="$t('tables.email')"
+                  :error-messages="errors['email']"
+                ></v-text-field>
+              </v-col>
+              <v-col cols="12">
+                <v-select
+                  label="Select"
+                  :items="departments"
+                  item-text="name"
+                  item-value="id"
+                  outlined
+                  dense
+                  :label="$t('tables.department')"
+                  hide-details
+                  :rules="[rules.required]"
+                  v-model="user.department_id"
+                ></v-select>
               </v-col>
             </v-row>
           </v-row>
         </v-card-text>
         <v-divider></v-divider>
         <v-card-actions class="py-2">
-
           <v-spacer></v-spacer>
 
-          <v-btn
-            color="primary"
-            class="mx-1"
-            @click="save"
-          >
-            {{ $t('general.save') }}
+          <v-btn color="primary" class="mx-1" @click="save">
+            {{ $t("general.save") }}
           </v-btn>
 
-          <v-btn
-            color="grey lighten-3"
-            @click="dialog = false"
-          >
-            {{ $t('general.cancel') }}
+          <v-btn color="grey lighten-3" @click="dialog = false">
+            {{ $t("general.cancel") }}
           </v-btn>
         </v-card-actions>
       </v-card>
@@ -61,9 +96,9 @@
 </template>
 
 <script>
-import {mapActions, mapState} from "vuex";
-import {makeToast} from "@/helpers";
-import axios from 'axios';
+import { mapActions, mapState } from "vuex";
+import { makeToast } from "@/helpers";
+import axios from "axios";
 
 export default {
   name: "AddUserDialog",
@@ -75,22 +110,30 @@ export default {
   },
   data() {
     return {
-      user: {name:"", civil_number: "", phone:"", email:"" },
+      user: {
+        name: "",
+        civil_number: "",
+        phone: "",
+        email: "",
+        department_id: "",
+      },
       rules: {
-        required: (value) => (value && Boolean(value)) || this.$t("general.fieldRequired")
+        required: (value) =>
+          (value && Boolean(value)) || this.$t("general.fieldRequired"),
       },
       errors: {},
       loading: false,
-    }
+    };
   },
   computed: {
+    ...mapState("departments", ["departments"]),
     dialog: {
       get() {
-        return this.value
+        return this.value;
       },
       set(value) {
-        this.$emit('input', value)
-      }
+        this.$emit("input", value);
+      },
     },
     event: {
       get() {
@@ -98,50 +141,51 @@ export default {
       },
       set(val) {
         this.$store.commit("events/SET_EVENT", val);
-      }
+      },
     },
   },
-  watch:{
+  watch: {
     // 'id'(){
     //   this.refresh()
     // }
   },
-  methods:{
-    ...mapActions('cases', ['createUser']),
+  methods: {
+    ...mapActions("cases", ["createUser"]),
     refresh() {
       this.loading = true;
-      this.event = this.eventItem
-      const {status, notes, id } = this.eventItem ?? {};
-      this.form = { status,notes, id };
+      this.event = this.eventItem;
+      const { status, notes, id } = this.eventItem ?? {};
+      this.form = { status, notes, id };
     },
-    fetchData: function(){
-      this.$root.$emit('userCreated')
+    fetchData: function () {
+      this.$root.$emit("userCreated");
     },
     save() {
       this.loading = true;
       this.errors = {};
       let data = {
-        name:this.user.name,
+        name: this.user.name,
         civil_number: Number(this.user.civil_number),
         phone: Number(this.user.phone),
-        email:this.user.email,
-      }
+        email: this.user.email,
+        department_id: this.user.department_id,
+      };
       this.createUser(data)
         .then((response) => {
           this.loading = false;
-          this.dialog = false
-          this.fetchData()
+          this.dialog = false;
+          this.fetchData();
           this.errors = {};
           makeToast("success", response.data.message);
         })
-        .catch(error => {
+        .catch((error) => {
           this.loading = false;
           // if (error.response.status == 422) {
           //   const { errors } = error?.response?.data;
           //   this.errors = errors ?? {};
           // }
         });
-    }
-  }
-}
+    },
+  },
+};
 </script>

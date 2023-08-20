@@ -126,7 +126,7 @@
                     dense
                     :label="$t('tables.department')"
                     hide-details
-                    v-model="user.department"
+                    v-model="user.department_id"
                   ></v-select>
                 </v-col>
               </v-row>
@@ -349,8 +349,16 @@ export default {
       return form;
     },
     updateProfile() {
-      const { email, name, password, confirm_password, username, roles, type } =
-        this.user;
+      const {
+        email,
+        name,
+        password,
+        confirm_password,
+        username,
+        roles,
+        type,
+        department_id,
+      } = this.user;
       let data = {
         email,
         name,
@@ -359,6 +367,7 @@ export default {
         username,
         roles,
         type,
+        department_id,
       };
       if (this.avatar.length) {
         data["avatar"] = this.avatar[0];
@@ -366,7 +375,7 @@ export default {
 
       let form = this.buildForm(data);
       this.$emit("createUser", form);
-      document.getElementById("update-avatar").files = null;
+      // document.getElementById("update-avatar").files = null;
       this.avatar = {};
     },
   },
