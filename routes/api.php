@@ -133,10 +133,7 @@ Route::group(['prefix' => 'v1'], function () {
         Route::apiResource('calenders', CalenderController::class);
     });
 
-    /*********************CalenderController***************** */
-    Route::group(['middleware' => 'auth:sanctum'], function () {
-        Route::post('form-request-side', [FormRequestSideController::class , 'form_request_side']);
-    });
+
 
     /*********************FormsController***************** */
     Route::group(['middleware' => 'auth:sanctum'], function () {
@@ -156,5 +153,8 @@ Route::group(['prefix' => 'v1'], function () {
         Route::put('assign-request/{id}', [FormsController::class, 'UpdateAssignRequest']);
         Route::post('form-assign-request', [FormsController::class, 'FormAssignRequest']);
         Route::get('all-forms', [FormsController::class, 'allForm']);
+        Route::post('form-request-side', [FormRequestSideController::class , 'form_request_side']);
+        Route::post('form-request-information', [FormsController::class , 'form_request_information']);
+
     });
 });

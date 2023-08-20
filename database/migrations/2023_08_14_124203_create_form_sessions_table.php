@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::create('form_sessions', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('form_id');
+            $table->unsignedBigInteger('form_request_id');
             $table->date('date');
             $table->string('status');
             $table->text('details')->nullable();
@@ -23,7 +23,7 @@ return new class extends Migration
             $table->softDeletes();
 
             // Foreign key relationship with forms table
-            $table->foreign('form_id')->references('id')->on('forms')->onDelete('cascade');
+            $table->foreign('form_request_id')->references('id')->on('form_requests')->onDelete('cascade');
         });
     }
 
