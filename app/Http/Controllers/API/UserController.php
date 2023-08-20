@@ -118,22 +118,25 @@ class UserController extends Controller
             'avatar' => 'nullable|image|' . v_image(),
             'roles' => 'nullable|exists:roles,id', // Add the 'roles' validation rule
             'type' => 'sometimes|required|in:user,employee,governorate,company,default:employee',
-
         ]);
 
         if ($validate->fails()) {
             return responseFail($validate->messages()->first());
         }
 
-        $data = $request->except('confirm_password', 'email', 'role_id');
+        $data = $request->except('password', 'confirm_password', 'role_id');
 
         $user = User::findOrFail($id);
-        // dd($user->getRoleNames());
+
         if ($request->file('avatar')) {
             if ($user->avatar) {
                 UploadService::delete($user->avatar);
             }
             $data['avatar'] = UploadService::store($request->avatar, 'profile');
+        }
+
+        if ($request->password) {
+            $data['password'] = bcrypt($request->password);
         }
 
         $user->update($data);
@@ -231,11 +234,11 @@ class UserController extends Controller
     public function store_userInfo(CreateUserInformationRequest $request)
     {
         try {
-             // Get the validated data from the request, including the possibly generated email
+            // Get the validated data from the request, including the possibly generated email
             $validatedData = $request->validatedWithDefaults();
             // Create a new user
-            $newUser = User::create($validatedData + ['password' => Hash::make(Str::random(12)) ,'type'=>'user']);
-             // Create and save the UserInformation instance
+            $newUser = User::create($validatedData + ['password' => Hash::make(Str::random(12)), 'type' => 'user']);
+            // Create and save the UserInformation instance
 
             $newUser->assignRole('employee');
 
@@ -245,12 +248,10 @@ class UserController extends Controller
             ]);
 
             return responseSuccess($userInformation, 'User Info has been successfully created');
-
-        } catch (\Eception $th) {
+        } catch (\Throwable $th) {
             return $th->getMessage();
             // dd($th);
             //throw $th;
         }
-
     }
 }
