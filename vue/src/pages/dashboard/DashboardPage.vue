@@ -36,7 +36,7 @@
         :outlined="true"
       ></show-builder-cards> -->
       <v-row>
-        <v-col v-for="card in cards" :key="card.id" cols="4">
+        <v-col v-for="card in cards" :key="card.id" cols="3">
           <stat-cards :card="card" />
         </v-col>
       </v-row>
