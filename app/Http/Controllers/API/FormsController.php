@@ -349,7 +349,8 @@ class FormsController extends Controller
 
             $formRequestInfo = FormRequestInformation::create($validatedData);
 
-            $sessionDates = $request->dates;
+
+            $sessionDates = $request->has('dates') ? $request->dates : [];
 
             foreach ($sessionDates as $sessionDate) {
                 FormSession::create([
@@ -359,6 +360,7 @@ class FormsController extends Controller
                     'details' => $request->details,
                 ]);
             }
+
 
             DB::commit();
 
