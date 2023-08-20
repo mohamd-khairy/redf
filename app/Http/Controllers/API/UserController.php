@@ -199,7 +199,7 @@ class UserController extends Controller
         return responseSuccess(['users' => $data]);
     }
 
-    public function user_type(PageRequest $request)
+    public function user_type(Request $request)
     {
         $query = User::whereHas('roles', function ($q) {
             $q->where('name', '!=', 'root')->where('name', '!=', 'admin');
