@@ -64,6 +64,7 @@ class UserController extends Controller
         $validate = Validator::make($request->all(), [
             'name' => 'required|string',
             'email' => 'required|email|unique:users,email',
+            'department_id' => 'sometimes|exists:departments,id',
             'password' => 'required|min:8',
             'confirm_password' => 'same:password',
             'avatar' => 'image|mimes:png,jpg,jpeg',
@@ -114,6 +115,7 @@ class UserController extends Controller
             'password' => 'nullable|min:8',
             'confirm_password' => 'same:password',
             'name' => 'nullable|string',
+            'department_id' => 'sometimes|exists:departments,id',
             'email' => 'nullable|email|unique:users,email,' . $id,
             'avatar' => 'nullable|image|' . v_image(),
             'roles' => 'nullable|exists:roles,id', // Add the 'roles' validation rule

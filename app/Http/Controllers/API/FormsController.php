@@ -13,6 +13,7 @@ use App\Filters\SortFilters;
 use App\Models\FormPageItem;
 use Illuminate\Http\Request;
 use App\Models\AssignRequest;
+use App\Models\FormRequestSide;
 use App\Services\UploadService;
 use App\Enums\FormRequestStatus;
 use App\Models\FormPageItemFill;
@@ -341,17 +342,26 @@ class FormsController extends Controller
 
         dd($request->all());
     }
+    public function form_request_side(Request $request){
+
+        $validatedData = $request->validate([
+            'form_request_id' => 'required|exists:form_requests,id',
+            'claimant_id' => ['required', 'exists:users,id'],
+            'defendant_id' => ['required', 'exists:users,id'],
+        ]);
+
+        $formRequestSide = FormRequestSide::create($validatedData);
+
+        return responseSuccess($formRequestSide, 'Form Request Side has been successfully Created');
+
+    }
     public function form_request_information(InformationRequest $request){
         try {
             DB::beginTransaction();
 
             $validatedData = $request->validated();
-
             $formRequestInfo = FormRequestInformation::create($validatedData);
-
-
-            $sessionDates = $request->has('dates') ? $request->dates : [];
-
+            $sessionDates = is_array($request->dates) ? $request->dates : json_decode($request->dates);
             foreach ($sessionDates as $sessionDate) {
                 FormSession::create([
                     'form_request_id' => $request->form_request_id,
