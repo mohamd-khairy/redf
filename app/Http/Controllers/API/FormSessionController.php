@@ -39,6 +39,19 @@ class FormSessionController extends Controller
             $validatedData = $request->validated();
             // Since validation passed, you can directly create the formSession.
             $formSession = FormSession::create($validatedData);
+            $calendarData = [
+                'calendarable_id'=>$formSession->id,
+                'calendarable_type'=>FormSession::class,
+                'user_id' => auth()->id(),
+                'date'=>now(),
+            ];
+            $calendar = saveCalendarFromRequest($calendarData);
+            $actionData = [
+                'formable_id'=>$formSession->id,
+                'formable_type'=>FormSession::class,
+                'msg'=>'تم اضافه جلسه جديده',
+            ];
+            $calendar = saveFormRequestAction($actionData);
             return responseSuccess($formSession, 'FormSession has been successfully created');
         } catch (\Throwable $e) {
             // If validation fails, handle the validation errors here.

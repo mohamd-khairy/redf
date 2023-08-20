@@ -24,7 +24,7 @@ class FormSessionRequest extends FormRequest
     public function rules()
     {
         return [
-            'form_id' => 'required|exists:forms,id',
+            'form_request_id' => 'required|exists:forms,id',
             'date' => 'required|date',
             'status' => 'required|string',
             'details' => 'nullable|string',
