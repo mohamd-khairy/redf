@@ -64,7 +64,7 @@ class UserController extends Controller
         $validate = Validator::make($request->all(), [
             'name' => 'required|string',
             'email' => 'required|email|unique:users,email',
-            'department_id' => 'sometimes|exists:departments,id',
+            'department_id' => 'required|exists:departments,id',
             'password' => 'required|min:8',
             'confirm_password' => 'same:password',
             'avatar' => 'image|mimes:png,jpg,jpeg',

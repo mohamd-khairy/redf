@@ -29,6 +29,8 @@ class CreateUserInformationRequest extends FormRequest
             'name' => 'required|string', // Add name rule
             'phone' => 'required|integer', // Add phone rule
             'email' => 'nullable|email', // Allow nullable email
+            'department_id' => 'required|exists:departments,id',
+
 
         ];
     }
