@@ -17,7 +17,6 @@ return new class extends Migration
             $table->id();
             $table->decimal('amount', 10, 2)->nullable();
             $table->decimal('percentage', 5, 2)->nullable();
-            $table->text('details')->nullable();
             $table->unsignedBigInteger('form_request_id');
             $table->foreign('form_request_id')->references('id')->on('form_requests')->onDelete('cascade');
             $table->timestamps();
