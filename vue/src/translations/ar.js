@@ -529,6 +529,8 @@ export default {
     Female: "انثى",
     Other: "آخرى",
     addAction: "اضافة اجراء",
+    caseName: "اسم القضية",
+    caseNumber: "رقم القضية",
   },
 
   departments: {
@@ -621,6 +623,7 @@ export default {
     template: "نموذج",
     causer_id: "معرف المستفيد",
     caseNumber: "رقم القضية",
+    court: "المحكمة",
     // causer_type: "",
   },
   texts: {
@@ -773,6 +776,7 @@ export default {
     no_action_yet: "لم يتم اتخاذ اي اجراء في القضية حتي الان",
     getting_data: "جاري جلب البيانات",
     continue: "الاستمرار",
+    no_forms: "لايوجد نماذج",
   },
   reports: {
     buildReport: "انشاء تقرير",

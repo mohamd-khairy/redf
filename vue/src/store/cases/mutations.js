@@ -6,7 +6,6 @@ const mutations = {
     state.formRequests = value;
   },
 
-
   SET_CARDS(state, value) {
     state.cards = value;
   },
@@ -34,7 +33,7 @@ const mutations = {
   SET_PAGES(state, value) {
     state.pages = value;
   },
-  SET_PAGES_VALUES(state,value){
+  SET_PAGES_VALUES(state, value) {
     state.pagesValues = value;
   },
   SET_SELECTED_FORM(state, value) {
@@ -42,6 +41,9 @@ const mutations = {
   },
   SET_INPUT_VALUE(state, { tabIndex, inputIndex, newValue }) {
     state.tabs[tabIndex].items[inputIndex].value = newValue;
+  },
+  SET_CORTS(state, value) {
+    state.courts = value;
   },
 };
 

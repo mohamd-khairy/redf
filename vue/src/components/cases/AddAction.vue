@@ -53,15 +53,50 @@
                 >
                 </v-select>
               </v-col>
-              <v-col cols="6" v-for="(date, k) in caseAction.dates" :key="k">
-                <v-text-field
+              <v-col cols="12" sm="6">
+                <v-dialog
+                  ref="dateDialog"
+                  v-model="dateDialog"
+                  :return-value.sync="caseAction.date"
+                  persistent
+                  width="290px"
+                >
+                  <template v-slot:activator="{ on, attrs }">
+                    <v-text-field
+                      v-model="caseAction.date"
+                      :label="$t('tables.date')"
+                      prepend-icon="mdi-calendar"
+                      readonly
+                      v-bind="attrs"
+                      v-on="on"
+                      dense
+                      outlined
+                    ></v-text-field>
+                  </template>
+                  <v-date-picker v-model="caseAction.date" scrollable>
+                    <v-spacer></v-spacer>
+                    <v-btn text color="primary" @click="modal = false">
+                      Cancel
+                    </v-btn>
+                    <v-btn
+                      text
+                      color="primary"
+                      @click="$refs.dateDialog.save(caseAction.date)"
+                    >
+                      OK
+                    </v-btn>
+                  </v-date-picker>
+                </v-dialog>
+              </v-col>
+              <v-col cols="12">
+                <v-select
+                  :items="courts"
+                  :label="$t('tables.court')"
                   dense
                   outlined
-                  type="date"
-                  :label="$t('cases.courtDate')"
-                  v-model="date.caseDate"
+                  v-model="caseAction.court_name"
                 >
-                </v-text-field>
+                </v-select>
               </v-col>
               <v-col cols="12">
                 <v-textarea
@@ -80,7 +115,12 @@
       <v-card-actions class="pb-2">
         <v-spacer></v-spacer>
 
-        <v-btn @click="storeFormAction" color="primary">
+        <v-btn
+          @click="storeFormAction"
+          color="primary"
+          :disabled="isLoading"
+          :loading="isLoading"
+        >
           {{ $t("general.save") }}
         </v-btn>
         <v-btn class="ms-2" @click="closeDialog" color="grey">
@@ -92,7 +132,7 @@
 </template>
 
 <script>
-import { mapActions } from "vuex";
+import { mapActions, mapState } from "vuex";
 
 export default {
   components: {},
@@ -103,12 +143,18 @@ export default {
   data() {
     return {
       loading: false,
+      isLoading: false,
+      dateDialog: false,
       caseAction: {
         form_request_id: this.formRequestId,
         amount: "",
         percentage: "",
         details: "",
+        court_name: "",
         status: "",
+        date: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
+          .toISOString()
+          .substr(0, 10),
         dates: [
           {
             caseDate: "",
@@ -123,8 +169,14 @@ export default {
     };
   },
   watch: {},
+  created() {
+    this.getCourts();
+  },
+  computed: {
+    ...mapState("cases", ["courts"]),
+  },
   methods: {
-    ...mapActions("cases", ["saveFormInformation"]),
+    ...mapActions("cases", ["saveFormInformation", "getCourts"]),
     closeDialog() {
       this.$emit("closeActionDialog");
     },
@@ -139,16 +191,19 @@ export default {
         amount: this.caseAction.amount,
         percentage: this.caseAction.percentage,
         details: this.caseAction.details,
-        dates: this.caseAction.dates,
         status: this.caseAction.status,
+        date: this.caseAction.date,
+        court_name: this.caseAction.court_name,
       };
+      this.isLoading = true;
       await this.saveFormInformation(data)
         .then((response) => {
-          this.isLoading = false;
+          console.log("aaaaaa");
           makeToast("success", response.data.message);
           this.closeDialog();
         })
-        .catch(() => {
+        .catch(() => {})
+        .finally(() => {
           this.isLoading = false;
         });
     },

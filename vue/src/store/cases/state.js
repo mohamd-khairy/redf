@@ -2,7 +2,6 @@ const state = {
   forms: [],
   formRequests: [],
 
-
   cards: [],
   eventTypes: [],
   statuses: [],
@@ -12,6 +11,7 @@ const state = {
   event: {},
   liveMode: false,
   pages: [],
+  courts: [],
   pagesValues: [],
   selectedForm: {
     name: "",

@@ -20,6 +20,9 @@ const actions = {
     const formRequests = response?.data.data;
     commit("SET_formRequests", formRequests);
   },
+  async deleteForm({ commit }, id) {
+    return await axios.delete(`delete-formmmmm/${id}`);
+  },
 
   async userDepartment({ commit }, data) {
     return await axios.get(`user-department`, {
@@ -190,15 +193,18 @@ const actions = {
   },
   async saveFormInformation({ state }, data) {
     try {
-      return await axios.post(`form-request-information`, data);
+      await axios.post(`form-request-information`, data);
     } catch (error) {
       console.error("Error saving form data:", error);
     }
   },
-  async savePages({ state }, formId) {
+  async savePages({ state }, { caseName, caseNumber }) {
+    console.log("caseName", caseName);
     try {
       const customFormData = {
         id: state.selectedForm.id,
+        case_name: caseName,
+        case_number: caseNumber,
         name: state.selectedForm.name,
         pages: state.pages.map((page) => ({
           id: page.id,
@@ -270,7 +276,12 @@ const actions = {
       console.error("Error saving form data:", error);
     }
   },
+  async getCourts({ commit }) {
+    const response = await axios.get(`court-types`);
 
+    const { court_types } = response?.data.data;
+    commit("SET_CORTS", court_types);
+  },
   async getCasePreview({ commit }, id) {
     const response = await axios.get(`action-preview/${id}`);
     const { formRequestActions } = response?.data?.data;
