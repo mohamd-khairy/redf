@@ -24,18 +24,6 @@ class FormRequest extends Model
         'name'
     ];
 
-    protected static function boot()
-    {
-        parent::boot();
-        // Add your code here
-        static::created(function ($model) {
-            $code = rand(100000, 999999);
-            $model->form_request_number = $code;
-            $model->name = $model->form->name . " ($code)";
-            $model->save();
-        });
-    }
-
     public function getActivitylogOptions(): LogOptions
     {
         return LogOptions::defaults()->logOnly(self::getFillable());
