@@ -17,7 +17,8 @@ class Form extends Model
         'name',
         'description',
         'user_id',
-        'template_id'
+        'template_id',
+        'main'
     ];
 
     public function getActivitylogOptions(): LogOptions

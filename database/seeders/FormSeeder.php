@@ -36,21 +36,24 @@ class FormSeeder extends Seeder
             'name' => 'استمارة التقاضي والطلب',
             'description' => 'استمارة التقاضي والطلب',
             'user_id' => 1,
-            'template_id' => null,
+            'main' => 1,
+            'template_id' => 1,
         ]);
         $form2 = Form::firstOrCreate([
             'id' => 2,
             'name' => 'طلب استمارة استشارة قانونية',
             'description' => 'طلب استمارة استشارة قانونية',
             'user_id' => 1,
-            'template_id' => null,
+            'main' => 1,
+            'template_id' => 2,
         ]);
         $form3 = Form::firstOrCreate([
             'id' => 3,
             'name' => 'استمارة مراجعة العقد',
             'description' => 'استمارة مراجعة العقد',
             'user_id' => 1,
-            'template_id' => null,
+            'main' => 1,
+            'template_id' => 3,
         ]);
         // pages
         $form_page1 = FormPage::create([

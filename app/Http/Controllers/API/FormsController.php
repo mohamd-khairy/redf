@@ -8,12 +8,10 @@ use App\Models\Form;
 use App\Models\Formable;
 use App\Models\FormPage;
 use App\Models\FormRequest;
-use App\Models\FormSession;
 use Illuminate\Support\Str;
 use App\Filters\SortFilters;
 use App\Models\FormPageItem;
 use Illuminate\Http\Request;
-use App\Models\AssignRequest;
 use App\Models\FormRequestSide;
 use App\Services\UploadService;
 use App\Enums\FormRequestStatus;
@@ -28,7 +26,6 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\FormResource;
 use Illuminate\Support\Facades\Auth;
 use App\Models\FormRequestInformation;
-use Illuminate\Support\Facades\Storage;
 use App\Http\Requests\CreateFormRequest;
 use App\Http\Requests\FormFillRequest;
 use App\Http\Requests\FormUpdateRequest;
@@ -156,7 +153,7 @@ class FormsController extends Controller
         try {
             $template_id = $request->template_id;
 
-            $allForms = Form::when('template_id', function ($q) use ($template_id) {
+            $allForms = Form::where('main', false)->when('template_id', function ($q) use ($template_id) {
                 return $q->where('template_id', $template_id);
             })->get();
 
