@@ -19,6 +19,7 @@ return new class extends Migration
             $table->text('description')->nullable();
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('template_id')->nullable();
+            $table->boolean('main')->default(false);
             $table->softDeletes();
             $table->timestamps();
 

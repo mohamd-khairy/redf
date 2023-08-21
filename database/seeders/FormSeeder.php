@@ -32,37 +32,44 @@ class FormSeeder extends Seeder
         ]);
         //template
         $form1 = Form::firstOrCreate([
-            'name' => 'طلب استمارة استشارة قانونية',
-            'description' => 'طلب استمارة استشارة قانونية',
-            'user_id' => 1,
-            'template_id' => 1,
-        ]);
-        $form2 = Form::firstOrCreate([
+            'id' => 1,
             'name' => 'استمارة التقاضي والطلب',
             'description' => 'استمارة التقاضي والطلب',
             'user_id' => 1,
+            'main' => 1,
+            'template_id' => 1,
+        ]);
+        $form2 = Form::firstOrCreate([
+            'id' => 2,
+            'name' => 'طلب استمارة استشارة قانونية',
+            'description' => 'طلب استمارة استشارة قانونية',
+            'user_id' => 1,
+            'main' => 1,
             'template_id' => 2,
         ]);
         $form3 = Form::firstOrCreate([
+            'id' => 3,
             'name' => 'استمارة مراجعة العقد',
             'description' => 'استمارة مراجعة العقد',
             'user_id' => 1,
+            'main' => 1,
             'template_id' => 3,
         ]);
         // pages
         $form_page1 = FormPage::create([
-            'title' => 'نموذج المشورة',
+            'title' => 'نموذج طلب التقاضي',
             'form_id' => $form1->id
         ]);
         $form_page2 = FormPage::create([
-            'title' => 'نموذج طلب التقاضي',
+            'title' => 'نموذج المشورة',
             'form_id' => $form2->id
         ]);
         $form_page3 = FormPage::create([
             'title' => 'استمارة مراجعة العقد',
             'form_id' => $form3->id
         ]);
-        //        items
+
+        //
         FormPageItem::create([
             'label' => 'اسم الطالب',
             'type' => 'text',
@@ -71,10 +78,10 @@ class FormSeeder extends Seeder
             'website_view' => 1,
             'notes' => '',
             'comment' => '',
-            'width' => 'col-12',
+            'width' => 'col-4',
             'input_type' => 'text',
             'height' => '',
-            'length' => '200',
+            'length' => '100',
             'childList' => json_encode([]),
             'form_page_id' => $form_page1->id
         ]);
@@ -89,7 +96,7 @@ class FormSeeder extends Seeder
             'width' => 'col-12',
             'input_type' => 'text',
             'height' => '',
-            'length' => '200',
+            'length' => '100',
             'childList' => json_encode([]),
             'form_page_id' => $form_page1->id
         ]);
@@ -107,139 +114,6 @@ class FormSeeder extends Seeder
             'length' => '500',
             'childList' => json_encode([]),
             'form_page_id' => $form_page1->id
-        ]);
-        FormPageItem::create([
-            'label' => 'موضوع الاستشارة القانونية',
-            'type' => 'textarea',
-            'enabled' => 1,
-            'required' => 1,
-            'website_view' => 1,
-            'notes' => '',
-            'comment' => '',
-            'width' => 'col-12',
-            'input_type' => 'text',
-            'height' => '',
-            'length' => '500',
-            'childList' => json_encode([]),
-            'form_page_id' => $form_page1->id
-        ]);
-        FormPageItem::create([
-            'label' => 'وصف الاستشارة القانونية',
-            'type' => 'textarea',
-            'enabled' => 1,
-            'required' => 0,
-            'website_view' => 1,
-            'notes' => '',
-            'comment' => '',
-            'width' => 'col-12',
-            'input_type' => 'text',
-            'height' => '',
-            'length' => '500',
-            'childList' => json_encode([]),
-            'form_page_id' => $form_page1->id
-        ]);
-        FormPageItem::create([
-            'label' => 'ملف مرفق',
-            'type' => 'file',
-            'enabled' => 1,
-            'required' => 0,
-            'website_view' => 1,
-            'notes' => '',
-            'comment' => '',
-            'width' => 'col-12',
-            'input_type' => 'text',
-            'height' => '',
-            'childList' => json_encode([]),
-            'form_page_id' => $form_page1->id
-        ]);
-        FormPageItem::create([
-            'label' => 'الغرض من الاستشارة القانونية',
-            'type' => 'textarea',
-            'enabled' => 1,
-            'required' => 0,
-            'website_view' => 1,
-            'notes' => '',
-            'comment' => '',
-            'width' => 'col-12',
-            'input_type' => 'text',
-            'height' => '',
-            'length' => '500',
-            'childList' => json_encode([]),
-            'form_page_id' => $form_page1->id
-        ]);
-        FormPageItem::create([
-            'label' => 'استشارة قانونية سرية',
-            'type' => 'select',
-            'enabled' => 1,
-            'required' => 0,
-            'website_view' => 1,
-            'notes' => '',
-            'comment' => '',
-            'width' => 'col-4',
-            'input_type' => 'text',
-            'height' => 'auto',
-            'childList' => $data,
-            'form_page_id' => $form_page1->id
-        ]);
-        FormPageItem::create([
-            'label' => 'ملحوظات',
-            'type' => 'textarea',
-            'enabled' => 1,
-            'required' => 0,
-            'website_view' => 1,
-            'notes' => '',
-            'comment' => '',
-            'width' => 'col-12',
-            'input_type' => 'text',
-            'height' => '',
-            'length' => '500',
-            'childList' => json_encode([]),
-            'form_page_id' => $form_page1->id
-        ]);
-        FormPageItem::create([
-            'label' => 'اسم الطالب',
-            'type' => 'text',
-            'enabled' => 1,
-            'required' => 1,
-            'website_view' => 1,
-            'notes' => '',
-            'comment' => '',
-            'width' => 'col-4',
-            'input_type' => 'text',
-            'height' => '',
-            'length' => '100',
-            'childList' => json_encode([]),
-            'form_page_id' => $form_page2->id
-        ]);
-        FormPageItem::create([
-            'label' => 'هوية الموظف',
-            'type' => 'text',
-            'enabled' => 1,
-            'required' => 1,
-            'website_view' => 1,
-            'notes' => '',
-            'comment' => '',
-            'width' => 'col-12',
-            'input_type' => 'text',
-            'height' => '',
-            'length' => '100',
-            'childList' => json_encode([]),
-            'form_page_id' => $form_page2->id
-        ]);
-        FormPageItem::create([
-            'label' => 'قسم',
-            'type' => 'textarea',
-            'enabled' => 1,
-            'required' => 1,
-            'website_view' => 1,
-            'notes' => '',
-            'comment' => '',
-            'width' => 'col-12',
-            'input_type' => 'text',
-            'height' => '',
-            'length' => '500',
-            'childList' => json_encode([]),
-            'form_page_id' => $form_page2->id
         ]);
         FormPageItem::create([
             'label' => 'الموضوع',
@@ -254,7 +128,7 @@ class FormSeeder extends Seeder
             'height' => '',
             'length' => '500',
             'childList' => json_encode([]),
-            'form_page_id' => $form_page2->id
+            'form_page_id' => $form_page1->id
         ]);
         FormPageItem::create([
             'label' => 'الغرض من التقاضي والطلب',
@@ -269,7 +143,7 @@ class FormSeeder extends Seeder
             'height' => '',
             'length' => '1000',
             'childList' => json_encode([]),
-            'form_page_id' => $form_page2->id
+            'form_page_id' => $form_page1->id
         ]);
         FormPageItem::create([
             'label' => 'تفاصيل الدعوى / التقاضي',
@@ -284,7 +158,7 @@ class FormSeeder extends Seeder
             'height' => '',
             'length' => '1000',
             'childList' => json_encode([]),
-            'form_page_id' => $form_page2->id
+            'form_page_id' => $form_page1->id
         ]);
         FormPageItem::create([
             'label' => 'الملفات المرفقة تدعم الطلب ',
@@ -299,7 +173,7 @@ class FormSeeder extends Seeder
             'height' => '',
             'length' => '',
             'childList' => json_encode([]),
-            'form_page_id' => $form_page2->id
+            'form_page_id' => $form_page1->id
         ]);
         FormPageItem::create([
             'label' => 'موعد الجلسة إن وجدت ',
@@ -314,7 +188,7 @@ class FormSeeder extends Seeder
             'height' => '',
             'length' => '20',
             'childList' => json_encode([]),
-            'form_page_id' => $form_page2->id
+            'form_page_id' => $form_page1->id
         ]);
         FormPageItem::create([
             'label' => 'التقاضي والمرافعة السرية',
@@ -329,7 +203,7 @@ class FormSeeder extends Seeder
             'height' => '',
             'length' => '20',
             'childList' => $data,
-            'form_page_id' => $form_page2->id
+            'form_page_id' => $form_page1->id
         ]);
         FormPageItem::create([
             'label' => 'ملاحظات ',
@@ -344,8 +218,145 @@ class FormSeeder extends Seeder
             'height' => '',
             'length' => '1000',
             'childList' => json_encode([]),
+            'form_page_id' => $form_page1->id
+        ]);
+
+        //        items
+        FormPageItem::create([
+            'label' => 'اسم الطالب',
+            'type' => 'text',
+            'enabled' => 1,
+            'required' => 1,
+            'website_view' => 1,
+            'notes' => '',
+            'comment' => '',
+            'width' => 'col-12',
+            'input_type' => 'text',
+            'height' => '',
+            'length' => '200',
+            'childList' => json_encode([]),
             'form_page_id' => $form_page2->id
         ]);
+        FormPageItem::create([
+            'label' => 'هوية الموظف',
+            'type' => 'text',
+            'enabled' => 1,
+            'required' => 1,
+            'website_view' => 1,
+            'notes' => '',
+            'comment' => '',
+            'width' => 'col-12',
+            'input_type' => 'text',
+            'height' => '',
+            'length' => '200',
+            'childList' => json_encode([]),
+            'form_page_id' => $form_page2->id
+        ]);
+        FormPageItem::create([
+            'label' => 'قسم',
+            'type' => 'textarea',
+            'enabled' => 1,
+            'required' => 1,
+            'website_view' => 1,
+            'notes' => '',
+            'comment' => '',
+            'width' => 'col-12',
+            'input_type' => 'text',
+            'height' => '',
+            'length' => '500',
+            'childList' => json_encode([]),
+            'form_page_id' => $form_page2->id
+        ]);
+        FormPageItem::create([
+            'label' => 'موضوع الاستشارة القانونية',
+            'type' => 'textarea',
+            'enabled' => 1,
+            'required' => 1,
+            'website_view' => 1,
+            'notes' => '',
+            'comment' => '',
+            'width' => 'col-12',
+            'input_type' => 'text',
+            'height' => '',
+            'length' => '500',
+            'childList' => json_encode([]),
+            'form_page_id' => $form_page2->id
+        ]);
+        FormPageItem::create([
+            'label' => 'وصف الاستشارة القانونية',
+            'type' => 'textarea',
+            'enabled' => 1,
+            'required' => 0,
+            'website_view' => 1,
+            'notes' => '',
+            'comment' => '',
+            'width' => 'col-12',
+            'input_type' => 'text',
+            'height' => '',
+            'length' => '500',
+            'childList' => json_encode([]),
+            'form_page_id' => $form_page2->id
+        ]);
+        FormPageItem::create([
+            'label' => 'ملف مرفق',
+            'type' => 'file',
+            'enabled' => 1,
+            'required' => 0,
+            'website_view' => 1,
+            'notes' => '',
+            'comment' => '',
+            'width' => 'col-12',
+            'input_type' => 'text',
+            'height' => '',
+            'childList' => json_encode([]),
+            'form_page_id' => $form_page2->id
+        ]);
+        FormPageItem::create([
+            'label' => 'الغرض من الاستشارة القانونية',
+            'type' => 'textarea',
+            'enabled' => 1,
+            'required' => 0,
+            'website_view' => 1,
+            'notes' => '',
+            'comment' => '',
+            'width' => 'col-12',
+            'input_type' => 'text',
+            'height' => '',
+            'length' => '500',
+            'childList' => json_encode([]),
+            'form_page_id' => $form_page2->id
+        ]);
+        FormPageItem::create([
+            'label' => 'استشارة قانونية سرية',
+            'type' => 'select',
+            'enabled' => 1,
+            'required' => 0,
+            'website_view' => 1,
+            'notes' => '',
+            'comment' => '',
+            'width' => 'col-4',
+            'input_type' => 'text',
+            'height' => 'auto',
+            'childList' => $data,
+            'form_page_id' => $form_page2->id
+        ]);
+        FormPageItem::create([
+            'label' => 'ملحوظات',
+            'type' => 'textarea',
+            'enabled' => 1,
+            'required' => 0,
+            'website_view' => 1,
+            'notes' => '',
+            'comment' => '',
+            'width' => 'col-12',
+            'input_type' => 'text',
+            'height' => '',
+            'length' => '500',
+            'childList' => json_encode([]),
+            'form_page_id' => $form_page2->id
+        ]);
+
+        //
         FormPageItem::create([
             'label' => 'اسم الطالب ',
             'type' => 'text',

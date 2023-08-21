@@ -20,30 +20,30 @@ class SettingSeeder extends Seeder
 
             [
                 'key' => 'company_name',
-                'value' => 'drones',
+                'value' => 'صندوق التنمية العقارية',
                 'group' => 'site'
             ],
             [
                 'key' => 'rights_name',
-                'value' => 'rights name',
+                'value' => 'صندوق التنمية العقارية',
                 'group' => 'site'
             ],
             [
                 'key' => 'website_name',
-                'value' => 'drones',
+                'value' => 'صندوق التنمية العقارية',
                 'group' => 'site'
             ],
             [
                 'key' => 'website_email',
-                'value' => 'drones@google.com',
+                'value' => 'redf@google.com',
                 'group' => 'site'
             ], [
                 'key' => 'website_description',
-                'value' => 'drones',
+                'value' => 'صندوق التنمية العقارية',
                 'group' => 'site'
             ], [
                 'key' => 'website_meta_description',
-                'value' => 'drones',
+                'value' => 'صندوق التنمية العقارية',
                 'group' => 'site'
             ],
 
@@ -51,22 +51,22 @@ class SettingSeeder extends Seeder
 
             [
                 'key' => 'website_logo_large',
-                'value' => null,
+                'value' => '/logo.png',
                 'group' => 'properties'
             ],
             [
                 'key' => 'website_logo_small',
-                'value' => null,
+                'value' => '/favicon.png',
                 'group' => 'properties'
             ],
             [
                 'key' => 'website_login_icon',
-                'value' => null,
+                'value' => '/logo.png',
                 'group' => 'properties'
             ],
             [
                 'key' => 'website_favorite_place_icon',
-                'value' => null,
+                'value' => '/favicon.png',
                 'group' => 'properties'
             ],
 

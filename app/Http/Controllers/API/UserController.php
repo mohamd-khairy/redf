@@ -185,7 +185,7 @@ class UserController extends Controller
 
     public function get_users(PageRequest $request)
     {
-        $query = User::whereNot('type', 'employee')->whereHas('roles', function ($q) {
+        $query = User::with('userInformation')->whereNot('type', 'employee')->whereHas('roles', function ($q) {
             $q->where('name', '!=', 'root')->where('name', '!=', 'admin');
         });
 
@@ -201,7 +201,7 @@ class UserController extends Controller
 
     public function user_type(Request $request)
     {
-        $query = User::whereHas('roles', function ($q) {
+        $query = User::with('userInformation')->whereHas('roles', function ($q) {
             $q->where('name', '!=', 'root')->where('name', '!=', 'admin');
         });
 

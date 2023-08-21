@@ -150,7 +150,8 @@
                         v-model="sidesInfo.claimant_id"
                         :rules="[rules.required]"
                         :error-messages="errors['claimant_id']"
-                        @input="getUserDepartment"
+                        clearable
+                        @click:clear="clearClaimantSelect"
                       >
                       </v-select>
                     </v-col>
@@ -166,6 +167,8 @@
                         v-model="sidesInfo.defendant_id"
                         :rules="[rules.required]"
                         :error-messages="errors['defendant_id']"
+                        clearable
+                        @click:clear="clearDefendantSelect"
                       >
                       </v-select>
                     </v-col>
@@ -211,7 +214,7 @@
               <div class="d-flex flex-column flex-sm-row">
                 <div class="flex-grow-1 pt-2 pa-sm-2">
                   <v-row>
-                    <v-col cols="4">
+                    <v-col cols="6">
                       <v-text-field
                         type="number"
                         v-model="caseAction.amount"
@@ -224,7 +227,7 @@
                         </template>
                       </v-text-field>
                     </v-col>
-                    <v-col cols="4">
+                    <v-col cols="6">
                       <v-text-field
                         type="number"
                         v-model="caseAction.percentage"
@@ -237,7 +240,7 @@
                         </template>
                       </v-text-field>
                     </v-col>
-                    <!-- <v-col cols="4">
+                    <v-col cols="6">
                       <v-select
                         :items="status"
                         :label="$t('tables.status')"
@@ -249,7 +252,21 @@
                         v-model="caseAction.status"
                       >
                       </v-select>
-                    </v-col> -->
+                    </v-col>
+                    <v-col
+                      cols="6"
+                      v-for="(date, k) in caseAction.dates"
+                      :key="k"
+                    >
+                      <v-text-field
+                        dense
+                        outlined
+                        type="date"
+                        :label="$t('cases.courtDate')"
+                        v-model="date.caseDate"
+                      >
+                      </v-text-field>
+                    </v-col>
                     <v-col cols="12">
                       <v-textarea
                         :label="$t('cases.action')"
@@ -260,8 +277,8 @@
                       ></v-textarea>
                     </v-col>
                   </v-row>
-                  <v-row v-for="(date, k) in caseAction.dates" :key="k">
-                    <v-col cols="10">
+                  <!-- <v-row v-for="(date, k) in caseAction.dates" :key="k">
+                    <v-col cols="12">
                       <v-text-field
                         dense
                         outlined
@@ -287,7 +304,7 @@
                         <v-icon color="red"> mdi-plus </v-icon>
                       </v-btn>
                     </v-col>
-                  </v-row>
+                  </v-row> -->
                 </div>
               </div>
             </v-card-text>
@@ -316,6 +333,8 @@ export default {
   data() {
     return {
       e1: 1,
+      firstSelectType: null,
+      secondSelectType: null,
       initialLoading: false,
       isLoading: false,
       isSubmitingForm: false,
@@ -343,6 +362,7 @@ export default {
         form_request_id: "",
         percentage: "",
         details: "",
+        status: "",
         dates: [
           {
             caseDate: "",
@@ -383,18 +403,46 @@ export default {
     ...mapState("departments", ["departments"]),
 
     defendantUsers() {
-      return this.sidesInfo.claimant_id
-        ? this.users.filter((obj) => {
-            return obj.id !== this.sidesInfo.claimant_id;
-          })
-        : this.users;
+      // return this.sidesInfo.claimant_id
+      //   ? this.users.filter((obj) => {
+      //       return obj.id !== this.sidesInfo.claimant_id;
+      //     })
+      //   : this.users;
+      if (this.sidesInfo.claimant_id) {
+        const user = this.users.find(
+          (user) => user.id === this.sidesInfo.claimant_id
+        );
+        const civilNumber = user?.user_information?.civil_number || null;
+        if (civilNumber) {
+          this.sidesInfo.civil = civilNumber;
+
+          return this.users.filter((user) => !user.user_information);
+        }
+        this.sidesInfo.department_id = user.department_id;
+        return this.users.filter((user) => user.user_information);
+      }
+      return this.users;
     },
     claimantUsers() {
-      return this.sidesInfo.defendant_id
-        ? this.users.filter((obj) => {
-            return obj.id !== this.sidesInfo.defendant_id;
-          })
-        : this.users;
+      // return this.sidesInfo.defendant_id
+      //   ? this.users.filter((obj) => {
+      //       return obj.id !== this.sidesInfo.defendant_id;
+      //     })
+      //   : this.users;
+      if (this.sidesInfo.defendant_id) {
+        const user = this.users.find(
+          (user) => user.id === this.sidesInfo.defendant_id
+        );
+        const civilNumber = user?.user_information?.civil_number || null;
+        if (civilNumber) {
+          this.sidesInfo.civil = civilNumber;
+          this.claimantType = "civil";
+          return this.users.filter((user) => !user.user_information);
+        }
+        this.sidesInfo.department_id = user.department_id;
+        return this.users.filter((user) => user.user_information);
+      }
+      return this.users;
     },
   },
   methods: {
@@ -434,6 +482,27 @@ export default {
           this.isLoading = false;
         });
     },
+    clearClaimantSelect(id) {
+      const user = this.users.find(
+        (user) => user.id === this.sidesInfo.claimant_id
+      );
+      if (user.user_information) {
+        this.sidesInfo.civil = null;
+      } else {
+        this.sidesInfo.department_id = null;
+      }
+    },
+    clearDefendantSelect() {
+      const user = this.users.find(
+        (user) => user.id === this.sidesInfo.defendant_id
+      );
+      if (user.user_information) {
+        this.sidesInfo.civil = null;
+      } else {
+        this.sidesInfo.department_id = null;
+      }
+    },
+
     fetchUsers() {
       this.isLoading = true;
       this.getUserType()
@@ -521,8 +590,8 @@ export default {
       return this.showErrors && input.required && !input.value ? [msg] : [];
     },
     async saveForm() {
-      // this.e1 = 2;
-      // return false;
+      this.e1 = 2;
+      return false;
       const { id } = this.$route.params;
       const { formType: currentFormId } = this.$route.params;
       this.isSubmitingForm = true;
@@ -566,16 +635,11 @@ export default {
     },
     async storeFormInformation() {
       this.isLoading = true;
-      this.caseAction.dates = this.caseAction.dates.map(
-        (cdate) => cdate.caseDate
-      );
-      console.log(this.caseAction.dates);
+
       let data = {
         form_request_id: this.formRequestId,
         amount: this.caseAction.amount,
         percentage: this.caseAction.percentage,
-        details: this.caseAction.details,
-        dates: this.caseAction.dates,
       };
 
       // if (await this.validateFormData()) {
