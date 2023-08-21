@@ -51,22 +51,22 @@ class SettingSeeder extends Seeder
 
             [
                 'key' => 'website_logo_large',
-                'value' => '/logo.png',
+                'value' => url('/logo.png'),
                 'group' => 'properties'
             ],
             [
                 'key' => 'website_logo_small',
-                'value' => '/favicon.png',
+                'value' => url('/favicon.png'),
                 'group' => 'properties'
             ],
             [
                 'key' => 'website_login_icon',
-                'value' => '/logo.png',
+                'value' => url('/logo.png'),
                 'group' => 'properties'
             ],
             [
                 'key' => 'website_favorite_place_icon',
-                'value' => '/favicon.png',
+                'value' => url('/favicon.png'),
                 'group' => 'properties'
             ],
 
