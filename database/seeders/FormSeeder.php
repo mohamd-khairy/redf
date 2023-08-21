@@ -32,14 +32,14 @@ class FormSeeder extends Seeder
         ]);
         //template
         $form1 = Form::firstOrCreate([
-            'name' => 'طلب استمارة استشارة قانونية',
-            'description' => 'طلب استمارة استشارة قانونية',
+            'name' => 'استمارة التقاضي والطلب',
+            'description' => 'استمارة التقاضي والطلب',
             'user_id' => 1,
             'template_id' => 1,
         ]);
         $form2 = Form::firstOrCreate([
-            'name' => 'استمارة التقاضي والطلب',
-            'description' => 'استمارة التقاضي والطلب',
+            'name' => 'طلب استمارة استشارة قانونية',
+            'description' => 'طلب استمارة استشارة قانونية',
             'user_id' => 1,
             'template_id' => 2,
         ]);
@@ -51,11 +51,11 @@ class FormSeeder extends Seeder
         ]);
         // pages
         $form_page1 = FormPage::create([
-            'title' => 'نموذج المشورة',
+            'title' => 'نموذج طلب التقاضي',
             'form_id' => $form1->id
         ]);
         $form_page2 = FormPage::create([
-            'title' => 'نموذج طلب التقاضي',
+            'title' => 'نموذج المشورة',
             'form_id' => $form2->id
         ]);
         $form_page3 = FormPage::create([
