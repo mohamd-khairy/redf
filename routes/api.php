@@ -135,7 +135,7 @@ Route::group(['prefix' => 'v1'], function () {
 
   /*********************CourtController***************** */
   Route::group(['middleware' => 'auth:sanctum'], function () {
-    Route::get('/court-types', [HomeController::class, 'court_types']);
+    Route::get('/court-types', [HomeController::class, 'help']);
 });
 
 
@@ -154,11 +154,11 @@ Route::group(['prefix' => 'v1'], function () {
         Route::get('get-form-Requests', [FormsController::class, 'getFormRequest']);
         Route::get('get-form-Requests/{id}', [FormsController::class, 'getFormRequestfill']);
         Route::post('assign-request', [FormsController::class, 'assignRequest']);
-        Route::put('assign-request/{id}', [FormsController::class, 'UpdateAssignRequest']);
+        Route::put('assign-request/{id}', [FormsController::class, 'updateAssignRequest']);
         Route::get('all-forms', [FormsController::class, 'allForm']);
-        Route::post('form-request-side', [FormsController::class , 'form_request_side']);
-        Route::post('form-request-information', [FormsController::class , 'form_request_information']);
-
+        Route::post('form-request-side', [FormsController::class , 'formRequestSide']);
+        Route::post('form-request-information', [FormsController::class , 'formRequestInformation']);
         Route::post('form-assign-request', [FormsController::class, 'FormAssignRequest']);
+        Route::get('latest-form-information', [FormsController::class, 'latestFormInformation']);
     });
 });

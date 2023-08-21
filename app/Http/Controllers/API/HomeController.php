@@ -62,8 +62,15 @@ class HomeController extends Controller
         return responseSuccess($items);
     }
 
-    public function court_types(){
+    public function lookup(){
         $courtTypes = Court::pluck('name')->toArray();
-        return responseSuccess($courtTypes);
-    }
+        $court_type = [];
+         foreach ($courtTypes as $courtType) {
+            $court_type[] = __('enums.'.$courtType);
+        }
+        return responseSuccess([
+            'court_types' => $court_type,
+        ]);
+
+     }
 }

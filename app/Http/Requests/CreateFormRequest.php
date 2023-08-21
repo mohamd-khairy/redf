@@ -26,7 +26,7 @@ class CreateFormRequest extends FormRequest
         return [
             'name' => 'required|string|max:50|unique:templates,name',
             'description' => 'required|string',
-            'template_id' => 'nullable|exists:templates,id',
+            'template_id' => 'required|exists:templates,id',
         ];
     }
 }
