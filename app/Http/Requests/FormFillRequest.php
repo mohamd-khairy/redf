@@ -31,7 +31,6 @@ class FormFillRequest extends FormRequest
     public function rules()
     {
         return [
-            'form_request_number' => 'required|integer',
             'case_number' => 'required',
         ];
     }
