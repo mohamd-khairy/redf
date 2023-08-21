@@ -30,6 +30,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\FormRequestInformation;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Requests\CreateFormRequest;
+use App\Http\Requests\FormFillRequest;
 use App\Http\Requests\FormUpdateRequest;
 use App\Http\Resources\FormItemResource;
 use App\Http\Requests\InformationRequest;
@@ -180,7 +181,7 @@ class FormsController extends Controller
         }
     }
 
-    public function storeFormFill(Request $request)
+    public function storeFormFill(FormFillRequest $request)
     {
         try {
             return DB::transaction(function () use ($request) {
@@ -189,13 +190,22 @@ class FormsController extends Controller
                     'user_id' => auth()->id(),
                     'status' => FormRequestStatus::PENDING,
                 ]);
+
+                $formRequest->form_request_number =  $request->form_request_number;
+                $formRequest->name = $formRequest->form->name . "($formRequest->form_request_number)";
+                $formRequest->save();
+
+
                 $this->processFormPages($request, $formRequest);
+
                 $actionData = [
                     'formable_id' => $formRequest->id,
                     'formable_type' => FormRequest::class,
                     'msg' => 'تم اضافه قضيه جديده',
                 ];
-                $calendar = saveFormRequestAction($actionData);
+
+                saveFormRequestAction($actionData);
+
                 return responseSuccess(['formRequest' => $formRequest], 'Form Fill has been successfully Created');
             });
         } catch (\Throwable $th) {
@@ -209,24 +219,22 @@ class FormsController extends Controller
             return DB::transaction(function () use ($request, $id) {
 
                 $formRequest = FormRequest::findOrFail($id);
+                $formRequest->form_request_number = request('form_request_number', $request->form_request_number);
+                $formRequest->save();
 
                 // Delete existing form page item fills for this form request
                 FormPageItemFill::where('form_request_id', $formRequest->id)->delete();
 
                 $this->processFormPages($request, $formRequest);
-                $calendarData = [
-                    'calendarable_id' => $formRequest->id,
-                    'calendarable_type' => FormRequest::class,
-                    'user_id' => auth()->id(),
-                    'date' => now(),
-                ];
-                $calendar = saveCalendarFromRequest($calendarData);
+
                 $actionData = [
                     'formable_id' => $formRequest->id,
                     'formable_type' => FormRequest::class,
                     'msg' => 'تم تحديث القضيه ',
                 ];
-                $action = saveFormRequestAction($actionData);
+
+                saveFormRequestAction($actionData);
+
                 return responseSuccess([], 'Form Fill has been successfully updated');
             });
         } catch (\Throwable $th) {
