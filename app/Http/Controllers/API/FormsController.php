@@ -402,6 +402,7 @@ class FormsController extends Controller
             'formable_type' => FormRequest::class, // Replace with the actual model type
         ]);
     }
+    
     public function latestFormInformation()
     {
         $latestRecord = FormRequestInformation::latestRecord();
