@@ -190,13 +190,6 @@ class FormsController extends Controller
                     'status' => FormRequestStatus::PENDING,
                 ]);
                 $this->processFormPages($request, $formRequest);
-                $calendarData = [
-                    'calendarable_id' => $formRequest->id,
-                    'calendarable_type' => FormRequest::class,
-                    'user_id' => auth()->id(),
-                    'date' => now(),
-                ];
-                $calendar = saveCalendarFromRequest($calendarData);
                 $actionData = [
                     'formable_id' => $formRequest->id,
                     'formable_type' => FormRequest::class,

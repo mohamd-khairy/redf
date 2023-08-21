@@ -2,15 +2,17 @@
 
 namespace App\Http\Controllers\API;
 
-use App\Http\Controllers\Controller;
-use App\Models\Department;
-use App\Models\Document;
 use App\Models\Form;
-use App\Models\Organization;
 use App\Models\Task;
-use App\Models\Template;
 use App\Models\User;
+use App\Models\Court;
+use App\Models\Document;
+use App\Models\Template;
+use App\Models\Department;
+use App\Enums\CourtTypeEnum;
+use App\Models\Organization;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 
 class HomeController extends Controller
 {
@@ -58,5 +60,10 @@ class HomeController extends Controller
         ]);
 
         return responseSuccess($items);
+    }
+
+    public function court_types(){
+        $courtTypes = Court::pluck('name')->toArray();
+        return responseSuccess($courtTypes);
     }
 }

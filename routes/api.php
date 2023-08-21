@@ -133,6 +133,10 @@ Route::group(['prefix' => 'v1'], function () {
         Route::apiResource('calenders', CalenderController::class);
     });
 
+  /*********************CourtController***************** */
+  Route::group(['middleware' => 'auth:sanctum'], function () {
+    Route::get('/court-types', [HomeController::class, 'court_types']);
+});
 
 
     /*********************FormsController***************** */
@@ -156,6 +160,5 @@ Route::group(['prefix' => 'v1'], function () {
         Route::post('form-request-information', [FormsController::class , 'form_request_information']);
 
         Route::post('form-assign-request', [FormsController::class, 'FormAssignRequest']);
-
     });
 });
