@@ -233,7 +233,7 @@ class FormsController extends Controller
                     'formable_type' => FormRequest::class,
                     'msg' => 'تم تحديث القضيه ',
                 ];
-                $calendar = saveFormRequestAction($actionData);
+                $action = saveFormRequestAction($actionData);
                 return responseSuccess([], 'Form Fill has been successfully updated');
             });
         } catch (\Throwable $th) {
@@ -341,10 +341,12 @@ class FormsController extends Controller
             return responseFail($e->getMessage());
         }
     }
+
     public function UpdateAssignRequest(Request $request)
     {
         dd($request->all());
     }
+
     public function form_request_side(Request $request)
     {
 
@@ -358,26 +360,30 @@ class FormsController extends Controller
 
         return responseSuccess($formRequestSide, 'Form Request Side has been successfully Created');
     }
+
     public function form_request_information(InformationRequest $request)
     {
         try {
             DB::beginTransaction();
 
             $validatedData = $request->validated();
-            if ($validatedData['amount'] != null) {
-                $formRequestInfo = FormRequestInformation::create($validatedData);
-            } else {
-                $sessionDates = is_array($request->dates) ? $request->dates : json_decode($request->dates);
-                foreach ($sessionDates as $sessionDate) {
-                    FormSession::create([
-                        'form_request_id' => $request->form_request_id,
-                        'date' => $sessionDate,
-                        'status' => $request->status,
-                        'details' => $request->details,
-                    ]);
-                }
-            }
+            $formRequestInfo = FormRequestInformation::create($validatedData);
 
+            $calendarData = [
+                'calendarable_id' => $formRequestInfo->form_request_id,
+                'calendarable_type' => FormRequest::class,
+                'details' => $request->details,
+                'user_id' => auth()->id(),
+                'date' => $request->date,
+            ];
+            $calendar = saveCalendarFromRequest($calendarData);
+
+            $actionData = [
+                'formable_id' => $formRequestInfo->form_request_id,
+                'formable_type' => FormRequest::class,
+                'msg' => $request->details,
+            ];
+            $action = saveFormRequestAction($actionData);
 
             DB::commit();
             return responseSuccess($formRequestInfo, 'Form Request Information and Sessions have been successfully created.');
@@ -386,11 +392,13 @@ class FormsController extends Controller
             return responseFail($e->getMessage());
         }
     }
-    public function FormAssignRequest(Request $request){
+
+    public function FormAssignRequest(Request $request)
+    {
         // formable_id >>
         // dd($request->all());
-          // Create a new Formable record
-          Formable::create([
+        // Create a new Formable record
+        Formable::create([
             'formable_id' => $request->formable_id,
             'form_request_id' => $request->form_request_id,
             'formable_type' => FormRequest::class, // Replace with the actual model type

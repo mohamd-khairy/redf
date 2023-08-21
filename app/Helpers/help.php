@@ -182,7 +182,7 @@ if (!function_exists('saveCalendarFromRequest')) {
             'calendarable_type' => 'nullable|string',
             'calendarable_id' => 'nullable|integer',
             'date' => 'required|date',
-            'details' => 'nullable|string',
+            'details' => 'required|string',
             'user_id' => 'nullable|exists:users,id',
         ])->validate();
         return Calendar::create($validatedData);
