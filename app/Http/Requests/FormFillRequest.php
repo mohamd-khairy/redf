@@ -31,7 +31,7 @@ class FormFillRequest extends FormRequest
     public function rules()
     {
         return [
-            'form_request_number' => 'required|string|unique:forms,form_request_number,' . request()->form_id,
+            'form_request_number' => 'nullable|string|unique:forms,form_request_number,' . request()->form_id,
         ];
     }
 }
