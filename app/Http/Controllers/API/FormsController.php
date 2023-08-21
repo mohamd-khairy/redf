@@ -216,7 +216,8 @@ class FormsController extends Controller
             return DB::transaction(function () use ($request, $id) {
 
                 $formRequest = FormRequest::findOrFail($id);
-                $formRequest->form_request_number = request('form_request_number', $request->form_request_number);
+                $formRequest->form_request_number = request('case_number', $formRequest->form_request_number);
+                $formRequest->name = request('case_name', $formRequest->name);
                 $formRequest->save();
 
                 // Delete existing form page item fills for this form request
