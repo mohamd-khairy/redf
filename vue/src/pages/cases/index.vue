@@ -17,7 +17,7 @@
           <v-menu offset-y left>
             <template v-slot:activator="{ on }">
               <transition name="slide-fade" mode="out-in">
-                <v-btn v-show="selected.length > 0" v-on="on">
+                <v-btn color="primary" v-show="selected.length > 0" v-on="on">
                   {{ $t("general.actions") }}
                   <v-icon right>mdi-menu-down</v-icon>
                 </v-btn>
@@ -144,6 +144,9 @@
 
         <template v-slot:item.action="{ item }">
           <div class="actions">
+            <v-btn color="primary" icon @click="openActionDialog(item.id)">
+              <v-icon>mdi-pencil</v-icon>
+            </v-btn>
             <v-btn color="primary" icon @click="openCasePreviewDialog(item.id)">
               <v-icon>mdi-eye</v-icon>
             </v-btn>
@@ -190,6 +193,12 @@
         v-if="casePrevDialog"
         @closePrevDialog="casePrevDialog = false"
       />
+      <AddAction
+        :dialogVisible="addActionDialog"
+        :formRequestId="formId"
+        v-if="addActionDialog"
+        @closeActionDialog="addActionDialog = false"
+      />
       <assign v-model="dialog" :id="formId"></assign>
     </v-card>
   </div>
@@ -202,12 +211,14 @@ import { ask, makeToast } from "@/helpers";
 import emptyDataSvg from "@/assets/images/illustrations/empty-data.svg";
 import CasePreviewDialog from "../../components/cases/CasePreviewDialog.vue";
 import Assign from "../../components/cases/Assign";
+import AddAction from "../../components/cases/AddAction.vue";
 export default {
   components: {
     CasePreviewDialog,
     Assign,
     CopyLabel,
     emptyDataSvg,
+    AddAction,
   },
   data() {
     return {
@@ -242,6 +253,7 @@ export default {
       formId: 0,
       dialog: false,
       casePrevDialog: false,
+      addActionDialog: false,
     };
   },
   watch: {
@@ -326,6 +338,10 @@ export default {
     },
     openAssignDialog(id) {
       this.dialog = true;
+      this.formId = id;
+    },
+    openActionDialog(id) {
+      this.addActionDialog = true;
       this.formId = id;
     },
     openCasePreviewDialog(id) {

@@ -1,8 +1,9 @@
 <template>
-  <div>
-    <h1>Demo App</h1>
-    <FullCalendar :options="calendarOptions" />
-  </div>
+  <v-row>
+    <v-col cols="12">
+      <FullCalendar :options="calendarOptions" />
+    </v-col>
+  </v-row>
 </template>
 
 <script>

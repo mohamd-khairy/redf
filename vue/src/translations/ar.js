@@ -528,6 +528,7 @@ export default {
     Male: "ذكر",
     Female: "انثى",
     Other: "آخرى",
+    addAction: "اضافة اجراء",
   },
 
   departments: {

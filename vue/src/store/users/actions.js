@@ -1,4 +1,4 @@
-import axios from '@/plugins/axios'
+import axios from "@/plugins/axios";
 
 const actions = {
   async getUserType({ commit }) {
@@ -13,10 +13,10 @@ const actions = {
         page: data.pageNumber,
         sortDirection: data.sortDirection,
         sortCoulmn: data.sortColumn,
-      }
+      },
     });
-    const { users } = response?.data.data
-    commit('SET_USERS', users)
+    const { users } = response?.data.data;
+    commit("SET_USERS", users);
   },
   async getBeneficiaries({ commit }, data) {
     const response = await axios.get("get-users", {
@@ -26,10 +26,10 @@ const actions = {
         page: data.pageNumber,
         sortDirection: data.sortDirection,
         sortCoulmn: data.sortColumn,
-      }
+      },
     });
-    const { users } = response?.data.data
-    commit('SET_BENEFICIARIES', users)
+    const { users } = response?.data.data;
+    commit("SET_BENEFICIARIES", users);
   },
   async getActivities({ commit }, data) {
     const response = await axios.get("all-logs", {
@@ -39,18 +39,18 @@ const actions = {
         page: data.pageNumber,
         sortDirection: data.sortDirection,
         sortCoulmn: data.sortColumn,
-      }
+      },
     });
-    const actvs = response.data.data
-    commit('SET_ACTIVITIES', actvs)
+    const actvs = response.data.data;
+    commit("SET_ACTIVITIES", actvs);
   },
   async getUser({ commit }, id) {
-    const response = await axios.get(`user`)
-    const user = response?.data.data
-    commit('SET_USER', user)
+    const response = await axios.get(`user`);
+    const user = response?.data.data;
+    commit("SET_USER", user);
   },
   async deleteUser({ commit, dispatch }, id) {
-    return await axios.delete(`users/${id}`)
+    return await axios.delete(`users/${id}`);
     // await dispatch('getUsers')
   },
   async deleteAll({ commit }, data) {
@@ -58,17 +58,17 @@ const actions = {
       params: {
         ids: data.ids,
         action: data.action,
-        value: data.value
-      }
+        value: data.value,
+      },
     });
   },
   async editUser({ state }, form) {
-    const { id } = state?.user ?? {}
-    return await axios.post(`users/${id}`, form)
+    const { id } = state?.user ?? {};
+    return await axios.post(`users/${id}`, form);
   },
   async storeUser({ commit }, data) {
-    return await axios.post('users', data)
-  }
-}
+    return await axios.post("users", data);
+  },
+};
 
-export default actions
+export default actions;
