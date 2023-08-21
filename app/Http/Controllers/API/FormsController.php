@@ -343,12 +343,12 @@ class FormsController extends Controller
         }
     }
 
-    public function UpdateAssignRequest(Request $request)
+    public function updateAssignRequest(Request $request)
     {
         dd($request->all());
     }
 
-    public function form_request_side(Request $request)
+    public function formRequestSide(Request $request)
     {
 
         $validatedData = $request->validate([
@@ -362,7 +362,7 @@ class FormsController extends Controller
         return responseSuccess($formRequestSide, 'Form Request Side has been successfully Created');
     }
 
-    public function form_request_information(InformationRequest $request)
+    public function formRequestInformation(InformationRequest $request)
     {
         try {
             DB::beginTransaction();
@@ -396,13 +396,17 @@ class FormsController extends Controller
 
     public function FormAssignRequest(Request $request)
     {
-        // formable_id >>
-        // dd($request->all());
+
         // Create a new Formable record
         Formable::create([
             'formable_id' => $request->formable_id,
             'form_request_id' => $request->form_request_id,
             'formable_type' => FormRequest::class, // Replace with the actual model type
         ]);
+    }
+    public function latestFormInformation(){
+        $latestRecord = FormRequestInformation::latestRecord();
+        return responseSuccess($latestRecord);
+
     }
 }

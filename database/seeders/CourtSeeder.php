@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\Court;
 use App\Models\Department;
+use App\Enums\CourtTypeEnum;
 use Illuminate\Database\Seeder;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
@@ -19,19 +20,19 @@ class CourtSeeder extends Seeder
         $data = [
             [
                 'id' => 1,
-                'name' => 'الدرجه الأولي',
+                'name' => CourtTypeEnum::FIRST_DEGREE,
             ],
             [
                 'id' => 2,
-                'name' => 'الاستئناف',
+                'name' => CourtTypeEnum::APEAL,
             ],
             [
                 'id' => 3,
-                'name' => 'العليا ',
+                'name' => CourtTypeEnum::SUPREME,
             ],
             [
                 'id' => 4,
-                'name' => 'التنفيذ',
+                'name' => CourtTypeEnum::IMPLEMENTATION,
             ],
         ];
 
