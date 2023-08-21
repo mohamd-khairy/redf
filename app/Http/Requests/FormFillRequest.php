@@ -32,6 +32,7 @@ class FormFillRequest extends FormRequest
     {
         return [
             'form_request_number' => 'required|integer',
+            'case_number' => 'required',
         ];
     }
 }

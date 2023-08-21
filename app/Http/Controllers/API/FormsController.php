@@ -188,8 +188,8 @@ class FormsController extends Controller
                     'status' => FormRequestStatus::PENDING,
                 ]);
 
-                $formRequest->form_request_number =  $request->form_request_number ??  rand(100000, 999999);
-                $formRequest->name = $formRequest->form->name . "($formRequest->form_request_number)";
+                $formRequest->form_request_number =  $request->case_number ??  rand(100000, 999999);
+                $formRequest->name = $request->case_name  ?? ($formRequest->form->name . "($formRequest->case_number)");
                 $formRequest->save();
 
 
@@ -216,7 +216,8 @@ class FormsController extends Controller
             return DB::transaction(function () use ($request, $id) {
 
                 $formRequest = FormRequest::findOrFail($id);
-                $formRequest->form_request_number = request('form_request_number', $request->form_request_number);
+                $formRequest->form_request_number = request('case_number', $formRequest->form_request_number);
+                $formRequest->name = request('case_name', $formRequest->name);
                 $formRequest->save();
 
                 // Delete existing form page item fills for this form request
@@ -401,9 +402,9 @@ class FormsController extends Controller
             'formable_type' => FormRequest::class, // Replace with the actual model type
         ]);
     }
-    public function latestFormInformation(){
+    public function latestFormInformation()
+    {
         $latestRecord = FormRequestInformation::latestRecord();
         return responseSuccess($latestRecord);
-
     }
 }

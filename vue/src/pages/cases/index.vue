@@ -60,7 +60,7 @@
                 elevation="0"
                 v-bind="attrs"
                 v-on="on"
-                :to="formTypesUrl"
+                :to="caseUrl"
                 v-can="'create-user'"
               >
                 <v-icon> mdi-plus </v-icon>
@@ -68,6 +68,15 @@
             </template>
             <span>{{ $t("cases.createCase") }}</span>
           </v-tooltip>
+          <v-btn
+            color="primary"
+            class="me-1"
+            elevation="0"
+            :to="formTypesUrl"
+            v-can="'create-user'"
+          >
+            {{ buttonName }}
+          </v-btn>
           <v-btn
             :loading="isLoading"
             icon
@@ -250,6 +259,8 @@ export default {
         { text: "", sortable: false, align: "right", value: "action" },
       ],
       formTypesUrl: "",
+      caseUrl: "",
+      buttonName: "",
       formId: 0,
       dialog: false,
       casePrevDialog: false,
@@ -282,6 +293,7 @@ export default {
     let { id } = this.$route.params;
     this.currentPageId = id;
     this.formTypesUrl = `/cases/${id}/form-types`;
+    this.caseUrl = `/cases/${id}/create/${id}`;
   },
   mounted() {
     // this.open()
@@ -294,6 +306,7 @@ export default {
       const currentPage = this.navTemplates.find((nav) => {
         return nav.id === +this.currentPageId;
       });
+      this.buttonName = `نماذج ${currentPage.title}`;
       if (currentPage) {
         this.breadcrumbs.push({
           text: currentPage.title,
