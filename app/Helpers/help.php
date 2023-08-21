@@ -181,8 +181,8 @@ if (!function_exists('saveCalendarFromRequest')) {
         $validatedData = validator($data, [
             'calendarable_type' => 'nullable|string',
             'calendarable_id' => 'nullable|integer',
-            'date' => 'required|date',
-            'details' => 'required|string',
+            'date' => 'nullable|date',
+            'details' => 'nullable|string',
             'user_id' => 'nullable|exists:users,id',
         ])->validate();
         return Calendar::create($validatedData);
@@ -192,7 +192,6 @@ if (!function_exists('saveCalendarFromRequest')) {
 if (!function_exists('saveFormRequestAction')) {
     function saveFormRequestAction(array $data)
     {
-
         $validatedData = validator($data, [
             'formable_type' => 'nullable|string',
             'formable_id' => 'nullable|integer',
