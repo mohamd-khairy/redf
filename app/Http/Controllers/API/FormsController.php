@@ -189,7 +189,7 @@ class FormsController extends Controller
                 ]);
 
                 $formRequest->form_request_number =  $request->form_request_number ??  rand(100000, 999999);
-                $formRequest->name = $formRequest->form->name . "($formRequest->form_request_number)";
+                $formRequest->name = $request->name  ?? ($formRequest->form->name . "($formRequest->form_request_number)");
                 $formRequest->save();
 
 
@@ -401,9 +401,9 @@ class FormsController extends Controller
             'formable_type' => FormRequest::class, // Replace with the actual model type
         ]);
     }
-    public function latestFormInformation(){
+    public function latestFormInformation()
+    {
         $latestRecord = FormRequestInformation::latestRecord();
         return responseSuccess($latestRecord);
-
     }
 }
