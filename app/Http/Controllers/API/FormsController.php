@@ -188,8 +188,8 @@ class FormsController extends Controller
                     'status' => FormRequestStatus::PENDING,
                 ]);
 
-                $formRequest->form_request_number =  $request->form_request_number ??  rand(100000, 999999);
-                $formRequest->name = $request->name  ?? ($formRequest->form->name . "($formRequest->form_request_number)");
+                $formRequest->form_request_number =  $request->case_number ??  rand(100000, 999999);
+                $formRequest->name = $request->case_name  ?? ($formRequest->form->name . "($formRequest->case_number)");
                 $formRequest->save();
 
 
