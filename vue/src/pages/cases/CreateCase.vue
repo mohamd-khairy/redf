@@ -3,24 +3,53 @@
     <v-stepper v-model="e1">
       <v-stepper-header>
         <v-stepper-step :complete="e1 > 1" step="1">
+          {{ $t("cases.createCase") }}
+        </v-stepper-step>
+        <v-divider></v-divider>
+        <v-stepper-step :complete="e1 > 2" step="2">
           {{ $t("cases.caseInfo") }}
         </v-stepper-step>
 
         <v-divider></v-divider>
 
-        <v-stepper-step :complete="e1 > 2" step="2">
+        <v-stepper-step :complete="e1 > 3" step="3">
           {{ $t("cases.sidesInfo") }}
         </v-stepper-step>
 
         <v-divider></v-divider>
 
-        <v-stepper-step step="3">
+        <v-stepper-step step="4">
           {{ $t("cases.caseActions") }}
         </v-stepper-step>
       </v-stepper-header>
 
       <v-stepper-items>
         <v-stepper-content step="1">
+          <v-card class="mb-12" v-if="!initialLoading">
+            <v-card-text>
+              <v-text-field
+                outlined
+                v-model="caseName"
+                :label="$t('cases.caseName')"
+                :required="true"
+                :rules="requiredRule"
+                dense
+              ></v-text-field>
+              <v-text-field
+                outlined
+                v-model="caseNumber"
+                :label="$t('cases.caseNumber')"
+                :required="true"
+                :rules="requiredRule"
+                dense
+              ></v-text-field>
+            </v-card-text>
+          </v-card>
+          <v-btn color="primary" @click="saveCaseInfo">
+            {{ $t("general.continue") }}
+          </v-btn>
+        </v-stepper-content>
+        <v-stepper-content step="2">
           <v-card class="mb-12" v-if="!initialLoading">
             <v-tabs v-model="activeTab">
               <v-tab v-for="(tab, index) in pages" :key="index">{{
@@ -124,7 +153,7 @@
             {{ $t("general.continue") }}
           </v-btn>
         </v-stepper-content>
-        <v-stepper-content step="2">
+        <v-stepper-content step="3">
           <v-card class="mb-12">
             <v-card-title>
               <v-flex class="text-left">
@@ -207,7 +236,7 @@
           </v-btn>
         </v-stepper-content>
 
-        <v-stepper-content step="3">
+        <v-stepper-content step="4">
           <v-card class="mb-12">
             <v-card-title> </v-card-title>
             <v-card-text>
@@ -253,7 +282,42 @@
                       >
                       </v-select>
                     </v-col>
-                    <v-col
+                    <v-col cols="12" sm="6">
+                      <v-dialog
+                        ref="dateDialog"
+                        v-model="dateDialog"
+                        :return-value.sync="caseAction.date"
+                        persistent
+                        width="290px"
+                      >
+                        <template v-slot:activator="{ on, attrs }">
+                          <v-text-field
+                            v-model="caseAction.date"
+                            :label="$t('tables.date')"
+                            prepend-icon="mdi-calendar"
+                            readonly
+                            v-bind="attrs"
+                            v-on="on"
+                            dense
+                            outlined
+                          ></v-text-field>
+                        </template>
+                        <v-date-picker v-model="caseAction.date" scrollable>
+                          <v-spacer></v-spacer>
+                          <v-btn text color="primary" @click="modal = false">
+                            Cancel
+                          </v-btn>
+                          <v-btn
+                            text
+                            color="primary"
+                            @click="$refs.dateDialog.save(caseAction.date)"
+                          >
+                            OK
+                          </v-btn>
+                        </v-date-picker>
+                      </v-dialog>
+                    </v-col>
+                    <!-- <v-col
                       cols="6"
                       v-for="(date, k) in caseAction.dates"
                       :key="k"
@@ -266,6 +330,17 @@
                         v-model="date.caseDate"
                       >
                       </v-text-field>
+                    </v-col> -->
+                    <v-col cols="12">
+                      <v-select
+                        :items="courts"
+                        :label="$t('tables.court')"
+                        hide-details
+                        dense
+                        outlined
+                        v-model="caseAction.court_name"
+                      >
+                      </v-select>
                     </v-col>
                     <v-col cols="12">
                       <v-textarea
@@ -333,6 +408,9 @@ export default {
   data() {
     return {
       e1: 1,
+      dateDialog: false,
+      caseNumber: "",
+      caseName: "",
       firstSelectType: null,
       secondSelectType: null,
       initialLoading: false,
@@ -363,6 +441,10 @@ export default {
         percentage: "",
         details: "",
         status: "",
+        court_name: "",
+        date: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
+          .toISOString()
+          .substr(0, 10),
         dates: [
           {
             caseDate: "",
@@ -382,6 +464,7 @@ export default {
       ],
     };
   },
+
   created() {
     this.setBreadCrumb({
       breadcrumbs: this.breadcrumbs,
@@ -395,9 +478,15 @@ export default {
       this.fetchUsers();
     });
   },
-
+  watch: {
+    e1(val) {
+      if (val === 4) {
+        this.getCourts();
+      }
+    },
+  },
   computed: {
-    ...mapState("cases", ["pages", "selectedForm"]),
+    ...mapState("cases", ["pages", "selectedForm", "courts"]),
     ...mapState("auth", ["user"]),
     ...mapState("app", ["navTemplates"]),
     ...mapState("departments", ["departments"]),
@@ -456,6 +545,7 @@ export default {
       "userDepartment",
       "saveRequestSide",
       "saveFormInformation",
+      "getCourts",
     ]),
     addDate(index) {
       this.caseAction.dates.push({ caseDate: "" });
@@ -589,17 +679,27 @@ export default {
       const msg = this.$t("general.required_input");
       return this.showErrors && input.required && !input.value ? [msg] : [];
     },
-    async saveForm() {
+    saveCaseInfo() {
+      if (!this.caseName || !this.caseNumber) {
+        makeToast("failed", "case name and number ");
+        return;
+      }
       this.e1 = 2;
-      return false;
+    },
+    async saveForm() {
+      // this.e1 = 3;
+      // return false;
       const { id } = this.$route.params;
       const { formType: currentFormId } = this.$route.params;
       this.isSubmitingForm = true;
       if (await this.validateFormData()) {
-        await this.savePages(id).then((response) => {
+        await this.savePages({
+          caseName: this.caseName,
+          caseNumber: this.caseNumber,
+        }).then((response) => {
           this.isSubmitingForm = false;
           this.formRequestId = response.data?.data?.formRequest?.id;
-          this.e1 = 2;
+          this.e1 = 3;
           makeToast("success", response.data.message);
         });
       } else {
@@ -621,7 +721,7 @@ export default {
       await this.saveRequestSide(data)
         .then((response) => {
           this.isLoading = false;
-          this.e1 = 3;
+          this.e1 = 4;
           makeToast("success", response.data.message);
         })
         .catch(() => {
@@ -635,11 +735,17 @@ export default {
     },
     async storeFormInformation() {
       this.isLoading = true;
-
+      // this.caseAction.dates = this.caseAction.dates.map(
+      //   (cdate) => cdate.caseDate
+      // );
       let data = {
         form_request_id: this.formRequestId,
         amount: this.caseAction.amount,
         percentage: this.caseAction.percentage,
+        details: this.caseAction.details,
+        status: this.caseAction.status,
+        date: this.caseAction.date,
+        court_name: this.caseAction.court_name,
       };
 
       // if (await this.validateFormData()) {

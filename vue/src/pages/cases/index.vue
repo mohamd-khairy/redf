@@ -299,14 +299,14 @@ export default {
     // this.open()
   },
   methods: {
-    ...mapActions("cases", ["getFormRequests", "deleteUser", "deleteAll"]),
+    ...mapActions("cases", ["getFormRequests", "deleteForm", "deleteAll"]),
     ...mapActions("app", ["setBreadCrumb"]),
     search() {},
     setCurrentBread() {
       const currentPage = this.navTemplates.find((nav) => {
         return nav.id === +this.currentPageId;
       });
-      this.buttonName = `نماذج ${currentPage.title}`;
+      this.buttonName = `نماذج ${currentPage?.title || ""}`;
       if (currentPage) {
         this.breadcrumbs.push({
           text: currentPage.title,
@@ -366,7 +366,7 @@ export default {
 
       if (isConfirmed) {
         this.isLoading = true;
-        this.deleteUser(id)
+        this.deleteForm(id)
           .then((response) => {
             makeToast("success", response.data.message);
             this.open();

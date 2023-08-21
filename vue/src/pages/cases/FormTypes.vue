@@ -11,7 +11,15 @@
     </div> -->
 
     <v-row>
-      <v-col v-for="form in forms" :key="form.id" cols="4">
+      <v-col v-if="!forms.length" cols="12">
+        <div class="text-center mt-7 primary--text" color="primary">
+          <emptyDataSvg></emptyDataSvg>
+          <div class="dt-no_data">
+            {{ $t("general.no_forms") }}
+          </div>
+        </div>
+      </v-col>
+      <v-col v-else v-for="form in forms" :key="form.id" cols="4">
         <v-hover v-slot="{ hover }">
           <v-card
             class="formType-card"
@@ -47,10 +55,13 @@
 
 <script>
 import { mapActions, mapState } from "vuex";
+import emptyDataSvg from "@/assets/images/illustrations/empty-data.svg";
 
 export default {
   name: "FormTypes",
-  components: {},
+  components: {
+    emptyDataSvg,
+  },
   data() {
     return {
       breadcrumbs: [
