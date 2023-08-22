@@ -135,8 +135,8 @@ Route::group(['prefix' => 'v1'], function () {
 
   /*********************CourtController***************** */
   Route::group(['middleware' => 'auth:sanctum'], function () {
-    Route::get('/court-types', [HomeController::class, 'lookup']);
-});
+    Route::get('/lookup', [HomeController::class, 'lookup']);
+ });
 
 
     /*********************FormsController***************** */
