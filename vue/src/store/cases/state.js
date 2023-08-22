@@ -12,6 +12,7 @@ const state = {
   liveMode: false,
   pages: [],
   courts: [],
+  caseTypes: [],
   pagesValues: [],
   selectedForm: {
     name: "",

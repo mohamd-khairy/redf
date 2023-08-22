@@ -159,6 +159,7 @@ export default {
     },
     fetchData: function () {
       this.$root.$emit("userCreated");
+      this.$emit("userCreated");
     },
     save() {
       this.loading = true;

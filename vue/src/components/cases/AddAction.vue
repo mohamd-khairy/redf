@@ -13,6 +13,128 @@
       <v-card-text class="pb-0">
         <div class="d-flex flex-column flex-sm-row">
           <div class="flex-grow-1 pt-2 pa-sm-2">
+            <v-row dense v-if="lastAction" class="mb-2">
+              <v-col cols="12">
+                <v-expansion-panels multiple>
+                  <v-expansion-panel>
+                    <v-expansion-panel-header>
+                      <h5>{{ $t("general.last_action") }}</h5>
+                    </v-expansion-panel-header>
+                    <v-expansion-panel-content>
+                      <v-row class="mb-1" dense>
+                        <v-col cols="12" sm="3">
+                          <h6 class="mt-1 mb-0 c-h6">
+                            {{ $t("cases.amount") }}
+                          </h6>
+                        </v-col>
+                        <v-col cols="12" sm="9">
+                          <v-text-field
+                            dense
+                            class="custom-disabled-input"
+                            :value="lastAction?.amount || ''"
+                            solo
+                            label="Solo"
+                            disabled
+                            hide-details
+                          ></v-text-field>
+                        </v-col>
+                      </v-row>
+                      <v-row class="mb-1" dense>
+                        <v-col cols="12" sm="3">
+                          <h6 class="mt-1 mb-0 c-h6">
+                            {{ $t("cases.percentageLose") }}
+                          </h6>
+                        </v-col>
+                        <v-col cols="12" sm="9">
+                          <v-text-field
+                            dense
+                            class="custom-disabled-input"
+                            :value="lastAction?.percentage || ''"
+                            solo
+                            label="Solo"
+                            disabled
+                            hide-details
+                          ></v-text-field>
+                        </v-col>
+                      </v-row>
+                      <v-row class="mb-1" dense>
+                        <v-col cols="12" sm="3">
+                          <h6 class="mt-1 mb-0 c-h6">
+                            {{ $t("tables.court") }}
+                          </h6>
+                        </v-col>
+                        <v-col cols="12" sm="9">
+                          <v-text-field
+                            class="custom-disabled-input"
+                            :value="lastAction?.court || ''"
+                            item-text="title"
+                            item-value="value"
+                            solo
+                            label="Solo"
+                            disabled
+                            hide-details
+                            dense
+                          ></v-text-field>
+                        </v-col>
+                      </v-row>
+                      <v-row class="mb-1" dense>
+                        <v-col cols="12" sm="3">
+                          <h6 class="mt-1 mb-0 c-h6">
+                            {{ $t("tables.date") }}
+                          </h6>
+                        </v-col>
+                        <v-col cols="12" sm="9">
+                          <v-text-field
+                            class="custom-disabled-input"
+                            :value="lastAction?.date || ''"
+                            solo
+                            label="Solo"
+                            disabled
+                            hide-details
+                            dense
+                          ></v-text-field>
+                        </v-col>
+                      </v-row>
+
+                      <v-row class="mb-1" dense>
+                        <v-col cols="12" sm="3">
+                          <h6 class="mt-1 mb-0 c-h6">
+                            {{ $t("cases.action") }}
+                          </h6>
+                        </v-col>
+
+                        <v-col cols="12" sm="9">
+                          <v-textarea
+                            class="custom-disabled-input"
+                            :value="lastAction?.details || ''"
+                            solo
+                            disabled
+                            hide-details
+                          ></v-textarea>
+                        </v-col>
+                      </v-row>
+
+                      <v-row dense>
+                        <v-col cols="12" sm="3">
+                          <h6 class="mt-1 mb-0 c-h6">
+                            {{ $t("tables.status") }}
+                          </h6>
+                        </v-col>
+                        <v-col cols="12" sm="9">
+                          <v-chip
+                            :color="getStatusColor(lastAction?.status)"
+                            label
+                            text-color="white"
+                          >
+                            {{ $t(`general.${lastAction?.status}`) }}
+                          </v-chip>
+                        </v-col>
+                      </v-row>
+                    </v-expansion-panel-content>
+                  </v-expansion-panel>
+                </v-expansion-panels>
+              </v-col>
+            </v-row>
             <v-row dense>
               <v-col cols="6">
                 <v-text-field
@@ -42,10 +164,10 @@
               </v-col>
               <v-col cols="6">
                 <v-select
-                  :items="status"
+                  :items="caseTypes"
                   :label="$t('tables.status')"
-                  :item-text="(item) => item.key"
-                  :item-value="(item) => item.value"
+                  item-text="title"
+                  item-value="value"
                   hide-details
                   dense
                   outlined
@@ -94,6 +216,8 @@
                   :label="$t('tables.court')"
                   dense
                   outlined
+                  item-text="title"
+                  item-value="value"
                   v-model="caseAction.court_name"
                 >
                 </v-select>
@@ -133,12 +257,17 @@
 
 <script>
 import { mapActions, mapState } from "vuex";
+import { makeToast } from "@/helpers";
 
 export default {
   components: {},
   props: {
     dialogVisible: Boolean,
     formRequestId: Number,
+    lastAction: {
+      type: Object,
+      default: null,
+    },
   },
   data() {
     return {
@@ -171,14 +300,15 @@ export default {
   watch: {},
   created() {
     this.getCourts();
+    console.log(this.lastAction);
   },
   computed: {
-    ...mapState("cases", ["courts"]),
+    ...mapState("cases", ["courts", "caseTypes"]),
   },
   methods: {
     ...mapActions("cases", ["saveFormInformation", "getCourts"]),
     closeDialog() {
-      this.$emit("closeActionDialog");
+      this.$emit("close-action-dialog");
     },
     async storeFormAction() {
       this.isLoading = true;
@@ -196,17 +326,34 @@ export default {
         court_name: this.caseAction.court_name,
       };
       this.isLoading = true;
-      await this.saveFormInformation(data)
-        .then((response) => {
-          console.log("aaaaaa");
-          makeToast("success", response.data.message);
-          this.closeDialog();
-        })
-        .catch(() => {})
-        .finally(() => {
-          this.isLoading = false;
-        });
+      const result = await this.saveFormInformation(data);
+      if (result) {
+        makeToast("success", "تم اضافة الاجراء");
+        this.closeDialog();
+      }
+      this.isLoading = false;
+    },
+    getStatusColor(status) {
+      const colors = {
+        processing: "blue",
+        pending: "orange",
+        accepted: "green",
+      };
+
+      return colors[status] || "primary";
     },
   },
 };
 </script>
+<style>
+.theme--light.v-input.custom-disabled-input {
+  color: rgba(0, 0, 0, 0.87) !important;
+  pointer-events: auto !important;
+}
+.c-h6 {
+  font-weight: 600;
+}
+.theme--light.v-input--is-disabled.custom-disabled-input input {
+  color: rgba(0, 0, 0, 0.87) !important;
+}
+</style>

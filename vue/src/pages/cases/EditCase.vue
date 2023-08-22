@@ -305,6 +305,126 @@
             <v-card-text>
               <div class="d-flex flex-column flex-sm-row">
                 <div class="flex-grow-1 pt-2 pa-sm-2">
+                  <v-row dense v-if="lastAction" class="mb-2">
+                    <v-col cols="12">
+                      <v-expansion-panels multiple>
+                        <v-expansion-panel>
+                          <v-expansion-panel-header>
+                            <h5>{{ $t("general.last_action") }}</h5>
+                          </v-expansion-panel-header>
+                          <v-expansion-panel-content>
+                            <v-row class="mb-1" dense>
+                              <v-col cols="12" sm="3">
+                                <h6 class="mt-1 mb-0 c-h6">
+                                  {{ $t("cases.amount") }}
+                                </h6>
+                              </v-col>
+                              <v-col cols="12" sm="9">
+                                <v-text-field
+                                  dense
+                                  class="custom-disabled-input"
+                                  :value="lastAction?.amount || ''"
+                                  solo
+                                  label="Solo"
+                                  disabled
+                                  hide-details
+                                ></v-text-field>
+                              </v-col>
+                            </v-row>
+                            <v-row class="mb-1" dense>
+                              <v-col cols="12" sm="3">
+                                <h6 class="mt-1 mb-0 c-h6">
+                                  {{ $t("cases.percentageLose") }}
+                                </h6>
+                              </v-col>
+                              <v-col cols="12" sm="9">
+                                <v-text-field
+                                  dense
+                                  class="custom-disabled-input"
+                                  :value="lastAction?.percentage || ''"
+                                  solo
+                                  label="Solo"
+                                  disabled
+                                  hide-details
+                                ></v-text-field>
+                              </v-col>
+                            </v-row>
+                            <v-row class="mb-1" dense>
+                              <v-col cols="12" sm="3">
+                                <h6 class="mt-1 mb-0 c-h6">
+                                  {{ $t("tables.court") }}
+                                </h6>
+                              </v-col>
+                              <v-col cols="12" sm="9">
+                                <v-text-field
+                                  class="custom-disabled-input"
+                                  :value="lastAction?.court || ''"
+                                  solo
+                                  label="Solo"
+                                  disabled
+                                  hide-details
+                                  dense
+                                ></v-text-field>
+                              </v-col>
+                            </v-row>
+                            <v-row class="mb-1" dense>
+                              <v-col cols="12" sm="3">
+                                <h6 class="mt-1 mb-0 c-h6">
+                                  {{ $t("tables.date") }}
+                                </h6>
+                              </v-col>
+                              <v-col cols="12" sm="9">
+                                <v-text-field
+                                  class="custom-disabled-input"
+                                  :value="lastAction?.date || ''"
+                                  solo
+                                  label="Solo"
+                                  disabled
+                                  hide-details
+                                  dense
+                                ></v-text-field>
+                              </v-col>
+                            </v-row>
+
+                            <v-row class="mb-1" dense>
+                              <v-col cols="12" sm="3">
+                                <h6 class="mt-1 mb-0 c-h6">
+                                  {{ $t("cases.action") }}
+                                </h6>
+                              </v-col>
+
+                              <v-col cols="12" sm="9">
+                                <v-textarea
+                                  class="custom-disabled-input"
+                                  :value="lastAction?.details || ''"
+                                  solo
+                                  disabled
+                                  hide-details
+                                ></v-textarea>
+                              </v-col>
+                            </v-row>
+
+                            <v-row dense>
+                              <v-col cols="12" sm="3">
+                                <h6 class="mt-1 mb-0 c-h6">
+                                  {{ $t("tables.status") }}
+                                </h6>
+                              </v-col>
+                              <v-col cols="12" sm="9">
+                                <v-chip
+                                  :color="getStatusColor(lastAction?.status)"
+                                  label
+                                  text-color="white"
+                                >
+                                  {{ $t(`general.${lastAction?.status}`) }}
+                                </v-chip>
+                              </v-col>
+                            </v-row>
+                          </v-expansion-panel-content>
+                        </v-expansion-panel>
+                      </v-expansion-panels>
+                    </v-col>
+                  </v-row>
                   <v-row>
                     <v-col cols="6">
                       <v-text-field
@@ -334,10 +454,10 @@
                     </v-col>
                     <v-col cols="6">
                       <v-select
-                        :items="status"
+                        :items="caseTypes"
                         :label="$t('tables.status')"
-                        :item-text="(item) => item.key"
-                        :item-value="(item) => item.value"
+                        item-text="title"
+                        item-value="value"
                         hide-details
                         dense
                         outlined
@@ -383,6 +503,8 @@
                     <v-col cols="12">
                       <v-select
                         :items="courts"
+                        item-text="title"
+                        item-value="value"
                         :label="$t('tables.court')"
                         hide-details
                         dense
@@ -474,6 +596,7 @@ export default {
           (value && Boolean(value)) || this.$t("general.fieldRequired"),
       },
       errors: {},
+      lastAction: null,
       status: [
         { key: "error", value: 0 },
         { key: "confirmed", value: 1 },
@@ -498,7 +621,12 @@ export default {
     },
   },
   computed: {
-    ...mapState("cases", ["pagesValues", "selectedForm", "courts"]),
+    ...mapState("cases", [
+      "pagesValues",
+      "selectedForm",
+      "courts",
+      "caseTypes",
+    ]),
     ...mapState("app", ["navTemplates"]),
     ...mapState("departments", ["departments"]),
     ...mapState("auth", ["user"]),
@@ -624,6 +752,7 @@ export default {
         .then((data) => {
           this.setCurrentBread();
           this.formData = data;
+          this.lastAction = data?.lastFormRequestInformation || null;
           this.caseName = data.name;
           this.caseNumber = data.form_request_number;
           this.formRequestId = this.formData.id;
@@ -646,7 +775,7 @@ export default {
             this.caseAction.percentage =
               this.formData?.form_request_information?.percentage;
             this.caseAction.status =
-              +this.formData?.form_request_information?.status || null;
+              this.formData?.form_request_information?.status || null;
             this.caseAction.details =
               this.formData?.form_request_information?.details;
           }
@@ -655,6 +784,15 @@ export default {
         .finally((_) => {
           this.initialLoading = false;
         });
+    },
+    getStatusColor(status) {
+      const colors = {
+        processing: "blue",
+        pending: "orange",
+        accepted: "green",
+      };
+
+      return colors[status] || "primary";
     },
 
     getInputLabel(input) {

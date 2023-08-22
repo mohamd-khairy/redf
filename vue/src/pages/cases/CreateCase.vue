@@ -272,10 +272,10 @@
                     </v-col>
                     <v-col cols="6">
                       <v-select
-                        :items="status"
+                        :items="caseTypes"
+                        item-text="title"
+                        item-value="value"
                         :label="$t('tables.status')"
-                        :item-text="(item) => item.key"
-                        :item-value="(item) => item.value"
                         hide-details
                         dense
                         outlined
@@ -336,10 +336,12 @@
                       <v-select
                         :items="courts"
                         :label="$t('tables.court')"
+                        item-text="title"
+                        item-value="value"
                         hide-details
                         dense
                         outlined
-                        v-model="caseAction.court_name"
+                        v-model="caseAction.court"
                       >
                       </v-select>
                     </v-col>
@@ -400,7 +402,7 @@
 
 <script>
 import { mapActions, mapState } from "vuex";
-import AddUserDialog from "@/pages/cases/AddUserDialog";
+import AddUserDialog from "../../components/cases/AddUserDialog";
 import { makeToast } from "@/helpers";
 
 export default {
@@ -441,7 +443,7 @@ export default {
         percentage: "",
         details: "",
         status: "",
-        court_name: "",
+        court: "",
         date: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
           .toISOString()
           .substr(0, 10),
@@ -486,7 +488,7 @@ export default {
     },
   },
   computed: {
-    ...mapState("cases", ["pages", "selectedForm", "courts"]),
+    ...mapState("cases", ["pages", "selectedForm", "courts", "caseTypes"]),
     ...mapState("auth", ["user"]),
     ...mapState("app", ["navTemplates"]),
     ...mapState("departments", ["departments"]),
@@ -743,7 +745,7 @@ export default {
         details: this.caseAction.details,
         status: this.caseAction.status,
         date: this.caseAction.date,
-        court_name: this.caseAction.court_name,
+        court: this.caseAction.court,
       };
 
       // if (await this.validateFormData()) {
