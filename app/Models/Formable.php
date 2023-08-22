@@ -9,7 +9,7 @@ class Formable extends Model
 {
     use HasFactory;
     protected $table = "formable";
-    protected $fillable = ['formable_type', 'formable_id','form_request_id'];
+    protected $fillable = ['formable_type', 'formable_id', 'form_request_id'];
 
     public function forms()
     {

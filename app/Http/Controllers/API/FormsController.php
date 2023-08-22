@@ -31,6 +31,7 @@ use App\Http\Requests\FormFillRequest;
 use App\Http\Requests\FormUpdateRequest;
 use App\Http\Resources\FormItemResource;
 use App\Http\Requests\InformationRequest;
+use App\Http\Resources\FormRequestResource;
 
 class FormsController extends Controller
 {
@@ -288,7 +289,7 @@ class FormsController extends Controller
         try {
             $formfill = FormRequest::with('form.pages.items', 'user', 'form_page_item_fill', 'formRequestInformation', 'formRequestSide')->find($id);
 
-            return responseSuccess($formfill, 'Form requests retrieved successfully');
+            return responseSuccess(new FormRequestResource($formfill), 'Form requests retrieved successfully');
         } catch (\Throwable $e) {
             // Return an error response if something goes wrong
             return responseFail($e->getMessage());
@@ -319,21 +320,15 @@ class FormsController extends Controller
                         'form_user_id' => $form_user_id,
                         'type' => FormAssignRequestType::EMPLOYEE,
                     ]);
-                    FormRequest::where('id', $form_request_id)->update(['status' => 'processing']);
+                    FormRequest::where('id', $form_request_id)->update(['status' => 'assigned']);
                 }
-                $calendarData = [
-                    'calendarable_id' => $assignNew->id,
-                    'calendarable_type' => FormAssignRequest::class,
-                    'user_id' => auth()->id(),
-                    'date' => now(),
-                ];
-                $calendar = saveCalendarFromRequest($calendarData);
+
                 $actionData = [
                     'formable_id' => $assignNew->id,
                     'formable_type' => FormAssignRequest::class,
                     'msg' => 'تم اسناد القضيه ل موظف جديد',
                 ];
-                $calendar = saveFormRequestAction($actionData);
+                $action = saveFormRequestAction($actionData);
                 return responseSuccess(['assignNew' => $assignNew]);
             });
         } catch (Throwable $e) {
@@ -402,6 +397,7 @@ class FormsController extends Controller
             'formable_type' => FormRequest::class, // Replace with the actual model type
         ]);
     }
+
     public function latestFormInformation()
     {
         $latestRecord = FormRequestInformation::latestRecord();
