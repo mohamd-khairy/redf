@@ -264,7 +264,7 @@ class FormsController extends Controller
     public function getFormRequest(PageRequest $request)
     {
         try {
-            $query = FormRequest::with('form.pages.items', 'user', 'formAssignedRequests.assigner', 'form_page_item_fill.page_item');
+            $query = FormRequest::with('form.pages.items', 'user', 'formAssignedRequests.assigner', 'form_page_item_fill.page_item', 'lastFormRequestInformation');
 
             if (request('template_id')) {
                 $query = $query->whereHas('form', fn ($q) => $q->where('template_id', request('template_id')));
@@ -287,7 +287,7 @@ class FormsController extends Controller
     public function getFormRequestfill($id)
     {
         try {
-            $formfill = FormRequest::with('form.pages.items', 'user', 'form_page_item_fill', 'formRequestInformation', 'formRequestSide')->find($id);
+            $formfill = FormRequest::with('form.pages.items', 'user', 'form_page_item_fill', 'formRequestInformation', 'formRequestSide', 'lastFormRequestInformation')->find($id);
 
             return responseSuccess(new FormRequestResource($formfill), 'Form requests retrieved successfully');
         } catch (\Throwable $e) {
@@ -361,7 +361,11 @@ class FormsController extends Controller
             DB::beginTransaction();
 
             $validatedData = $request->validated();
+            $validatedData['status'] = FormRequestStatus::PROCCEING;
             $formRequestInfo = FormRequestInformation::create($validatedData);
+
+            $formRequestInfo->form_request->status = FormRequestStatus::PROCCEING;
+            $formRequestInfo->form_request->save();
 
             $calendarData = [
                 'calendarable_id' => $formRequestInfo->form_request_id,
