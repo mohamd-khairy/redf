@@ -73,4 +73,15 @@ class FormRequest extends Model
     {
         return $this->hasOne(FormRequestSide::class);
     }
+
+    public function formRequestInformations()
+    {
+        return $this->hasMany(FormRequestInformation::class);
+    }
+
+
+    public function lastFormRequestInformation()
+    {
+        return $this->hasOne(FormRequestInformation::class)->orderBy('id', 'desc');
+    }
 }
