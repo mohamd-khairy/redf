@@ -176,6 +176,7 @@ const actions = {
       name: selectedFormName,
       id: selectedFormId,
     });
+    return response?.data.data;
   },
   validateFormData({ state }) {
     return state.pages.every((page) => {
@@ -194,17 +195,16 @@ const actions = {
   async saveFormInformation({ state }, data) {
     try {
       await axios.post(`form-request-information`, data);
+      return true;
     } catch (error) {
       console.error("Error saving form data:", error);
+      return false;
     }
   },
   async savePages({ state }, { caseName, caseNumber }) {
-    console.log("caseName", caseName);
     try {
       const customFormData = {
         id: state.selectedForm.id,
-        case_name: caseName,
-        case_number: caseNumber,
         name: state.selectedForm.name,
         pages: state.pages.map((page) => ({
           id: page.id,
@@ -227,19 +227,24 @@ const actions = {
         let value = customFormData[key];
         bodyFormData.set(key, JSON.stringify(value));
       }
-      return await axios.post(`store-form-fill`, bodyFormData, {
+      bodyFormData.set("case_name", caseName);
+      bodyFormData.set("case_number", caseNumber);
+      const result = await axios.post(`store-form-fill`, bodyFormData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
       });
+      return result;
     } catch (error) {
       console.error("Error saving form data:", error);
+      return false;
     }
   },
-  async updatePages({ state }, formId) {
+  async updatePages({ state }, { caseName, caseNumber, formId }) {
     try {
       const customFormData = {
         id: state.selectedForm.id,
+
         name: state.selectedForm.name,
         pages: state.pagesValues.map((page) => ({
           id: page.id,
@@ -263,6 +268,9 @@ const actions = {
         bodyFormData.set(key, JSON.stringify(value));
         bodyFormData.set("_method", "PUT");
       }
+
+      bodyFormData.set("case_name", caseName);
+      bodyFormData.set("case_number", caseNumber);
       const response = await axios.post(
         `update-form-fill/${formId}`,
         bodyFormData,
@@ -272,8 +280,10 @@ const actions = {
           },
         }
       );
+      return true;
     } catch (error) {
       console.error("Error saving form data:", error);
+      return false;
     }
   },
   async getCourts({ commit }) {

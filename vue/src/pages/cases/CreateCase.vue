@@ -3,11 +3,11 @@
     <v-stepper v-model="e1">
       <v-stepper-header>
         <v-stepper-step :complete="e1 > 1" step="1">
-          {{ $t("cases.createCase") }}
+          {{ $t("general.create") + " " + selectedTitle }}
         </v-stepper-step>
         <v-divider></v-divider>
         <v-stepper-step :complete="e1 > 2" step="2">
-          {{ $t("cases.caseInfo") }}
+          {{ $t("general.info") + " " + selectedTitle }}
         </v-stepper-step>
 
         <v-divider></v-divider>
@@ -32,15 +32,16 @@
                 v-model="caseName"
                 :label="$t('cases.caseName')"
                 :required="true"
-                :rules="requiredRule"
+                :rules="[requiredRule]"
                 dense
               ></v-text-field>
               <v-text-field
                 outlined
+                type="number"
                 v-model="caseNumber"
                 :label="$t('cases.caseNumber')"
                 :required="true"
-                :rules="requiredRule"
+                :rules="[requiredRule]"
                 dense
               ></v-text-field>
             </v-card-text>
@@ -408,11 +409,10 @@ export default {
   data() {
     return {
       e1: 1,
+      selectedTitle: "",
       dateDialog: false,
       caseNumber: "",
       caseName: "",
-      firstSelectType: null,
-      secondSelectType: null,
       initialLoading: false,
       isLoading: false,
       isSubmitingForm: false,
@@ -572,7 +572,7 @@ export default {
           this.isLoading = false;
         });
     },
-    clearClaimantSelect(id) {
+    clearClaimantSelect() {
       const user = this.users.find(
         (user) => user.id === this.sidesInfo.claimant_id
       );
@@ -634,6 +634,7 @@ export default {
       this.breadcrumbs.push({
         text: this.$t(this.selectedForm.name),
       });
+      this.selectedTitle = this.$t(this.selectedForm.name);
       this.setBreadCrumb({
         breadcrumbs: this.breadcrumbs,
         pageTitle: this.$t("cases.casesList"),
@@ -687,21 +688,20 @@ export default {
       this.e1 = 2;
     },
     async saveForm() {
-      // this.e1 = 3;
-      // return false;
-      const { id } = this.$route.params;
-      const { formType: currentFormId } = this.$route.params;
       this.isSubmitingForm = true;
       if (await this.validateFormData()) {
-        await this.savePages({
+        const result = await this.savePages({
           caseName: this.caseName,
           caseNumber: this.caseNumber,
-        }).then((response) => {
-          this.isSubmitingForm = false;
-          this.formRequestId = response.data?.data?.formRequest?.id;
-          this.e1 = 3;
-          makeToast("success", response.data.message);
         });
+        if (result) {
+          this.isSubmitingForm = false;
+          this.formRequestId = result.data?.data?.formRequest?.id;
+          this.e1 = 3;
+          // makeToast("success", response.data.message);
+        } else {
+          makeToast("error", "Failed to save data");
+        }
       } else {
         this.showErrors = true;
         this.isSubmitingForm = false;
@@ -735,9 +735,7 @@ export default {
     },
     async storeFormInformation() {
       this.isLoading = true;
-      // this.caseAction.dates = this.caseAction.dates.map(
-      //   (cdate) => cdate.caseDate
-      // );
+
       let data = {
         form_request_id: this.formRequestId,
         amount: this.caseAction.amount,
@@ -749,16 +747,15 @@ export default {
       };
 
       // if (await this.validateFormData()) {
-      await this.saveFormInformation(data)
-        .then((response) => {
-          this.isLoading = false;
-          const { formType: currentFormId } = this.$route.params;
-          makeToast("success", response.data.message);
-          this.$router.push(`/cases/${currentFormId}`);
-        })
-        .catch(() => {
-          this.isLoading = false;
-        });
+      const result = await this.saveFormInformation(data);
+      if (result) {
+        this.isLoading = false;
+        const { formType: currentFormId } = this.$route.params;
+        makeToast("success", "تم انشاء القضية بنجاح");
+        this.$router.push(`/cases/${currentFormId}`);
+      } else {
+        this.isLoading = false;
+      }
       // } else {
       //   this.showErrors = true;
       //   this.isSubmitingForm = false;
