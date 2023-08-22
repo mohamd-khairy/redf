@@ -95,8 +95,6 @@
             <v-spacer class="d-block d-sm-none"></v-spacer> -->
             <v-spacer></v-spacer>
 
-            <toolbar-language />
-
             <toolbar-apps />
 
             <div :class="[$vuetify.rtl ? 'ml-1' : 'mr-1']">
