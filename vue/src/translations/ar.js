@@ -777,6 +777,8 @@ export default {
     getting_data: "جاري جلب البيانات",
     continue: "الاستمرار",
     no_forms: "لايوجد نماذج",
+    create: "انشاء",
+    info: "معلومات",
   },
   reports: {
     buildReport: "انشاء تقرير",

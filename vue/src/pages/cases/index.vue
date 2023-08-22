@@ -66,7 +66,7 @@
                 <v-icon> mdi-plus </v-icon>
               </v-btn>
             </template>
-            <span>{{ $t("cases.createCase") }}</span>
+            <span>{{ plusButtonTitle }}</span>
           </v-tooltip>
           <v-btn
             color="primary"
@@ -261,6 +261,7 @@ export default {
       formTypesUrl: "",
       caseUrl: "",
       buttonName: "",
+      plusButtonTitle: "",
       formId: 0,
       dialog: false,
       casePrevDialog: false,
@@ -306,6 +307,7 @@ export default {
       const currentPage = this.navTemplates.find((nav) => {
         return nav.id === +this.currentPageId;
       });
+      this.plusButtonTitle = `انشاء ${currentPage?.title || ""}`;
       this.buttonName = `نماذج ${currentPage?.title || ""}`;
       if (currentPage) {
         this.breadcrumbs.push({
