@@ -9,6 +9,7 @@ use App\Models\Court;
 use App\Models\Document;
 use App\Models\Template;
 use App\Models\Department;
+use App\Enums\CaseTypeEnum;
 use App\Enums\CourtTypeEnum;
 use App\Models\Organization;
 use Illuminate\Http\Request;
@@ -64,13 +65,26 @@ class HomeController extends Controller
 
     public function lookup(){
         $courtTypes = Court::pluck('name')->toArray();
+
         $court_type = [];
-         foreach ($courtTypes as $courtType) {
-            $court_type[] = __('enums.'.$courtType);
+        $case_type = [];
+
+         foreach ($courtTypes as $key => $courtType) {
+            $court_type[] = [
+                'title' => __('enums.'.$courtType),
+                'value' => $courtType,
+            ];
+        }
+
+        foreach (CaseTypeEnum::cases() as $caseTypeValue) {
+            $case_type[] = [
+                'title' =>  __('enums.'.$caseTypeValue->name),
+                 'value' => $caseTypeValue->name,
+            ];
         }
         return responseSuccess([
             'court_types' => $court_type,
+            'case_types' => $case_type,
         ]);
-
      }
 }

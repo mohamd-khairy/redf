@@ -376,7 +376,6 @@ class FormsController extends Controller
                 'date' => $request->date,
             ];
             $calendar = saveCalendarFromRequest($calendarData);
-
             $actionData = [
                 'formable_id' => $formRequestInfo->form_request_id,
                 'formable_type' => FormRequest::class,
@@ -402,7 +401,7 @@ class FormsController extends Controller
             'formable_type' => FormRequest::class, // Replace with the actual model type
         ]);
     }
-    
+
     public function latestFormInformation()
     {
         $latestRecord = FormRequestInformation::latestRecord();
