@@ -10,8 +10,9 @@ use Illuminate\Pipeline\Pipeline;
 use App\Http\Requests\PageRequest;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CalendarRequest;
+use Throwable;
 
-    class CalenderController extends Controller
+class CalenderController extends Controller
 {
     public $model = Branch::class;
 

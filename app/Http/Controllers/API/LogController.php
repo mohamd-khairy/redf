@@ -12,22 +12,17 @@ class LogController extends Controller
 {
     public $model = Activity::class;
 
-    public function all_logs(){
-        $activityLogs = Activity::paginate(request('page_size' , 10));
+    public function all_logs()
+    {
+        $activityLogs = Activity::paginate(request('page_size', 10));
+
         return responseSuccess(['activityLogs' => $activityLogs]);
     }
-    public function action_preview($id){
 
-        $formRequestActions = FormRequestAction::where('formable_id' , $id)->with(['formable.user'])->get();
-        $modifiedData = $formRequestActions->map(function ($action) {
-            return [
-                'id' => $action->id,
-                'msg' => $action->msg,
-                'user' => $action->formable->user,
-                'form_id' => $action->formable->form,
-            ];
-        });
+    public function action_preview($id)
+    {
+        $formRequestActions = FormRequestAction::where('form_request_id', $id)->with('formable')->get();
+
         return responseSuccess(['formRequestActions' => $formRequestActions]);
-
     }
 }

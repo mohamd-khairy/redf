@@ -8,11 +8,14 @@ use Illuminate\Database\Eloquent\Model;
 class FormRequestAction extends Model
 {
     use HasFactory;
+    
     protected $fillable = [
         'formable_type',
         'formable_id',
+        'form_request_id',
         'msg'
     ];
+
     public function formable()
     {
         return $this->morphTo();

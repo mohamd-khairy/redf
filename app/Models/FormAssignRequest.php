@@ -16,19 +16,22 @@ class FormAssignRequest extends Model
         'type',
         'status'
     ];
+
     protected $casts = [
         'date' => 'date:Y-m-d',
         'created_at' => "datetime:Y-m-d H:i",
     ];
 
+    protected $with = ['user', 'assigner'];
+
     public function user()
     {
-        return $this->belongsTo(User::class,'user_id');
+        return $this->belongsTo(User::class, 'user_id');
     }
 
     public function assigner()
     {
-        return $this->belongsTo(User::class,'assigner_id');
+        return $this->belongsTo(User::class, 'assigner_id');
     }
 
     public function formRequest()

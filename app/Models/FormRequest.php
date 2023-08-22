@@ -24,6 +24,8 @@ class FormRequest extends Model
         'name'
     ];
 
+    protected $with = ['user'];
+
     public function getActivitylogOptions(): LogOptions
     {
         return LogOptions::defaults()->logOnly(self::getFillable());
@@ -78,7 +80,6 @@ class FormRequest extends Model
     {
         return $this->hasMany(FormRequestInformation::class);
     }
-
 
     public function lastFormRequestInformation()
     {

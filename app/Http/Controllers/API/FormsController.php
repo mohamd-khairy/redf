@@ -197,6 +197,7 @@ class FormsController extends Controller
                 $this->processFormPages($request, $formRequest);
 
                 $actionData = [
+                    'form_request_id' => $formRequest->id,
                     'formable_id' => $formRequest->id,
                     'formable_type' => FormRequest::class,
                     'msg' => 'تم اضافه قضيه جديده',
@@ -227,6 +228,7 @@ class FormsController extends Controller
                 $this->processFormPages($request, $formRequest);
 
                 $actionData = [
+                    'form_request_id' => $formRequest->id,
                     'formable_id' => $formRequest->id,
                     'formable_type' => FormRequest::class,
                     'msg' => 'تم تحديث القضيه ',
@@ -324,6 +326,7 @@ class FormsController extends Controller
                 }
 
                 $actionData = [
+                    'form_request_id' => $form_request_id,
                     'formable_id' => $assignNew->id,
                     'formable_type' => FormAssignRequest::class,
                     'msg' => 'تم اسناد القضيه ل موظف جديد',
@@ -368,6 +371,7 @@ class FormsController extends Controller
             $formRequestInfo->form_request->save();
 
             $calendarData = [
+                'form_request_id' => $formRequestInfo->form_request_id,
                 'calendarable_id' => $formRequestInfo->form_request_id,
                 'calendarable_type' => FormRequest::class,
                 'details' => $request->details,
@@ -377,8 +381,9 @@ class FormsController extends Controller
             $calendar = saveCalendarFromRequest($calendarData);
 
             $actionData = [
-                'formable_id' => $formRequestInfo->form_request_id,
-                'formable_type' => FormRequest::class,
+                'form_request_id' => $formRequestInfo->form_request_id,
+                'formable_id' => $formRequestInfo->id,
+                'formable_type' => FormRequestInformation::class,
                 'msg' => $request->details,
             ];
             $action = saveFormRequestAction($actionData);

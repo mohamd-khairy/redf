@@ -15,7 +15,8 @@ class Calendar extends Model
         'calendarable_id',
         'date',
         'details',
-        'user_id'
+        'user_id',
+        'form_request_id'
     ];
     public function calendarable()
     {
