@@ -31,6 +31,7 @@ use App\Http\Requests\FormFillRequest;
 use App\Http\Requests\FormUpdateRequest;
 use App\Http\Resources\FormItemResource;
 use App\Http\Requests\InformationRequest;
+use App\Http\Resources\FormRequestResource;
 
 class FormsController extends Controller
 {
@@ -288,7 +289,7 @@ class FormsController extends Controller
         try {
             $formfill = FormRequest::with('form.pages.items', 'user', 'form_page_item_fill', 'formRequestInformation', 'formRequestSide')->find($id);
 
-            return responseSuccess($formfill, 'Form requests retrieved successfully');
+            return responseSuccess(new FormRequestResource($formfill), 'Form requests retrieved successfully');
         } catch (\Throwable $e) {
             // Return an error response if something goes wrong
             return responseFail($e->getMessage());
@@ -402,7 +403,7 @@ class FormsController extends Controller
             'formable_type' => FormRequest::class, // Replace with the actual model type
         ]);
     }
-    
+
     public function latestFormInformation()
     {
         $latestRecord = FormRequestInformation::latestRecord();
