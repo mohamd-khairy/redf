@@ -373,7 +373,7 @@ export default {
         status: this.caseAction.status,
         date: this.caseAction.date,
         court_name: this.caseAction.court_name,
-        sessionDate,
+        sessionDate: this.caseAction.sessionDate,
       };
       this.isLoading = true;
       const result = await this.saveFormInformation(data);
