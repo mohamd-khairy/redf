@@ -31,9 +31,9 @@ class FormRequestService
             $formRequest->name = $requestData['case_name'] ?? ($formRequest->form->name . "($formRequest->case_number)");
             $formRequest->save();
 
+
             // save related tables if get case_id
             if($requestData->case_id){
-                // dd($requestData->case_id , $formRequest->id , FormRequest::class);
                 // Create a new Formable record
                 Formable::create([
                     'formable_id' => $requestData->case_id,
@@ -67,6 +67,15 @@ class FormRequestService
             $formRequest->name = $requestData['case_name'] ?? $formRequest->name;
             $formRequest->save();
 
+            // save related tables if get case_id
+            if($requestData->case_id){
+                // Update Formable record
+                Formable::updateOrCreate([
+                    'formable_id' => $requestData->case_id,
+                    'form_request_id' => $formRequest->id,
+                    'formable_type' => FormRequest::class,
+                ]);
+            }
             FormPageItemFill::where('form_request_id', $formRequest->id)->delete();
             $this->processFormPages($requestData, $formRequest);
 
@@ -160,11 +169,6 @@ class FormRequestService
             // You could consider throwing an exception here if needed
             return null;
         }
-    }
-
-    public function updateAssignRequest(Request $request)
-    {
-        dd($request->all());
     }
 
     public function formRequestSide($request)
