@@ -15,6 +15,7 @@ use App\Http\Controllers\api\DocumentController;
 use App\Http\Controllers\Api\TemplateController;
 use App\Http\Controllers\Api\DepartmentController;
 use App\Http\Controllers\API\PermissionController;
+use App\Http\Controllers\API\FormRequestController;
 use App\Http\Controllers\Api\FormSessionController;
 use App\Http\Controllers\API\NotificationController;
 use App\Http\Controllers\Api\OrganizationController;
@@ -133,10 +134,10 @@ Route::group(['prefix' => 'v1'], function () {
         Route::apiResource('calenders', CalenderController::class);
     });
 
-  /*********************CourtController***************** */
-  Route::group(['middleware' => 'auth:sanctum'], function () {
-    Route::get('/lookup', [HomeController::class, 'lookup']);
- });
+    /*********************CourtController***************** */
+    Route::group(['middleware' => 'auth:sanctum'], function () {
+        Route::get('/lookup', [HomeController::class, 'lookup']);
+    });
 
 
     /*********************FormsController***************** */
@@ -149,11 +150,11 @@ Route::group(['prefix' => 'v1'], function () {
         Route::delete('delete-form/{id}', [FormsController::class, 'deleteForm']);
         Route::get('get-forms', [FormsController::class, 'getFormsByTemplate']);
         Route::get('get-form/{formId}', [FormsController::class, 'listForm']);
-        Route::post('store-form-fill', [FormsController::class, 'storeFormFill']);
-        Route::put('update-form-fill/{id}', [FormsController::class, 'updateFormFill']);
-        Route::get('get-form-Requests', [FormsController::class, 'getFormRequest']);
-        Route::get('get-form-Requests/{id}', [FormsController::class, 'getFormRequestfill']);
-        Route::post('assign-request', [FormsController::class, 'assignRequest']);
+        Route::post('store-form-fill', [FormRequestController::class, 'storeFormFill']);
+        Route::put('update-form-fill/{id}', [FormRequestController::class, 'updateFormFill']);
+        Route::get('get-form-Requests', [FormRequestController::class, 'getFormRequest']);
+        Route::get('get-form-Requests/{id}', [FormRequestController::class, 'getFormRequestfill']);
+        Route::post('assign-request', [FormRequestController::class, 'assignRequest']);
         Route::put('assign-request/{id}', [FormsController::class, 'updateAssignRequest']);
         Route::get('all-forms', [FormsController::class, 'allForm']);
         Route::post('form-request-side', [FormsController::class , 'formRequestSide']);

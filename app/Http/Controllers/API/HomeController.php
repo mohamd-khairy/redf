@@ -80,7 +80,7 @@ class HomeController extends Controller
         foreach (CaseTypeEnum::cases() as $caseTypeValue) {
             $case_type[] = [
                 'title' =>  __('enums.'.$caseTypeValue->name),
-                 'value' => $caseTypeValue->name,
+                'value' => $caseTypeValue->name,
             ];
         }
         return responseSuccess([

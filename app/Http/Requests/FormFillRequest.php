@@ -31,7 +31,16 @@ class FormFillRequest extends FormRequest
     public function rules()
     {
         return [
-            'case_number' => 'required',
+            'case_number' => 'required|regex:/^[1-9]+$/',
+            'case_name' => 'nullable|string',
+            'pages' => 'required|array',
+            'pages.*' => 'required|array',
+            'pages.*.title' => 'required|string',
+            'pages.*.items' => 'required|array',
+            'pages.*.items.*' => 'required|array',
+            'pages.*.items.*.type' => 'nullable|in:line,radio,label,text,textarea,checkbox,select,table,tree,file',
+            'pages.*.items.*.value' => 'required',
+            'pages.*.items.*.form_page_item_id' => 'required',
         ];
     }
 }

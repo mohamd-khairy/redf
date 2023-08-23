@@ -193,7 +193,6 @@ if (!function_exists('saveCalendarFromRequest')) {
 if (!function_exists('saveFormRequestAction')) {
     function saveFormRequestAction(array $data)
     {
-
         $validatedData = validator($data, [
             'formable_type' => 'nullable|string',
             'form_request_id' => 'required|integer',

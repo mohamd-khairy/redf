@@ -25,13 +25,11 @@ class CreateUserInformationRequest extends FormRequest
     public function rules()
     {
         return [
-            'civil_number' => 'required|integer',
-            'name' => 'required|string', // Add name rule
-            'phone' => 'required|integer', // Add phone rule
+            'civil_number' => 'required|integer|unique:user_information|digits:10', // Set max to 10 digits
+            'name' => 'required|alpha',
+            'phone' => 'required|integer|digits:10|regex:/^[1-9]+$/', // Add phone rule
             'email' => 'nullable|email', // Allow nullable email
-            'department_id' => 'required|exists:departments,id',
-
-
+            'department_id' => 'nullable|exists:departments,id',
         ];
     }
 
