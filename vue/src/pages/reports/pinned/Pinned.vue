@@ -168,7 +168,7 @@
               @click.prevent="deleteItem(item.id)"
               v-if="item.active != 1 && item.id != 1"
             >
-              <v-icon>mdi-delete</v-icon>
+              <v-icon>mdi-close</v-icon>
             </v-btn>
           </div>
         </template>
@@ -194,7 +194,7 @@ export default {
   name: "Pinned",
   components: {
     CopyLabel,
-    emptyDataSvg
+    emptyDataSvg,
   },
   data() {
     return {
@@ -207,11 +207,11 @@ export default {
       breadcrumbs: [
         {
           text: this.$t("reports.reports"),
-          disabled: true
+          disabled: true,
         },
         {
-          text: this.$t("reports.pinnedReports")
-        }
+          text: this.$t("reports.pinnedReports"),
+        },
       ],
 
       searchQuery: "",
@@ -230,22 +230,22 @@ export default {
         {
           text: this.$t("reports.inDashboard"),
           value: "dashboard",
-          align: "center"
+          align: "center",
         },
         {
           text: "",
           sortable: false,
           align: "right",
           value: "action",
-          width: "20%"
-        }
-      ]
+          width: "20%",
+        },
+      ],
     };
   },
   created() {
     this.setBreadCrumb({
       breadcrumbs: this.breadcrumbs,
-      pageTitle: this.$t("reports.pinnedReports")
+      pageTitle: this.$t("reports.pinnedReports"),
     });
   },
   watch: {
@@ -253,15 +253,15 @@ export default {
     options: {
       handler() {
         this.open();
-      }
+      },
     },
     deep: true,
     searchQuery() {
       this.open();
-    }
+    },
   },
   computed: {
-    ...mapState("reports", ["pinned", "pinTitle"])
+    ...mapState("reports", ["pinned", "pinTitle"]),
   },
   created() {},
   mounted() {},
@@ -270,7 +270,7 @@ export default {
       "getPinned",
       "deletePin",
       "deleteAllPinned",
-      "updateStatus"
+      "updateStatus",
     ]),
     ...mapActions("app", ["setBreadCrumb"]),
     open() {
@@ -282,14 +282,14 @@ export default {
         pageSize: itemsPerPage,
         pageNumber: page,
         sortDirection: direction,
-        sortColumn: this.options.sortBy[0] ?? ""
+        sortColumn: this.options.sortBy[0] ?? "",
       };
       this.getPinned(data)
         .then(() => {
           this.isLoading = false;
           this.items = this.pinned.data;
           this.total = this.pinned.total;
-          this.items.map(item => {
+          this.items.map((item) => {
             if (item.id === 1 || item.active === 1) {
               Object.assign(item, { disabled: true });
               this.disabledCount += 1;
@@ -311,7 +311,7 @@ export default {
       if (this.selected.length != this.items.length - this.disabledCount) {
         this.selected = [];
         const self = this;
-        props.items.forEach(item => {
+        props.items.forEach((item) => {
           if (!item.disabled) {
             self.selected.push(item);
           }
@@ -322,10 +322,10 @@ export default {
       this.isLoading = true;
       let data = {
         id: item.id,
-        status: item.active ? 1 : 0
+        status: item.active ? 1 : 0,
       };
       this.updateStatus(data)
-        .then(response => {
+        .then((response) => {
           this.isLoading = false;
           this.open();
           makeToast("success", response.data.message);
@@ -340,7 +340,7 @@ export default {
       if (isConfirmed) {
         this.isLoading = true;
         this.deletePin(id)
-          .then(response => {
+          .then((response) => {
             makeToast("success", response.data.message);
             this.open();
             this.isLoading = false;
@@ -357,18 +357,18 @@ export default {
       const { isConfirmed } = await ask("Are you sure to delete it?", "info");
       if (isConfirmed) {
         if (this.selected.length) {
-          this.selected.forEach(item => {
+          this.selected.forEach((item) => {
             ids.push(item.id);
           });
         }
         data = {
           ids: ids,
           action: "delete",
-          value: 1
+          value: 1,
         };
         this.isLoading = true;
         this.deleteAllPinned(data)
-          .then(response => {
+          .then((response) => {
             makeToast("success", response.data.message);
             this.open();
             this.isLoading = false;
@@ -377,8 +377,8 @@ export default {
             this.isLoading = false;
           });
       }
-    }
-  }
+    },
+  },
 };
 </script>
 

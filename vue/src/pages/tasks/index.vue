@@ -105,7 +105,7 @@
               <v-icon>mdi-open-in-new</v-icon>
             </v-btn>
             <v-btn color="error" icon @click.prevent="deleteItem(item.id)">
-              <v-icon>mdi-delete</v-icon>
+              <v-icon>mdi-close</v-icon>
             </v-btn>
           </div>
         </template>

@@ -113,17 +113,6 @@
           <div>{{ item.form_request_number ?? "---" }}</div>
         </template>
 
-        <!--        <template v-slot:item.email="{ item }">-->
-        <!--          <div class="d-flex align-center py-1">-->
-        <!--            <v-avatar size="32" class="elevation-1 grey lighten-3 ml-2">-->
-        <!--              <v-img :src="item.avatar" />-->
-        <!--            </v-avatar>-->
-        <!--            <div class="ml-1 caption font-weight-bold">-->
-        <!--              <copy-label :text="item.email" />-->
-        <!--            </div>-->
-        <!--          </div>-->
-        <!--        </template>-->
-
         <template v-slot:item.user="{ item }">
           <div>{{ item.user.name ?? "---" }}</div>
         </template>
@@ -134,18 +123,17 @@
           </div>
         </template>
 
-        <!-- <template v-slot:item.role="{ item }">
+        <template v-slot:item.status="{ item }">
           <v-chip
-            label
             small
-            v-for="(item, index) in item.roles"
-            :key="index"
-            class="font-weight-bold"
-            :color="item.display_name === 'Admin' ? 'primary' : undefined"
+            :color="getStatusColor(item?.status?.toLowerCase())"
+            text-color="white"
           >
-            {{ item.display_name }}
+            {{
+              item?.status ? $t(`general.${item.status.toLowerCase()}`) : "---"
+            }}
           </v-chip>
-        </template> -->
+        </template>
 
         <template v-slot:item.created_at="{ item }">
           <div>{{ item.created_at | formatDate("lll") }}</div>
@@ -377,6 +365,16 @@ export default {
       console.log("closssssssse");
       this.addActionDialog = false;
       this.open();
+    },
+    getStatusColor(status) {
+      const colors = {
+        processing: "blue",
+        pending: "orange",
+        accepted: "green",
+        closed: "red",
+      };
+
+      return colors[status] || "primary";
     },
 
     async deleteItem(id) {

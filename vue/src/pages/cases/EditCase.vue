@@ -1,6 +1,6 @@
 <template>
   <div class="d-flex flex-column flex-grow-1" v-if="formData">
-    <v-stepper v-model="e1">
+    <v-stepper v-model="e1" class="mb-4">
       <v-stepper-header>
         <v-stepper-step :complete="e1 > 1" step="1">
           {{ $t("general.edit") + " " + selectedTitle }}
@@ -9,203 +9,194 @@
         <v-stepper-step :complete="e1 > 2" step="2">
           {{ $t("general.info") + " " + selectedTitle }}
         </v-stepper-step>
-
         <v-divider></v-divider>
-
         <v-stepper-step :complete="e1 > 3" step="3">
           {{ $t("cases.sidesInfo") }}
         </v-stepper-step>
-
         <v-divider></v-divider>
-
         <v-stepper-step step="4">
           {{ $t("cases.caseActions") }}
         </v-stepper-step>
       </v-stepper-header>
       <v-stepper-items>
         <v-stepper-content step="1">
-          <v-card class="mb-12" v-if="!initialLoading">
-            <v-card-text>
-              <v-text-field
-                outlined
-                v-model="caseName"
-                :label="$t('cases.caseName')"
-                :required="true"
-                :rules="[requiredRule]"
-                dense
-              ></v-text-field>
-              <v-text-field
-                outlined
-                type="number"
-                v-model="caseNumber"
-                :label="$t('cases.caseNumber')"
-                :required="true"
-                :rules="[requiredRule]"
-                dense
-              ></v-text-field>
-            </v-card-text>
-          </v-card>
+          <div class="mt-2">
+            <v-text-field
+              outlined
+              v-model="caseName"
+              :label="$t('cases.caseName')"
+              :required="true"
+              :error-messages="stepOneValidation(caseName)"
+              :rules="[requiredRule]"
+              dense
+            ></v-text-field>
+            <v-text-field
+              outlined
+              v-model="caseNumber"
+              :label="$t('cases.caseNumber')"
+              :required="true"
+              :rules="[requiredRule]"
+              :error-messages="stepOneValidation(caseNumber)"
+              dense
+            ></v-text-field>
+          </div>
           <v-btn color="primary" @click="saveCaseInfo">
             {{ $t("general.continue") }}
           </v-btn>
         </v-stepper-content>
         <v-stepper-content step="2">
-          <v-card v-if="!initialLoading">
+          <div v-if="!initialLoading">
             <v-tabs v-model="activeTab">
               <v-tab v-for="(tab, index) in pagesValues" :key="index">{{
                 tab.title
               }}</v-tab>
             </v-tabs>
-            <v-card-text>
-              <v-tabs-items v-model="activeTab">
-                <v-tab-item
-                  v-for="(tab, tabIndex) in pagesValues"
-                  :key="tabIndex"
-                >
-                  <v-form>
-                    <v-container>
-                      <v-row dense>
-                        <v-col
-                          v-for="(input, inputIndex) in tab.items"
-                          :key="inputIndex"
-                          :cols="inputWidth(input.width)"
-                        >
-                          <template v-if="input.type === 'text'">
-                            <v-text-field
-                              outlined
-                              v-model="input.value"
-                              :label="getInputLabel(input)"
-                              :required="input.required"
-                              :rules="input.required ? [requiredRule] : []"
-                              :error-messages="errorMessage(input)"
-                              dense
-                            ></v-text-field>
-                          </template>
-                          <template v-else-if="input.type === 'textarea'">
-                            <v-textarea
-                              outlined
-                              dense
-                              v-model="input.value"
-                              :label="getInputLabel(input)"
-                              :required="input.required"
-                              :rules="input.required ? [requiredRule] : []"
-                              :error-messages="errorMessage(input)"
-                            ></v-textarea>
-                          </template>
-                          <template v-else-if="input.type === 'file'">
-                            <v-file-input
-                              outlined
-                              dense
-                              show-size
-                              :label="getInputLabel(input)"
-                              @change="(file) => handleFileUpload(file, input)"
-                              @click:clear="handleFileClear(input)"
-                              :required="input.required"
-                              :rules="input.required ? [requiredRule] : []"
-                              :error-messages="errorMessage(input)"
-                            >
-                            </v-file-input>
-                            <div
-                              class="mt-1 d-flex justify-content-between align-item-center"
+            <v-tabs-items v-model="activeTab">
+              <v-tab-item
+                v-for="(tab, tabIndex) in pagesValues"
+                :key="tabIndex"
+              >
+                <v-form>
+                  <v-container>
+                    <v-row dense>
+                      <v-col
+                        v-for="(input, inputIndex) in tab.items"
+                        :key="inputIndex"
+                        :cols="inputWidth(input.width)"
+                      >
+                        <template v-if="input.type === 'text'">
+                          <v-text-field
+                            outlined
+                            v-model="input.value"
+                            :label="getInputLabel(input)"
+                            :required="input.required"
+                            :rules="input.required ? [requiredRule] : []"
+                            :error-messages="errorMessage(input)"
+                            dense
+                          ></v-text-field>
+                        </template>
+                        <template v-else-if="input.type === 'textarea'">
+                          <v-textarea
+                            outlined
+                            dense
+                            v-model="input.value"
+                            :label="getInputLabel(input)"
+                            :required="input.required"
+                            :rules="input.required ? [requiredRule] : []"
+                            :error-messages="errorMessage(input)"
+                          ></v-textarea>
+                        </template>
+                        <template v-else-if="input.type === 'file'">
+                          <v-file-input
+                            outlined
+                            dense
+                            show-size
+                            :label="getInputLabel(input)"
+                            @change="(file) => handleFileUpload(file, input)"
+                            @click:clear="handleFileClear(input)"
+                            :required="input.required"
+                            :rules="input.required ? [requiredRule] : []"
+                            :error-messages="errorMessage(input)"
+                          >
+                          </v-file-input>
+                          <div
+                            class="mt-1 d-flex justify-content-between align-item-center"
+                            v-if="
+                              input.preview && input.preview === input.value
+                            "
+                          >
+                            <h6>{{ fileInfo(input.preview).name }}</h6>
+                            <img
                               v-if="
-                                input.preview && input.preview === input.value
+                                fileInfo(input.preview).type === 'png' ||
+                                fileInfo(input.preview).type === 'jpg' ||
+                                fileInfo(input.preview).type === 'jpeg'
                               "
+                              width="50"
+                              height="50"
+                              :src="input.preview"
+                              alt="file preview"
+                            />
+                            <a
+                              v-else-if="fileInfo(input.preview).type === 'pdf'"
+                              :href="input.preview"
+                              target="_blank"
                             >
-                              <h6>{{ fileInfo(input.preview).name }}</h6>
-                              <img
-                                v-if="
-                                  fileInfo(input.preview).type === 'png' ||
-                                  fileInfo(input.preview).type === 'jpg' ||
-                                  fileInfo(input.preview).type === 'jpeg'
-                                "
-                                width="50"
-                                height="50"
-                                :src="input.preview"
-                                alt="file preview"
-                              />
-                              <a
-                                v-else-if="
-                                  fileInfo(input.preview).type === 'pdf'
-                                "
-                                :href="input.preview"
-                                target="_blank"
-                              >
-                                <v-icon> mdi-file-pdf-box </v-icon>
-                              </a>
-                              <a
-                                v-else-if="
-                                  fileInfo(input.preview).type === 'doc' ||
-                                  fileInfo(input.preview).type === 'docx'
-                                "
-                                :href="input.preview"
-                                target="_blank"
-                              >
-                                <v-icon> mdi-file-word-outline </v-icon>
-                              </a>
-                              <a
-                                v-else-if="
-                                  fileInfo(input.preview).type === 'xls' ||
-                                  fileInfo(input.preview).type === 'xlsx'
-                                "
-                                :href="input.preview"
-                                target="_blank"
-                              >
-                                <v-icon> mdi-file-excel </v-icon>
-                              </a>
-                            </div>
-                          </template>
-                          <template v-else-if="input.type === 'select'">
-                            <v-select
-                              v-model="input.value"
-                              :items="input.childList"
-                              item-text="text"
-                              :label="getInputLabel(input)"
-                              :required="input.required"
-                              :rules="input.required ? [requiredRule] : []"
-                              :error-messages="errorMessage(input)"
-                              outlined
-                              dense
-                            ></v-select>
-                          </template>
-                          <template v-else-if="input.type === 'radio'">
-                            <v-radio-group
-                              v-model="input.value"
-                              :label="getInputLabel(input)"
-                              :required="input.required"
-                              :rules="input.required ? [requiredRule] : []"
-                              :error-messages="errorMessage(input)"
+                              <v-icon> mdi-file-pdf-box </v-icon>
+                            </a>
+                            <a
+                              v-else-if="
+                                fileInfo(input.preview).type === 'doc' ||
+                                fileInfo(input.preview).type === 'docx'
+                              "
+                              :href="input.preview"
+                              target="_blank"
                             >
-                              <v-radio
-                                v-for="(option, optionIndex) in input.childList"
-                                :key="optionIndex"
-                                :label="option.text"
-                                :value="option.text"
-                              ></v-radio>
-                            </v-radio-group>
-                          </template>
-                          <template v-else-if="input.type === 'checkbox'">
-                            <label>
-                              {{ input.label }}
-                            </label>
-                            <v-checkbox
+                              <v-icon> mdi-file-word-outline </v-icon>
+                            </a>
+                            <a
+                              v-else-if="
+                                fileInfo(input.preview).type === 'xls' ||
+                                fileInfo(input.preview).type === 'xlsx'
+                              "
+                              :href="input.preview"
+                              target="_blank"
+                            >
+                              <v-icon> mdi-file-excel </v-icon>
+                            </a>
+                          </div>
+                        </template>
+                        <template v-else-if="input.type === 'select'">
+                          <v-select
+                            v-model="input.value"
+                            :items="input.childList"
+                            item-text="text"
+                            :label="getInputLabel(input)"
+                            :required="input.required"
+                            :rules="input.required ? [requiredRule] : []"
+                            :error-messages="errorMessage(input)"
+                            outlined
+                            dense
+                          ></v-select>
+                        </template>
+                        <template v-else-if="input.type === 'radio'">
+                          <v-radio-group
+                            v-model="input.value"
+                            :label="getInputLabel(input)"
+                            :required="input.required"
+                            :rules="input.required ? [requiredRule] : []"
+                            :error-messages="errorMessage(input)"
+                          >
+                            <v-radio
                               v-for="(option, optionIndex) in input.childList"
-                              v-model="input.value"
+                              :key="optionIndex"
                               :label="option.text"
                               :value="option.text"
-                              :required="input.required"
-                              :rules="input.required ? [requiredRule] : []"
-                              :error-messages="errorMessage(input)"
-                              :class="optionIndex > 0 ? 'mt-0' : ''"
-                            ></v-checkbox>
-                          </template>
-                        </v-col>
-                      </v-row>
-                    </v-container>
-                  </v-form>
-                </v-tab-item>
-              </v-tabs-items>
-            </v-card-text>
-            <v-card-actions class="px-5 pb-4">
+                            ></v-radio>
+                          </v-radio-group>
+                        </template>
+                        <template v-else-if="input.type === 'checkbox'">
+                          <label>
+                            {{ input.label }}
+                          </label>
+                          <v-checkbox
+                            v-for="(option, optionIndex) in input.childList"
+                            v-model="input.value"
+                            :label="option.text"
+                            :value="option.text"
+                            :required="input.required"
+                            :rules="input.required ? [requiredRule] : []"
+                            :error-messages="errorMessage(input)"
+                            :class="optionIndex > 0 ? 'mt-0' : ''"
+                          ></v-checkbox>
+                        </template>
+                      </v-col>
+                    </v-row>
+                  </v-container>
+                </v-form>
+              </v-tab-item>
+            </v-tabs-items>
+            <v-card-actions class="px-2">
               <v-btn
                 color="primary"
                 :disabled="isSubmitingForm"
@@ -213,11 +204,14 @@
                 @click="saveForm"
                 >{{ $t("general.continue") }}</v-btn
               >
+              <v-btn color="grey" @click="stepBack" class="ms-2">
+                {{ $t("general.back") }}
+              </v-btn>
             </v-card-actions>
-          </v-card>
+          </div>
         </v-stepper-content>
         <v-stepper-content step="3">
-          <v-card class="mb-12">
+          <div class="mt-2">
             <v-card-title>
               <v-flex class="text-left">
                 <v-btn color="primary" large @click.stop="dialog = true">
@@ -226,312 +220,319 @@
                 </v-btn>
               </v-flex>
             </v-card-title>
-            <v-card-text>
-              <div class="d-flex flex-column flex-sm-row">
-                <div class="flex-grow-1 pt-2 pa-sm-2">
-                  <v-row>
-                    <v-col cols="12">
-                      <v-select
-                        :items="claimantUsers"
-                        :label="$t('cases.claimant')"
-                        :item-text="(item) => item.name"
-                        :item-value="(item) => item.id"
-                        hide-details
-                        dense
-                        outlined
-                        v-model="sidesInfo.claimant_id"
-                        :rules="[rules.required]"
-                        :error-messages="errors['claimant_id']"
-                        clearable
-                        @click:clear="clearClaimantSelect"
-                      >
-                      </v-select>
-                    </v-col>
-                    <v-col cols="12">
-                      <v-select
-                        :items="defendantUsers"
-                        :label="$t('cases.defendant')"
-                        :item-text="(item) => item.name"
-                        :item-value="(item) => item.id"
-                        hide-details
-                        dense
-                        outlined
-                        v-model="sidesInfo.defendant_id"
-                        :rules="[rules.required]"
-                        :error-messages="errors['defendant_id']"
-                        clearable
-                        @click:clear="clearDefendantSelect"
-                      >
-                      </v-select>
-                    </v-col>
-                    <v-col cols="12">
-                      <v-select
-                        :items="departments"
-                        :label="$t('tables.department')"
-                        :item-text="(item) => item.name"
-                        :item-value="(item) => item.id"
-                        hide-details
-                        disabled
-                        dense
-                        outlined
-                        v-model="sidesInfo.department_id"
-                      >
-                      </v-select>
-                    </v-col>
-                    <v-col cols="12">
-                      <v-text-field
-                        type="number"
-                        v-model="sidesInfo.civil"
-                        :label="$t('cases.civil')"
-                        disabled
-                        dense
-                        outlined
-                      ></v-text-field>
-                    </v-col>
-                  </v-row>
-                </div>
+            <div class="d-flex flex-column flex-sm-row">
+              <div class="flex-grow-1 pt-2 pa-sm-2">
+                <v-row>
+                  <v-col cols="12">
+                    <v-select
+                      :items="claimantUsers"
+                      :label="$t('cases.claimant')"
+                      :item-text="(item) => item.name"
+                      :item-value="(item) => item.id"
+                      hide-details
+                      dense
+                      outlined
+                      v-model="sidesInfo.claimant_id"
+                      :rules="[rules.required]"
+                      :error-messages="stepOneValidation(sidesInfo.claimant_id)"
+                      clearable
+                      @click:clear="clearClaimantSelect"
+                    >
+                    </v-select>
+                  </v-col>
+                  <v-col cols="12">
+                    <v-select
+                      :items="defendantUsers"
+                      :label="$t('cases.defendant')"
+                      :item-text="(item) => item.name"
+                      :item-value="(item) => item.id"
+                      hide-details
+                      dense
+                      outlined
+                      v-model="sidesInfo.defendant_id"
+                      :rules="[rules.required]"
+                      :error-messages="
+                        stepOneValidation(sidesInfo.defendant_id)
+                      "
+                      clearable
+                      @click:clear="clearDefendantSelect"
+                    >
+                    </v-select>
+                  </v-col>
+                  <v-col cols="12">
+                    <v-select
+                      :items="departments"
+                      :label="$t('tables.department')"
+                      :item-text="(item) => item.name"
+                      :item-value="(item) => item.id"
+                      hide-details
+                      disabled
+                      dense
+                      outlined
+                      v-model="sidesInfo.department_id"
+                    >
+                    </v-select>
+                  </v-col>
+                  <v-col cols="12">
+                    <v-text-field
+                      type="number"
+                      v-model="sidesInfo.civil"
+                      :label="$t('cases.civil')"
+                      disabled
+                      dense
+                      outlined
+                    ></v-text-field>
+                  </v-col>
+                </v-row>
               </div>
-            </v-card-text>
-          </v-card>
+            </div>
+          </div>
 
-          <v-btn color="primary" @click="storeRequestSide">
-            {{ $t("general.continue") }}
-          </v-btn>
+          <v-card-actions class="px-2">
+            <v-btn color="primary" @click="storeRequestSide">
+              {{ $t("general.continue") }}
+            </v-btn>
+            <v-btn color="grey" @click="stepBack" class="ms-2">
+              {{ $t("general.back") }}
+            </v-btn>
+          </v-card-actions>
         </v-stepper-content>
 
         <v-stepper-content step="4">
-          <v-card class="mb-12">
-            <v-card-title> </v-card-title>
-            <v-card-text>
-              <div class="d-flex flex-column flex-sm-row">
-                <div class="flex-grow-1 pt-2 pa-sm-2">
-                  <v-row dense v-if="lastAction" class="mb-2">
-                    <v-col cols="12">
-                      <v-expansion-panels multiple>
-                        <v-expansion-panel>
-                          <v-expansion-panel-header>
-                            <h5>{{ $t("general.last_action") }}</h5>
-                          </v-expansion-panel-header>
-                          <v-expansion-panel-content>
-                            <v-row class="mb-1" dense>
-                              <v-col cols="12" sm="3">
-                                <h6 class="mt-1 mb-0 c-h6">
-                                  {{ $t("cases.amount") }}
-                                </h6>
-                              </v-col>
-                              <v-col cols="12" sm="9">
-                                <v-text-field
-                                  dense
-                                  class="custom-disabled-input"
-                                  :value="lastAction?.amount || ''"
-                                  solo
-                                  label="Solo"
-                                  disabled
-                                  hide-details
-                                ></v-text-field>
-                              </v-col>
-                            </v-row>
-                            <v-row class="mb-1" dense>
-                              <v-col cols="12" sm="3">
-                                <h6 class="mt-1 mb-0 c-h6">
-                                  {{ $t("cases.percentageLose") }}
-                                </h6>
-                              </v-col>
-                              <v-col cols="12" sm="9">
-                                <v-text-field
-                                  dense
-                                  class="custom-disabled-input"
-                                  :value="lastAction?.percentage || ''"
-                                  solo
-                                  label="Solo"
-                                  disabled
-                                  hide-details
-                                ></v-text-field>
-                              </v-col>
-                            </v-row>
-                            <v-row class="mb-1" dense>
-                              <v-col cols="12" sm="3">
-                                <h6 class="mt-1 mb-0 c-h6">
-                                  {{ $t("tables.court") }}
-                                </h6>
-                              </v-col>
-                              <v-col cols="12" sm="9">
-                                <v-text-field
-                                  class="custom-disabled-input"
-                                  :value="lastAction?.court || ''"
-                                  solo
-                                  label="Solo"
-                                  disabled
-                                  hide-details
-                                  dense
-                                ></v-text-field>
-                              </v-col>
-                            </v-row>
-                            <v-row class="mb-1" dense>
-                              <v-col cols="12" sm="3">
-                                <h6 class="mt-1 mb-0 c-h6">
-                                  {{ $t("tables.date") }}
-                                </h6>
-                              </v-col>
-                              <v-col cols="12" sm="9">
-                                <v-text-field
-                                  class="custom-disabled-input"
-                                  :value="lastAction?.date || ''"
-                                  solo
-                                  label="Solo"
-                                  disabled
-                                  hide-details
-                                  dense
-                                ></v-text-field>
-                              </v-col>
-                            </v-row>
+          <div class="d-flex flex-column flex-sm-row">
+            <div class="flex-grow-1 pt-2 pa-sm-2">
+              <v-row dense v-if="lastAction" class="mb-2">
+                <v-col cols="12">
+                  <v-expansion-panels multiple>
+                    <v-expansion-panel>
+                      <v-expansion-panel-header>
+                        <h5>{{ $t("general.last_action") }}</h5>
+                      </v-expansion-panel-header>
+                      <v-expansion-panel-content>
+                        <v-row class="mb-1" dense>
+                          <v-col cols="12" sm="3">
+                            <h6 class="mt-1 mb-0 c-h6">
+                              {{ $t("cases.amount") }}
+                            </h6>
+                          </v-col>
+                          <v-col cols="12" sm="9">
+                            <v-text-field
+                              dense
+                              class="custom-disabled-input"
+                              :value="lastAction?.amount || ''"
+                              solo
+                              label="Solo"
+                              disabled
+                              hide-details
+                            ></v-text-field>
+                          </v-col>
+                        </v-row>
+                        <v-row class="mb-1" dense>
+                          <v-col cols="12" sm="3">
+                            <h6 class="mt-1 mb-0 c-h6">
+                              {{ $t("cases.percentageLose") }}
+                            </h6>
+                          </v-col>
+                          <v-col cols="12" sm="9">
+                            <v-text-field
+                              dense
+                              class="custom-disabled-input"
+                              :value="lastAction?.percentage || ''"
+                              solo
+                              label="Solo"
+                              disabled
+                              hide-details
+                            ></v-text-field>
+                          </v-col>
+                        </v-row>
+                        <v-row class="mb-1" dense>
+                          <v-col cols="12" sm="3">
+                            <h6 class="mt-1 mb-0 c-h6">
+                              {{ $t("tables.court") }}
+                            </h6>
+                          </v-col>
+                          <v-col cols="12" sm="9">
+                            <v-text-field
+                              class="custom-disabled-input"
+                              :value="lastAction?.court || ''"
+                              solo
+                              label="Solo"
+                              disabled
+                              hide-details
+                              dense
+                            ></v-text-field>
+                          </v-col>
+                        </v-row>
+                        <v-row class="mb-1" dense>
+                          <v-col cols="12" sm="3">
+                            <h6 class="mt-1 mb-0 c-h6">
+                              {{ $t("tables.date") }}
+                            </h6>
+                          </v-col>
+                          <v-col cols="12" sm="9">
+                            <v-text-field
+                              class="custom-disabled-input"
+                              :value="lastAction?.date || ''"
+                              solo
+                              label="Solo"
+                              disabled
+                              hide-details
+                              dense
+                            ></v-text-field>
+                          </v-col>
+                        </v-row>
 
-                            <v-row class="mb-1" dense>
-                              <v-col cols="12" sm="3">
-                                <h6 class="mt-1 mb-0 c-h6">
-                                  {{ $t("cases.action") }}
-                                </h6>
-                              </v-col>
+                        <v-row class="mb-1" dense>
+                          <v-col cols="12" sm="3">
+                            <h6 class="mt-1 mb-0 c-h6">
+                              {{ $t("cases.action") }}
+                            </h6>
+                          </v-col>
 
-                              <v-col cols="12" sm="9">
-                                <v-textarea
-                                  class="custom-disabled-input"
-                                  :value="lastAction?.details || ''"
-                                  solo
-                                  disabled
-                                  hide-details
-                                ></v-textarea>
-                              </v-col>
-                            </v-row>
+                          <v-col cols="12" sm="9">
+                            <v-textarea
+                              class="custom-disabled-input"
+                              :value="lastAction?.details || ''"
+                              solo
+                              disabled
+                              hide-details
+                            ></v-textarea>
+                          </v-col>
+                        </v-row>
 
-                            <v-row dense>
-                              <v-col cols="12" sm="3">
-                                <h6 class="mt-1 mb-0 c-h6">
-                                  {{ $t("tables.status") }}
-                                </h6>
-                              </v-col>
-                              <v-col cols="12" sm="9">
-                                <v-chip
-                                  :color="getStatusColor(lastAction?.status)"
-                                  label
-                                  text-color="white"
-                                >
-                                  {{ $t(`general.${lastAction?.status}`) }}
-                                </v-chip>
-                              </v-col>
-                            </v-row>
-                          </v-expansion-panel-content>
-                        </v-expansion-panel>
-                      </v-expansion-panels>
-                    </v-col>
-                  </v-row>
-                  <v-row>
-                    <v-col cols="6">
+                        <v-row dense>
+                          <v-col cols="12" sm="3">
+                            <h6 class="mt-1 mb-0 c-h6">
+                              {{ $t("tables.status") }}
+                            </h6>
+                          </v-col>
+                          <v-col cols="12" sm="9">
+                            <v-chip
+                              :color="getStatusColor(lastAction?.status)"
+                              label
+                              text-color="white"
+                            >
+                              {{ $t(`general.${lastAction?.status}`) }}
+                            </v-chip>
+                          </v-col>
+                        </v-row>
+                      </v-expansion-panel-content>
+                    </v-expansion-panel>
+                  </v-expansion-panels>
+                </v-col>
+              </v-row>
+              <v-row>
+                <v-col cols="6">
+                  <v-text-field
+                    type="number"
+                    v-model="caseAction.amount"
+                    :label="$t('cases.amount')"
+                    dense
+                    outlined
+                  >
+                    <template v-slot:append>
+                      <v-icon> mdi-cash </v-icon>
+                    </template>
+                  </v-text-field>
+                </v-col>
+                <v-col cols="6">
+                  <v-text-field
+                    type="number"
+                    v-model="caseAction.percentage"
+                    :label="$t('cases.percentageLose')"
+                    dense
+                    outlined
+                  >
+                    <template v-slot:append>
+                      <v-icon> mdi-percent </v-icon>
+                    </template>
+                  </v-text-field>
+                </v-col>
+                <v-col cols="6">
+                  <v-select
+                    :items="caseTypes"
+                    :label="$t('tables.status')"
+                    item-text="title"
+                    item-value="value"
+                    hide-details
+                    dense
+                    required="true"
+                    :error-messages="stepOneValidation(caseAction.status)"
+                    outlined
+                    v-model="caseAction.status"
+                  >
+                  </v-select>
+                </v-col>
+                <v-col cols="12" sm="6">
+                  <v-dialog
+                    ref="dateDialog"
+                    v-model="dateDialog"
+                    :return-value.sync="caseAction.date"
+                    persistent
+                    width="290px"
+                  >
+                    <template v-slot:activator="{ on, attrs }">
                       <v-text-field
-                        type="number"
-                        v-model="caseAction.amount"
-                        :label="$t('cases.amount')"
+                        v-model="caseAction.date"
+                        :label="$t('tables.date')"
+                        prepend-icon="mdi-calendar"
+                        readonly
+                        v-bind="attrs"
+                        v-on="on"
                         dense
                         outlined
+                        required="true"
+                        :error-messages="stepOneValidation(caseAction.date)"
+                      ></v-text-field>
+                    </template>
+                    <v-date-picker v-model="caseAction.date" scrollable>
+                      <v-spacer></v-spacer>
+                      <v-btn text color="primary" @click="modal = false">
+                        Cancel
+                      </v-btn>
+                      <v-btn
+                        text
+                        color="primary"
+                        @click="$refs.dateDialog.save(caseAction.date)"
                       >
-                        <template v-slot:append>
-                          <v-icon> mdi-cash </v-icon>
-                        </template>
-                      </v-text-field>
-                    </v-col>
-                    <v-col cols="6">
-                      <v-text-field
-                        type="number"
-                        v-model="caseAction.percentage"
-                        :label="$t('cases.percentageLose')"
-                        dense
-                        outlined
-                      >
-                        <template v-slot:append>
-                          <v-icon> mdi-percent </v-icon>
-                        </template>
-                      </v-text-field>
-                    </v-col>
-                    <v-col cols="6">
-                      <v-select
-                        :items="caseTypes"
-                        :label="$t('tables.status')"
-                        item-text="title"
-                        item-value="value"
-                        hide-details
-                        dense
-                        outlined
-                        v-model="caseAction.status"
-                      >
-                      </v-select>
-                    </v-col>
-                    <v-col cols="12" sm="6">
-                      <v-dialog
-                        ref="dateDialog"
-                        v-model="dateDialog"
-                        :return-value.sync="caseAction.date"
-                        persistent
-                        width="290px"
-                      >
-                        <template v-slot:activator="{ on, attrs }">
-                          <v-text-field
-                            v-model="caseAction.date"
-                            :label="$t('tables.date')"
-                            prepend-icon="mdi-calendar"
-                            readonly
-                            v-bind="attrs"
-                            v-on="on"
-                            dense
-                            outlined
-                          ></v-text-field>
-                        </template>
-                        <v-date-picker v-model="caseAction.date" scrollable>
-                          <v-spacer></v-spacer>
-                          <v-btn text color="primary" @click="modal = false">
-                            Cancel
-                          </v-btn>
-                          <v-btn
-                            text
-                            color="primary"
-                            @click="$refs.dateDialog.save(caseAction.date)"
-                          >
-                            OK
-                          </v-btn>
-                        </v-date-picker>
-                      </v-dialog>
-                    </v-col>
-                    <v-col cols="12">
-                      <v-select
-                        :items="courts"
-                        item-text="title"
-                        item-value="value"
-                        :label="$t('tables.court')"
-                        hide-details
-                        dense
-                        outlined
-                        v-model="caseAction.court"
-                      >
-                      </v-select>
-                    </v-col>
-                    <v-col cols="12">
-                      <v-textarea
-                        :label="$t('cases.action')"
-                        value=""
-                        v-model="caseAction.details"
-                        dense
-                        outlined
-                      ></v-textarea>
-                    </v-col>
-                  </v-row>
-                </div>
-              </div>
-            </v-card-text>
-          </v-card>
-          <v-btn @click="storeFormInformation" color="primary">
-            {{ $t("general.continue") }}
-          </v-btn>
-
-          <v-btn text> {{ $t("general.cancel") }} </v-btn>
+                        OK
+                      </v-btn>
+                    </v-date-picker>
+                  </v-dialog>
+                </v-col>
+                <v-col cols="12">
+                  <v-select
+                    :items="courts"
+                    item-text="title"
+                    item-value="value"
+                    :label="$t('tables.court')"
+                    hide-details
+                    dense
+                    outlined
+                    v-model="caseAction.court"
+                  >
+                  </v-select>
+                </v-col>
+                <v-col cols="12">
+                  <v-textarea
+                    :label="$t('cases.action')"
+                    value=""
+                    v-model="caseAction.details"
+                    dense
+                    outlined
+                  ></v-textarea>
+                </v-col>
+              </v-row>
+            </div>
+          </div>
+          <v-card-actions class="px-2">
+            <v-btn @click="storeFormInformation" color="primary">
+              {{ $t("general.saveChanges") }}
+            </v-btn>
+            <v-btn color="grey" @click="stepBack" class="ms-2">
+              {{ $t("general.back") }}
+            </v-btn>
+          </v-card-actions>
         </v-stepper-content>
       </v-stepper-items>
     </v-stepper>
@@ -570,6 +571,7 @@ export default {
       ],
       activeTab: null,
       requiredRule: (v) => !!v || this.$t("general.required_input"),
+      showErrors: false,
       showErrors: false,
       sidesInfo: {
         claimant_id: "",
@@ -678,6 +680,13 @@ export default {
       "saveFormInformation",
       "getCourts",
     ]),
+    stepBack() {
+      if (this.e1 > 1) {
+        this.e1--;
+        this.stepOneErrors = false;
+      }
+      return;
+    },
     fetchUsers() {
       this.isLoading = true;
       this.getUserType()
@@ -812,6 +821,10 @@ export default {
       const msg = this.$t("general.required_input");
       return this.showErrors && input.required && !input.value ? [msg] : [];
     },
+    stepOneValidation(value) {
+      const msg = this.$t("general.required_input");
+      return this.stepOneErrors && !value ? [msg] : [];
+    },
     handleFileUpload(file, input) {
       if (file) {
         const reader = new FileReader();
@@ -850,7 +863,7 @@ export default {
     },
     saveCaseInfo() {
       if (!this.caseName || !this.caseNumber) {
-        makeToast("error", "case name and number ");
+        this.stepOneErrors = true;
         return;
       }
       this.e1 = 2;
@@ -866,6 +879,7 @@ export default {
           formId: id,
         });
         if (saveResult) {
+          this.showErrors = false;
           this.e1 = 3;
         } else {
           console.log("Failed To save data");
@@ -889,15 +903,15 @@ export default {
       };
 
       // if (await this.validateFormData()) {
-      await this.saveRequestSide(data)
-        .then((response) => {
-          this.isLoading = false;
-          this.e1 = 4;
-          // makeToast("success", response.data.message);
-        })
-        .catch(() => {
-          this.isLoading = false;
-        });
+      const result = await this.saveRequestSide(data);
+      if (result) {
+        this.isLoading = false;
+        this.e1 = 4;
+        this.stepOneErrors = true;
+      } else {
+        this.stepOneErrors = true;
+        this.isLoading = false;
+      }
     },
     async storeFormInformation() {
       this.isLoading = true;
@@ -921,6 +935,7 @@ export default {
         this.$router.push(`/cases/${currentFormId}`);
       } else {
         this.isLoading = false;
+        this.stepOneErrors = true;
       }
     },
   },
