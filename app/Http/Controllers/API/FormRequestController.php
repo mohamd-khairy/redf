@@ -138,4 +138,7 @@ class FormRequestController extends Controller
             'formable_type' => FormRequest::class,
         ]);
     }
+    public function deleteFormRequest($id){
+
+    }
 }

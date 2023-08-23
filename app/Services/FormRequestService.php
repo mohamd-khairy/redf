@@ -180,18 +180,18 @@ class FormRequestService
                 'form_request_id' => $formRequestInfo->form_request_id,
                 'calendarable_id' => $formRequestInfo->form_request_id,
                 'calendarable_type' => FormRequest::class,
-                'details' => isset($request->details) ?? 'تم اضافه اجراء جديد',
+                'details' => $request->details ? $request->details : 'تم اضافه اجراء جديد' ,
                 'user_id' => auth()->id(),
                 'date' => $request->date,
             ];
+             $calendar = saveCalendarFromRequest($calendarData);
 
-            $calendar = saveCalendarFromRequest($calendarData);
 
             $actionData = [
                 'form_request_id' => $formRequestInfo->form_request_id,
                 'formable_id' => $formRequestInfo->id,
                 'formable_type' => FormRequestInformation::class,
-                'msg' => 'تم اضافه اجراء جديد',
+                'msg' => $request->details ? $request->details : 'تم اضافه اجراء جديد' ,
             ];
             $action = saveFormRequestAction($actionData);
             DB::commit();
