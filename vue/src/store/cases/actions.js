@@ -15,6 +15,11 @@ const actions = {
     const response = await axios.get(`get-form-Requests`, {
       params: {
         template_id: data.template_id,
+        search: data.search,
+        pageSize: data.pageSize,
+        page: data.pageNumber,
+        sortDirection: data.sortDirection,
+        sortCoulmn: data.sortColumn,
       },
     });
     const formRequests = response?.data.data;
