@@ -43,6 +43,17 @@ export default [
       import(/* webpackChunkName: "pipes-list" */ "@/pages/cases/CreateLegalAdvice"),
   },
   {
+    path: "/cases/3/create/:id",
+    name: "cases-create",
+    meta: {
+      title: "menu.requests",
+      auth: true,
+      // permissions: 'read-event'
+    },
+    component: () =>
+      import(/* webpackChunkName: "pipes-list" */ "@/pages/cases/CreateReviewAndAudit"),
+  },
+  {
     path: "/cases/:formType/edit/:id",
     name: "cases-create",
     meta: {

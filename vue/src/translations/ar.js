@@ -467,6 +467,7 @@ export default {
     action: "الاجراء",
     courtDate: "ميعاد الجلسة",
     adviceActions:"اجراءات الاستشارة",
+    reviewActions:"اجراءات المراجعة",
 
 
     createCase: "إنشاء قضية",
@@ -481,6 +482,8 @@ export default {
     caseNumber: "رقم القضية",
     adviceName: "اسم الاستشارة",
     adviceNumber: "رقم الاستشارة",
+    reviewName: "اسم المراجعة",
+    reviewNumber: "رقم المراجعة",
     new_beneficiary: "مستفيد جديد",
     belongToCase: "تنتمى لقضية",
     cases: "القضايا",
@@ -576,6 +579,7 @@ export default {
     template: "نموذج",
     causer_id: "معرف المستفيد",
     caseNumber: "رقم القضية",
+    requestNumber: "رقم الطلب",
     court: "المحكمة",
     // causer_type: "",
   },
