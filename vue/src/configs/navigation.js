@@ -98,14 +98,14 @@ export default {
     //   permission: "read-role",
     //   items: []
     // },
-    {
-      icon: "mdi-file-document-edit-outline",
-      text: "Organizations",
-      key: "menu.organizations",
-      link: "/organizations",
-      permission: "read-role",
-      items: []
-    },
+    // {
+    //   icon: "mdi-file-document-edit-outline",
+    //   text: "Organizations",
+    //   key: "menu.organizations",
+    //   link: "/organizations",
+    //   permission: "read-role",
+    //   items: []
+    // },
     {
       icon: "mdi-form-textbox",
       text: "templates",
@@ -130,35 +130,35 @@ export default {
       ]
     },
 
-    {
-      icon: "mdi-chart-line",
-      text: "reports",
-      key: "menu.reports",
-      // link: "/reports",
-      items: [
-        {
-          icon: "mdi-account-multiple-outline",
-          text: "Builder",
-          key: "menu.builder",
-          permission: "read-role",
-          link: "/reports/builder"
-        },
-        {
-          icon: "mdi-account-multiple-outline",
-          text: "Drafted",
-          key: "menu.drafted",
-          permission: "read-role",
-          link: "/reports/drafted"
-        },
-        {
-          icon: "mdi-account-multiple-outline",
-          text: "Pinned",
-          key: "menu.pinned",
-          permission: "read-role",
-          link: "/reports/pinned"
-        }
-      ]
-    },
+    // {
+    //   icon: "mdi-chart-line",
+    //   text: "reports",
+    //   key: "menu.reports",
+    //   // link: "/reports",
+    //   items: [
+    //     {
+    //       icon: "mdi-account-multiple-outline",
+    //       text: "Builder",
+    //       key: "menu.builder",
+    //       permission: "read-role",
+    //       link: "/reports/builder"
+    //     },
+    //     {
+    //       icon: "mdi-account-multiple-outline",
+    //       text: "Drafted",
+    //       key: "menu.drafted",
+    //       permission: "read-role",
+    //       link: "/reports/drafted"
+    //     },
+    //     {
+    //       icon: "mdi-account-multiple-outline",
+    //       text: "Pinned",
+    //       key: "menu.pinned",
+    //       permission: "read-role",
+    //       link: "/reports/pinned"
+    //     }
+    //   ]
+    // },
     // {
     //   icon: "mdi-airplane",
     //   text: "flights",

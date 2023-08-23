@@ -243,7 +243,7 @@ export default {
       items: [],
       headers: [
         { text: this.$t("tables.id"), value: "id" },
-        { text: this.$t("tables.caseNumber"), value: "form_request_number" },
+        { text: this.$t("tables.requestNumber"), value: "form_request_number" },
         { text: this.$t("tables.name"), value: "name" },
         { text: this.$t("tables.user"), value: "user" },
         { text: this.$t("tables.assigner"), value: "assigner" },
