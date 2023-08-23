@@ -13,17 +13,16 @@
         </v-toolbar>
 
         <v-card-text class="mt-4">
-          <v-row>
+          <v-row dense>
             <v-col cols="12">
               <v-text-field
                 type="number"
                 v-model="user.civil_number"
                 outlined
                 dense
-                hide-details
-                :rules="[rules.required]"
+                :rules="civilRules"
                 :label="$t('cases.civil')"
-                :error-messages="errors['civil_number']"
+                :error-messages="showErrorMsg(user.civil_number)"
               ></v-text-field>
             </v-col>
             <v-col cols="12">
@@ -31,37 +30,35 @@
                 v-model="user.name"
                 outlined
                 dense
-                hide-details
                 :rules="[rules.required]"
                 :label="$t('tables.name')"
-                :error-messages="errors['name']"
+                @keydown="handlename"
+                :error-messages="showErrorMsg(user.name)"
               ></v-text-field>
             </v-col>
             <v-col cols="12">
               <v-text-field
                 type="number"
                 v-model="user.phone"
-                :rules="[rules.required]"
+                :rules="phoneNumberRules"
                 outlined
                 dense
-                hide-details
                 :label="$t('tables.phone')"
-                :error-messages="errors['phone']"
+                :error-messages="showErrorMsg(user.phone)"
               ></v-text-field>
             </v-col>
             <v-col cols="12">
               <v-text-field
                 type="email"
                 v-model="user.email"
-                :rules="[rules.required]"
+                :rules="emailRules"
                 outlined
                 dense
-                hide-details
                 :label="$t('tables.email')"
-                :error-messages="errors['email']"
+                :error-messages="showErrorMsg(user.email)"
               ></v-text-field>
             </v-col>
-            <v-col cols="12">
+            <!-- <v-col cols="12">
               <v-select
                 label="Select"
                 :items="departments"
@@ -74,7 +71,7 @@
                 :rules="[rules.required]"
                 v-model="user.department_id"
               ></v-select>
-            </v-col>
+            </v-col> -->
           </v-row>
         </v-card-text>
         <v-divider></v-divider>
@@ -111,15 +108,28 @@ export default {
     return {
       user: {
         name: "",
+        showError: false,
         civil_number: "",
         phone: "",
         email: "",
-        department_id: "",
+        // department_id: "",
       },
       rules: {
         required: (value) =>
           (value && Boolean(value)) || this.$t("general.fieldRequired"),
       },
+      phoneNumberRules: [
+        (v) => !!v || "رقم الهاتف مطلوب",
+        (v) => (v && v.length === 10) || "رقم الهاتف يجب أن يكون 10 أرقام",
+        (v) => /^[0-9]+$/.test(v) || "يجب أن يحتوي رقم الهاتف على أرقام فقط",
+      ],
+      emailRules: [
+        (v) => !!v || "البريد الالكتروني مطلوب",
+        (v) =>
+          /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(v) ||
+          "تنسيق البريد الإلكتروني غير صالح",
+      ],
+      civilRules: [(v) => (v && v.length === 10) || "يجب ان يكون 10 أرقام"],
       errors: {},
       loading: false,
     };
@@ -156,6 +166,15 @@ export default {
       const { status, notes, id } = this.eventItem ?? {};
       this.form = { status, notes, id };
     },
+    showErrorMsg(value) {
+      const msg = this.$t("general.required_input");
+      return this.showError && !value ? [msg] : [];
+    },
+    handlename(event) {
+      if (!/^[a-zA-Z]*$/.test(event.key)) {
+        event.preventDefault();
+      }
+    },
     fetchData: function () {
       this.$root.$emit("userCreated");
       this.$emit("userCreated");
@@ -163,12 +182,21 @@ export default {
     save() {
       this.loading = true;
       this.errors = {};
+      if (
+        !this.user.name ||
+        !this.user.civil_number ||
+        !this.user.phone ||
+        !this.user.email
+      ) {
+        makeToast("error", "يرجي ملئ الحقول المطلوبة");
+        return;
+      }
       let data = {
         name: this.user.name,
         civil_number: Number(this.user.civil_number),
         phone: Number(this.user.phone),
         email: this.user.email,
-        department_id: this.user.department_id,
+        // department_id: this.user.department_id,
       };
       this.createUser(data)
         .then((response) => {
