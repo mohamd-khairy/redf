@@ -52,10 +52,10 @@ class FormRequestController extends Controller
     public function storeFormFill(FormFillRequest $request)
     {
         try {
-            // dd($request->all());
+
             $requestData = $request->validated();
             $requestData['id'] = $request->id;
-             $formRequest = $this->formRequestService->storeFormFill($request);
+            $formRequest = $this->formRequestService->storeFormFill($request);
             return responseSuccess(['formRequest' => $formRequest], 'Form Fill has been successfully Created');
         } catch (\Throwable $th) {
             return responseFail($th->getMessage());
@@ -65,7 +65,7 @@ class FormRequestController extends Controller
     public function updateFormFill(Request $request, $id)
     {
          try {
-            $formRequest = $this->formRequestService->updateFormFill($id, $request);
+            $formRequest = $this->formRequestService->updateFormFill($request, $id);
             return responseSuccess([], 'Form Fill has been successfully updated');
 
         } catch (\Throwable $th) {

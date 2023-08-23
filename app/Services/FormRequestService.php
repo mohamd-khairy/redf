@@ -20,20 +20,18 @@ class FormRequestService
 {
     public function storeFormFill($requestData)
     {
-
+        // dd($requestData['id']);
         return DB::transaction(function () use ($requestData) {
-
             $formRequest = FormRequest::create([
                 'form_id' => $requestData['id'],
                 'user_id' => Auth::id(),
                 'status' => FormRequestStatus::PENDING,
             ]);
-
             $formRequest->form_request_number = $requestData['case_number'] ?? rand(100000, 999999);
             $formRequest->name = $requestData['case_name'] ?? ($formRequest->form->name . "($formRequest->case_number)");
             $formRequest->save();
 
-            $this->processFormPages($requestData['pages'], $formRequest);
+            $this->processFormPages($requestData, $formRequest);
 
             $actionData = [
                 'form_request_id' => $formRequest->id,
@@ -48,17 +46,19 @@ class FormRequestService
         });
     }
 
-    public function updateFormFill($id, $requestData)
+    public function updateFormFill($requestData, $id)
     {
-        return DB::transaction(function () use ($id, $requestData) {
+
+        return DB::transaction(function () use ($requestData, $id) {
 
             $formRequest = FormRequest::findOrFail($id);
+
             $formRequest->form_request_number = $requestData['case_number'] ?? $formRequest->form_request_number;
             $formRequest->name = $requestData['case_name'] ?? $formRequest->name;
             $formRequest->save();
 
             FormPageItemFill::where('form_request_id', $formRequest->id)->delete();
-            $this->processFormPages($requestData['pages'], $formRequest);
+            $this->processFormPages($requestData, $formRequest);
 
             $actionData = [
                 'form_request_id' => $formRequest->id,
@@ -73,29 +73,25 @@ class FormRequestService
         });
     }
 
-    private function processFormPages($pagesData, $formRequest)
+    private function processFormPages($request, FormRequest $formRequest)
     {
-        foreach ($pagesData as $pageData) {
-            $this->processPageItems($pageData['items'] ?? [], $formRequest);
-        }
-    }
+        $pagesInput = $request->input('pages', []);
 
-    private function processPageItems($pageItems, $formRequest)
-    {
-        // dd($pageItems , $formRequest);
-        foreach ($pageItems as $pageItem) {
-            $decodedValue = $pageItem['type'] === 'file'
-                ? UploadService::store($pageItem['value'], 'formPages')
-                : $pageItem['value'];
+        $pages = is_string($pagesInput) ? json_decode($pagesInput, true) : $pagesInput;
+        $pageItems = collect($pages)->flatMap(fn ($page) => $page['items'] ?? []);
+
+        $pageItems->each(function ($pageItem) use ($formRequest) {
+            $decodedValue = $pageItem['type'] === 'file' ? UploadService::store($pageItem['value'], 'formPages') : $pageItem['value'];
 
             FormPageItemFill::create([
                 'value' => $decodedValue,
                 'form_page_item_id' => $pageItem['form_page_item_id'],
-                'user_id' => Auth::id(),
+                'user_id' => auth()->id(),
                 'form_request_id' => $formRequest->id,
             ]);
-        }
+        });
     }
+
 
     public function getFormRequest($request)
     {
@@ -176,7 +172,6 @@ class FormRequestService
         try {
             DB::beginTransaction();
             $validatedData = $request->validated();
-
             $validatedData['status'] = FormRequestStatus::PROCESSING;
             $formRequestInfo = FormRequestInformation::create($validatedData);
             $formRequestInfo->form_request->status = FormRequestStatus::PROCESSING;
