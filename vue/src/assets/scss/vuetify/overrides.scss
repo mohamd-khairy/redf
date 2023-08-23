@@ -874,3 +874,10 @@
 .theme--light.v-input--is-disabled.custom-disabled-input input {
   color: rgba(0, 0, 0, 0.87) !important;
 }
+
+.swal2-confirm.danger {
+  background-color: red !important;
+  color: #fff !important;
+  outline: none !important;
+  box-shadow: none !important;
+}

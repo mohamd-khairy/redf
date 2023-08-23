@@ -378,7 +378,8 @@ export default {
     },
 
     async deleteItem(id) {
-      const { isConfirmed } = await ask("Are you sure to delete it?", "info");
+      const msg = this.$t("general.delete_confirmation");
+      const { isConfirmed } = await ask(msg, "error");
 
       if (isConfirmed) {
         this.isLoading = true;
