@@ -43,7 +43,11 @@
       <v-col cols="12" sm="9">
         <v-text-field
           class="custom-disabled-input"
-          :value="action?.formable?.court || ''"
+          :value="
+            action?.formable?.court
+              ? $t(`general.${action?.formable?.court}`)
+              : ''
+          "
           solo
           disabled
           hide-details
@@ -95,11 +99,11 @@
       </v-col>
       <v-col cols="12" sm="9">
         <v-chip
-          :color="getStatusColor(action?.formable?.status)"
+          :color="getStatusColor(action?.formable?.status?.toLowerCase())"
           label
           text-color="white"
         >
-          {{ $t(`general.${action?.formable?.status}`) }}
+          {{ $t(`general.${action?.formable?.status?.toLowerCase()}`) }}
         </v-chip>
       </v-col>
     </v-row>
@@ -123,6 +127,7 @@ export default {
         processing: "blue",
         pending: "orange",
         accepted: "green",
+        closed: "red",
       };
 
       return colors[status] || "primary";

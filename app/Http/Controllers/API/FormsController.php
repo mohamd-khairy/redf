@@ -46,7 +46,7 @@ class FormsController extends Controller
         // $this->middleware('permission:create-form', ['only' => ['store']]);
         // $this->middleware('permission:edit-form', ['only' => ['edit', 'update']]);
         // $this->middleware('permission:delete-form', ['only' => ['destroy', 'delete_all']]);
-         $this->formService = $formService;
+        $this->formService = $formService;
     }
 
     public function allForm(Request $request)
@@ -76,7 +76,7 @@ class FormsController extends Controller
     {
         try {
             DB::beginTransaction();
-            $form = $this->formService->updateForm($id,$request);
+            $form = $this->formService->updateForm($id, $request);
             DB::commit();
             return responseSuccess(new FormItemResource($form));
         } catch (\Throwable $th) {
@@ -91,7 +91,7 @@ class FormsController extends Controller
     {
         try {
             DB::beginTransaction();
-            $form = $this->formService->updateFormBasic($id,$request);
+            $form = $this->formService->updateFormBasic($id, $request);
             DB::commit();
             return responseSuccess(new FormItemResource($form));
         } catch (\Throwable $th) {
@@ -107,13 +107,11 @@ class FormsController extends Controller
             $form = Form::findOrFail($id);
             if (!$form) {
                 return responseFail('Form not found');
-
-             }
+            }
             // Delete the form
             $form->delete();
             return responseSuccess('Form deleted successfully');
-
-         } catch (\Throwable $th) {
+        } catch (\Throwable $th) {
             return responseFail($th->getMessage());
         }
     }
@@ -145,6 +143,4 @@ class FormsController extends Controller
             return responseFail($th->getMessage());
         }
     }
-
-
 }

@@ -788,6 +788,10 @@ export default {
     assigned: "لدي الموظف المختص",
     closed: "تم اكمال الطلب",
     back: "السابق",
+    first_degree: "الدرجة الأولى",
+    appeal: "الاستئناف",
+    supreme: "العليا",
+    implementation: "التنفيذ",
   },
   reports: {
     buildReport: "انشاء تقرير",
