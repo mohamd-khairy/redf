@@ -177,7 +177,6 @@ if (!function_exists('resolvePhoto')) {
 if (!function_exists('saveCalendarFromRequest')) {
     function saveCalendarFromRequest(array $data)
     {
-
         $validatedData = validator($data, [
             'calendarable_type' => 'nullable|string',
             'calendarable_id' => 'nullable|integer',

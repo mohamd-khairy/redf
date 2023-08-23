@@ -5,6 +5,7 @@ use Carbon\Carbon;
 use App\Models\Form;
 use App\Models\FormRequest;
 use App\Filters\SortFilters;
+use App\Models\FormRequestSide;
 use App\Services\UploadService;
 use App\Enums\FormRequestStatus;
 use App\Models\FormPageItemFill;
@@ -13,6 +14,7 @@ use Illuminate\Pipeline\Pipeline;
 use Illuminate\Support\Facades\DB;
 use App\Enums\FormAssignRequestType;
 use Illuminate\Support\Facades\Auth;
+use App\Models\FormRequestInformation;
 
 class FormRequestService
 {
@@ -126,10 +128,7 @@ class FormRequestService
                         ->where('status', 'active')
                         ->where('status', '!=', 'deleted')
                         ->update(['status' => 'deleted']);
-
                     $formUserId = Form::where('id', $formRequestId)->value('user_id');
-
-
                     $assignNew = FormAssignRequest::create([
                         'form_request_id' => $formRequestId,
                         'user_id' => $requestData['user_id'],
@@ -139,9 +138,7 @@ class FormRequestService
                         'form_user_id' => $formUserId,
                         'type' => FormAssignRequestType::EMPLOYEE,
                     ]);
-
                     FormRequest::where('id', $formRequestId)->update(['status' => 'assigned']);
-
                     $actionData = [
                         'form_request_id' => $formRequestId,
                         'formable_id' => $assignNew->id,
@@ -151,7 +148,6 @@ class FormRequestService
 
                     saveFormRequestAction($actionData);
                 }
-
                 return ['assignNew' => $assignNew];
             });
         } catch (\Throwable $e) {
@@ -160,6 +156,56 @@ class FormRequestService
         }
     }
 
+    public function updateAssignRequest(Request $request)
+    {
+        dd($request->all());
+    }
+
+    public function formRequestSide($request)
+    {
+        $validatedData = $request->validate([
+            'form_request_id' => 'required|exists:form_requests,id',
+            'claimant_id' => ['required', 'exists:users,id'],
+            'defendant_id' => ['required', 'exists:users,id'],
+        ]);
+        $formRequestSide = FormRequestSide::create($validatedData);
+        return responseSuccess($formRequestSide, 'Form Request Side has been successfully Created');
+    }
+    public function formRequestInformation($request)
+    {
+        try {
+            DB::beginTransaction();
+            $validatedData = $request->validated();
+
+            $validatedData['status'] = FormRequestStatus::PROCESSING;
+            $formRequestInfo = FormRequestInformation::create($validatedData);
+            $formRequestInfo->form_request->status = FormRequestStatus::PROCESSING;
+            $formRequestInfo->form_request->save();
+            $calendarData = [
+                'form_request_id' => $formRequestInfo->form_request_id,
+                'calendarable_id' => $formRequestInfo->form_request_id,
+                'calendarable_type' => FormRequest::class,
+                'details' => 'تم اضافه اجراء جديد',
+                'user_id' => auth()->id(),
+                'date' => $request->date,
+            ];
+
+            $calendar = saveCalendarFromRequest($calendarData);
+
+            $actionData = [
+                'form_request_id' => $formRequestInfo->form_request_id,
+                'formable_id' => $formRequestInfo->id,
+                'formable_type' => FormRequestInformation::class,
+                'msg' => 'تم اضافه اجراء جديد',
+            ];
+            $action = saveFormRequestAction($actionData);
+            DB::commit();
+            return responseSuccess($formRequestInfo, 'Form Request Information and Sessions have been successfully created.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return responseFail($e->getMessage());
+        }
+    }
  }
 
 ?>

@@ -155,11 +155,11 @@ Route::group(['prefix' => 'v1'], function () {
         Route::get('get-form-Requests', [FormRequestController::class, 'getFormRequest']);
         Route::get('get-form-Requests/{id}', [FormRequestController::class, 'getFormRequestfill']);
         Route::post('assign-request', [FormRequestController::class, 'assignRequest']);
-        Route::put('assign-request/{id}', [FormsController::class, 'updateAssignRequest']);
+        Route::put('assign-request/{id}', [FormRequestController::class, 'updateAssignRequest']);
         Route::get('all-forms', [FormsController::class, 'allForm']);
-        Route::post('form-request-side', [FormsController::class , 'formRequestSide']);
-        Route::post('form-request-information', [FormsController::class , 'formRequestInformation']);
-        Route::post('form-assign-request', [FormsController::class, 'FormAssignRequest']);
-        Route::get('latest-form-information', [FormsController::class, 'latestFormInformation']);
+        Route::post('form-request-side', [FormRequestController::class , 'storeFormRequestSide']);
+        Route::post('form-request-information', [FormRequestController::class , 'formRequestInformation']);
+        Route::post('form-assign-request', [FormRequestController::class, 'FormAssignRequest']);
+        Route::get('latest-form-information', [FormRequestController::class, 'latestFormInformation']);
     });
 });

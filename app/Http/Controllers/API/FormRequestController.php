@@ -117,71 +117,25 @@ class FormRequestController extends Controller
         dd($request->all());
     }
 
-    public function formRequestSide(Request $request)
+    public function storeFormRequestSide(Request $request)
     {
-
-        $validatedData = $request->validate([
-            'form_request_id' => 'required|exists:form_requests,id',
-            'claimant_id' => ['required', 'exists:users,id'],
-            'defendant_id' => ['required', 'exists:users,id'],
-        ]);
-
-        $formRequestSide = FormRequestSide::create($validatedData);
-
-        return responseSuccess($formRequestSide, 'Form Request Side has been successfully Created');
+        return $this->formRequestService->formRequestSide($request);
     }
+
 
     public function formRequestInformation(InformationRequest $request)
     {
-        try {
-            DB::beginTransaction();
 
-            $validatedData = $request->validated();
-            $validatedData['status'] = FormRequestStatus::PROCCEING;
-            $formRequestInfo = FormRequestInformation::create($validatedData);
-
-            $formRequestInfo->form_request->status = FormRequestStatus::PROCCEING;
-            $formRequestInfo->form_request->save();
-
-            $calendarData = [
-                'form_request_id' => $formRequestInfo->form_request_id,
-                'calendarable_id' => $formRequestInfo->form_request_id,
-                'calendarable_type' => FormRequest::class,
-                'details' => $request->details,
-                'user_id' => auth()->id(),
-                'date' => $request->date,
-            ];
-            $calendar = saveCalendarFromRequest($calendarData);
-            $actionData = [
-                'form_request_id' => $formRequestInfo->form_request_id,
-                'formable_id' => $formRequestInfo->id,
-                'formable_type' => FormRequestInformation::class,
-                'msg' => $request->details,
-            ];
-            $action = saveFormRequestAction($actionData);
-
-            DB::commit();
-            return responseSuccess($formRequestInfo, 'Form Request Information and Sessions have been successfully created.');
-        } catch (\Exception $e) {
-            DB::rollBack();
-            return responseFail($e->getMessage());
-        }
+        return $this->formRequestService->formRequestInformation($request);
     }
 
     public function FormAssignRequest(Request $request)
     {
-
         // Create a new Formable record
         Formable::create([
             'formable_id' => $request->formable_id,
             'form_request_id' => $request->form_request_id,
-            'formable_type' => FormRequest::class, // Replace with the actual model type
+            'formable_type' => FormRequest::class,
         ]);
-    }
-
-    public function latestFormInformation()
-    {
-        $latestRecord = FormRequestInformation::latestRecord();
-        return responseSuccess($latestRecord);
     }
 }
