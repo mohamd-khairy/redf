@@ -25,137 +25,126 @@
 
       <v-stepper-items>
         <v-stepper-content step="1">
-          <v-card class="mb-12" v-if="!initialLoading">
-            <v-card-text>
-              <v-text-field
-                outlined
-                v-model="caseName"
-                :label="$t('cases.caseName')"
-                :required="true"
-                :rules="[requiredRule]"
-                dense
-              ></v-text-field>
-              <v-text-field
-                outlined
-                type="number"
-                v-model="caseNumber"
-                :label="$t('cases.caseNumber')"
-                :required="true"
-                :rules="[requiredRule]"
-                dense
-              ></v-text-field>
-            </v-card-text>
-          </v-card>
+          <div class="mt-2" v-if="!initialLoading">
+            <v-text-field
+              class="mb-2"
+              v-model="caseName"
+              :label="$t('cases.caseName')"
+              outlined
+              :required="true"
+              dense
+              :rules="[requiredRule]"
+            ></v-text-field>
+            <v-text-field
+              outlined
+              type="number"
+              class="mb-2"
+              v-model="caseNumber"
+              :label="$t('cases.caseNumber')"
+              :required="true"
+              :rules="[requiredRule]"
+              dense
+            ></v-text-field>
+          </div>
           <v-btn color="primary" @click="saveCaseInfo">
             {{ $t("general.continue") }}
           </v-btn>
         </v-stepper-content>
         <v-stepper-content step="2">
-          <v-card class="mb-12" v-if="!initialLoading">
+          <div class="mt-2" v-if="!initialLoading">
             <v-tabs v-model="activeTab">
               <v-tab v-for="(tab, index) in pages" :key="index">{{
                 tab.title
               }}</v-tab>
             </v-tabs>
-            <v-card-text>
-              <v-tabs-items v-model="activeTab">
-                <v-tab-item v-for="(tab, tabIndex) in pages" :key="tabIndex">
-                  <v-form>
-                    <v-container>
-                      <v-row dense>
-                        <v-col
-                          v-for="(input, inputIndex) in tab.items"
-                          :key="inputIndex"
-                          :cols="inputWidth(input.width)"
-                        >
-                          <template v-if="input.type === 'text'">
-                            <v-text-field
-                              outlined
-                              v-model="input.value"
-                              :label="getInputLabel(input)"
-                              :required="input.required"
-                              :rules="input.required ? [requiredRule] : []"
-                              :error-messages="errorMessage(input)"
-                              dense
-                            ></v-text-field>
-                          </template>
-                          <template v-else-if="input.type === 'textarea'">
-                            <v-textarea
-                              outlined
-                              dense
-                              v-model="input.value"
-                              :label="getInputLabel(input)"
-                              :required="input.required"
-                              :rules="input.required ? [requiredRule] : []"
-                              :error-messages="errorMessage(input)"
-                            ></v-textarea>
-                          </template>
-                          <template v-else-if="input.type === 'file'">
-                            <v-file-input
-                              outlined
-                              dense
-                              counter
-                              show-size
-                              :label="getInputLabel(input)"
-                              @change="(file) => handleFileUpload(file, input)"
-                              :required="input.required"
-                              :rules="input.required ? [requiredRule] : []"
-                              :error-messages="errorMessage(input)"
-                            >
-                            </v-file-input>
-                          </template>
-                          <template v-else-if="input.type === 'select'">
-                            <v-select
-                              v-model="input.value"
-                              :items="input.childList"
-                              item-text="text"
-                              :label="getInputLabel(input)"
-                              :required="input.required"
-                              :rules="input.required ? [requiredRule] : []"
-                              :error-messages="errorMessage(input)"
-                              outlined
-                              dense
-                            ></v-select>
-                          </template>
-                          <template v-else-if="input.type === 'radio'">
-                            <v-radio-group
-                              v-model="input.selectedOption"
-                              :label="getInputLabel(input)"
-                              :required="input.required"
-                              :rules="input.required ? [requiredRule] : []"
-                              :error-messages="errorMessage(input)"
-                            >
-                              <v-radio
-                                v-for="(option, optionIndex) in input.childList"
-                                :key="optionIndex"
-                                :label="option.text"
-                                :value="option.text"
-                              ></v-radio>
-                            </v-radio-group>
-                          </template>
-                        </v-col>
-                      </v-row>
-                    </v-container>
-                  </v-form>
-                </v-tab-item>
-              </v-tabs-items>
-            </v-card-text>
-            <!--            <v-card-actions class="px-5 pb-4">-->
-            <!--              <v-btn-->
-            <!--                color="primary"-->
-            <!--                :disabled="isSubmitingForm"-->
-            <!--                :loading="isSubmitingForm"-->
-            <!--                @click="saveForm"-->
-            <!--              >{{ $t("general.saveChanges") }}</v-btn-->
-            <!--              >-->
-            <!--            </v-card-actions>-->
-          </v-card>
+            <v-tabs-items v-model="activeTab">
+              <v-tab-item v-for="(tab, tabIndex) in pages" :key="tabIndex">
+                <v-form>
+                  <v-container>
+                    <v-row dense>
+                      <v-col
+                        v-for="(input, inputIndex) in tab.items"
+                        :key="inputIndex"
+                        :cols="inputWidth(input.width)"
+                      >
+                        <template v-if="input.type === 'text'">
+                          <v-text-field
+                            outlined
+                            v-model="input.value"
+                            :label="getInputLabel(input)"
+                            :required="input.required"
+                            :rules="input.required ? [requiredRule] : []"
+                            :error-messages="errorMessage(input)"
+                            dense
+                          ></v-text-field>
+                        </template>
+                        <template v-else-if="input.type === 'textarea'">
+                          <v-textarea
+                            outlined
+                            dense
+                            v-model="input.value"
+                            :label="getInputLabel(input)"
+                            :required="input.required"
+                            :rules="input.required ? [requiredRule] : []"
+                            :error-messages="errorMessage(input)"
+                          ></v-textarea>
+                        </template>
+                        <template v-else-if="input.type === 'file'">
+                          <v-file-input
+                            outlined
+                            dense
+                            counter
+                            show-size
+                            :label="getInputLabel(input)"
+                            @change="(file) => handleFileUpload(file, input)"
+                            :required="input.required"
+                            :rules="input.required ? [requiredRule] : []"
+                            :error-messages="errorMessage(input)"
+                          >
+                          </v-file-input>
+                        </template>
+                        <template v-else-if="input.type === 'select'">
+                          <v-select
+                            v-model="input.value"
+                            :items="input.childList"
+                            item-text="text"
+                            :label="getInputLabel(input)"
+                            :required="input.required"
+                            :rules="input.required ? [requiredRule] : []"
+                            :error-messages="errorMessage(input)"
+                            outlined
+                            dense
+                          ></v-select>
+                        </template>
+                        <template v-else-if="input.type === 'radio'">
+                          <v-radio-group
+                            v-model="input.selectedOption"
+                            :label="getInputLabel(input)"
+                            :required="input.required"
+                            :rules="input.required ? [requiredRule] : []"
+                            :error-messages="errorMessage(input)"
+                          >
+                            <v-radio
+                              v-for="(option, optionIndex) in input.childList"
+                              :key="optionIndex"
+                              :label="option.text"
+                              :value="option.text"
+                            ></v-radio>
+                          </v-radio-group>
+                        </template>
+                      </v-col>
+                    </v-row>
+                  </v-container>
+                </v-form>
+              </v-tab-item>
+            </v-tabs-items>
+          </div>
           <v-btn color="primary" @click="saveForm">
             {{ $t("general.continue") }}
           </v-btn>
         </v-stepper-content>
         <v-stepper-content step="3">
-          <v-card class="mb-12">
+          <div class="mt-2">
             <v-card-title>
               <v-flex class="text-left">
                 <v-btn color="primary" large @click.stop="dialog = true">
@@ -164,73 +153,71 @@
                 </v-btn>
               </v-flex>
             </v-card-title>
-            <v-card-text>
-              <div class="d-flex flex-column flex-sm-row">
-                <div class="flex-grow-1 pt-2 pa-sm-2">
-                  <v-row>
-                    <v-col cols="12">
-                      <v-select
-                        :items="claimantUsers"
-                        :label="$t('cases.claimant')"
-                        :item-text="(item) => item.name"
-                        :item-value="(item) => item.id"
-                        hide-details
-                        dense
-                        outlined
-                        v-model="sidesInfo.claimant_id"
-                        :rules="[rules.required]"
-                        :error-messages="errors['claimant_id']"
-                        clearable
-                        @click:clear="clearClaimantSelect"
-                      >
-                      </v-select>
-                    </v-col>
-                    <v-col cols="12">
-                      <v-select
-                        :items="defendantUsers"
-                        :label="$t('cases.defendant')"
-                        :item-text="(item) => item.name"
-                        :item-value="(item) => item.id"
-                        hide-details
-                        dense
-                        outlined
-                        v-model="sidesInfo.defendant_id"
-                        :rules="[rules.required]"
-                        :error-messages="errors['defendant_id']"
-                        clearable
-                        @click:clear="clearDefendantSelect"
-                      >
-                      </v-select>
-                    </v-col>
-                    <v-col cols="12">
-                      <v-select
-                        :items="departments"
-                        :label="$t('tables.department')"
-                        :item-text="(item) => item.name"
-                        :item-value="(item) => item.id"
-                        hide-details
-                        disabled
-                        dense
-                        outlined
-                        v-model="sidesInfo.department_id"
-                      >
-                      </v-select>
-                    </v-col>
-                    <v-col cols="12">
-                      <v-text-field
-                        type="number"
-                        v-model="sidesInfo.civil"
-                        :label="$t('cases.civil')"
-                        disabled
-                        dense
-                        outlined
-                      ></v-text-field>
-                    </v-col>
-                  </v-row>
-                </div>
+            <div class="d-flex flex-column flex-sm-row">
+              <div class="flex-grow-1 pt-2 pa-sm-2">
+                <v-row>
+                  <v-col cols="12">
+                    <v-select
+                      :items="claimantUsers"
+                      :label="$t('cases.claimant')"
+                      :item-text="(item) => item.name"
+                      :item-value="(item) => item.id"
+                      hide-details
+                      dense
+                      outlined
+                      v-model="sidesInfo.claimant_id"
+                      :rules="[rules.required]"
+                      :error-messages="errors['claimant_id']"
+                      clearable
+                      @click:clear="clearClaimantSelect"
+                    >
+                    </v-select>
+                  </v-col>
+                  <v-col cols="12">
+                    <v-select
+                      :items="defendantUsers"
+                      :label="$t('cases.defendant')"
+                      :item-text="(item) => item.name"
+                      :item-value="(item) => item.id"
+                      hide-details
+                      dense
+                      outlined
+                      v-model="sidesInfo.defendant_id"
+                      :rules="[rules.required]"
+                      :error-messages="errors['defendant_id']"
+                      clearable
+                      @click:clear="clearDefendantSelect"
+                    >
+                    </v-select>
+                  </v-col>
+                  <v-col cols="12">
+                    <v-select
+                      :items="departments"
+                      :label="$t('tables.department')"
+                      :item-text="(item) => item.name"
+                      :item-value="(item) => item.id"
+                      hide-details
+                      disabled
+                      dense
+                      outlined
+                      v-model="sidesInfo.department_id"
+                    >
+                    </v-select>
+                  </v-col>
+                  <v-col cols="12">
+                    <v-text-field
+                      type="number"
+                      v-model="sidesInfo.civil"
+                      :label="$t('cases.civil')"
+                      disabled
+                      dense
+                      outlined
+                    ></v-text-field>
+                  </v-col>
+                </v-row>
               </div>
-            </v-card-text>
-          </v-card>
+            </div>
+          </div>
 
           <v-btn color="primary" @click="storeRequestSide">
             {{ $t("general.continue") }}
@@ -238,160 +225,114 @@
         </v-stepper-content>
 
         <v-stepper-content step="4">
-          <v-card class="mb-12">
-            <v-card-title> </v-card-title>
-            <v-card-text>
-              <div class="d-flex flex-column flex-sm-row">
-                <div class="flex-grow-1 pt-2 pa-sm-2">
-                  <v-row>
-                    <v-col cols="6">
+          <div class="d-flex flex-column flex-sm-row">
+            <div class="flex-grow-1 pt-2 pa-sm-2">
+              <v-row dense>
+                <v-col cols="6">
+                  <v-text-field
+                    type="number"
+                    v-model="caseAction.amount"
+                    :label="$t('cases.amount')"
+                    outlined
+                    dense
+                  >
+                    <template v-slot:append>
+                      <v-icon> mdi-cash </v-icon>
+                    </template>
+                  </v-text-field>
+                </v-col>
+                <v-col cols="6">
+                  <v-text-field
+                    type="number"
+                    v-model="caseAction.percentage"
+                    :label="$t('cases.percentageLose')"
+                    dense
+                    outlined
+                  >
+                    <template v-slot:append>
+                      <v-icon> mdi-percent </v-icon>
+                    </template>
+                  </v-text-field>
+                </v-col>
+                <v-col cols="6">
+                  <v-select
+                    :items="caseTypes"
+                    item-text="title"
+                    item-value="value"
+                    :label="$t('tables.status')"
+                    dense
+                    outlined
+                    v-model="caseAction.status"
+                  >
+                  </v-select>
+                </v-col>
+                <v-col cols="12" sm="6">
+                  <v-dialog
+                    ref="dateDialog"
+                    v-model="dateDialog"
+                    :return-value.sync="caseAction.date"
+                    persistent
+                    width="290px"
+                  >
+                    <template v-slot:activator="{ on, attrs }">
                       <v-text-field
-                        type="number"
-                        v-model="caseAction.amount"
-                        :label="$t('cases.amount')"
+                        v-model="caseAction.date"
+                        :label="$t('tables.date')"
+                        prepend-icon="mdi-calendar"
+                        readonly
+                        v-bind="attrs"
+                        v-on="on"
                         dense
                         outlined
-                      >
-                        <template v-slot:append>
-                          <v-icon> mdi-cash </v-icon>
-                        </template>
-                      </v-text-field>
-                    </v-col>
-                    <v-col cols="6">
-                      <v-text-field
-                        type="number"
-                        v-model="caseAction.percentage"
-                        :label="$t('cases.percentageLose')"
-                        dense
-                        outlined
-                      >
-                        <template v-slot:append>
-                          <v-icon> mdi-percent </v-icon>
-                        </template>
-                      </v-text-field>
-                    </v-col>
-                    <v-col cols="6">
-                      <v-select
-                        :items="caseTypes"
-                        item-text="title"
-                        item-value="value"
-                        :label="$t('tables.status')"
-                        hide-details
-                        dense
-                        outlined
-                        v-model="caseAction.status"
-                      >
-                      </v-select>
-                    </v-col>
-                    <v-col cols="12" sm="6">
-                      <v-dialog
-                        ref="dateDialog"
-                        v-model="dateDialog"
-                        :return-value.sync="caseAction.date"
-                        persistent
-                        width="290px"
-                      >
-                        <template v-slot:activator="{ on, attrs }">
-                          <v-text-field
-                            v-model="caseAction.date"
-                            :label="$t('tables.date')"
-                            prepend-icon="mdi-calendar"
-                            readonly
-                            v-bind="attrs"
-                            v-on="on"
-                            dense
-                            outlined
-                          ></v-text-field>
-                        </template>
-                        <v-date-picker v-model="caseAction.date" scrollable>
-                          <v-spacer></v-spacer>
-                          <v-btn text color="primary" @click="modal = false">
-                            Cancel
-                          </v-btn>
-                          <v-btn
-                            text
-                            color="primary"
-                            @click="$refs.dateDialog.save(caseAction.date)"
-                          >
-                            OK
-                          </v-btn>
-                        </v-date-picker>
-                      </v-dialog>
-                    </v-col>
-                    <!-- <v-col
-                      cols="6"
-                      v-for="(date, k) in caseAction.dates"
-                      :key="k"
-                    >
-                      <v-text-field
-                        dense
-                        outlined
-                        type="date"
-                        :label="$t('cases.courtDate')"
-                        v-model="date.caseDate"
-                      >
-                      </v-text-field>
-                    </v-col> -->
-                    <v-col cols="12">
-                      <v-select
-                        :items="courts"
-                        :label="$t('tables.court')"
-                        item-text="title"
-                        item-value="value"
-                        hide-details
-                        dense
-                        outlined
-                        v-model="caseAction.court"
-                      >
-                      </v-select>
-                    </v-col>
-                    <v-col cols="12">
-                      <v-textarea
-                        :label="$t('cases.action')"
-                        value=""
-                        v-model="caseAction.details"
-                        dense
-                        outlined
-                      ></v-textarea>
-                    </v-col>
-                  </v-row>
-                  <!-- <v-row v-for="(date, k) in caseAction.dates" :key="k">
-                    <v-col cols="12">
-                      <v-text-field
-                        dense
-                        outlined
-                        type="date"
-                        :label="$t('cases.courtDate')"
-                        v-model="date.caseDate"
-                      >
-                      </v-text-field>
-                    </v-col>
-                    <v-col cols="1">
-                      <v-btn
-                        @click="removeDate(k)"
-                        v-show="k || (!k && caseAction.dates.length > 1)"
-                      >
-                        <v-icon color="green"> mdi-minus </v-icon>
+                      ></v-text-field>
+                    </template>
+                    <v-date-picker v-model="caseAction.date" scrollable>
+                      <v-spacer></v-spacer>
+                      <v-btn text color="primary" @click="modal = false">
+                        Cancel
                       </v-btn>
-                    </v-col>
-                    <v-col cols="1">
                       <v-btn
-                        @click="addDate(k)"
-                        v-show="k == caseAction.dates.length - 1"
+                        text
+                        color="primary"
+                        @click="$refs.dateDialog.save(caseAction.date)"
                       >
-                        <v-icon color="red"> mdi-plus </v-icon>
+                        OK
                       </v-btn>
-                    </v-col>
-                  </v-row> -->
-                </div>
-              </div>
-            </v-card-text>
-          </v-card>
+                    </v-date-picker>
+                  </v-dialog>
+                </v-col>
+
+                <v-col cols="12">
+                  <v-select
+                    :items="courts"
+                    :label="$t('tables.court')"
+                    item-text="title"
+                    item-value="value"
+                    dense
+                    outlined
+                    v-model="caseAction.court"
+                  >
+                  </v-select>
+                </v-col>
+                <v-col cols="12">
+                  <v-textarea
+                    :label="$t('cases.action')"
+                    value=""
+                    v-model="caseAction.details"
+                    dense
+                    outlined
+                  ></v-textarea>
+                </v-col>
+              </v-row>
+            </div>
+          </div>
           <v-btn @click="storeFormInformation" color="primary">
             {{ $t("general.save") }}
           </v-btn>
 
-          <v-btn text> {{ $t("general.cancel") }} </v-btn>
+          <v-btn color="grey" class="ms-2">
+            {{ $t("general.cancel") }}
+          </v-btn>
         </v-stepper-content>
       </v-stepper-items>
     </v-stepper>
@@ -724,16 +665,11 @@ export default {
         .then((response) => {
           this.isLoading = false;
           this.e1 = 4;
-          makeToast("success", response.data.message);
+          // makeToast("success", response.data.message);
         })
         .catch(() => {
           this.isLoading = false;
         });
-      // } else {
-      //   this.showErrors = true;
-      //   this.isSubmitingForm = false;
-      //   console.log("some fields is required");
-      // }
     },
     async storeFormInformation() {
       this.isLoading = true;

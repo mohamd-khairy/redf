@@ -36,7 +36,8 @@
             v-for="(action, i) in formActions"
             :key="i"
             :color="getTimeColor(action.formable_type)"
-            small
+            fill-dot
+            icon="mdi-calendar"
           >
             <template v-slot:opposite>
               <span

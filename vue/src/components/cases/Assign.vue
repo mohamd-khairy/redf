@@ -2,14 +2,15 @@
   <v-row justify="center">
     <v-dialog v-model="dialog" max-width="500">
       <v-card>
-        <v-card-title
-          class="text-h5 d-flex justify-space-between align-center border-bottom"
-        >
-          {{ $t("cases.assignUser") }}
-          <v-btn icon @click="dialog = false">
-            <v-icon> mdi-close </v-icon>
-          </v-btn>
-        </v-card-title>
+        <v-toolbar dark color="primary">
+          <v-toolbar-title>{{ $t("cases.assignUser") }}</v-toolbar-title>
+          <v-spacer></v-spacer>
+          <v-toolbar-items>
+            <v-btn icon @click="dialog = false">
+              <v-icon> mdi-close </v-icon>
+            </v-btn>
+          </v-toolbar-items>
+        </v-toolbar>
 
         <v-card-text class="mt-4">
           <v-row>
@@ -41,11 +42,11 @@
         <v-card-actions class="py-2">
           <v-spacer></v-spacer>
 
-          <v-btn color="primary" class="mx-2" @click="assignUser">
+          <v-btn color="primary" @click="assignUser">
             {{ $t("general.save") }}
           </v-btn>
 
-          <v-btn color="grey" @click="dialog = false">
+          <v-btn color="grey" class="ms-2" @click="dialog = false">
             {{ $t("general.cancel") }}
           </v-btn>
         </v-card-actions>
@@ -132,7 +133,7 @@ export default {
           this.dialog = false;
           this.fetchData();
           this.errors = {};
-
+          this.$emit("userAssigned");
           makeToast("success", response.data.message);
         })
         .catch((error) => {

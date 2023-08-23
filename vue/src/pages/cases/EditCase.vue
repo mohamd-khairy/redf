@@ -211,7 +211,7 @@
                 :disabled="isSubmitingForm"
                 :loading="isSubmitingForm"
                 @click="saveForm"
-                >{{ $t("general.saveChanges") }}</v-btn
+                >{{ $t("general.continue") }}</v-btn
               >
             </v-card-actions>
           </v-card>
@@ -528,22 +528,25 @@
             </v-card-text>
           </v-card>
           <v-btn @click="storeFormInformation" color="primary">
-            {{ $t("general.save") }}
+            {{ $t("general.continue") }}
           </v-btn>
 
           <v-btn text> {{ $t("general.cancel") }} </v-btn>
         </v-stepper-content>
       </v-stepper-items>
     </v-stepper>
+    <add-user-dialog v-model="dialog"></add-user-dialog>
   </div>
 </template>
 
 <script>
+import AddUserDialog from "../../components/cases/AddUserDialog";
 import { mapActions, mapState } from "vuex";
 import { makeToast } from "@/helpers";
 
 export default {
-  name: "CreateCase",
+  name: "EditCase",
+  components: { AddUserDialog },
 
   data() {
     return {
@@ -890,22 +893,14 @@ export default {
         .then((response) => {
           this.isLoading = false;
           this.e1 = 4;
-          makeToast("success", response.data.message);
+          // makeToast("success", response.data.message);
         })
         .catch(() => {
           this.isLoading = false;
         });
-      // } else {
-      //   this.showErrors = true;
-      //   this.isSubmitingForm = false;
-      //   console.log("some fields is required");
-      // }
     },
     async storeFormInformation() {
       this.isLoading = true;
-      // this.caseAction.dates = this.caseAction.dates.map(
-      //   (cdate) => cdate.caseDate
-      // );
       let data = {
         form_request_id: this.formRequestId,
         amount: this.caseAction.amount,

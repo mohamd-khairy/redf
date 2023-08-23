@@ -183,7 +183,7 @@
               @click.prevent="deleteItem(item.id)"
               v-can="'delete-user'"
             >
-              <v-icon>mdi-delete</v-icon>
+              <v-icon>mdi-close</v-icon>
             </v-btn>
           </div>
         </template>
@@ -209,7 +209,11 @@
         v-if="addActionDialog"
         @close-action-dialog="closeActionDialog"
       />
-      <assign v-model="dialog" :id="formId"></assign>
+      <assign
+        @userAssigned="userAssigned"
+        v-model="dialog"
+        :id="formId"
+      ></assign>
     </v-card>
   </div>
 </template>
@@ -322,6 +326,9 @@ export default {
         breadcrumbs: this.breadcrumbs,
         pageTitle: this.$t("cases.casesList"),
       });
+    },
+    userAssigned() {
+      this.open();
     },
     open() {
       this.isLoading = true;
