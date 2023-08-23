@@ -31,6 +31,8 @@ class InformationRequest extends FormRequest
             'date' => 'required|date',
             'status' => 'nullable',
             'court' => 'nullable',
+            'sessionDate' => 'nullable|date',
+
         ];
     }
 }

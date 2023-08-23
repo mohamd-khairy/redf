@@ -231,6 +231,48 @@
                   outlined
                 ></v-textarea>
               </v-col>
+
+              <v-col cols="12">
+                <v-checkbox
+                  v-model="sessionDate"
+                  :label="$t('cases.sessionDate')"
+                ></v-checkbox>
+              </v-col>
+              <v-col cols="12" sm="12" v-if="sessionDate">
+                <v-dialog
+                  ref="sessionDialog"
+                  v-model="sessionDialog"
+                  :return-value.sync="caseAction.sessionDate"
+                  persistent
+                  width="290px"
+                >
+                  <template v-slot:activator="{ on, attrs }">
+                    <v-text-field
+                      v-model="caseAction.sessionDate"
+                      :label="$t('tables.date')"
+                      prepend-icon="mdi-calendar"
+                      readonly
+                      v-bind="attrs"
+                      v-on="on"
+                      dense
+                      outlined
+                    ></v-text-field>
+                  </template>
+                  <v-date-picker v-model="caseAction.sessionDate" scrollable>
+                    <v-spacer></v-spacer>
+                    <v-btn text color="primary" @click="modal = false">
+                      Cancel
+                    </v-btn>
+                    <v-btn
+                      text
+                      color="primary"
+                      @click="$refs.sessionDialog.save(caseAction.sessionDate)"
+                    >
+                      OK
+                    </v-btn>
+                  </v-date-picker>
+                </v-dialog>
+              </v-col>
             </v-row>
           </div>
         </div>
@@ -274,6 +316,8 @@ export default {
       loading: false,
       isLoading: false,
       dateDialog: false,
+      sessionDialog: false,
+      sessionDate: false,
       caseAction: {
         form_request_id: this.formRequestId,
         amount: "",
@@ -282,6 +326,11 @@ export default {
         court_name: "",
         status: "",
         date: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
+          .toISOString()
+          .substr(0, 10),
+        sessionDate: new Date(
+          Date.now() - new Date().getTimezoneOffset() * 60000
+        )
           .toISOString()
           .substr(0, 10),
         dates: [
@@ -324,6 +373,7 @@ export default {
         status: this.caseAction.status,
         date: this.caseAction.date,
         court_name: this.caseAction.court_name,
+        sessionDate: this.caseAction.sessionDate,
       };
       this.isLoading = true;
       const result = await this.saveFormInformation(data);

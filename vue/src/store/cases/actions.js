@@ -26,7 +26,7 @@ const actions = {
     commit("SET_formRequests", formRequests);
   },
   async deleteForm({ commit }, id) {
-    return await axios.delete(`delete-formmmmm/${id}`);
+    return await axios.delete(`delete-form-Requests/${id}`);
   },
 
   async userDepartment({ commit }, data) {

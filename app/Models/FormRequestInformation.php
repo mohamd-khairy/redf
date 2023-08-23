@@ -11,8 +11,11 @@ class FormRequestInformation extends Model
 {
     use HasFactory , SoftDeletes;
 
-    protected $fillable = ['form_request_id', 'amount', 'percentage', 'status', 'details', 'court', 'date'];
+    protected $fillable = ['form_request_id', 'amount','sessionDate', 'percentage', 'status', 'details', 'court', 'date'];
 
+    protected $casts = [
+        'sessionDate' => 'datetime',
+    ];
     public function scopeLatestRecord($query)
     {
         return $query->latest()->first();

@@ -509,6 +509,7 @@ export default {
       "saveRequestSide",
       "saveFormInformation",
       "getCourts",
+      "updatePages",
     ]),
     addDate(index) {
       this.caseAction.dates.push({ caseDate: "" });
@@ -670,13 +671,24 @@ export default {
     async saveForm() {
       this.isSubmitingForm = true;
       if (await this.validateFormData()) {
-        const result = await this.savePages({
-          caseName: this.caseName,
-          caseNumber: this.caseNumber,
-        });
+        let result = null;
+        if (!this.formRequestId) {
+          result = await this.savePages({
+            caseName: this.caseName,
+            caseNumber: this.caseNumber,
+          });
+        } else {
+          result = await this.updatePages({
+            caseName: this.caseName,
+            caseNumber: this.caseNumber,
+            formId: this.formRequestId,
+          });
+        }
+
         if (result) {
           this.isSubmitingForm = false;
-          this.formRequestId = result.data?.data?.formRequest?.id;
+          this.formRequestId =
+            this.formRequestId || result.data?.data?.formRequest?.id;
           this.showErrors = false;
           this.e1 = 3;
           // makeToast("success", response.data.message);

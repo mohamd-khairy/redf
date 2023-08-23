@@ -489,6 +489,7 @@ export default {
     reviewNumber: "رقم المراجعة",
     new_beneficiary: "مستفيد جديد",
     belongToCase: "تنتمى لقضية",
+    sessionDate: "تاريخ القضية",
     cases: "القضايا",
   },
 
@@ -751,6 +752,7 @@ export default {
     appeal: "الاستئناف",
     supreme: "العليا",
     implementation: "التنفيذ",
+    delete_confirmation: "هل انت متأكد من الحذف ؟",
   },
   reports: {
     buildReport: "انشاء تقرير",
