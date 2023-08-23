@@ -187,9 +187,13 @@ const actions = {
   },
   async saveRequestSide({ state }, data) {
     try {
-      return await axios.post(`form-request-side`, data);
+      const result = await axios.post(`form-request-side`, data);
+      if (result) {
+        return true;
+      }
     } catch (error) {
       console.error("Error saving form data:", error);
+      return false;
     }
   },
   async saveFormInformation({ state }, data) {
