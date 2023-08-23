@@ -90,6 +90,7 @@ class FormRequestController extends Controller
     {
         try {
             $formfill = FormRequest::with('form.pages.items', 'user', 'form_page_item_fill', 'formRequestInformation', 'formRequestSide', 'lastFormRequestInformation')->find($id);
+            // dd($form)
             return responseSuccess(new FormRequestResource($formfill), 'Form requests retrieved successfully');
         } catch (\Throwable $e) {
             // Return an error response if something goes wrong
@@ -125,7 +126,6 @@ class FormRequestController extends Controller
 
     public function formRequestInformation(InformationRequest $request)
     {
-
         return $this->formRequestService->formRequestInformation($request);
     }
 

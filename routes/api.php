@@ -150,6 +150,10 @@ Route::group(['prefix' => 'v1'], function () {
         Route::delete('delete-form/{id}', [FormsController::class, 'deleteForm']);
         Route::get('get-forms', [FormsController::class, 'getFormsByTemplate']);
         Route::get('get-form/{formId}', [FormsController::class, 'listForm']);
+    });
+
+    /*********************FormRequestController***************** */
+    Route::group(['middleware' => 'auth:sanctum'], function () {
         Route::post('store-form-fill', [FormRequestController::class, 'storeFormFill']);
         Route::put('update-form-fill/{id}', [FormRequestController::class, 'updateFormFill']);
         Route::get('get-form-Requests', [FormRequestController::class, 'getFormRequest']);
@@ -160,6 +164,5 @@ Route::group(['prefix' => 'v1'], function () {
         Route::post('form-request-side', [FormRequestController::class , 'storeFormRequestSide']);
         Route::post('form-request-information', [FormRequestController::class , 'formRequestInformation']);
         Route::post('form-assign-request', [FormRequestController::class, 'FormAssignRequest']);
-        Route::get('latest-form-information', [FormRequestController::class, 'latestFormInformation']);
-    });
+     });
 });

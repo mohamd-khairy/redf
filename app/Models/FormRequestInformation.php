@@ -22,8 +22,8 @@ class FormRequestInformation extends Model
         return $this->belongsTo(FormRequest::class, 'form_request_id');
     }
 
-    public function getCourtAttribute($value)
-    {
-        return $value ? __('enums.' . $value) : null;
-    }
+    // public function getCourtAttribute($value)
+    // {
+    //     return $value ? __('enums.' . $value) : null;
+    // }
 }

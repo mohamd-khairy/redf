@@ -180,7 +180,7 @@ class FormRequestService
                 'form_request_id' => $formRequestInfo->form_request_id,
                 'calendarable_id' => $formRequestInfo->form_request_id,
                 'calendarable_type' => FormRequest::class,
-                'details' => 'تم اضافه اجراء جديد',
+                'details' => isset($request->details) ?? 'تم اضافه اجراء جديد',
                 'user_id' => auth()->id(),
                 'date' => $request->date,
             ];
