@@ -46,7 +46,7 @@
         <v-text-field
           dense
           class="custom-disabled-input"
-          :value="action?.formable?.assigner_id || ''"
+          :value="action?.formable?.assigner.name || ''"
           solo
           disabled
           hide-details
