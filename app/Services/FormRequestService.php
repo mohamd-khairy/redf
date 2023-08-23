@@ -3,6 +3,7 @@ namespace App\Services;
 
 use Carbon\Carbon;
 use App\Models\Form;
+use App\Models\Formable;
 use App\Models\FormRequest;
 use App\Filters\SortFilters;
 use App\Models\FormRequestSide;
@@ -20,7 +21,6 @@ class FormRequestService
 {
     public function storeFormFill($requestData)
     {
-        // dd($requestData['id']);
         return DB::transaction(function () use ($requestData) {
             $formRequest = FormRequest::create([
                 'form_id' => $requestData['id'],
@@ -31,6 +31,16 @@ class FormRequestService
             $formRequest->name = $requestData['case_name'] ?? ($formRequest->form->name . "($formRequest->case_number)");
             $formRequest->save();
 
+            // save related tables if get case_id
+            if($requestData->case_id){
+                // dd($requestData->case_id , $formRequest->id , FormRequest::class);
+                // Create a new Formable record
+                Formable::create([
+                    'formable_id' => $requestData->case_id,
+                    'form_request_id' => $formRequest->id,
+                    'formable_type' => FormRequest::class,
+                ]);
+            }
             $this->processFormPages($requestData, $formRequest);
 
             $actionData = [

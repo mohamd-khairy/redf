@@ -32,7 +32,6 @@ class FormRequestController extends Controller
     public function storeFormFill(FormFillRequest $request)
     {
         try {
-
             $requestData = $request->validated();
             $requestData['id'] = $request->id;
             $formRequest = $this->formRequestService->storeFormFill($request);
@@ -93,32 +92,34 @@ class FormRequestController extends Controller
         }
     }
 
-    public function updateAssignRequest(Request $request)
-    {
-        dd($request->all());
-    }
-
     public function storeFormRequestSide(Request $request)
     {
         return $this->formRequestService->formRequestSide($request);
     }
-
 
     public function formRequestInformation(InformationRequest $request)
     {
         return $this->formRequestService->formRequestInformation($request);
     }
 
-    public function FormAssignRequest(Request $request)
-    {
-        // Create a new Formable record
-        Formable::create([
-            'formable_id' => $request->formable_id,
-            'form_request_id' => $request->form_request_id,
-            'formable_type' => FormRequest::class,
-        ]);
+    public function deleteFormRequest($id){
+
+        try {
+            return DB::transaction(function () use ($id) {
+                $formRequest = FormRequest::findOrFail($id);
+                // Delete related records
+                $formRequest->formRequestInformations()->delete();
+                $formRequest->formRequestSide()->delete();
+                $formRequest->tasks()->delete();
+                $formRequest->form_page_item_fill()->delete();
+                // Delete the FormRequest itself
+                $formRequest->delete();
+                return responseSuccess('Form Request Deleted Successfully');
+            });
+        } catch (\Exception $e) {
+            return responseFail('there is no form with this id');
+        }
     }
-    public function deleteFormRequest($id)
-    {
-    }
+
+
 }

@@ -22,6 +22,7 @@ return new class extends Migration
             $table->foreign('form_request_id')->references('id')->on('form_requests')->onDelete('cascade');
             $table->foreign('claimant_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('defendant_id')->references('id')->on('users')->onDelete('cascade');
+            $table->softDeletes();
             $table->timestamps();
         });
     }

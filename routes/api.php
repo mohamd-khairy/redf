@@ -161,10 +161,8 @@ Route::group(['prefix' => 'v1'], function () {
         Route::delete('delete-form-Requests/{id}', [FormRequestController::class, 'deleteFormRequest']);
 
         Route::post('assign-request', [FormRequestController::class, 'assignRequest']);
-        Route::put('assign-request/{id}', [FormRequestController::class, 'updateAssignRequest']);
-        Route::get('all-forms', [FormsController::class, 'allForm']);
+         Route::get('all-forms', [FormsController::class, 'allForm']);
         Route::post('form-request-side', [FormRequestController::class , 'storeFormRequestSide']);
         Route::post('form-request-information', [FormRequestController::class , 'formRequestInformation']);
-        Route::post('form-assign-request', [FormRequestController::class, 'FormAssignRequest']);
-     });
+      });
 });
