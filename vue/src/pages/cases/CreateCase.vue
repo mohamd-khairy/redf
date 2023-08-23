@@ -37,7 +37,6 @@
             ></v-text-field>
             <v-text-field
               outlined
-              type="number"
               class="mb-2"
               v-model="caseNumber"
               :label="$t('cases.caseNumber')"
@@ -142,6 +141,9 @@
           <v-btn color="primary" @click="saveForm">
             {{ $t("general.continue") }}
           </v-btn>
+          <v-btn color="grey" @click="stepBack" class="ms-2">
+            {{ $t("general.back") }}
+          </v-btn>
         </v-stepper-content>
         <v-stepper-content step="3">
           <div class="mt-2">
@@ -221,6 +223,9 @@
 
           <v-btn color="primary" @click="storeRequestSide">
             {{ $t("general.continue") }}
+          </v-btn>
+          <v-btn color="grey" @click="stepBack" class="ms-2">
+            {{ $t("general.back") }}
           </v-btn>
         </v-stepper-content>
 
@@ -330,8 +335,8 @@
             {{ $t("general.save") }}
           </v-btn>
 
-          <v-btn color="grey" class="ms-2">
-            {{ $t("general.cancel") }}
+          <v-btn color="grey" @click="stepBack" class="ms-2">
+            {{ $t("general.back") }}
           </v-btn>
         </v-stepper-content>
       </v-stepper-items>
@@ -496,6 +501,12 @@ export default {
     removeDate(index) {
       this.caseAction.dates.splice(index, 1);
     },
+    stepBack() {
+      if (this.e1 > 1) {
+        this.e1--;
+      }
+      return;
+    },
     getUserDepartment(id) {
       this.isLoading = true;
       let data = {
@@ -625,7 +636,7 @@ export default {
     },
     saveCaseInfo() {
       if (!this.caseName || !this.caseNumber) {
-        makeToast("failed", "case name and number ");
+        makeToast("error", "يرجي ملئ البيانات");
         return;
       }
       this.e1 = 2;

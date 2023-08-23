@@ -785,6 +785,7 @@ export default {
     pending: "بانتظار الاجراء",
     assigned: "لدي الموظف المختص",
     closed: "تم اكمال الطلب",
+    back: "السابق",
   },
   reports: {
     buildReport: "انشاء تقرير",
