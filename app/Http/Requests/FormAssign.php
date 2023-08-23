@@ -27,7 +27,7 @@ class FormAssign extends FormRequest
         return [
             'form_request_id' => 'required|array',
             'user_id' => 'required',
-            'assigner_id' => 'required',
+            // 'assigner_id' => 'required',
             'date' => 'required',
             // 'type' => 'sometimes|in:claimant,employee,defendant,default:employee',
         ];

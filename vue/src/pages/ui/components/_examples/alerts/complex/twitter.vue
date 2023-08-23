@@ -3,7 +3,7 @@
     <v-alert
       v-model="alert"
       dismissible
-      close-icon="mdi-delete"
+      close-icon="mdi-close"
       color="cyan"
       border="left"
       elevation="2"
@@ -14,23 +14,17 @@
     </v-alert>
 
     <div class="text-center">
-      <v-btn
-        v-if="!alert"
-        dark
-        @click="alert = true"
-      >
-        Reset Alert
-      </v-btn>
+      <v-btn v-if="!alert" dark @click="alert = true"> Reset Alert </v-btn>
     </div>
   </div>
 </template>
 
 <script>
 export default {
-  data () {
+  data() {
     return {
-      alert: true
-    }
-  }
-}
+      alert: true,
+    };
+  },
+};
 </script>

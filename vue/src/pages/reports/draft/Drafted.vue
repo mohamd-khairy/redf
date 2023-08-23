@@ -60,12 +60,10 @@
       </v-row>
       <v-data-table
         show-select
-
         v-model="selected"
         :headers="headers"
         :items="items"
         :options.sync="options"
-
         :loading="isLoading"
         :page="page"
         :pageCount="numberOfPages"
@@ -176,7 +174,7 @@
               color="error"
               @click.prevent="deleteItem(item.id)"
             >
-              <v-icon>mdi-delete</v-icon>
+              <v-icon>mdi-close</v-icon>
             </v-btn>
           </div>
         </template>
@@ -202,7 +200,7 @@ export default {
   name: "Drafted",
   components: {
     CopyLabel,
-    emptyDataSvg
+    emptyDataSvg,
   },
   data() {
     return {
@@ -214,11 +212,11 @@ export default {
       breadcrumbs: [
         {
           text: this.$t("reports.reports"),
-          disabled: true
+          disabled: true,
         },
         {
-          text: this.$t("reports.draftedReports")
-        }
+          text: this.$t("reports.draftedReports"),
+        },
       ],
 
       searchQuery: "",
@@ -240,15 +238,15 @@ export default {
           sortable: false,
           align: "right",
           value: "action",
-          width: "15%"
-        }
-      ]
+          width: "15%",
+        },
+      ],
     };
   },
   created() {
     this.setBreadCrumb({
       breadcrumbs: this.breadcrumbs,
-      pageTitle: this.$t("reports.draftedReports")
+      pageTitle: this.$t("reports.draftedReports"),
     });
   },
   watch: {
@@ -256,15 +254,15 @@ export default {
     options: {
       handler() {
         this.open();
-      }
+      },
     },
     deep: true,
     searchQuery() {
       this.open();
-    }
+    },
   },
   computed: {
-    ...mapState("reports", ["drafts", "draftTitle"])
+    ...mapState("reports", ["drafts", "draftTitle"]),
   },
 
   methods: {
@@ -279,7 +277,7 @@ export default {
         pageSize: itemsPerPage,
         pageNumber: page,
         sortDirection: direction,
-        sortColumn: this.options.sortBy[0] ?? ""
+        sortColumn: this.options.sortBy[0] ?? "",
       };
       this.getDrafted(data)
         .then(() => {
@@ -304,7 +302,7 @@ export default {
       if (isConfirmed) {
         this.isLoading = true;
         this.deleteDraft(id)
-          .then(response => {
+          .then((response) => {
             makeToast("success", response.data.message);
             this.open();
             this.isLoading = false;
@@ -321,18 +319,18 @@ export default {
       const { isConfirmed } = await ask("Are you sure to delete it?", "info");
       if (isConfirmed) {
         if (this.selected.length) {
-          this.selected.forEach(item => {
+          this.selected.forEach((item) => {
             ids.push(item.id);
           });
         }
         data = {
           ids: ids,
           action: "delete",
-          value: 1
+          value: 1,
         };
         this.isLoading = true;
         this.deleteAllDrafts(data)
-          .then(response => {
+          .then((response) => {
             makeToast("success", response.data.message);
             this.open();
             this.isLoading = false;
@@ -341,8 +339,8 @@ export default {
             this.isLoading = false;
           });
       }
-    }
-  }
+    },
+  },
 };
 </script>
 

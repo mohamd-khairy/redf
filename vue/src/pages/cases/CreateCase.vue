@@ -25,29 +25,35 @@
 
       <v-stepper-items>
         <v-stepper-content step="1">
-          <div class="mt-2" v-if="!initialLoading">
+          <div class="mt-2">
             <v-text-field
               class="mb-2"
               v-model="caseName"
               :label="$t('cases.caseName')"
               outlined
               :required="true"
+              :error-messages="stepOneValidation(caseName)"
               dense
               :rules="[requiredRule]"
             ></v-text-field>
             <v-text-field
               outlined
+              type="number"
               class="mb-2"
               v-model="caseNumber"
+              @keydown="handleInput"
               :label="$t('cases.caseNumber')"
               :required="true"
               :rules="[requiredRule]"
+              :error-messages="stepOneValidation(caseNumber)"
               dense
             ></v-text-field>
           </div>
-          <v-btn color="primary" @click="saveCaseInfo">
-            {{ $t("general.continue") }}
-          </v-btn>
+          <v-card-actions class="px-2">
+            <v-btn color="primary" @click="saveCaseInfo">
+              {{ $t("general.continue") }}
+            </v-btn>
+          </v-card-actions>
         </v-stepper-content>
         <v-stepper-content step="2">
           <div class="mt-2" v-if="!initialLoading">
@@ -71,8 +77,8 @@
                             outlined
                             v-model="input.value"
                             :label="getInputLabel(input)"
-                            :required="input.required"
                             :rules="input.required ? [requiredRule] : []"
+                            :required="input.required"
                             :error-messages="errorMessage(input)"
                             dense
                           ></v-text-field>
@@ -138,12 +144,14 @@
               </v-tab-item>
             </v-tabs-items>
           </div>
-          <v-btn color="primary" @click="saveForm">
-            {{ $t("general.continue") }}
-          </v-btn>
-          <v-btn color="grey" @click="stepBack" class="ms-2">
-            {{ $t("general.back") }}
-          </v-btn>
+          <v-card-actions>
+            <v-btn color="primary" @click="saveForm">
+              {{ $t("general.continue") }}
+            </v-btn>
+            <v-btn color="grey" @click="stepBack" class="ms-2">
+              {{ $t("general.back") }}
+            </v-btn>
+          </v-card-actions>
         </v-stepper-content>
         <v-stepper-content step="3">
           <div class="mt-2">
@@ -155,78 +163,75 @@
                 </v-btn>
               </v-flex>
             </v-card-title>
-            <div class="d-flex flex-column flex-sm-row">
-              <div class="flex-grow-1 pt-2 pa-sm-2">
-                <v-row>
-                  <v-col cols="12">
-                    <v-select
-                      :items="claimantUsers"
-                      :label="$t('cases.claimant')"
-                      :item-text="(item) => item.name"
-                      :item-value="(item) => item.id"
-                      hide-details
-                      dense
-                      outlined
-                      v-model="sidesInfo.claimant_id"
-                      :rules="[rules.required]"
-                      :error-messages="errors['claimant_id']"
-                      clearable
-                      @click:clear="clearClaimantSelect"
-                    >
-                    </v-select>
-                  </v-col>
-                  <v-col cols="12">
-                    <v-select
-                      :items="defendantUsers"
-                      :label="$t('cases.defendant')"
-                      :item-text="(item) => item.name"
-                      :item-value="(item) => item.id"
-                      hide-details
-                      dense
-                      outlined
-                      v-model="sidesInfo.defendant_id"
-                      :rules="[rules.required]"
-                      :error-messages="errors['defendant_id']"
-                      clearable
-                      @click:clear="clearDefendantSelect"
-                    >
-                    </v-select>
-                  </v-col>
-                  <v-col cols="12">
-                    <v-select
-                      :items="departments"
-                      :label="$t('tables.department')"
-                      :item-text="(item) => item.name"
-                      :item-value="(item) => item.id"
-                      hide-details
-                      disabled
-                      dense
-                      outlined
-                      v-model="sidesInfo.department_id"
-                    >
-                    </v-select>
-                  </v-col>
-                  <v-col cols="12">
-                    <v-text-field
-                      type="number"
-                      v-model="sidesInfo.civil"
-                      :label="$t('cases.civil')"
-                      disabled
-                      dense
-                      outlined
-                    ></v-text-field>
-                  </v-col>
-                </v-row>
-              </div>
-            </div>
+            <v-card-text>
+              <v-row dense>
+                <v-col cols="12">
+                  <v-select
+                    :items="claimantUsers"
+                    :label="$t('cases.claimant')"
+                    :item-text="(item) => item.name"
+                    :item-value="(item) => item.id"
+                    dense
+                    outlined
+                    v-model="sidesInfo.claimant_id"
+                    :rules="[rules.required]"
+                    :error-messages="stepOneValidation(sidesInfo.claimant_id)"
+                    clearable
+                    @click:clear="clearClaimantSelect"
+                  >
+                  </v-select>
+                </v-col>
+                <v-col cols="12">
+                  <v-select
+                    :items="defendantUsers"
+                    :label="$t('cases.defendant')"
+                    :item-text="(item) => item.name"
+                    :item-value="(item) => item.id"
+                    dense
+                    outlined
+                    v-model="sidesInfo.defendant_id"
+                    :rules="[rules.required]"
+                    :error-messages="stepOneValidation(sidesInfo.defendant_id)"
+                    clearable
+                    @click:clear="clearDefendantSelect"
+                  >
+                  </v-select>
+                </v-col>
+                <v-col cols="12">
+                  <v-select
+                    :items="departments"
+                    :label="$t('tables.department')"
+                    :item-text="(item) => item.name"
+                    :item-value="(item) => item.id"
+                    disabled
+                    dense
+                    outlined
+                    v-model="sidesInfo.department_id"
+                  >
+                  </v-select>
+                </v-col>
+                <v-col cols="12">
+                  <v-text-field
+                    type="number"
+                    v-model="sidesInfo.civil"
+                    :label="$t('cases.civil')"
+                    disabled
+                    dense
+                    outlined
+                  ></v-text-field>
+                </v-col>
+              </v-row>
+            </v-card-text>
           </div>
 
-          <v-btn color="primary" @click="storeRequestSide">
-            {{ $t("general.continue") }}
-          </v-btn>
-          <v-btn color="grey" @click="stepBack" class="ms-2">
-            {{ $t("general.back") }}
-          </v-btn>
+          <v-card-actions>
+            <v-btn color="primary" @click="storeRequestSide">
+              {{ $t("general.continue") }}
+            </v-btn>
+            <v-btn color="grey" @click="stepBack" class="ms-2">
+              {{ $t("general.back") }}
+            </v-btn>
+          </v-card-actions>
         </v-stepper-content>
 
         <v-stepper-content step="4">
@@ -267,6 +272,9 @@
                     :label="$t('tables.status')"
                     dense
                     outlined
+                    required="true"
+                    :rules="[rules.required]"
+                    :error-messages="stepOneValidation(caseAction.status)"
                     v-model="caseAction.status"
                   >
                   </v-select>
@@ -288,6 +296,9 @@
                         v-bind="attrs"
                         v-on="on"
                         dense
+                        required="true"
+                        :rules="[rules.required]"
+                        :error-messages="stepOneValidation(caseAction.date)"
                         outlined
                       ></v-text-field>
                     </template>
@@ -331,13 +342,15 @@
               </v-row>
             </div>
           </div>
-          <v-btn @click="storeFormInformation" color="primary">
-            {{ $t("general.save") }}
-          </v-btn>
+          <v-card-actions>
+            <v-btn @click="storeFormInformation" color="primary">
+              {{ $t("general.save") }}
+            </v-btn>
 
-          <v-btn color="grey" @click="stepBack" class="ms-2">
-            {{ $t("general.back") }}
-          </v-btn>
+            <v-btn color="grey" @click="stepBack" class="ms-2">
+              {{ $t("general.back") }}
+            </v-btn>
+          </v-card-actions>
         </v-stepper-content>
       </v-stepper-items>
     </v-stepper>
@@ -377,6 +390,7 @@ export default {
       activeTab: null,
       requiredRule: (v) => !!v || this.$t("general.required_input"),
       showErrors: false,
+      stepOneErrors: false,
       sidesInfo: {
         claimant_id: "",
         defendant_id: "",
@@ -405,6 +419,7 @@ export default {
           (value && Boolean(value)) || this.$t("general.fieldRequired"),
       },
       errors: {},
+
       status: [
         { key: "error", value: 0 },
         { key: "confirmed", value: 1 },
@@ -498,12 +513,18 @@ export default {
     addDate(index) {
       this.caseAction.dates.push({ caseDate: "" });
     },
+    handleInput(event) {
+      if (event.key.toLowerCase() === "e") {
+        event.preventDefault();
+      }
+    },
     removeDate(index) {
       this.caseAction.dates.splice(index, 1);
     },
     stepBack() {
       if (this.e1 > 1) {
         this.e1--;
+        this.stepOneErrors = false;
       }
       return;
     },
@@ -634,11 +655,16 @@ export default {
       const msg = this.$t("general.required_input");
       return this.showErrors && input.required && !input.value ? [msg] : [];
     },
+    stepOneValidation(value) {
+      const msg = this.$t("general.required_input");
+      return this.stepOneErrors && !value ? [msg] : [];
+    },
     saveCaseInfo() {
       if (!this.caseName || !this.caseNumber) {
-        makeToast("error", "يرجي ملئ البيانات");
+        this.stepOneErrors = true;
         return;
       }
+      this.stepOneErrors = false;
       this.e1 = 2;
     },
     async saveForm() {
@@ -651,6 +677,7 @@ export default {
         if (result) {
           this.isSubmitingForm = false;
           this.formRequestId = result.data?.data?.formRequest?.id;
+          this.showErrors = false;
           this.e1 = 3;
           // makeToast("success", response.data.message);
         } else {
@@ -672,15 +699,15 @@ export default {
       };
 
       // if (await this.validateFormData()) {
-      await this.saveRequestSide(data)
-        .then((response) => {
-          this.isLoading = false;
-          this.e1 = 4;
-          // makeToast("success", response.data.message);
-        })
-        .catch(() => {
-          this.isLoading = false;
-        });
+      const result = await this.saveRequestSide(data);
+      if (result) {
+        this.isLoading = false;
+        this.e1 = 4;
+        this.stepOneErrors = false;
+      } else {
+        this.stepOneErrors = true;
+        this.isLoading = false;
+      }
     },
     async storeFormInformation() {
       this.isLoading = true;
@@ -704,6 +731,7 @@ export default {
         this.$router.push(`/cases/${currentFormId}`);
       } else {
         this.isLoading = false;
+        this.stepOneErrors = true;
       }
       // } else {
       //   this.showErrors = true;

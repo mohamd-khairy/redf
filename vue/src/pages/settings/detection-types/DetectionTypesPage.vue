@@ -53,16 +53,14 @@
             <template v-slot:activator="{ on, attrs }">
               <v-btn
                 color="primary"
-                class="mx-2 "
+                class="mx-2"
                 elevation="0"
                 v-bind="attrs"
                 v-on="on"
                 to="/settings/detection-types/create"
                 v-can="'create-type'"
               >
-                <v-icon>
-                  mdi-plus
-                </v-icon>
+                <v-icon> mdi-plus </v-icon>
               </v-btn>
             </template>
             <span>{{ $t("types.createDetectionType") }}</span>
@@ -116,7 +114,7 @@
               @click.prevent="deleteItem(item.id)"
               v-can="'delete-type'"
             >
-              <v-icon>mdi-delete</v-icon>
+              <v-icon>mdi-close</v-icon>
             </v-btn>
           </div>
         </template>
@@ -143,7 +141,7 @@ export default {
   name: "DetectionTypesPage",
   components: {
     CopyLabel,
-    emptyDataSvg
+    emptyDataSvg,
   },
   data() {
     return {
@@ -156,11 +154,11 @@ export default {
         {
           text: this.$t("menu.detection_types"),
           disabled: false,
-          href: "#"
+          href: "#",
         },
         {
-          text: this.$t("types.detectionTypesList")
-        }
+          text: this.$t("types.detectionTypesList"),
+        },
       ],
 
       searchQuery: "",
@@ -171,8 +169,8 @@ export default {
         { text: this.$t("tables.name"), value: "name" },
         { text: this.$t("types.nameOnScreen"), value: "display_name" },
         // { text: this.$t('tables.created'), value: 'created_at' },
-        { text: "", sortable: false, align: "right", value: "action" }
-      ]
+        { text: "", sortable: false, align: "right", value: "action" },
+      ],
     };
   },
   watch: {
@@ -180,27 +178,27 @@ export default {
     options: {
       handler() {
         this.open();
-      }
+      },
     },
     deep: true,
     searchQuery() {
       this.open();
-    }
+    },
   },
   computed: {
-    ...mapState("types", ["types"])
+    ...mapState("types", ["types"]),
   },
   created() {
     this.setBreadCrumb({
       breadcrumbs: this.breadcrumbs,
-      pageTitle: this.$t("types.detectionTypesList")
+      pageTitle: this.$t("types.detectionTypesList"),
     });
   },
   methods: {
     ...mapActions("types", [
       "getDetectionTypes",
       "deleteDetectionType",
-      "deleteAll"
+      "deleteAll",
     ]),
     ...mapActions("app", ["setBreadCrumb"]),
     searchType() {},
@@ -213,7 +211,7 @@ export default {
         pageSize: itemsPerPage,
         pageNumber: page,
         sortDirection: direction,
-        sortColumn: this.options.sortBy[0] ?? ""
+        sortColumn: this.options.sortBy[0] ?? "",
       };
       this.getDetectionTypes(data)
         .then(() => {
@@ -238,7 +236,7 @@ export default {
       if (isConfirmed) {
         this.isLoading = true;
         this.deleteDetectionType(id)
-          .then(response => {
+          .then((response) => {
             makeToast("success", response.data.message);
             this.open();
             this.isLoading = false;
@@ -255,18 +253,18 @@ export default {
       const { isConfirmed } = await ask("Are you sure to delete it?", "info");
       if (isConfirmed) {
         if (this.selectedTypes.length) {
-          this.selectedTypes.forEach(item => {
+          this.selectedTypes.forEach((item) => {
             ids.push(item.id);
           });
         }
         data = {
           ids: ids,
           action: "delete",
-          value: 1
+          value: 1,
         };
         this.isLoading = true;
         this.deleteAll(data)
-          .then(response => {
+          .then((response) => {
             makeToast("success", response.data.message);
             this.open();
             this.isLoading = false;
@@ -275,8 +273,8 @@ export default {
             this.isLoading = false;
           });
       }
-    }
-  }
+    },
+  },
 };
 </script>
 

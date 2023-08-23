@@ -39,9 +39,7 @@
                     v-on="on"
                     v-can="'create-type'"
                   >
-                    <v-icon>
-                      mdi-pencil
-                    </v-icon>
+                    <v-icon> mdi-pencil </v-icon>
                   </v-btn>
                 </template>
                 <span>{{ $t("users.editRole") }}</span>
@@ -57,9 +55,7 @@
                     v-bind="attrs"
                     v-on="on"
                   >
-                    <v-icon>
-                      mdi-delete
-                    </v-icon>
+                    <v-icon> mdi-close </v-icon>
                   </v-btn>
                 </template>
                 <span> {{ $t("users.deleteRole") }}</span>
@@ -74,7 +70,7 @@
                 </v-btn> -->
             </div>
           </v-card-title>
-          <v-card-text class="px-3 pt-3 ">
+          <v-card-text class="px-3 pt-3">
             <!-- <p>{{ $t("texts.totalUsersWithThisRole") }}: 5</p> -->
             <div class="d-flex flex-column overflow-y">
               <div
@@ -113,24 +109,24 @@ export default {
         {
           text: this.$t("menu.usersManagement"),
           disabled: false,
-          href: "#"
+          href: "#",
         },
         {
-          text: this.$t("users.rolesList")
-        }
-      ]
+          text: this.$t("users.rolesList"),
+        },
+      ],
 
       // roles: []
     };
   },
   computed: {
-    ...mapState("roles", ["roles"])
+    ...mapState("roles", ["roles"]),
   },
   created() {
     this.open();
     this.setBreadCrumb({
       breadcrumbs: this.breadcrumbs,
-      pageTitle: this.$t("users.rolesList")
+      pageTitle: this.$t("users.rolesList"),
     });
   },
 
@@ -161,8 +157,8 @@ export default {
             this.loading = false;
           });
       }
-    }
-  }
+    },
+  },
 };
 </script>
 

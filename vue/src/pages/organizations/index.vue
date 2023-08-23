@@ -1,7 +1,6 @@
 <template>
   <div class="d-flex flex-column flex-grow-1">
-   
-     <v-card>
+    <v-card>
       <!-- users list -->
       <v-row dense class="pa-2 align-center">
         <v-col cols="6">
@@ -15,7 +14,6 @@
               </transition>
             </template>
             <v-list dense>
-             
               <v-list-item @click="deleteAllOrganization()">
                 <v-list-item-title>{{
                   $t("general.delete")
@@ -41,16 +39,13 @@
             <template v-slot:activator="{ on, attrs }">
               <v-btn
                 color="primary"
-                class="mx-2 "
+                class="mx-2"
                 elevation="0"
                 v-bind="attrs"
                 v-on="on"
                 to="/organizations/create"
-                
               >
-                <v-icon>
-                  mdi-plus
-                </v-icon>
+                <v-icon> mdi-plus </v-icon>
               </v-btn>
             </template>
             <span>{{ $t("organizations.createOrg") }}</span>
@@ -79,36 +74,25 @@
         :server-items-length="totalOrganizations"
       >
         <template v-slot:item.id="{ item }">
-          {{item.id}}
+          {{ item.id }}
         </template>
         <template v-slot:item.name="{ item }">
-          {{item.name}}
+          {{ item.name }}
         </template>
-         <template v-slot:item.description="{ item }">
-          {{item.description}}
+        <template v-slot:item.description="{ item }">
+          {{ item.description }}
         </template>
-         <template v-slot:item.created_at="{ item }">
+        <template v-slot:item.created_at="{ item }">
           <div>{{ item.created_at | formatDate("lll") }}</div>
         </template>
-       
 
         <template v-slot:item.action="{ item }">
           <div class="actions">
-            <v-btn
-              color="primary"
-              icon
-              :to="`/organizations/edit/${item.id}`"
-              
-            >
+            <v-btn color="primary" icon :to="`/organizations/edit/${item.id}`">
               <v-icon>mdi-open-in-new</v-icon>
             </v-btn>
-            <v-btn
-              color="error"
-              icon
-              @click.prevent="deleteItem(item.id)"
-              
-            >
-              <v-icon>mdi-delete</v-icon>
+            <v-btn color="error" icon @click.prevent="deleteItem(item.id)">
+              <v-icon>mdi-close</v-icon>
             </v-btn>
           </div>
         </template>
@@ -126,13 +110,12 @@
 </template>
 
 <script>
-
 import { mapActions, mapState } from "vuex";
 import { ask, makeToast } from "@/helpers";
 import emptyDataSvg from "@/assets/images/illustrations/empty-data.svg";
 export default {
   components: {
-   emptyDataSvg
+    emptyDataSvg,
   },
   data() {
     return {
@@ -145,11 +128,11 @@ export default {
         {
           text: this.$t("organizations.organizationsManagement"),
           disabled: false,
-          href: "#"
+          href: "#",
         },
         {
-          text: this.$t("organizations.organizationsList")
-        }
+          text: this.$t("organizations.organizationsList"),
+        },
       ],
 
       searchQuery: "",
@@ -160,37 +143,38 @@ export default {
         { text: this.$t("tables.name"), value: "name" },
         { text: this.$t("tables.description"), value: "description" },
         { text: this.$t("tables.created"), value: "created_at" },
-        { text: "", sortable: false, align: "right", value: "action" }
-      ]
+        { text: "", sortable: false, align: "right", value: "action" },
+      ],
     };
   },
   watch: {
     options: {
       handler() {
         this.open();
-      }
+      },
     },
     searchQuery() {
       this.open();
-    }
+    },
   },
   computed: {
-    ...mapState("organizations", ['organizations'])
-   
+    ...mapState("organizations", ["organizations"]),
   },
   created() {
     this.setBreadCrumb({
       breadcrumbs: this.breadcrumbs,
-      pageTitle: this.$t("organizations.organizationsList")
+      pageTitle: this.$t("organizations.organizationsList"),
     });
-    
   },
 
   methods: {
-   
     ...mapActions("app", ["setBreadCrumb"]),
-    ...mapActions("organizations", ["getOrganizations", "deleteOrganization", "deleteAll"]),
-     open() {
+    ...mapActions("organizations", [
+      "getOrganizations",
+      "deleteOrganization",
+      "deleteAll",
+    ]),
+    open() {
       this.isLoading = true;
       let { page, itemsPerPage } = this.options;
       const direction = this.options.sortDesc[0] ? "asc" : "desc";
@@ -200,7 +184,7 @@ export default {
         pageSize: itemsPerPage,
         pageNumber: page,
         sortDirection: direction,
-        sortColumn: this.options.sortBy[0] ?? ""
+        sortColumn: this.options.sortBy[0] ?? "",
       };
       this.getOrganizations(data)
         .then(() => {
@@ -219,13 +203,16 @@ export default {
           this.isLoading = false;
         });
     },
-    async deleteItem(id){
-      const { isConfirmed } = await ask(this.$t("organizations.confirmDeleteOrg"), "warning");
+    async deleteItem(id) {
+      const { isConfirmed } = await ask(
+        this.$t("organizations.confirmDeleteOrg"),
+        "warning"
+      );
 
       if (isConfirmed) {
         this.isLoading = true;
         this.deleteOrganization(id)
-          .then(response => {
+          .then((response) => {
             makeToast("success", response.data.message);
             this.open();
             this.isLoading = false;
@@ -235,24 +222,27 @@ export default {
           });
       }
     },
-    async deleteAllOrganization(){
+    async deleteAllOrganization() {
       let data = {};
       let ids = [];
-      const { isConfirmed } = await ask(this.$t("organizations.confirmDeleteSelectedOrg"), "warning");
+      const { isConfirmed } = await ask(
+        this.$t("organizations.confirmDeleteSelectedOrg"),
+        "warning"
+      );
       if (isConfirmed) {
         if (this.selectedOrganizations.length) {
-          this.selectedOrganizations.forEach(item => {
+          this.selectedOrganizations.forEach((item) => {
             ids.push(item.id);
           });
         }
         data = {
           ids: ids,
           action: "delete",
-          value: 1
+          value: 1,
         };
         this.isLoading = true;
         this.deleteAll(data)
-          .then(response => {
+          .then((response) => {
             makeToast("success", response.data.message);
             this.open();
             this.isLoading = false;
@@ -262,9 +252,8 @@ export default {
           });
       }
     },
-    searchOrganization(){}
-   
-  }
+    searchOrganization() {},
+  },
 };
 </script>
 
