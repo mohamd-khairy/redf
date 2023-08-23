@@ -4,7 +4,6 @@ namespace App\Http\Controllers\API;
 
 use Throwable;
 use App\Models\Form;
-use App\Models\Formable;
 use App\Models\FormRequest;
 use Illuminate\Http\Request;
 use App\Http\Requests\FormAssign;
@@ -14,6 +13,7 @@ use App\Services\FormRequestService;
 use App\Http\Requests\FormFillRequest;
 use App\Http\Requests\InformationRequest;
 use App\Http\Resources\FormRequestResource;
+use Illuminate\Support\Facades\DB;
 
 class FormRequestController extends Controller
 {
@@ -60,7 +60,7 @@ class FormRequestController extends Controller
                 return responseFail('An error occurred while retrieving form requests');
             }
         } catch (\Throwable $th) {
-            return $this->handleException($th);
+            return responseFail($th->getMessage());
         }
     }
 
@@ -70,9 +70,8 @@ class FormRequestController extends Controller
             $formfill = FormRequest::with('form.pages.items', 'user', 'form_page_item_fill', 'formRequestInformation', 'formRequestSide', 'lastFormRequestInformation')->find($id);
             // dd($form)
             return responseSuccess(new FormRequestResource($formfill), 'Form requests retrieved successfully');
-        } catch (\Throwable $e) {
-            // Return an error response if something goes wrong
-            return responseFail($e->getMessage());
+        } catch (\Throwable $th) {
+            return responseFail($th->getMessage());
         }
     }
 
@@ -88,7 +87,7 @@ class FormRequestController extends Controller
                 return responseFail('An error occurred while assigning the form requests');
             }
         } catch (\Throwable $th) {
-            return $this->handleException($th);
+            return responseFail($th->getMessage());
         }
     }
 
@@ -102,8 +101,8 @@ class FormRequestController extends Controller
         return $this->formRequestService->formRequestInformation($request);
     }
 
-    public function deleteFormRequest($id){
-
+    public function deleteFormRequest($id)
+    {
         try {
             return DB::transaction(function () use ($id) {
                 $formRequest = FormRequest::findOrFail($id);
@@ -116,10 +115,8 @@ class FormRequestController extends Controller
                 $formRequest->delete();
                 return responseSuccess('Form Request Deleted Successfully');
             });
-        } catch (\Exception $e) {
-            return responseFail('there is no form with this id');
+        } catch (\Throwable $th) {
+            return responseFail($th->getMessage());
         }
     }
-
-
 }
