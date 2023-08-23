@@ -33,8 +33,8 @@ class FormFillRequest extends FormRequest
         return [
             'case_number' => 'required|regex:/^[1-9]+$/',
             'case_name' => 'nullable|string',
-            'pages' => 'required|array',
-            'pages.*' => 'required|array',
+            'pages' => 'required',
+            'pages.*' => 'required',
             'pages.*.title' => 'required|string',
             'pages.*.items' => 'required|array',
             'pages.*.items.*' => 'required|array',
