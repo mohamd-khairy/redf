@@ -468,6 +468,7 @@ export default {
     courtDate: "ميعاد الجلسة",
     adviceActions:"اجراءات الاستشارة",
     reviewActions:"اجراءات المراجعة",
+    actions:"الاجراءات",
 
 
     createCase: "إنشاء قضية",
@@ -478,6 +479,8 @@ export default {
 
 
     addAction: "اضافة اجراء",
+    name: "الاسم",
+    number: "الرقم",
     caseName: "اسم القضية",
     caseNumber: "رقم القضية",
     adviceName: "اسم الاستشارة",

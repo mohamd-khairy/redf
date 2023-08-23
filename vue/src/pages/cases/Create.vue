@@ -12,14 +12,8 @@
 
         <v-divider></v-divider>
 
-        <v-stepper-step :complete="e1 > 3" step="3">
-          {{ $t("cases.sidesInfo") }}
-        </v-stepper-step>
-
-        <v-divider></v-divider>
-
-        <v-stepper-step step="4">
-          {{ $t("cases.reviewActions") }}
+        <v-stepper-step step="3">
+          {{ $t("cases.actions") }}
         </v-stepper-step>
       </v-stepper-header>
 
@@ -29,7 +23,7 @@
             <v-text-field
               class="mb-2"
               v-model="caseName"
-              :label="$t('cases.reviewName')"
+              :label="$t('cases.name')"
               outlined
               :required="true"
               :error-messages="stepOneValidation(caseName)"
@@ -42,7 +36,7 @@
               class="mb-2"
               v-model="caseNumber"
               @keydown="handleInput"
-              :label="$t('cases.reviewNumber')"
+              :label="$t('cases.number')"
               :required="true"
               :rules="[requiredRule]"
               :error-messages="stepOneValidation(caseNumber)"
@@ -153,88 +147,8 @@
             </v-btn>
           </v-card-actions>
         </v-stepper-content>
+
         <v-stepper-content step="3">
-          <div class="mt-2">
-            <v-card-title>
-              <v-flex class="text-left">
-                <v-btn color="primary" large @click.stop="dialog = true">
-                  <v-icon> mdi-plus </v-icon>
-                  {{ $t("cases.addUser") }}
-                </v-btn>
-              </v-flex>
-            </v-card-title>
-            <v-card-text>
-              <v-row dense>
-                <v-col cols="12">
-                  <v-select
-                    :items="claimantUsers"
-                    :label="$t('cases.claimant')"
-                    :item-text="(item) => item.name"
-                    :item-value="(item) => item.id"
-                    dense
-                    outlined
-                    v-model="sidesInfo.claimant_id"
-                    :rules="[rules.required]"
-                    :error-messages="stepOneValidation(sidesInfo.claimant_id)"
-                    clearable
-                    @click:clear="clearClaimantSelect"
-                  >
-                  </v-select>
-                </v-col>
-                <v-col cols="12">
-                  <v-select
-                    :items="defendantUsers"
-                    :label="$t('cases.defendant')"
-                    :item-text="(item) => item.name"
-                    :item-value="(item) => item.id"
-                    dense
-                    outlined
-                    v-model="sidesInfo.defendant_id"
-                    :rules="[rules.required]"
-                    :error-messages="stepOneValidation(sidesInfo.defendant_id)"
-                    clearable
-                    @click:clear="clearDefendantSelect"
-                  >
-                  </v-select>
-                </v-col>
-                <v-col cols="12">
-                  <v-select
-                    :items="departments"
-                    :label="$t('tables.department')"
-                    :item-text="(item) => item.name"
-                    :item-value="(item) => item.id"
-                    disabled
-                    dense
-                    outlined
-                    v-model="sidesInfo.department_id"
-                  >
-                  </v-select>
-                </v-col>
-                <v-col cols="12">
-                  <v-text-field
-                    type="number"
-                    v-model="sidesInfo.civil"
-                    :label="$t('cases.civil')"
-                    disabled
-                    dense
-                    outlined
-                  ></v-text-field>
-                </v-col>
-              </v-row>
-            </v-card-text>
-          </div>
-
-          <v-card-actions>
-            <v-btn color="primary" @click="storeRequestSide">
-              {{ $t("general.continue") }}
-            </v-btn>
-            <v-btn color="grey" @click="stepBack" class="ms-2">
-              {{ $t("general.back") }}
-            </v-btn>
-          </v-card-actions>
-        </v-stepper-content>
-
-        <v-stepper-content step="4">
           <div class="d-flex flex-column flex-sm-row">
             <div class="flex-grow-1 pt-2 pa-sm-2">
               <v-row dense>
@@ -365,7 +279,7 @@ import AddUserDialog from "../../components/cases/AddUserDialog";
 import { makeToast } from "@/helpers";
 
 export default {
-  name: "CreateReviewAndAudit",
+  name: "Create",
   components: { AddUserDialog },
   data() {
     return {

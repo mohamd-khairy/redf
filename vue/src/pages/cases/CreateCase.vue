@@ -1,5 +1,5 @@
 <template>
-  <div class="d-flex flex-column flex-grow-1" style="margin: 50px">
+  <div>
     <v-stepper v-model="e1">
       <v-stepper-header>
         <v-stepper-step :complete="e1 > 1" step="1">

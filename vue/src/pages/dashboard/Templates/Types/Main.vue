@@ -76,7 +76,7 @@
       >
         <template v-slot:item.id="{ item }">
           <div class="font-weight-bold">
-            # <copy-label :text="templateItems.indexOf(item) + 1 + ''" />
+            # {{ item.id }}
           </div>
         </template>
 
