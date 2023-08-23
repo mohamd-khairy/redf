@@ -106,12 +106,14 @@ class FormsController extends Controller
         try {
             $form = Form::findOrFail($id);
             if (!$form) {
-                return response()->json(['message' => 'Form not found'], 404);
-            }
+                return responseFail('Form not found');
+
+             }
             // Delete the form
             $form->delete();
-            return response()->json(['message' => 'Form deleted successfully']);
-        } catch (\Throwable $th) {
+            return responseSuccess('Form deleted successfully');
+
+         } catch (\Throwable $th) {
             return responseFail($th->getMessage());
         }
     }

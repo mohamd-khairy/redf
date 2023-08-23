@@ -23,6 +23,7 @@ return new class extends Migration
             $table->string('court')->nullable();
             $table->unsignedBigInteger('form_request_id');
             $table->foreign('form_request_id')->references('id')->on('form_requests')->onDelete('cascade');
+            $table->softDeletes();
             $table->timestamps();
         });
     }
