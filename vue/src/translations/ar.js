@@ -531,6 +531,7 @@ export default {
     addAction: "اضافة اجراء",
     caseName: "اسم القضية",
     caseNumber: "رقم القضية",
+    new_beneficiary: "مستفيد جديد",
   },
 
   departments: {
@@ -779,6 +780,12 @@ export default {
     no_forms: "لايوجد نماذج",
     create: "انشاء",
     info: "معلومات",
+    last_action: "اخر اجراء",
+    procceing: "تحت المعالجة",
+    pending: "بانتظار الاجراء",
+    assigned: "لدي الموظف المختص",
+    closed: "تم اكمال الطلب",
+    back: "السابق",
   },
   reports: {
     buildReport: "انشاء تقرير",

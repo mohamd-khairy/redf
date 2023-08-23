@@ -12,7 +12,7 @@
           class="custom-disabled-input"
           :value="action?.formable?.name || ''"
           solo
-          label="Solo"
+
           disabled
           hide-details
         ></v-text-field>
@@ -30,7 +30,7 @@
           class="custom-disabled-input"
           :value="action?.formable?.form_request_number || ''"
           solo
-          label="Solo"
+
           disabled
           hide-details
         ></v-text-field>
@@ -48,7 +48,6 @@
           class="custom-disabled-input"
           :value="action?.formable?.assigner_id || ''"
           solo
-          label="Solo"
           disabled
           hide-details
         ></v-text-field>
@@ -65,7 +64,6 @@
           class="custom-disabled-input"
           :value="action.formable?.user?.name || ''"
           solo
-          label="Solo"
           disabled
           hide-details
           dense
@@ -81,14 +79,13 @@
       </v-col>
 
       <v-col cols="12" sm="9">
-        <v-text-area
+        <v-textarea
           class="custom-disabled-input"
           :value="action?.formable?.note || ''"
           solo
-          label="Solo"
           disabled
           hide-details
-        ></v-text-area>
+        ></v-textarea>
       </v-col>
     </v-row>
     <v-row class="mb-1" dense>
@@ -102,7 +99,6 @@
           class="custom-disabled-input"
           :value="action?.formable?.date"
           solo
-          label="Solo"
           disabled
           hide-details
           dense

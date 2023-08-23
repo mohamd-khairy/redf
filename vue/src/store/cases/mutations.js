@@ -45,6 +45,9 @@ const mutations = {
   SET_CORTS(state, value) {
     state.courts = value;
   },
+  SET_CASE_TYPES(state, value) {
+    state.caseTypes = value;
+  },
 };
 
 export default mutations;

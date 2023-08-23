@@ -3,14 +3,14 @@
     <v-row class="mb-1" dense>
       <v-col cols="12" sm="3">
         <h6 class="mt-1 mb-0 c-h6">
-          {{ $t("general.case") }}
+          {{ $t("cases.amount") }}
         </h6>
       </v-col>
       <v-col cols="12" sm="9">
         <v-text-field
           dense
           class="custom-disabled-input"
-          :value="action?.formable?.name || ''"
+          :value="action?.formable?.amount || ''"
           solo
           disabled
           hide-details
@@ -20,14 +20,14 @@
     <v-row class="mb-1" dense>
       <v-col cols="12" sm="3">
         <h6 class="mt-1 mb-0 c-h6">
-          {{ $t("general.caseNumber") }}
+          {{ $t("cases.percentageLose") }}
         </h6>
       </v-col>
       <v-col cols="12" sm="9">
         <v-text-field
           dense
           class="custom-disabled-input"
-          :value="action?.formable?.form_request_number || ''"
+          :value="action?.formable?.percentage || ''"
           solo
           disabled
           hide-details
@@ -37,13 +37,30 @@
     <v-row class="mb-1" dense>
       <v-col cols="12" sm="3">
         <h6 class="mt-1 mb-0 c-h6">
-          {{ $t("general.applicant") }}
+          {{ $t("tables.court") }}
         </h6>
       </v-col>
       <v-col cols="12" sm="9">
         <v-text-field
           class="custom-disabled-input"
-          :value="action.formable?.user?.name || ''"
+          :value="action?.formable?.court || ''"
+          solo
+          disabled
+          hide-details
+          dense
+        ></v-text-field>
+      </v-col>
+    </v-row>
+    <v-row class="mb-1" dense>
+      <v-col cols="12" sm="3">
+        <h6 class="mt-1 mb-0 c-h6">
+          {{ $t("tables.date") }}
+        </h6>
+      </v-col>
+      <v-col cols="12" sm="9">
+        <v-text-field
+          class="custom-disabled-input"
+          :value="action?.formable?.date || ''"
           solo
           disabled
           hide-details
@@ -52,44 +69,28 @@
       </v-col>
     </v-row>
 
-    <v-row class="mb-1" dense v-if="action?.formable?.note">
+    <v-row class="mb-1" dense>
       <v-col cols="12" sm="3">
         <h6 class="mt-1 mb-0 c-h6">
-          {{ $t("general.note") }}
+          {{ $t("cases.action") }}
         </h6>
       </v-col>
 
       <v-col cols="12" sm="9">
-        <v-text-area
+        <v-textarea
           class="custom-disabled-input"
-          :value="action?.formable?.note || ''"
+          :value="action?.formable?.details || ''"
           solo
           disabled
           hide-details
-        ></v-text-area>
+        ></v-textarea>
       </v-col>
     </v-row>
-    <v-row class="mb-1" dense>
-      <v-col cols="12" sm="3">
-        <h6 class="mt-1 mb-0 c-h6">
-          {{ $t("general.date") }}
-        </h6>
-      </v-col>
-      <v-col cols="12" sm="9">
-        <v-text-field
-          class="custom-disabled-input"
-          :value="formatDate(action?.formable?.created_at)"
-          solo
-          disabled
-          hide-details
-          dense
-        ></v-text-field>
-      </v-col>
-    </v-row>
+
     <v-row dense>
       <v-col cols="12" sm="3">
         <h6 class="mt-1 mb-0 c-h6">
-          {{ $t("general.status") }}
+          {{ $t("tables.status") }}
         </h6>
       </v-col>
       <v-col cols="12" sm="9">

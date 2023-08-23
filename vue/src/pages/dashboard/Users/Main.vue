@@ -35,17 +35,21 @@
             @keyup.enter="searchtemplate(searchQuery)"
           ></v-text-field>
 
-          <!-- <v-tooltip top>
-                        <template v-slot:activator="{ on, attrs }">
-                            <v-btn color="primary" class="mx-2 " elevation="0" v-bind="attrs" v-on="on"
-                                to="/templates/types/create" v-can="'create-user'">
-                                <v-icon>
-                                    mdi-plus
-                                </v-icon>
-                            </v-btn>
-                        </template>
-                        <span>{{ $t("templates.createTemplate") }}</span>
-                    </v-tooltip> -->
+          <v-tooltip top>
+            <template v-slot:activator="{ on, attrs }">
+              <v-btn
+                color="primary"
+                class="mx-2"
+                elevation="0"
+                v-bind="attrs"
+                v-on="on"
+                @click="dialog = true"
+              >
+                <v-icon> mdi-plus </v-icon>
+              </v-btn>
+            </template>
+            <span>{{ $t("cases.new_beneficiary") }}</span>
+          </v-tooltip>
           <v-btn
             color="primary"
             elevation="0"
@@ -99,7 +103,12 @@
         </template>
       </v-data-table>
     </v-card>
-    <assign v-model="dialog" :id="formId"></assign>
+
+    <add-user-dialog
+      @userCreated="userCreated"
+      v-if="dialog"
+      v-model="dialog"
+    ></add-user-dialog>
   </div>
 </template>
 
@@ -108,13 +117,13 @@ import $ from "jquery";
 import CopyLabel from "@/components/common/CopyLabel";
 import { mapActions, mapState } from "vuex";
 import { ask, makeToast } from "@/helpers";
-import Assign from "../../../components/cases/Assign";
+import AddUserDialog from "../../../components/cases/AddUserDialog.vue";
 import emptyDataSvg from "@/assets/images/illustrations/empty-data.svg";
 export default {
   components: {
     CopyLabel,
     emptyDataSvg,
-    Assign,
+    AddUserDialog,
   },
   data() {
     return {
@@ -186,10 +195,14 @@ export default {
       breadcrumbs: this.breadcrumbs,
       pageTitle: this.$t("menu.beneficiaries"),
     });
+    this.getDepartments({
+      pageSize: -1,
+    });
   },
   methods: {
     ...mapActions("users", ["getBeneficiaries"]),
     ...mapActions("app", ["setBreadCrumb"]),
+    ...mapActions("departments", ["getDepartments"]),
     searchtemplate() {},
     open() {
       this.isLoading = true;
@@ -221,6 +234,10 @@ export default {
         .catch(() => {
           this.isLoading = false;
         });
+    },
+    userCreated() {
+      console.log("aaaaaaa");
+      this.open();
     },
 
     async deleteAlltemplates() {

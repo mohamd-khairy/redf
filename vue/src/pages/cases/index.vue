@@ -153,7 +153,7 @@
 
         <template v-slot:item.action="{ item }">
           <div class="actions">
-            <v-btn color="primary" icon @click="openActionDialog(item.id)">
+            <v-btn color="primary" icon @click="openActionDialog(item)">
               <v-icon>mdi-pencil</v-icon>
             </v-btn>
             <v-btn color="primary" icon @click="openCasePreviewDialog(item.id)">
@@ -183,7 +183,7 @@
               @click.prevent="deleteItem(item.id)"
               v-can="'delete-user'"
             >
-              <v-icon>mdi-delete</v-icon>
+              <v-icon>mdi-close</v-icon>
             </v-btn>
           </div>
         </template>
@@ -205,10 +205,15 @@
       <AddAction
         :dialogVisible="addActionDialog"
         :formRequestId="formId"
+        :lastAction="selectedForm.last_form_request_information || null"
         v-if="addActionDialog"
-        @closeActionDialog="addActionDialog = false"
+        @close-action-dialog="closeActionDialog"
       />
-      <assign v-model="dialog" :id="formId"></assign>
+      <assign
+        @userAssigned="userAssigned"
+        v-model="dialog"
+        :id="formId"
+      ></assign>
     </v-card>
   </div>
 </template>
@@ -266,6 +271,7 @@ export default {
       dialog: false,
       casePrevDialog: false,
       addActionDialog: false,
+      selectedForm: null,
     };
   },
   watch: {
@@ -321,6 +327,9 @@ export default {
         pageTitle: this.$t("cases.casesList"),
       });
     },
+    userAssigned() {
+      this.open();
+    },
     open() {
       this.isLoading = true;
       let { page, itemsPerPage } = this.options;
@@ -355,14 +364,21 @@ export default {
       this.dialog = true;
       this.formId = id;
     },
-    openActionDialog(id) {
+    openActionDialog(item) {
       this.addActionDialog = true;
-      this.formId = id;
+      this.formId = item.id;
+      this.selectedForm = item;
     },
     openCasePreviewDialog(id) {
       this.formId = id;
       this.casePrevDialog = true;
     },
+    closeActionDialog() {
+      console.log("closssssssse");
+      this.addActionDialog = false;
+      this.open();
+    },
+
     async deleteItem(id) {
       const { isConfirmed } = await ask("Are you sure to delete it?", "info");
 

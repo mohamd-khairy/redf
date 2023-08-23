@@ -2,91 +2,90 @@
   <v-row justify="center">
     <v-dialog v-model="dialog" max-width="500">
       <v-card>
-        <v-card-title
-          class="text-h5 d-flex justify-space-between align-center border-bottom"
-        >
-          {{ $t("cases.addUser") }}
-          <v-btn icon @click="dialog = false">
-            <v-icon> mdi-close </v-icon>
-          </v-btn>
-        </v-card-title>
+        <v-toolbar dark color="primary">
+          <v-toolbar-title>{{ $t("cases.addUser") }}</v-toolbar-title>
+          <v-spacer></v-spacer>
+          <v-toolbar-items>
+            <v-btn icon dark @click="dialog = false">
+              <v-icon>mdi-close</v-icon>
+            </v-btn>
+          </v-toolbar-items>
+        </v-toolbar>
 
         <v-card-text class="mt-4">
           <v-row>
-            <v-row>
-              <v-col cols="12">
-                <v-text-field
-                  type="number"
-                  v-model="user.civil_number"
-                  outlined
-                  dense
-                  hide-details
-                  :rules="[rules.required]"
-                  :label="$t('cases.civil')"
-                  :error-messages="errors['civil_number']"
-                ></v-text-field>
-              </v-col>
-              <v-col cols="12">
-                <v-text-field
-                  v-model="user.name"
-                  outlined
-                  dense
-                  hide-details
-                  :rules="[rules.required]"
-                  :label="$t('tables.name')"
-                  :error-messages="errors['name']"
-                ></v-text-field>
-              </v-col>
-              <v-col cols="12">
-                <v-text-field
-                  type="number"
-                  v-model="user.phone"
-                  :rules="[rules.required]"
-                  outlined
-                  dense
-                  hide-details
-                  :label="$t('tables.phone')"
-                  :error-messages="errors['phone']"
-                ></v-text-field>
-              </v-col>
-              <v-col cols="12">
-                <v-text-field
-                  type="email"
-                  v-model="user.email"
-                  :rules="[rules.required]"
-                  outlined
-                  dense
-                  hide-details
-                  :label="$t('tables.email')"
-                  :error-messages="errors['email']"
-                ></v-text-field>
-              </v-col>
-              <v-col cols="12">
-                <v-select
-                  label="Select"
-                  :items="departments"
-                  item-text="name"
-                  item-value="id"
-                  outlined
-                  dense
-                  :label="$t('tables.department')"
-                  hide-details
-                  :rules="[rules.required]"
-                  v-model="user.department_id"
-                ></v-select>
-              </v-col>
-            </v-row>
+            <v-col cols="12">
+              <v-text-field
+                type="number"
+                v-model="user.civil_number"
+                outlined
+                dense
+                hide-details
+                :rules="[rules.required]"
+                :label="$t('cases.civil')"
+                :error-messages="errors['civil_number']"
+              ></v-text-field>
+            </v-col>
+            <v-col cols="12">
+              <v-text-field
+                v-model="user.name"
+                outlined
+                dense
+                hide-details
+                :rules="[rules.required]"
+                :label="$t('tables.name')"
+                :error-messages="errors['name']"
+              ></v-text-field>
+            </v-col>
+            <v-col cols="12">
+              <v-text-field
+                type="number"
+                v-model="user.phone"
+                :rules="[rules.required]"
+                outlined
+                dense
+                hide-details
+                :label="$t('tables.phone')"
+                :error-messages="errors['phone']"
+              ></v-text-field>
+            </v-col>
+            <v-col cols="12">
+              <v-text-field
+                type="email"
+                v-model="user.email"
+                :rules="[rules.required]"
+                outlined
+                dense
+                hide-details
+                :label="$t('tables.email')"
+                :error-messages="errors['email']"
+              ></v-text-field>
+            </v-col>
+            <v-col cols="12">
+              <v-select
+                label="Select"
+                :items="departments"
+                item-text="name"
+                item-value="id"
+                outlined
+                dense
+                :label="$t('tables.department')"
+                hide-details
+                :rules="[rules.required]"
+                v-model="user.department_id"
+              ></v-select>
+            </v-col>
           </v-row>
         </v-card-text>
         <v-divider></v-divider>
         <v-card-actions class="py-2">
           <v-spacer></v-spacer>
 
-          <v-btn color="primary" class="mx-1" @click="save">
+          <v-btn color="primary" @click="save">
             {{ $t("general.save") }}
           </v-btn>
 
-          <v-btn color="grey lighten-3" @click="dialog = false">
+          <v-btn color="grey" class="ms-2" @click="dialog = false">
             {{ $t("general.cancel") }}
           </v-btn>
         </v-card-actions>
@@ -159,6 +158,7 @@ export default {
     },
     fetchData: function () {
       this.$root.$emit("userCreated");
+      this.$emit("userCreated");
     },
     save() {
       this.loading = true;

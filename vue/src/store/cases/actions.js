@@ -287,10 +287,12 @@ const actions = {
     }
   },
   async getCourts({ commit }) {
-    const response = await axios.get(`court-types`);
-
+    const response = await axios.get(`lookup`);
+    console.log(response);
     const { court_types } = response?.data.data;
+    const { case_types } = response?.data.data;
     commit("SET_CORTS", court_types);
+    commit("SET_CASE_TYPES", case_types);
   },
   async getCasePreview({ commit }, id) {
     const response = await axios.get(`action-preview/${id}`);

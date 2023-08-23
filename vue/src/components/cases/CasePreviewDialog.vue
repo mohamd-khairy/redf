@@ -36,7 +36,8 @@
             v-for="(action, i) in formActions"
             :key="i"
             :color="getTimeColor(action.formable_type)"
-            small
+            fill-dot
+            icon="mdi-calendar"
           >
             <template v-slot:opposite>
               <span
@@ -48,7 +49,7 @@
             </template>
             <v-row dense>
               <v-col cols="12">
-                <v-expansion-panels multiple>
+                <v-expansion-panels>
                   <v-expansion-panel>
                     <v-expansion-panel-header>
                       <h5>{{ action.msg }}</h5>
@@ -80,12 +81,14 @@
 import { mapActions } from "vuex";
 import FormRequest from "./caseTypes/FormRequest.vue";
 import FormAssignRequest from "./caseTypes/FormAssignRequest.vue";
+import FormRequestInformation from "./caseTypes/FormRequestInformation.vue";
 import emptyDataSvg from "@/assets/images/illustrations/empty-data.svg";
 
 export default {
   components: {
     FormRequest,
     FormAssignRequest,
+    FormRequestInformation,
     emptyDataSvg,
   },
   props: {
@@ -96,6 +99,7 @@ export default {
     return {
       loading: false,
       formActions: [],
+      panelExpanded: true,
     };
   },
   watch: {
