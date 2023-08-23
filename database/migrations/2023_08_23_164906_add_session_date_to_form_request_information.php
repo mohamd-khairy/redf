@@ -13,13 +13,8 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('user_information', function (Blueprint $table) {
-            $table->id();
-            $table->bigInteger('civil_number');
-            $table->unsignedBigInteger('user_id');
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
-
-            $table->timestamps();
+        Schema::table('form_request_information', function (Blueprint $table) {
+            $table->date('sessionDate')->nullable();
         });
     }
 
@@ -30,6 +25,8 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('user_information');
+        Schema::table('form_request_information', function (Blueprint $table) {
+            //
+        });
     }
 };
