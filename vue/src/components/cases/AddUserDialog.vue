@@ -38,7 +38,7 @@
             </v-col>
             <v-col cols="12">
               <v-text-field
-                type="number"
+                type="text"
                 v-model="user.phone"
                 :rules="phoneNumberRules"
                 outlined
@@ -171,7 +171,7 @@ export default {
       return this.showError && !value ? [msg] : [];
     },
     handlename(event) {
-      if (!/^[a-zA-Z]*$/.test(event.key)) {
+      if (/\d/.test(event.key)) {
         event.preventDefault();
       }
     },
