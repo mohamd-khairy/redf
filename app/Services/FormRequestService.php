@@ -185,8 +185,6 @@ class FormRequestService
                 'date' => $request->date,
             ];
              $calendar = saveCalendarFromRequest($calendarData);
-
-
             $actionData = [
                 'form_request_id' => $formRequestInfo->form_request_id,
                 'formable_id' => $formRequestInfo->id,
