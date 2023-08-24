@@ -449,7 +449,7 @@ export default {
         details: "",
         status: "",
         court: "",
-        sessionDate: this.caseAction.sessionDate,
+        sessionDate: null,
         date: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
           .toISOString()
           .substr(0, 10),
@@ -778,6 +778,7 @@ export default {
         status: this.caseAction.status,
         date: this.caseAction.date,
         court: this.caseAction.court,
+        sessionDate: this.sessionDate,
       };
 
       // if (await this.validateFormData()) {
