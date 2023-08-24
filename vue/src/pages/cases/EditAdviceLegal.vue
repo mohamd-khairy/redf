@@ -1,5 +1,5 @@
 <template>
-  <div class="d-flex flex-column flex-grow-1" v-if="formData">
+  <div v-if="formData">
     <v-stepper v-model="e1">
       <v-stepper-header>
         <v-stepper-step :complete="e1 > 1" step="1">
@@ -36,6 +36,23 @@
                 :rules="[requiredRule]"
                 dense
               ></v-text-field>
+              <v-checkbox
+                v-model="caseCheck"
+                :label="$t('cases.belongToCase')"
+              ></v-checkbox>
+              <v-select
+                v-if="caseCheck"
+                :items="formRequests"
+                :label="$t('cases.cases')"
+                :item-text="(item) => item.name"
+                :item-value="(item) => item.id"
+                hide-details
+                dense
+                outlined
+                v-model="case_id"
+                clearable
+              >
+              </v-select>
             </v-card-text>
           </v-card>
           <v-btn color="primary" @click="saveAdviceInfo">
@@ -372,6 +389,7 @@ export default {
       caseNumber: "",
       caseName: "",
       case_id: "",
+      caseCheck: false,
       initialLoading: false,
       isLoading: false,
       isSubmitingForm: false,
@@ -413,6 +431,7 @@ export default {
   },
   created() {
     this.init();
+    this.fetchCases()
   },
   watch: {
     e1(val) {
@@ -427,6 +446,7 @@ export default {
       "selectedForm",
       "courts",
       "caseTypes",
+      'formRequests'
     ]),
     ...mapState("app", ["navTemplates"]),
     ...mapState("auth", ["user"]),
@@ -440,7 +460,19 @@ export default {
       "saveRequestSide",
       "saveFormInformation",
       "getCourts",
+      'getFormRequests'
     ]),
+    fetchCases(){
+      let data = {
+        template_id: 1,
+        pageSize: -1,
+      };
+      this.getFormRequests(data)
+        .then(() => {
+        })
+        .catch(() => {
+        });
+    },
     setCurrentBread() {
       const { formType: currentFormId } = this.$route.params;
       const currentPage = this.navTemplates.find((nav) => {
@@ -475,6 +507,10 @@ export default {
           this.lastAction = data?.lastFormRequestInformation || null;
           this.caseName = data.name;
           this.caseNumber = data.form_request_number;
+          this.case_id = data.formable?.formable_id
+          if(this.case_id)
+            this.caseCheck = true
+
           this.formRequestId = this.formData.id;
           if (this.formData.form_request_side) {
             this.sidesInfo.claimant_id =
