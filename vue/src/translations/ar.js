@@ -466,17 +466,15 @@ export default {
     percentageLose: "احتمالية خسارة القضية",
     action: "الاجراء",
     courtDate: "ميعاد الجلسة",
-    adviceActions:"اجراءات الاستشارة",
-    reviewActions:"اجراءات المراجعة",
-    actions:"الاجراءات",
-
+    adviceActions: "اجراءات الاستشارة",
+    reviewActions: "اجراءات المراجعة",
+    actions: "الاجراءات",
 
     createCase: "إنشاء قضية",
     editUser: "تعديل بيانات المستخدم",
     viewUser: "عرض بيانات المستخدم",
     createNewUser: "إنشاء مستخدم جديد",
     account: "تعديل البيانات الاساسيه",
-
 
     addAction: "اضافة اجراء",
     name: "الاسم",
@@ -754,6 +752,7 @@ export default {
     supreme: "العليا",
     implementation: "التنفيذ",
     delete_confirmation: "هل انت متأكد من الحذف ؟",
+    actionPreview: "عرض الاجراء",
   },
   reports: {
     buildReport: "انشاء تقرير",

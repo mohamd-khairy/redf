@@ -2,50 +2,42 @@
   <div class="d-flex flex-column flex-grow-1" v-if="formData">
     <v-stepper v-model="e1" class="mb-4">
       <v-stepper-header>
-        <v-stepper-step :complete="e1 > 1" step="1">
-          {{ $t("general.edit") + " " + selectedTitle }}
-        </v-stepper-step>
         <v-divider></v-divider>
-        <v-stepper-step :complete="e1 > 2" step="2">
+        <v-stepper-step :complete="e1 > 1" step="1">
           {{ $t("general.info") + " " + selectedTitle }}
         </v-stepper-step>
         <v-divider></v-divider>
-        <v-stepper-step :complete="e1 > 3" step="3">
+        <v-stepper-step :complete="e1 > 2" step="2">
           {{ $t("cases.sidesInfo") }}
         </v-stepper-step>
         <v-divider></v-divider>
-        <v-stepper-step step="4">
+        <v-stepper-step step="3">
           {{ $t("cases.caseActions") }}
         </v-stepper-step>
       </v-stepper-header>
       <v-stepper-items>
         <v-stepper-content step="1">
-          <div class="mt-2">
-            <v-text-field
-              outlined
-              v-model="caseName"
-              :label="$t('cases.caseName')"
-              :required="true"
-              :error-messages="stepOneValidation(caseName)"
-              :rules="[requiredRule]"
-              dense
-            ></v-text-field>
-            <v-text-field
-              outlined
-              v-model="caseNumber"
-              :label="$t('cases.caseNumber')"
-              :required="true"
-              :rules="[requiredRule]"
-              :error-messages="stepOneValidation(caseNumber)"
-              dense
-            ></v-text-field>
-          </div>
-          <v-btn color="primary" @click="saveCaseInfo">
-            {{ $t("general.continue") }}
-          </v-btn>
-        </v-stepper-content>
-        <v-stepper-content step="2">
           <div v-if="!initialLoading">
+            <div class="mt-2">
+              <v-text-field
+                outlined
+                v-model="caseName"
+                :label="$t('cases.caseName')"
+                :required="true"
+                :error-messages="stepOneValidation(caseName)"
+                :rules="[requiredRule]"
+                dense
+              ></v-text-field>
+              <v-text-field
+                outlined
+                v-model="caseNumber"
+                :label="$t('cases.caseNumber')"
+                :required="true"
+                :rules="[requiredRule]"
+                :error-messages="stepOneValidation(caseNumber)"
+                dense
+              ></v-text-field>
+            </div>
             <v-tabs v-model="activeTab">
               <v-tab v-for="(tab, index) in pagesValues" :key="index">{{
                 tab.title
@@ -204,13 +196,13 @@
                 @click="saveForm"
                 >{{ $t("general.continue") }}</v-btn
               >
-              <v-btn color="grey" @click="stepBack" class="ms-2">
+              <!-- <v-btn color="grey" @click="stepBack" class="ms-2">
                 {{ $t("general.back") }}
-              </v-btn>
+              </v-btn> -->
             </v-card-actions>
           </div>
         </v-stepper-content>
-        <v-stepper-content step="3">
+        <v-stepper-content step="2">
           <div class="mt-2">
             <v-card-title>
               <v-flex class="text-left">
@@ -298,7 +290,7 @@
           </v-card-actions>
         </v-stepper-content>
 
-        <v-stepper-content step="4">
+        <v-stepper-content step="3">
           <div class="d-flex flex-column flex-sm-row">
             <div class="flex-grow-1 pt-2 pa-sm-2">
               <v-row dense v-if="lastAction" class="mb-2">
@@ -930,7 +922,11 @@ export default {
       const { id } = this.$route.params;
       const { formType: currentFormId } = this.$route.params;
       this.isSubmitingForm = true;
-      if (await this.validateFormData()) {
+      if (
+        (await this.validateFormData()) ||
+        !this.caseName ||
+        !this.caseAction
+      ) {
         const saveResult = await this.updatePages({
           caseName: this.caseName,
           caseNumber: this.caseNumber,
@@ -938,7 +934,7 @@ export default {
         });
         if (saveResult) {
           this.showErrors = false;
-          this.e1 = 3;
+          this.e1 = 2;
         } else {
           console.log("Failed To save data");
         }
@@ -947,6 +943,7 @@ export default {
         // this.$router.push({ path: `/cases/${currentFormId}` });
       } else {
         this.showErrors = true;
+        this.stepOneErrors = true;
         this.isSubmitingForm = false;
 
         console.log("some fields is required");
@@ -964,7 +961,7 @@ export default {
       const result = await this.saveRequestSide(data);
       if (result) {
         this.isLoading = false;
-        this.e1 = 4;
+        this.e1 = 3;
         this.stepOneErrors = true;
       } else {
         this.stepOneErrors = true;

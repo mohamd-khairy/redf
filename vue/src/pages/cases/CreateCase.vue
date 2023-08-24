@@ -3,60 +3,49 @@
     <v-stepper v-model="e1">
       <v-stepper-header>
         <v-stepper-step :complete="e1 > 1" step="1">
-          {{ $t("general.create") + " " + selectedTitle }}
-        </v-stepper-step>
-        <v-divider></v-divider>
-        <v-stepper-step :complete="e1 > 2" step="2">
           {{ $t("general.info") + " " + selectedTitle }}
         </v-stepper-step>
 
         <v-divider></v-divider>
 
-        <v-stepper-step :complete="e1 > 3" step="3">
+        <v-stepper-step :complete="e1 > 2" step="2">
           {{ $t("cases.sidesInfo") }}
         </v-stepper-step>
 
         <v-divider></v-divider>
 
-        <v-stepper-step step="4">
+        <v-stepper-step step="3">
           {{ $t("cases.caseActions") }}
         </v-stepper-step>
       </v-stepper-header>
 
       <v-stepper-items>
         <v-stepper-content step="1">
-          <div class="mt-2">
-            <v-text-field
-              class="mb-2"
-              v-model="caseName"
-              :label="$t('cases.caseName')"
-              outlined
-              :required="true"
-              :error-messages="stepOneValidation(caseName)"
-              dense
-              :rules="[requiredRule]"
-            ></v-text-field>
-            <v-text-field
-              outlined
-              type="number"
-              class="mb-2"
-              v-model="caseNumber"
-              @keydown="handleInput"
-              :label="$t('cases.caseNumber')"
-              :required="true"
-              :rules="[requiredRule]"
-              :error-messages="stepOneValidation(caseNumber)"
-              dense
-            ></v-text-field>
-          </div>
-          <v-card-actions class="px-2">
-            <v-btn color="primary" @click="saveCaseInfo">
-              {{ $t("general.continue") }}
-            </v-btn>
-          </v-card-actions>
-        </v-stepper-content>
-        <v-stepper-content step="2">
           <div class="mt-2" v-if="!initialLoading">
+            <div class="mt-2">
+              <v-text-field
+                class="mb-2"
+                v-model="caseName"
+                :label="$t('cases.caseName')"
+                outlined
+                :required="true"
+                :error-messages="stepOneValidation(caseName)"
+                dense
+                :rules="[requiredRule]"
+              ></v-text-field>
+              <v-text-field
+                outlined
+                type="number"
+                class="mb-2"
+                v-model="caseNumber"
+                @keydown="handleInput"
+                :label="$t('cases.caseNumber')"
+                :required="true"
+                :rules="[requiredRule]"
+                :error-messages="stepOneValidation(caseNumber)"
+                dense
+              ></v-text-field>
+            </div>
             <v-tabs v-model="activeTab">
               <v-tab v-for="(tab, index) in pages" :key="index">{{
                 tab.title
@@ -148,12 +137,12 @@
             <v-btn color="primary" @click="saveForm">
               {{ $t("general.continue") }}
             </v-btn>
-            <v-btn color="grey" @click="stepBack" class="ms-2">
+            <!-- <v-btn color="grey" @click="stepBack" class="ms-2">
               {{ $t("general.back") }}
-            </v-btn>
+            </v-btn> -->
           </v-card-actions>
         </v-stepper-content>
-        <v-stepper-content step="3">
+        <v-stepper-content step="2">
           <div class="mt-2">
             <v-card-title>
               <v-flex class="text-left">
@@ -234,7 +223,7 @@
           </v-card-actions>
         </v-stepper-content>
 
-        <v-stepper-content step="4">
+        <v-stepper-content step="3">
           <div class="d-flex flex-column flex-sm-row">
             <div class="flex-grow-1 pt-2 pa-sm-2">
               <v-row dense>
@@ -716,7 +705,11 @@ export default {
     },
     async saveForm() {
       this.isSubmitingForm = true;
-      if (await this.validateFormData()) {
+      if (
+        (await this.validateFormData()) ||
+        !this.caseName ||
+        !this.caseNumber
+      ) {
         let result = null;
         if (!this.formRequestId) {
           result = await this.savePages({
@@ -736,13 +729,14 @@ export default {
           this.formRequestId =
             this.formRequestId || result.data?.data?.formRequest?.id;
           this.showErrors = false;
-          this.e1 = 3;
+          this.e1 = 2;
           // makeToast("success", response.data.message);
         } else {
           makeToast("error", "Failed to save data");
         }
       } else {
         this.showErrors = true;
+        this.stepOneErrors = true;
         this.isSubmitingForm = false;
 
         console.log("some fields is required");
@@ -760,7 +754,7 @@ export default {
       const result = await this.saveRequestSide(data);
       if (result) {
         this.isLoading = false;
-        this.e1 = 4;
+        this.e1 = 3;
         this.stepOneErrors = false;
       } else {
         this.stepOneErrors = true;
@@ -778,7 +772,7 @@ export default {
         status: this.caseAction.status,
         date: this.caseAction.date,
         court: this.caseAction.court,
-        sessionDate: this.sessionDate,
+        sessionDate: this.caseAction.sessionDate,
       };
 
       // if (await this.validateFormData()) {

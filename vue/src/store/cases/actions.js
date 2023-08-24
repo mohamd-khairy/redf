@@ -210,7 +210,7 @@ const actions = {
       return false;
     }
   },
-  async savePages({ state }, { caseName, caseNumber,case_id }) {
+  async savePages({ state }, { caseName, caseNumber, case_id }) {
     try {
       const customFormData = {
         id: state.selectedForm.id,
@@ -238,7 +238,9 @@ const actions = {
       }
       bodyFormData.set("case_name", caseName);
       bodyFormData.set("case_number", caseNumber);
-      bodyFormData.set("case_id", case_id);
+      if (case_id) {
+        bodyFormData.set("case_id", case_id);
+      }
       const result = await axios.post(`store-form-fill`, bodyFormData, {
         headers: {
           "Content-Type": "multipart/form-data",

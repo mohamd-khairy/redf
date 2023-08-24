@@ -39,6 +39,7 @@ export default {
         eventClick: (e) => {
           const actionId = e.event?.id || null;
           if (!actionId) return;
+          this.$emit("selectedEventId", actionId);
           console.log(actionId);
         },
       };
