@@ -111,7 +111,6 @@ class FormRequestService
         });
     }
 
-
     public function getFormRequest($request)
     {
         try {
@@ -181,6 +180,7 @@ class FormRequestService
         $formRequestSide = FormRequestSide::create($validatedData);
         return responseSuccess($formRequestSide, 'Form Request Side has been successfully Created');
     }
+
     public function formRequestInformation($request)
     {
         try {
