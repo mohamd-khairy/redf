@@ -29,6 +29,7 @@ class FormRequestResource extends JsonResource
             'user' => $this->user,
             'form_request_side' => $this->formRequestSide,
             'lastFormRequestInformation' => $this->lastFormRequestInformation,
+            'formable' => $this->formable
         ];
     }
 }
