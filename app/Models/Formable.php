@@ -13,13 +13,7 @@ class Formable extends Model
 
     protected $fillable = ['formable_type', 'formable_id', 'form_request_id'];
 
-
-    public function form_request()
-    {
-        return $this->belongsTo(FormRequest::class, 'formable_id');
-    }
-
-    public function request()
+    public function formable()
     {
         return $this->morphTo();
     }

@@ -36,6 +36,11 @@ export default {
         eventDisplay: "block",
         eventColor: "rgba(1, 76, 79,.7)",
         displayEventTime: false,
+        eventClick: (e) => {
+          const actionId = e.event?.id || null;
+          if (!actionId) return;
+          console.log(actionId);
+        },
       };
     },
   },
