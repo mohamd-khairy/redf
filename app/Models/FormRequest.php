@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Str;
 use Spatie\Activitylog\LogOptions;
@@ -56,9 +57,14 @@ class FormRequest extends Model
         return $this->hasMany(Formable::class);
     }
 
+    public function requests(): MorphToMany
+    {
+        return $this->morphedByMany(FormRequest::class, 'formable');
+    }
+    
     public function formable()
     {
-        return $this->hasOne(Formable::class)->with('form_request', 'request');
+        return $this->morphToMany(Formable::class, 'formable');
     }
 
     public function formRequestActions()
