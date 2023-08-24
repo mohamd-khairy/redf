@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Str;
 use Spatie\Activitylog\LogOptions;
@@ -24,7 +25,7 @@ class FormRequest extends Model
         'name'
     ];
 
-    protected $with = ['user'];
+    protected $with = ['user', 'lastFormRequestInformation'];
 
     public function getActivitylogOptions(): LogOptions
     {
@@ -51,14 +52,9 @@ class FormRequest extends Model
         return $this->hasMany(FormAssignRequest::class)->whereNot('status', 'deleted');
     }
 
-    public function formables()
+    public function request()
     {
-        return $this->hasMany(Formable::class);
-    }
-
-    public function formable()
-    {
-        return $this->hasOne(Formable::class)->with('form_request', 'request');
+        return $this->hasOne(Formable::class, 'form_request_id')->with('formable');
     }
 
     public function formRequestActions()

@@ -21,10 +21,10 @@ class CalenderController extends Controller
         $user = auth()->user();
         if ($user->hasRole('root')) {
             // Logic for root user
-            $calendars = Calendar::query();
+            $calendars = Calendar::with('calendarable')->query();
         } else {
             // Logic for regular user
-            $calendars = $user->calenders()->getQuery();
+            $calendars = $user->calenders()->with('calendarable')->getQuery();
         }
         $data = app(Pipeline::class)->send($calendars)->through([
             SortFilters::class,
