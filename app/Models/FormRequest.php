@@ -53,12 +53,12 @@ class FormRequest extends Model
 
     public function formables()
     {
-        return $this->morphMany(Formable::class, 'formable');
+        return $this->hasMany(Formable::class);
     }
 
     public function formable()
     {
-        return $this->morphOne(Formable::class, 'formable');
+        return $this->hasOne(Formable::class)->with('form_request');
     }
 
     public function formRequestActions()
