@@ -144,7 +144,7 @@ export default {
       }
       return date.split("T")[0];
     },
-    getStatusColor(status) {
+    getStatusColor(status = "") {
       const colors = {
         processing: "blue",
         pending: "orange",
@@ -152,7 +152,7 @@ export default {
         closed: "red",
       };
 
-      return colors[status] || "primary";
+      return colors[status.toLocaleLowerCase()] || "primary";
     },
   },
 };

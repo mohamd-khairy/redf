@@ -117,7 +117,7 @@
           label
           text-color="white"
         >
-          {{ $t(`general.${action?.formable?.status}`) }}
+          {{ $t(`general.${action?.formable?.status?.toLowerCase()}`) }}
         </v-chip>
       </v-col>
     </v-row>
