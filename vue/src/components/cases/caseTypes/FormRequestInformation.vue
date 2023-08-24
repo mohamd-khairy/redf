@@ -133,9 +133,7 @@ export default {
   props: {
     action: {},
   },
-  created() {
-    console.log(this.action);
-  },
+  created() {},
 
   methods: {
     formatDate(date) {
