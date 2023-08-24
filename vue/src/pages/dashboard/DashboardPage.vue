@@ -217,6 +217,7 @@ export default {
         this.calendarData = calendars.data.map((c) => ({
           title: c.details,
           start: new Date(c.date),
+          id: c.id,
         }));
         console.log(this.calendarData);
       });
