@@ -466,8 +466,10 @@ export default {
     percentageLose: "احتمالية خسارة القضية",
     action: "الاجراء",
     courtDate: "ميعاد الجلسة",
-    adviceActions: "اجراءات الاستشارة",
-    reviewActions: "اجراءات المراجعة",
+    adviceActions:"اجراءات الاستشارة",
+    reviewActions:"اجراءات المراجعة",
+    actions:"الاجراءات",
+
 
     createCase: "إنشاء قضية",
     editUser: "تعديل بيانات المستخدم",
@@ -475,7 +477,10 @@ export default {
     createNewUser: "إنشاء مستخدم جديد",
     account: "تعديل البيانات الاساسيه",
 
+
     addAction: "اضافة اجراء",
+    name: "الاسم",
+    number: "الرقم",
     caseName: "اسم القضية",
     caseNumber: "رقم القضية",
     adviceName: "اسم الاستشارة",

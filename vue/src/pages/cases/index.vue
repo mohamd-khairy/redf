@@ -61,6 +61,7 @@
                 v-bind="attrs"
                 v-on="on"
                 :to="caseUrl"
+                :disabled="currentPageId > 3"
                 v-can="'create-user'"
               >
                 <v-icon> mdi-plus </v-icon>

@@ -1,5 +1,5 @@
 <template>
-  <div class="d-flex flex-column flex-grow-1" style="margin: 50px">
+  <div>
     <v-stepper v-model="e1">
       <v-stepper-header>
         <v-stepper-step :complete="e1 > 1" step="1">
@@ -365,7 +365,7 @@ import AddUserDialog from "../../components/cases/AddUserDialog";
 import { makeToast } from "@/helpers";
 
 export default {
-  name: "CreateCase",
+  name: "CreateReviewAndAudit",
   components: { AddUserDialog },
   data() {
     return {

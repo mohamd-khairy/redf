@@ -12,14 +12,8 @@
 
         <v-divider></v-divider>
 
-        <v-stepper-step :complete="e1 > 3" step="3">
-          {{ $t("cases.sidesInfo") }}
-        </v-stepper-step>
-
-        <v-divider></v-divider>
-
-        <v-stepper-step step="4">
-          {{ $t("cases.caseActions") }}
+        <v-stepper-step step="3">
+          {{ $t("cases.actions") }}
         </v-stepper-step>
       </v-stepper-header>
 
@@ -29,7 +23,7 @@
             <v-text-field
               class="mb-2"
               v-model="caseName"
-              :label="$t('cases.caseName')"
+              :label="$t('cases.name')"
               outlined
               :required="true"
               :error-messages="stepOneValidation(caseName)"
@@ -42,7 +36,7 @@
               class="mb-2"
               v-model="caseNumber"
               @keydown="handleInput"
-              :label="$t('cases.caseNumber')"
+              :label="$t('cases.number')"
               :required="true"
               :rules="[requiredRule]"
               :error-messages="stepOneValidation(caseNumber)"
@@ -153,88 +147,8 @@
             </v-btn>
           </v-card-actions>
         </v-stepper-content>
+
         <v-stepper-content step="3">
-          <div class="mt-2">
-            <v-card-title>
-              <v-flex class="text-left">
-                <v-btn color="primary" large @click.stop="dialog = true">
-                  <v-icon> mdi-plus </v-icon>
-                  {{ $t("cases.addUser") }}
-                </v-btn>
-              </v-flex>
-            </v-card-title>
-            <v-card-text>
-              <v-row dense>
-                <v-col cols="12">
-                  <v-select
-                    :items="claimantUsers"
-                    :label="$t('cases.claimant')"
-                    :item-text="(item) => item.name"
-                    :item-value="(item) => item.id"
-                    dense
-                    outlined
-                    v-model="sidesInfo.claimant_id"
-                    :rules="[rules.required]"
-                    :error-messages="stepOneValidation(sidesInfo.claimant_id)"
-                    clearable
-                    @click:clear="clearClaimantSelect"
-                  >
-                  </v-select>
-                </v-col>
-                <v-col cols="12">
-                  <v-select
-                    :items="defendantUsers"
-                    :label="$t('cases.defendant')"
-                    :item-text="(item) => item.name"
-                    :item-value="(item) => item.id"
-                    dense
-                    outlined
-                    v-model="sidesInfo.defendant_id"
-                    :rules="[rules.required]"
-                    :error-messages="stepOneValidation(sidesInfo.defendant_id)"
-                    clearable
-                    @click:clear="clearDefendantSelect"
-                  >
-                  </v-select>
-                </v-col>
-                <v-col cols="12">
-                  <v-select
-                    :items="departments"
-                    :label="$t('tables.department')"
-                    :item-text="(item) => item.name"
-                    :item-value="(item) => item.id"
-                    disabled
-                    dense
-                    outlined
-                    v-model="sidesInfo.department_id"
-                  >
-                  </v-select>
-                </v-col>
-                <v-col cols="12">
-                  <v-text-field
-                    type="number"
-                    v-model="sidesInfo.civil"
-                    :label="$t('cases.civil')"
-                    disabled
-                    dense
-                    outlined
-                  ></v-text-field>
-                </v-col>
-              </v-row>
-            </v-card-text>
-          </div>
-
-          <v-card-actions>
-            <v-btn color="primary" @click="storeRequestSide">
-              {{ $t("general.continue") }}
-            </v-btn>
-            <v-btn color="grey" @click="stepBack" class="ms-2">
-              {{ $t("general.back") }}
-            </v-btn>
-          </v-card-actions>
-        </v-stepper-content>
-
-        <v-stepper-content step="4">
           <div class="d-flex flex-column flex-sm-row">
             <div class="flex-grow-1 pt-2 pa-sm-2">
               <v-row dense>
@@ -339,49 +253,6 @@
                     outlined
                   ></v-textarea>
                 </v-col>
-                <v-col cols="12">
-                  <v-checkbox
-                    v-model="sessionDate"
-                    :label="$t('cases.add_session')"
-                  ></v-checkbox>
-                </v-col>
-                <v-col cols="12" sm="12" v-if="sessionDate">
-                  <v-dialog
-                    ref="sessionDialog"
-                    v-model="sessionDialog"
-                    :return-value.sync="caseAction.sessionDate"
-                    persistent
-                    width="290px"
-                  >
-                    <template v-slot:activator="{ on, attrs }">
-                      <v-text-field
-                        v-model="caseAction.sessionDate"
-                        :label="$t('cases.sessionDate')"
-                        prepend-icon="mdi-calendar"
-                        readonly
-                        v-bind="attrs"
-                        v-on="on"
-                        dense
-                        outlined
-                      ></v-text-field>
-                    </template>
-                    <v-date-picker v-model="caseAction.sessionDate" scrollable>
-                      <v-spacer></v-spacer>
-                      <v-btn text color="primary" @click="modal = false">
-                        Cancel
-                      </v-btn>
-                      <v-btn
-                        text
-                        color="primary"
-                        @click="
-                          $refs.sessionDialog.save(caseAction.sessionDate)
-                        "
-                      >
-                        OK
-                      </v-btn>
-                    </v-date-picker>
-                  </v-dialog>
-                </v-col>
               </v-row>
             </div>
           </div>
@@ -408,15 +279,13 @@ import AddUserDialog from "../../components/cases/AddUserDialog";
 import { makeToast } from "@/helpers";
 
 export default {
-  name: "CreateCase",
+  name: "Create",
   components: { AddUserDialog },
   data() {
     return {
       e1: 1,
       selectedTitle: "",
       dateDialog: false,
-      sessionDialog: false,
-      sessionDate: false,
       caseNumber: "",
       caseName: "",
       initialLoading: false,
@@ -449,7 +318,6 @@ export default {
         details: "",
         status: "",
         court: "",
-        sessionDate: this.caseAction.sessionDate,
         date: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
           .toISOString()
           .substr(0, 10),
@@ -555,7 +423,6 @@ export default {
       "saveRequestSide",
       "saveFormInformation",
       "getCourts",
-      "updatePages",
     ]),
     addDate(index) {
       this.caseAction.dates.push({ caseDate: "" });
@@ -717,24 +584,13 @@ export default {
     async saveForm() {
       this.isSubmitingForm = true;
       if (await this.validateFormData()) {
-        let result = null;
-        if (!this.formRequestId) {
-          result = await this.savePages({
-            caseName: this.caseName,
-            caseNumber: this.caseNumber,
-          });
-        } else {
-          result = await this.updatePages({
-            caseName: this.caseName,
-            caseNumber: this.caseNumber,
-            formId: this.formRequestId,
-          });
-        }
-
+        const result = await this.savePages({
+          caseName: this.caseName,
+          caseNumber: this.caseNumber,
+        });
         if (result) {
           this.isSubmitingForm = false;
-          this.formRequestId =
-            this.formRequestId || result.data?.data?.formRequest?.id;
+          this.formRequestId = result.data?.data?.formRequest?.id;
           this.showErrors = false;
           this.e1 = 3;
           // makeToast("success", response.data.message);
