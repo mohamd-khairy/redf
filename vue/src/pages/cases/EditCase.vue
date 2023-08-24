@@ -408,11 +408,19 @@
                           </v-col>
                           <v-col cols="12" sm="9">
                             <v-chip
-                              :color="getStatusColor(lastAction?.status)"
+                              :color="
+                                getStatusColor(
+                                  lastAction?.status?.toLowerCase()
+                                )
+                              "
                               label
                               text-color="white"
                             >
-                              {{ $t(`general.${lastAction?.status}`) }}
+                              {{
+                                $t(
+                                  `general.${lastAction?.status?.toLowerCase()}`
+                                )
+                              }}
                             </v-chip>
                           </v-col>
                         </v-row>

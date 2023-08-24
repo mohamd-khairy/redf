@@ -33,7 +33,6 @@
                             class="custom-disabled-input"
                             :value="lastAction?.amount || ''"
                             solo
-                            label="Solo"
                             disabled
                             hide-details
                           ></v-text-field>
@@ -51,7 +50,6 @@
                             class="custom-disabled-input"
                             :value="lastAction?.percentage || ''"
                             solo
-                            label="Solo"
                             disabled
                             hide-details
                           ></v-text-field>
@@ -70,7 +68,6 @@
                             item-text="title"
                             item-value="value"
                             solo
-                            label="Solo"
                             disabled
                             hide-details
                             dense
@@ -88,7 +85,6 @@
                             class="custom-disabled-input"
                             :value="lastAction?.date || ''"
                             solo
-                            label="Solo"
                             disabled
                             hide-details
                             dense
@@ -122,11 +118,15 @@
                         </v-col>
                         <v-col cols="12" sm="9">
                           <v-chip
-                            :color="getStatusColor(lastAction?.status)"
+                            :color="
+                              getStatusColor(lastAction?.status?.toLowerCase())
+                            "
                             label
                             text-color="white"
                           >
-                            {{ $t(`general.${lastAction?.status}`) }}
+                            {{
+                              $t(`general.${lastAction?.status?.toLowerCase()}`)
+                            }}
                           </v-chip>
                         </v-col>
                       </v-row>
