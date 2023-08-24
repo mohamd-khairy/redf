@@ -339,6 +339,49 @@
                     outlined
                   ></v-textarea>
                 </v-col>
+                <v-col cols="12">
+                  <v-checkbox
+                    v-model="sessionDate"
+                    :label="$t('cases.add_session')"
+                  ></v-checkbox>
+                </v-col>
+                <v-col cols="12" sm="12" v-if="sessionDate">
+                  <v-dialog
+                    ref="sessionDialog"
+                    v-model="sessionDialog"
+                    :return-value.sync="caseAction.sessionDate"
+                    persistent
+                    width="290px"
+                  >
+                    <template v-slot:activator="{ on, attrs }">
+                      <v-text-field
+                        v-model="caseAction.sessionDate"
+                        :label="$t('cases.sessionDate')"
+                        prepend-icon="mdi-calendar"
+                        readonly
+                        v-bind="attrs"
+                        v-on="on"
+                        dense
+                        outlined
+                      ></v-text-field>
+                    </template>
+                    <v-date-picker v-model="caseAction.sessionDate" scrollable>
+                      <v-spacer></v-spacer>
+                      <v-btn text color="primary" @click="modal = false">
+                        Cancel
+                      </v-btn>
+                      <v-btn
+                        text
+                        color="primary"
+                        @click="
+                          $refs.sessionDialog.save(caseAction.sessionDate)
+                        "
+                      >
+                        OK
+                      </v-btn>
+                    </v-date-picker>
+                  </v-dialog>
+                </v-col>
               </v-row>
             </div>
           </div>
@@ -372,6 +415,8 @@ export default {
       e1: 1,
       selectedTitle: "",
       dateDialog: false,
+      sessionDialog: false,
+      sessionDate: false,
       caseNumber: "",
       caseName: "",
       initialLoading: false,
@@ -404,6 +449,7 @@ export default {
         details: "",
         status: "",
         court: "",
+        sessionDate: this.caseAction.sessionDate,
         date: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
           .toISOString()
           .substr(0, 10),

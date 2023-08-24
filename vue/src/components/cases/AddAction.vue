@@ -235,7 +235,7 @@
               <v-col cols="12">
                 <v-checkbox
                   v-model="sessionDate"
-                  :label="$t('cases.sessionDate')"
+                  :label="$t('cases.add_session')"
                 ></v-checkbox>
               </v-col>
               <v-col cols="12" sm="12" v-if="sessionDate">
@@ -249,7 +249,7 @@
                   <template v-slot:activator="{ on, attrs }">
                     <v-text-field
                       v-model="caseAction.sessionDate"
-                      :label="$t('tables.date')"
+                      :label="$t('cases.sessionDate')"
                       prepend-icon="mdi-calendar"
                       readonly
                       v-bind="attrs"
@@ -372,7 +372,7 @@ export default {
         details: this.caseAction.details,
         status: this.caseAction.status,
         date: this.caseAction.date,
-        court_name: this.caseAction.court_name,
+        court: this.caseAction.court_name,
         sessionDate: this.caseAction.sessionDate,
       };
       this.isLoading = true;

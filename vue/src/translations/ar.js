@@ -484,8 +484,9 @@ export default {
     reviewNumber: "رقم المراجعة",
     new_beneficiary: "مستفيد جديد",
     belongToCase: "تنتمى لقضية",
-    sessionDate: "تاريخ القضية",
+    sessionDate: "تاريخ الجلسة",
     cases: "القضايا",
+    add_session: "اضافة جلسة",
   },
 
   departments: {
