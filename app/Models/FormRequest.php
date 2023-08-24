@@ -25,7 +25,7 @@ class FormRequest extends Model
         'name'
     ];
 
-    protected $with = ['user'];
+    protected $with = ['user', 'lastFormRequestInformation'];
 
     public function getActivitylogOptions(): LogOptions
     {
@@ -51,10 +51,10 @@ class FormRequest extends Model
     {
         return $this->hasMany(FormAssignRequest::class)->whereNot('status', 'deleted');
     }
-    
+
     public function request()
     {
-        return $this->hasOne(Formable::class , 'form_request_id')->with('formable');
+        return $this->hasOne(Formable::class, 'form_request_id')->with('formable');
     }
 
     public function formRequestActions()
