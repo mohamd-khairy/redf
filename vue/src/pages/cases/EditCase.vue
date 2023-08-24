@@ -1,5 +1,5 @@
 <template>
-  <div class="d-flex flex-column flex-grow-1" v-if="formData">
+  <div v-if="formData">
     <v-stepper v-model="e1" class="mb-4">
       <v-stepper-header>
         <v-stepper-step :complete="e1 > 1" step="1">

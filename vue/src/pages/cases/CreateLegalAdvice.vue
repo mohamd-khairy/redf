@@ -488,7 +488,7 @@ export default {
       if (result) {
         this.isLoading = false;
         const { formType: currentFormId } = this.$route.params;
-        makeToast("success", "تم انشاء القضية بنجاح");
+        makeToast("success", "تم انشاء استشارة بنجاح");
         this.$router.push(`/cases/2`);
       } else {
         this.isLoading = false;

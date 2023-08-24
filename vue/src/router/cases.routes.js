@@ -40,7 +40,7 @@ export default [
       // permissions: 'read-event'
     },
     component: () =>
-      import(/* webpackChunkName: "pipes-list" */ "@/pages/cases/EditCase"),
+      import(/* webpackChunkName: "pipes-list" */ "@/pages/cases/EditDynamic"),
   },
   {
     path: "/flights/show",
