@@ -64,7 +64,7 @@
                         <v-col cols="12" sm="9">
                           <v-text-field
                             class="custom-disabled-input"
-                            :value="lastAction?.court || ''"
+                            :value="$t(`general.${lastAction?.court}`) || ''"
                             item-text="title"
                             item-value="value"
                             solo
