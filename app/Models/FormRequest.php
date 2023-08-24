@@ -58,7 +58,7 @@ class FormRequest extends Model
 
     public function formable()
     {
-        return $this->hasOne(Formable::class)->with('form_request');
+        return $this->hasOne(Formable::class)->with('form_request', 'request');
     }
 
     public function formRequestActions()
