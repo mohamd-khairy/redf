@@ -758,6 +758,7 @@ export default {
     implementation: "التنفيذ",
     delete_confirmation: "هل انت متأكد من الحذف ؟",
     actionPreview: "عرض الاجراء",
+    new_beneficiary_added: "تم اضافة مستفيد جديد",
   },
   reports: {
     buildReport: "انشاء تقرير",

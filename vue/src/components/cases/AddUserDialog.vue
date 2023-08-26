@@ -200,7 +200,7 @@ export default {
       let data = {
         name: this.user.name,
         civil_number: Number(this.user.civil_number),
-        phone: Number(this.user.phone),
+        phone: this.user.phone,
         email: this.user.email,
         // department_id: this.user.department_id,
       };
@@ -210,7 +210,7 @@ export default {
           this.dialog = false;
           this.fetchData();
           this.errors = {};
-          makeToast("success", response.data.message);
+          makeToast("success", this.$t("general.new_beneficiary_added"));
         })
         .catch((error) => {
           this.loading = false;
