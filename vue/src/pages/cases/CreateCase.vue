@@ -230,6 +230,7 @@
                 <v-col cols="6">
                   <v-text-field
                     type="number"
+                    @keydown="handleInput"
                     v-model="caseAction.amount"
                     :label="$t('cases.amount')"
                     outlined
@@ -243,6 +244,7 @@
                 <v-col cols="6">
                   <v-text-field
                     type="number"
+                    @keydown="handleInput"
                     v-model="caseAction.percentage"
                     :label="$t('cases.percentageLose')"
                     dense

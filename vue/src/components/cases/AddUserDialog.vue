@@ -18,6 +18,7 @@
               <v-text-field
                 type="number"
                 v-model="user.civil_number"
+                @keydown="handleInput"
                 outlined
                 dense
                 :rules="civilRules"
@@ -165,6 +166,11 @@ export default {
       this.event = this.eventItem;
       const { status, notes, id } = this.eventItem ?? {};
       this.form = { status, notes, id };
+    },
+    handleInput(event) {
+      if (event.key.toLowerCase() === "e") {
+        event.preventDefault();
+      }
     },
     showErrorMsg(value) {
       const msg = this.$t("general.required_input");

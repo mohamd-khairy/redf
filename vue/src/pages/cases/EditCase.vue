@@ -29,6 +29,8 @@
               ></v-text-field>
               <v-text-field
                 outlined
+                type="number"
+                @keydown="handleInput"
                 v-model="caseNumber"
                 :label="$t('cases.caseNumber')"
                 :required="true"
@@ -420,10 +422,11 @@
                   </v-expansion-panels>
                 </v-col>
               </v-row>
-              <v-row>
+              <v-row dense>
                 <v-col cols="6">
                   <v-text-field
                     type="number"
+                    @keydown="handleInput"
                     v-model="caseAction.amount"
                     :label="$t('cases.amount')"
                     dense
@@ -437,6 +440,7 @@
                 <v-col cols="6">
                   <v-text-field
                     type="number"
+                    @keydown="handleInput"
                     v-model="caseAction.percentage"
                     :label="$t('cases.percentageLose')"
                     dense
@@ -730,6 +734,11 @@ export default {
         this.stepOneErrors = false;
       }
       return;
+    },
+    handleInput(event) {
+      if (event.key.toLowerCase() === "e") {
+        event.preventDefault();
+      }
     },
     fetchUsers() {
       this.isLoading = true;

@@ -139,6 +139,7 @@
               <v-col cols="6">
                 <v-text-field
                   type="number"
+                  @keydown="handleInput"
                   v-model="caseAction.amount"
                   :label="$t('cases.amount')"
                   dense
@@ -152,6 +153,7 @@
               <v-col cols="6">
                 <v-text-field
                   type="number"
+                  @keydown="handleInput"
                   v-model="caseAction.percentage"
                   :label="$t('cases.percentageLose')"
                   dense
@@ -358,6 +360,11 @@ export default {
     ...mapActions("cases", ["saveFormInformation", "getCourts"]),
     closeDialog() {
       this.$emit("close-action-dialog");
+    },
+    handleInput(event) {
+      if (event.key.toLowerCase() === "e") {
+        event.preventDefault();
+      }
     },
     async storeFormAction() {
       this.isLoading = true;
