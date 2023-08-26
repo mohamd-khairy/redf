@@ -101,17 +101,20 @@
         :pageCount="numberOfPages"
         :server-items-length="total"
       >
-        <template v-slot:item.id="{ item }">
+        <!-- <template v-slot:item.id="{ item }">
           <div class="font-weight-bold">
             # <copy-label :text="item.id + ''" />
           </div>
-        </template>
+        </template> -->
 
         <template v-slot:item.name="{ item }">
           <div>{{ item.name ?? "---" }}</div>
         </template>
         <template v-slot:item.form_request_number="{ item }">
-          <div>{{ item.form_request_number ?? "---" }}</div>
+          <div class="font-weight-bold">
+            <copy-label :text="item.form_request_number + ''" />
+          </div>
+          <!-- <div>{{ item.form_request_number ?? "---" }}</div> -->
         </template>
 
         <template v-slot:item.user="{ item }">
@@ -315,8 +318,8 @@ export default {
       selected: [],
       items: [],
       headers: [
-        { text: this.$t("tables.id"), value: "id" },
-        { text: this.$t("tables.requestNumber"), value: "form_request_number" },
+        // { text: this.$t("tables.id"), value: "id" },
+        { text: this.$t("tables.caseNumber"), value: "form_request_number" },
         { text: this.$t("tables.name"), value: "name" },
         { text: this.$t("tables.user"), value: "user" },
         { text: this.$t("tables.assigner"), value: "assigner" },
