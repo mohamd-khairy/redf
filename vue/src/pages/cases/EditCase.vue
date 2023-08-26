@@ -2,7 +2,6 @@
   <div v-if="formData">
     <v-stepper v-model="e1" class="mb-4">
       <v-stepper-header>
-        <v-divider></v-divider>
         <v-stepper-step :complete="e1 > 1" step="1">
           {{ $t("general.info") + " " + selectedTitle }}
         </v-stepper-step>

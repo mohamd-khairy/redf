@@ -490,6 +490,11 @@ export default {
     sessionDate: "تاريخ الجلسة",
     cases: "القضايا",
     add_session: "اضافة جلسة",
+    view_timeline: "عرض الخط الزمني للقضية",
+    assign_user: "تعيين مستخدم",
+    editCase: "تحديث بيانات القضية",
+    add_action: "اضافة اجراء",
+    delete: "حذف القضية",
   },
 
   departments: {
