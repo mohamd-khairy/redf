@@ -668,7 +668,7 @@ export default {
   },
   watch: {
     e1(val) {
-      if (val === 4) {
+      if (val === 3) {
         this.getCourts();
       }
     },
@@ -846,7 +846,9 @@ export default {
             if (this.formData?.form_request_information?.sessionDate) {
               this.sessionDate = true;
               this.caseAction.sessionDate =
-                this.formData.form_request_information.sessionDate;
+                this.formData.form_request_information.sessionDate.split(
+                  "T"
+                )[0];
             }
           }
           console.log(data);

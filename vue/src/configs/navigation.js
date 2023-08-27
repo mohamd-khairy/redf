@@ -7,7 +7,7 @@ export default {
       text: "dashboard",
       link: "/dashboard/analytics",
       permission: "read-role",
-      items: []
+      items: [],
     },
     {
       icon: "mdi-gavel",
@@ -15,8 +15,7 @@ export default {
       key: "menu.requests",
       permission: "read-role",
       // link: "/reports",
-      items: [
-      ]
+      items: [],
     },
     {
       icon: "mdi-list-box",
@@ -24,16 +23,16 @@ export default {
       key: "menu.departments",
       link: "/departments",
       permission: "read-role",
-      items: []
+      items: [],
     },
-    // {
-    //   icon: "mdi-animation",
-    //   text: "projects",
-    //   key: "menu.projects",
-    //   link: "/projects",
-    //   permission: "read-role",
-    //   items: []
-    // },
+    {
+      icon: "mdi-animation",
+      text: "branches",
+      key: "menu.branches",
+      link: "/branches",
+      permission: "read-role",
+      items: [],
+    },
     // {
     //   icon: "mdi-gavel",
     //   text: "cases",
@@ -56,7 +55,7 @@ export default {
       key: "menu.tasks",
       link: "/tasks",
       permission: "read-role",
-      items: []
+      items: [],
     },
     {
       icon: "mdi-file-document-outline",
@@ -64,7 +63,7 @@ export default {
       key: "menu.documents",
       link: "/documents",
       permission: "read-role",
-      items: []
+      items: [],
     },
     {
       icon: "mdi-hand-coin-outline",
@@ -72,7 +71,7 @@ export default {
       key: "menu.beneficiaries",
       link: "/beneficiaries",
       permission: "read-role",
-      items: []
+      items: [],
     },
     {
       icon: "mdi-chart-donut",
@@ -80,7 +79,7 @@ export default {
       key: "menu.activities",
       link: "/activities",
       permission: "read-role",
-      items: []
+      items: [],
     },
     // {
     //   icon: "mdi-history",
@@ -118,16 +117,16 @@ export default {
           text: "TemplatesTypes",
           key: "menu.templatesTypes",
           permission: "read-role",
-          link: "/templates/types"
+          link: "/templates/types",
         },
         {
           icon: "mdi-list-box",
           text: "Templates",
           key: "menu.templates",
           permission: "read-role",
-          link: "/templates/list"
+          link: "/templates/list",
         },
-      ]
+      ],
     },
 
     // {
@@ -192,16 +191,16 @@ export default {
           text: "Users",
           key: "menu.users",
           permission: "read-user",
-          link: "/users/list"
+          link: "/users/list",
         },
         {
           icon: "mdi-account-multiple-outline",
           text: "Roles",
           key: "menu.roles",
           permission: "read-role",
-          link: "/roles/list"
-        }
-      ]
+          link: "/roles/list",
+        },
+      ],
     },
     {
       icon: "mdi-cog-outline",
@@ -212,46 +211,46 @@ export default {
           key: "menu.general",
           text: "General",
           link: "/settings/general",
-          permission: "read-setting"
+          permission: "read-setting",
         },
         {
           key: "menu.mailTemplate",
           text: "Mail Template",
           link: "/settings/mail-template",
-          permission: "read-setting"
+          permission: "read-setting",
         },
         {
           key: "menu.mailServer",
           text: "Mail Server",
           link: "/settings/mail-server",
-          permission: "read-setting"
+          permission: "read-setting",
         },
         {
           key: "menu.logs",
           text: "Logs",
           link: "/settings/logs",
-          permission: "read-setting"
+          permission: "read-setting",
         },
         // { key: 'menu.sms', link: '/settings/sms' },
         {
           key: "menu.stations",
           text: "Station",
           link: "/settings/stations",
-          permission: "read-location"
+          permission: "read-location",
         },
         {
           key: "menu.detection_types",
           text: "Detection Type",
           link: "/settings/detection-types",
-          permission: "read-type"
+          permission: "read-type",
         },
         {
           key: "menu.drones",
           text: "drones",
           link: "/settings/drones",
-          permission: "read-drone"
-        }
-      ]
-    }
-  ]
+          permission: "read-drone",
+        },
+      ],
+    },
+  ],
 };
