@@ -206,9 +206,11 @@ class FormRequestService
             $latestCourtFromDatabase = FormRequestInformation::where('form_request_id', $request->form_request_id)
             ->latest()
             ->value('court');
-            if ($courtFromRequest !== $latestCourtFromDatabase) {
+
+            if ($latestCourtFromDatabase !== null && $courtFromRequest !== $latestCourtFromDatabase) {
                 return responseFail('You cannot add the same court');
             }
+
 
             $formRequestInfo = FormRequestInformation::create($validatedData);
             // $formRequestInfo->form_request->status = FormRequestStatus::PROCESSING;
