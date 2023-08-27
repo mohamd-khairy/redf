@@ -2,23 +2,21 @@
   <div class="d-flex flex-column flex-grow-1" style="margin: 50px">
     <edit-case v-if="id == 1"></edit-case>
     <edit-legal-advice v-else-if="id == 2"></edit-legal-advice>
-<!--    <create-review-and-audit v-else-if="id == 3"></create-review-and-audit>-->
-    <create v-else></create>
+    <edit-review-and-audit v-else-if="id == 3"></edit-review-and-audit>
+    <edit v-else></edit>
   </div>
 </template>
 
 <script>
-import CreateCase from "@/pages/cases/CreateCase";
-import CreateLegalAdvice from "@/pages/cases/CreateLegalAdvice";
-import CreateReviewAndAudit from "@/pages/cases/CreateReviewAndAudit";
-import Create from "@/pages/cases/Create";
 import { mapActions } from "vuex";
 import EditCase from "@/pages/cases/EditCase";
 import EditLegalAdvice from "@/pages/cases/EditAdviceLegal";
+import EditReviewAndAudit from "@/pages/cases/EditReviewAndAudit";
+import Edit from "@/pages/cases/Edit";
 
 export default {
   name: "EditDynamic",
-  components: {EditLegalAdvice, EditCase, Create},
+  components: {Edit, EditReviewAndAudit, EditLegalAdvice, EditCase},
   data() {
     return {
       id: 0,
@@ -33,7 +31,7 @@ export default {
   },
 
   created() {
-    // console.log(this.$route.params)
+    console.log(this.$route.params)
     let { formType } = this.$route.params;
     this.id = formType;
 
