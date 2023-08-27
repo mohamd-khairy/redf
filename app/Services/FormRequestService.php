@@ -68,9 +68,11 @@ class FormRequestService
         return DB::transaction(function () use ($requestData, $id) {
 
             $formRequest = FormRequest::findOrFail($id);
-
             $formRequest->form_request_number = $requestData['case_number'] ?? $formRequest->form_request_number;
             $formRequest->name = $requestData['case_name'] ?? $formRequest->name;
+            $formRequest->branche_id = $requestData['branche_id'] ?? $formRequest->branche_id;
+            // dd($formRequest,$formRequest->branche_id , $requestData);
+
             $formRequest->save();
 
             // save related tables if get case_id

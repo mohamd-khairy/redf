@@ -590,6 +590,7 @@ export default {
     caseNumber: "رقم القضية",
     requestNumber: "رقم الطلب",
     court: "المحكمة",
+    created_at: "تاريخ الانشاء",
     // causer_type: "",
   },
   texts: {
@@ -864,11 +865,12 @@ export default {
     createBranch: "انشاء فرع",
     confirmDeleteBranch: "هل انت متأكد من حذف هذه الفرع ؟",
     confirmDeleteSelectedBranch: "هل انت متأكد من حذف الفروع المحددة ؟",
-    editBranch: "تحديث الفرع",
+    editBranch: "تحديث بيانات الفرع",
     status: "الحالة",
     priority: "الاولوية",
     types: "النوع",
     branchCreated: "تم انشاء فرع جديد",
+    branchUpdated: "تم تحديث بيانات الفرع",
     branchNameReq: "اسم الفرع مطلوب",
   },
 };
