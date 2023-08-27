@@ -36,23 +36,6 @@
                 :rules="[requiredRule]"
                 dense
               ></v-text-field>
-              <v-checkbox
-                v-model="caseCheck"
-                :label="$t('cases.belongToCase')"
-              ></v-checkbox>
-              <v-select
-                v-if="caseCheck"
-                :items="formRequests"
-                :label="$t('cases.cases')"
-                :item-text="(item) => item.name"
-                :item-value="(item) => item.id"
-                hide-details
-                dense
-                outlined
-                v-model="case_id"
-                clearable
-              >
-              </v-select>
             </v-card-text>
           </v-card>
           <v-btn color="primary" @click="saveAdviceInfo">
@@ -378,7 +361,7 @@ import { mapActions, mapState } from "vuex";
 import { makeToast } from "@/helpers";
 
 export default {
-  name: "EditLegalAdvice",
+  name: "EditReviewAndAudit",
 
   data() {
     return {
@@ -503,9 +486,6 @@ export default {
           this.lastAction = data?.lastFormRequestInformation || null;
           this.caseName = data.name;
           this.caseNumber = data.form_request_number;
-          this.case_id = data.request?.formable_id
-          if(this.case_id)
-            this.caseCheck = true
 
           this.formRequestId = this.formData.id;
           if (this.formData.form_request_side) {

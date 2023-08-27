@@ -378,7 +378,7 @@ import { mapActions, mapState } from "vuex";
 import { makeToast } from "@/helpers";
 
 export default {
-  name: "EditLegalAdvice",
+  name: "Edit",
 
   data() {
     return {
