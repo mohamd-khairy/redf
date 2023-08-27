@@ -18,16 +18,37 @@ class FormSeeder extends Seeder
     {
         $data = json_encode([
             [
-                'text' => 'Top secret',
+                'text' => 'سري للغايه',
             ],
             [
-                'text' => 'Secret',
+                'text' => 'سري',
             ],
             [
-                'text' => 'Confidential',
+                'text' => 'مؤتمن',
             ],
             [
-                'text' => 'Normal',
+                'text' => 'عادي',
+            ],
+        ]);
+
+        $courts = json_encode([
+            [
+                'text' => 'الجزائية',
+            ],
+            [
+                'text' => 'الحقوقية',
+            ],
+            [
+                'text' => 'الأحوال الشخصية',
+            ],
+            [
+                'text' => 'التجارية',
+            ],
+            [
+                'text' => 'العمالية',
+            ],
+            [
+                'text' => 'الإدارية',
             ],
         ]);
         //template
@@ -57,37 +78,22 @@ class FormSeeder extends Seeder
         ]);
         // pages
         $form_page1 = FormPage::create([
-            'title' => 'نموذج طلب التقاضي',
+            'title' => ' طلب التقاضي',
             'form_id' => $form1->id
         ]);
         $form_page2 = FormPage::create([
-            'title' => 'نموذج المشورة',
+            'title' => 'طلب إستشارة ',
             'form_id' => $form2->id
         ]);
         $form_page3 = FormPage::create([
-            'title' => 'استمارة مراجعة العقد',
+            'title' => 'طلب مراجعة العقد',
             'form_id' => $form3->id
         ]);
 
         //
         FormPageItem::create([
-            'label' => 'اسم الطالب',
-            'type' => 'text',
-            'enabled' => 1,
-            'required' => 1,
-            'website_view' => 1,
-            'notes' => '',
-            'comment' => '',
-            'width' => 'col-4',
-            'input_type' => 'text',
-            'height' => '',
-            'length' => '100',
-            'childList' => json_encode([]),
-            'form_page_id' => $form_page1->id
-        ]);
-        FormPageItem::create([
-            'label' => 'هوية الموظف',
-            'type' => 'text',
+            'label' => ' المحكمة (الاختصاص)',
+            'type' => 'select',
             'enabled' => 1,
             'required' => 1,
             'website_view' => 1,
@@ -96,70 +102,100 @@ class FormSeeder extends Seeder
             'width' => 'col-12',
             'input_type' => 'text',
             'height' => '',
-            'length' => '100',
-            'childList' => json_encode([]),
+            'length' => '20',
+            'childList' => $courts,
             'form_page_id' => $form_page1->id
         ]);
-        FormPageItem::create([
-            'label' => 'قسم',
-            'type' => 'textarea',
-            'enabled' => 1,
-            'required' => 1,
-            'website_view' => 1,
-            'notes' => '',
-            'comment' => '',
-            'width' => 'col-12',
-            'input_type' => 'text',
-            'height' => '',
-            'length' => '500',
-            'childList' => json_encode([]),
-            'form_page_id' => $form_page1->id
-        ]);
-        FormPageItem::create([
-            'label' => 'الموضوع',
-            'type' => 'textarea',
-            'enabled' => 1,
-            'required' => 1,
-            'website_view' => 1,
-            'notes' => '',
-            'comment' => '',
-            'width' => 'col-12',
-            'input_type' => 'text',
-            'height' => '',
-            'length' => '500',
-            'childList' => json_encode([]),
-            'form_page_id' => $form_page1->id
-        ]);
-        FormPageItem::create([
-            'label' => 'الغرض من التقاضي والطلب',
-            'type' => 'textarea',
-            'enabled' => 1,
-            'required' => 1,
-            'website_view' => 1,
-            'notes' => '',
-            'comment' => '',
-            'width' => 'col-12',
-            'input_type' => 'text',
-            'height' => '',
-            'length' => '1000',
-            'childList' => json_encode([]),
-            'form_page_id' => $form_page1->id
-        ]);
-        FormPageItem::create([
-            'label' => 'تفاصيل الدعوى / التقاضي',
-            'type' => 'textarea',
-            'enabled' => 1,
-            'required' => 1,
-            'website_view' => 1,
-            'notes' => '',
-            'comment' => '',
-            'width' => 'col-12',
-            'input_type' => 'text',
-            'height' => '',
-            'length' => '1000',
-            'childList' => json_encode([]),
-            'form_page_id' => $form_page1->id
-        ]);
+        // FormPageItem::create([
+        //     'label' => 'اسم الطالب',
+        //     'type' => 'text',
+        //     'enabled' => 1,
+        //     'required' => 1,
+        //     'website_view' => 1,
+        //     'notes' => '',
+        //     'comment' => '',
+        //     'width' => 'col-4',
+        //     'input_type' => 'text',
+        //     'height' => '',
+        //     'length' => '100',
+        //     'childList' => json_encode([]),
+        //     'form_page_id' => $form_page1->id
+        // ]);
+        // FormPageItem::create([
+        //     'label' => 'هوية الموظف',
+        //     'type' => 'text',
+        //     'enabled' => 1,
+        //     'required' => 1,
+        //     'website_view' => 1,
+        //     'notes' => '',
+        //     'comment' => '',
+        //     'width' => 'col-12',
+        //     'input_type' => 'text',
+        //     'height' => '',
+        //     'length' => '100',
+        //     'childList' => json_encode([]),
+        //     'form_page_id' => $form_page1->id
+        // ]);
+        // FormPageItem::create([
+        //     'label' => 'قسم',
+        //     'type' => 'textarea',
+        //     'enabled' => 1,
+        //     'required' => 1,
+        //     'website_view' => 1,
+        //     'notes' => '',
+        //     'comment' => '',
+        //     'width' => 'col-12',
+        //     'input_type' => 'text',
+        //     'height' => '',
+        //     'length' => '500',
+        //     'childList' => json_encode([]),
+        //     'form_page_id' => $form_page1->id
+        // ]);
+        // FormPageItem::create([
+        //     'label' => 'الموضوع',
+        //     'type' => 'textarea',
+        //     'enabled' => 1,
+        //     'required' => 1,
+        //     'website_view' => 1,
+        //     'notes' => '',
+        //     'comment' => '',
+        //     'width' => 'col-12',
+        //     'input_type' => 'text',
+        //     'height' => '',
+        //     'length' => '500',
+        //     'childList' => json_encode([]),
+        //     'form_page_id' => $form_page1->id
+        // ]);
+        // FormPageItem::create([
+        //     'label' => 'الغرض من التقاضي والطلب',
+        //     'type' => 'textarea',
+        //     'enabled' => 1,
+        //     'required' => 1,
+        //     'website_view' => 1,
+        //     'notes' => '',
+        //     'comment' => '',
+        //     'width' => 'col-12',
+        //     'input_type' => 'text',
+        //     'height' => '',
+        //     'length' => '1000',
+        //     'childList' => json_encode([]),
+        //     'form_page_id' => $form_page1->id
+        // ]);
+        // FormPageItem::create([
+        //     'label' => 'تفاصيل الدعوى / التقاضي',
+        //     'type' => 'textarea',
+        //     'enabled' => 1,
+        //     'required' => 1,
+        //     'website_view' => 1,
+        //     'notes' => '',
+        //     'comment' => '',
+        //     'width' => 'col-12',
+        //     'input_type' => 'text',
+        //     'height' => '',
+        //     'length' => '1000',
+        //     'childList' => json_encode([]),
+        //     'form_page_id' => $form_page1->id
+        // ]);
         FormPageItem::create([
             'label' => 'الملفات المرفقة تدعم الطلب ',
             'type' => 'file',
@@ -175,21 +211,21 @@ class FormSeeder extends Seeder
             'childList' => json_encode([]),
             'form_page_id' => $form_page1->id
         ]);
-        FormPageItem::create([
-            'label' => 'موعد الجلسة إن وجدت ',
-            'type' => 'text',
-            'enabled' => 1,
-            'required' => 0,
-            'website_view' => 1,
-            'notes' => '',
-            'comment' => '',
-            'width' => 'col-12',
-            'input_type' => 'text',
-            'height' => '',
-            'length' => '20',
-            'childList' => json_encode([]),
-            'form_page_id' => $form_page1->id
-        ]);
+        // FormPageItem::create([
+        //     'label' => 'موعد الجلسة إن وجدت ',
+        //     'type' => 'text',
+        //     'enabled' => 1,
+        //     'required' => 0,
+        //     'website_view' => 1,
+        //     'notes' => '',
+        //     'comment' => '',
+        //     'width' => 'col-12',
+        //     'input_type' => 'text',
+        //     'height' => '',
+        //     'length' => '20',
+        //     'childList' => json_encode([]),
+        //     'form_page_id' => $form_page1->id
+        // ]);
         FormPageItem::create([
             'label' => 'التقاضي والمرافعة السرية',
             'type' => 'select',
@@ -221,52 +257,52 @@ class FormSeeder extends Seeder
             'form_page_id' => $form_page1->id
         ]);
 
-        //        items
-        FormPageItem::create([
-            'label' => 'اسم الطالب',
-            'type' => 'text',
-            'enabled' => 1,
-            'required' => 1,
-            'website_view' => 1,
-            'notes' => '',
-            'comment' => '',
-            'width' => 'col-12',
-            'input_type' => 'text',
-            'height' => '',
-            'length' => '200',
-            'childList' => json_encode([]),
-            'form_page_id' => $form_page2->id
-        ]);
-        FormPageItem::create([
-            'label' => 'هوية الموظف',
-            'type' => 'text',
-            'enabled' => 1,
-            'required' => 1,
-            'website_view' => 1,
-            'notes' => '',
-            'comment' => '',
-            'width' => 'col-12',
-            'input_type' => 'text',
-            'height' => '',
-            'length' => '200',
-            'childList' => json_encode([]),
-            'form_page_id' => $form_page2->id
-        ]);
-        FormPageItem::create([
-            'label' => 'قسم',
-            'type' => 'textarea',
-            'enabled' => 1,
-            'required' => 1,
-            'website_view' => 1,
-            'notes' => '',
-            'comment' => '',
-            'width' => 'col-12',
-            'input_type' => 'text',
-            'height' => '',
-            'length' => '500',
-            'childList' => json_encode([]),
-            'form_page_id' => $form_page2->id
-        ]);
+        //        
+        // FormPageItem::create([
+        //     'label' => 'اسم الطالب',
+        //     'type' => 'text',
+        //     'enabled' => 1,
+        //     'required' => 1,
+        //     'website_view' => 1,
+        //     'notes' => '',
+        //     'comment' => '',
+        //     'width' => 'col-12',
+        //     'input_type' => 'text',
+        //     'height' => '',
+        //     'length' => '200',
+        //     'childList' => json_encode([]),
+        //     'form_page_id' => $form_page2->id
+        // ]);
+        // FormPageItem::create([
+        //     'label' => 'هوية الموظف',
+        //     'type' => 'text',
+        //     'enabled' => 1,
+        //     'required' => 1,
+        //     'website_view' => 1,
+        //     'notes' => '',
+        //     'comment' => '',
+        //     'width' => 'col-12',
+        //     'input_type' => 'text',
+        //     'height' => '',
+        //     'length' => '200',
+        //     'childList' => json_encode([]),
+        //     'form_page_id' => $form_page2->id
+        // ]);
+        // FormPageItem::create([
+        //     'label' => 'قسم',
+        //     'type' => 'textarea',
+        //     'enabled' => 1,
+        //     'required' => 1,
+        //     'website_view' => 1,
+        //     'notes' => '',
+        //     'comment' => '',
+        //     'width' => 'col-12',
+        //     'input_type' => 'text',
+        //     'height' => '',
+        //     'length' => '500',
+        //     'childList' => json_encode([]),
+        //     'form_page_id' => $form_page2->id
+        // ]);
         FormPageItem::create([
             'label' => 'موضوع الاستشارة القانونية',
             'type' => 'textarea',
@@ -282,21 +318,21 @@ class FormSeeder extends Seeder
             'childList' => json_encode([]),
             'form_page_id' => $form_page2->id
         ]);
-        FormPageItem::create([
-            'label' => 'وصف الاستشارة القانونية',
-            'type' => 'textarea',
-            'enabled' => 1,
-            'required' => 0,
-            'website_view' => 1,
-            'notes' => '',
-            'comment' => '',
-            'width' => 'col-12',
-            'input_type' => 'text',
-            'height' => '',
-            'length' => '500',
-            'childList' => json_encode([]),
-            'form_page_id' => $form_page2->id
-        ]);
+        // FormPageItem::create([
+        //     'label' => 'وصف الاستشارة القانونية',
+        //     'type' => 'textarea',
+        //     'enabled' => 1,
+        //     'required' => 0,
+        //     'website_view' => 1,
+        //     'notes' => '',
+        //     'comment' => '',
+        //     'width' => 'col-12',
+        //     'input_type' => 'text',
+        //     'height' => '',
+        //     'length' => '500',
+        //     'childList' => json_encode([]),
+        //     'form_page_id' => $form_page2->id
+        // ]);
         FormPageItem::create([
             'label' => 'ملف مرفق',
             'type' => 'file',
@@ -357,81 +393,81 @@ class FormSeeder extends Seeder
         ]);
 
         //
-        FormPageItem::create([
-            'label' => 'اسم الطالب ',
-            'type' => 'text',
-            'enabled' => 1,
-            'required' => 1,
-            'website_view' => 1,
-            'notes' => '',
-            'comment' => '',
-            'width' => 'col-12',
-            'input_type' => 'text',
-            'height' => '',
-            'length' => '100',
-            'childList' => json_encode([]),
-            'form_page_id' => $form_page3->id
-        ]);
-        FormPageItem::create([
-            'label' => 'هويه الموظف',
-            'type' => 'text',
-            'enabled' => 1,
-            'required' => 1,
-            'website_view' => 1,
-            'notes' => '',
-            'comment' => '',
-            'width' => 'col-12',
-            'input_type' => 'text',
-            'height' => '',
-            'length' => '100',
-            'childList' => json_encode([]),
-            'form_page_id' => $form_page3->id
-        ]);
-        FormPageItem::create([
-            'label' => 'القسم ',
-            'type' => 'textarea',
-            'enabled' => 1,
-            'required' => 1,
-            'website_view' => 1,
-            'notes' => '',
-            'comment' => '',
-            'width' => 'col-12',
-            'input_type' => 'text',
-            'height' => '',
-            'length' => '500',
-            'childList' => json_encode([]),
-            'form_page_id' => $form_page3->id
-        ]);
-        FormPageItem::create([
-            'label' => 'الموضوع',
-            'type' => 'textarea',
-            'enabled' => 1,
-            'required' => 1,
-            'website_view' => 1,
-            'notes' => '',
-            'comment' => '',
-            'width' => 'col-12',
-            'input_type' => 'text',
-            'height' => '',
-            'length' => '500',
-            'childList' => json_encode([]),
-            'form_page_id' => $form_page3->id
-        ]);
-        FormPageItem::create([
-            'label' => 'تفاصيل العقد',
-            'type' => 'textarea',
-            'enabled' => 1,
-            'required' => 1,
-            'website_view' => 1,
-            'notes' => '',
-            'comment' => '',
-            'width' => 'col-12',
-            'input_type' => 'text',
-            'height' => '',
-            'length' => '500',
-            'childList' => json_encode([]),
-            'form_page_id' => $form_page3->id
-        ]);
+        // FormPageItem::create([
+        //     'label' => 'اسم الطالب ',
+        //     'type' => 'text',
+        //     'enabled' => 1,
+        //     'required' => 1,
+        //     'website_view' => 1,
+        //     'notes' => '',
+        //     'comment' => '',
+        //     'width' => 'col-12',
+        //     'input_type' => 'text',
+        //     'height' => '',
+        //     'length' => '100',
+        //     'childList' => json_encode([]),
+        //     'form_page_id' => $form_page3->id
+        // ]);
+        // FormPageItem::create([
+        //     'label' => 'هويه الموظف',
+        //     'type' => 'text',
+        //     'enabled' => 1,
+        //     'required' => 1,
+        //     'website_view' => 1,
+        //     'notes' => '',
+        //     'comment' => '',
+        //     'width' => 'col-12',
+        //     'input_type' => 'text',
+        //     'height' => '',
+        //     'length' => '100',
+        //     'childList' => json_encode([]),
+        //     'form_page_id' => $form_page3->id
+        // ]);
+        // FormPageItem::create([
+        //     'label' => 'القسم ',
+        //     'type' => 'textarea',
+        //     'enabled' => 1,
+        //     'required' => 1,
+        //     'website_view' => 1,
+        //     'notes' => '',
+        //     'comment' => '',
+        //     'width' => 'col-12',
+        //     'input_type' => 'text',
+        //     'height' => '',
+        //     'length' => '500',
+        //     'childList' => json_encode([]),
+        //     'form_page_id' => $form_page3->id
+        // ]);
+        // FormPageItem::create([
+        //     'label' => 'الموضوع',
+        //     'type' => 'textarea',
+        //     'enabled' => 1,
+        //     'required' => 1,
+        //     'website_view' => 1,
+        //     'notes' => '',
+        //     'comment' => '',
+        //     'width' => 'col-12',
+        //     'input_type' => 'text',
+        //     'height' => '',
+        //     'length' => '500',
+        //     'childList' => json_encode([]),
+        //     'form_page_id' => $form_page3->id
+        // ]);
+        // FormPageItem::create([
+        //     'label' => 'تفاصيل العقد',
+        //     'type' => 'textarea',
+        //     'enabled' => 1,
+        //     'required' => 1,
+        //     'website_view' => 1,
+        //     'notes' => '',
+        //     'comment' => '',
+        //     'width' => 'col-12',
+        //     'input_type' => 'text',
+        //     'height' => '',
+        //     'length' => '500',
+        //     'childList' => json_encode([]),
+        //     'form_page_id' => $form_page3->id
+        // ]);
         FormPageItem::create([
             'label' => 'الغرض من الطلب',
             'type' => 'radio',
