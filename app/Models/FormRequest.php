@@ -21,7 +21,8 @@ class FormRequest extends Model
         'form_id',
         'user_id',
         'form_request_number',
-        'name'
+        'name',
+        'branche_id'
     ];
 
     protected $with = ['user'];

@@ -31,7 +31,7 @@ class TaskRequest extends FormRequest
             'due_date' => 'required|date',
             'details' => 'nullable|string',
             'share_with' => 'nullable|string',
-            'form_request_id' => 'nullable|exists:forms,id',
+            'form_request_id' => 'nullable|exists:form_requests,id',
             'file' => 'required|file|mimes:jpg,jpeg,png,pdf,docx',
         ];
     }

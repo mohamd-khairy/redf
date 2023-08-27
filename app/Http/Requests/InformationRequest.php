@@ -27,10 +27,10 @@ class InformationRequest extends FormRequest
             'form_request_id' => 'nullable|exists:form_requests,id',
             'amount' => 'nullable|numeric',
             'percentage' => 'nullable|numeric',
-            // 'details' => 'sometimes|string',
+            'details' => 'required|string',
             'date' => 'required|date',
-            'status' => 'nullable',
-            'court' => 'nullable',
+            'status' => 'required',
+            'court' => 'nullable|in:first_degree,appeal,supreme,implementation',
             'sessionDate' => 'nullable|date',
 
         ];

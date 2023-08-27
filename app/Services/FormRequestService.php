@@ -30,8 +30,6 @@ class FormRequestService
             $formRequest->form_request_number = $requestData['case_number'] ?? rand(100000, 999999);
             $formRequest->name = $requestData['case_name'] ?? ($formRequest->form->name . "($formRequest->case_number)");
             $formRequest->save();
-
-
             // save related tables if get case_id
             if($requestData->case_id){
                 // Create a new Formable record
@@ -40,6 +38,14 @@ class FormRequestService
                     'form_request_id' => $formRequest->id,
                     'formable_type' => FormRequest::class,
                 ]);
+
+                $actionData = [
+                    'form_request_id' => $requestData->case_id,
+                    'formable_id' => $formRequest->id,
+                    'formable_type' => FormRequest::class,
+                    'msg' =>    'تم اضافه استشاره قانونيه جديده',
+                ];
+                saveFormRequestAction($actionData);
             }
             $this->processFormPages($requestData, $formRequest);
 
@@ -47,11 +53,9 @@ class FormRequestService
                 'form_request_id' => $formRequest->id,
                 'formable_id' => $formRequest->id,
                 'formable_type' => FormRequest::class,
-                'msg' => 'تم اضافه قضيه جديده',
+                'msg' =>  $requestData->case_id ? 'تم اضافه استشاره قانونيه جديده' : 'تم اضافه قضيه جديده',
             ];
-
             saveFormRequestAction($actionData);
-
             return $formRequest;
         });
     }
@@ -75,6 +79,13 @@ class FormRequestService
                     'form_request_id' => $formRequest->id,
                     'formable_type' => FormRequest::class,
                 ]);
+                $actionData = [
+                    'form_request_id' => $requestData->case_id,
+                    'formable_id' => $formRequest->id,
+                    'formable_type' => FormRequest::class,
+                    'msg' =>    'تم تحديث استشاره قانونيه',
+                ];
+                saveFormRequestAction($actionData);
             }
             FormPageItemFill::where('form_request_id', $formRequest->id)->delete();
             $this->processFormPages($requestData, $formRequest);
@@ -83,7 +94,7 @@ class FormRequestService
                 'form_request_id' => $formRequest->id,
                 'formable_id' => $formRequest->id,
                 'formable_type' => FormRequest::class,
-                'msg' => 'تم تحديث القضيه ',
+                 'msg' =>  $requestData->case_id ? 'تم تحديث استشاره قانونيه ' : 'تم تحديث القضيه',
             ];
 
             saveFormRequestAction($actionData);
@@ -186,9 +197,17 @@ class FormRequestService
         try {
             DB::beginTransaction();
             $validatedData = $request->validated();
-            $validatedData['status'] = FormRequestStatus::PROCESSING;
+            // $validatedData['status'] = FormRequestStatus::PROCESSING;
+            $courtFromRequest = $request->court;
+            $latestCourtFromDatabase = FormRequestInformation::where('form_request_id', $request->form_request_id)
+            ->latest()
+            ->value('court');
+            if ($courtFromRequest !== $latestCourtFromDatabase) {
+                return responseFail('You cannot add the same court');
+            }
+
             $formRequestInfo = FormRequestInformation::create($validatedData);
-            $formRequestInfo->form_request->status = FormRequestStatus::PROCESSING;
+            // $formRequestInfo->form_request->status = FormRequestStatus::PROCESSING;
             $formRequestInfo->form_request->save();
             $calendarData = [
                 'form_request_id' => $formRequestInfo->form_request_id,
@@ -198,7 +217,7 @@ class FormRequestService
                 'user_id' => auth()->id(),
                 'date' => $request->date,
             ];
-             $calendar = saveCalendarFromRequest($calendarData);
+            $calendar = saveCalendarFromRequest($calendarData);
             $actionData = [
                 'form_request_id' => $formRequestInfo->form_request_id,
                 'formable_id' => $formRequestInfo->id,
