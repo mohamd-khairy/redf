@@ -87,7 +87,7 @@ export default {
   created() {
     this.setBreadCrumb({
       breadcrumbs: this.breadcrumbs,
-      pageTitle: this.$t("documents.branchesList"),
+      pageTitle: this.$t("branches.branchesList"),
     });
     this.open();
   },
@@ -106,7 +106,7 @@ export default {
       this.getBranch(id)
         .then(() => {
           this.loading = false;
-          const { name, description } = this.document ?? {};
+          const { name, description } = this.branch ?? {};
           this.form = { name, description };
         })
         .catch(() => {
