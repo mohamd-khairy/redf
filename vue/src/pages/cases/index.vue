@@ -270,8 +270,15 @@
         :dialogVisible="addActionDialog"
         :formRequestId="formId"
         :lastAction="selectedForm.last_form_request_information || null"
-        v-if="addActionDialog"
+        v-if="addActionDialog && currentPageId==1"
         @close-action-dialog="closeActionDialog"
+      />
+      <AddDynamicAction
+        :dialogVisible="addDynamicActionDialog"
+        :formRequestId="formId"
+        :lastAction="selectedForm.last_form_request_information || null"
+        v-else-if="addDynamicActionDialog && currentPageId!=1"
+        @close-action-dialog="closeDynamicActionDialog"
       />
       <assign
         @userAssigned="userAssigned"
@@ -290,6 +297,8 @@ import emptyDataSvg from "@/assets/images/illustrations/empty-data.svg";
 import CasePreviewDialog from "../../components/cases/CasePreviewDialog.vue";
 import Assign from "../../components/cases/Assign";
 import AddAction from "../../components/cases/AddAction.vue";
+import AddDynamicAction from "@/components/cases/AddDynamicAction";
+
 export default {
   components: {
     CasePreviewDialog,
@@ -297,6 +306,7 @@ export default {
     CopyLabel,
     emptyDataSvg,
     AddAction,
+    AddDynamicAction
   },
   data() {
     return {
@@ -336,6 +346,7 @@ export default {
       dialog: false,
       casePrevDialog: false,
       addActionDialog: false,
+      addDynamicActionDialog: false,
       selectedForm: null,
     };
   },
@@ -430,7 +441,10 @@ export default {
       this.formId = id;
     },
     openActionDialog(item) {
-      this.addActionDialog = true;
+      if(this.currentPageId == 1)
+        this.addActionDialog = true;
+      else
+        this.addDynamicActionDialog = true
       this.formId = item.id;
       this.selectedForm = item;
     },
@@ -439,8 +453,11 @@ export default {
       this.casePrevDialog = true;
     },
     closeActionDialog() {
-      console.log("closssssssse");
       this.addActionDialog = false;
+      this.open();
+    },
+    closeDynamicActionDialog() {
+      this.addDynamicActionDialog = false;
       this.open();
     },
     getStatusColor(status) {
