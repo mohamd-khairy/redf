@@ -29,7 +29,7 @@ export default {
       return {
         plugins: [dayGridPlugin],
         initialView: "dayGridMonth",
-        weekends: false,
+        weekends: true,
         events: this.events,
         locale: arLocale,
         direction: "rtl",
