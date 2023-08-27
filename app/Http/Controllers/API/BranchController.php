@@ -51,6 +51,11 @@ class BranchController extends Controller
     }
 
 
+    public function show($id)
+    {
+        $branches = Branch::findOrFail($id);
+        return responseSuccess($branches, 'branches has been successfully showed');
+    }
 
     /**
      * Update the specified resource in storage.
