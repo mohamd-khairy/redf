@@ -12,13 +12,7 @@
 
         <v-divider></v-divider>
 
-        <v-stepper-step :complete="e1 > 3" step="3">
-          {{ $t("cases.sidesInfo") }}
-        </v-stepper-step>
-
-        <v-divider></v-divider>
-
-        <v-stepper-step step="4">
+        <v-stepper-step step="3">
           {{ $t("cases.reviewActions") }}
         </v-stepper-step>
       </v-stepper-header>
@@ -123,7 +117,7 @@
                         </template>
                         <template v-else-if="input.type === 'radio'">
                           <v-radio-group
-                            v-model="input.selectedOption"
+                            v-model="input.value"
                             :label="getInputLabel(input)"
                             :required="input.required"
                             :rules="input.required ? [requiredRule] : []"
@@ -153,117 +147,11 @@
             </v-btn>
           </v-card-actions>
         </v-stepper-content>
+
         <v-stepper-content step="3">
-          <div class="mt-2">
-            <v-card-title>
-              <v-flex class="text-left">
-                <v-btn color="primary" large @click.stop="dialog = true">
-                  <v-icon> mdi-plus </v-icon>
-                  {{ $t("cases.addUser") }}
-                </v-btn>
-              </v-flex>
-            </v-card-title>
-            <v-card-text>
-              <v-row dense>
-                <v-col cols="12">
-                  <v-select
-                    :items="claimantUsers"
-                    :label="$t('cases.claimant')"
-                    :item-text="(item) => item.name"
-                    :item-value="(item) => item.id"
-                    dense
-                    outlined
-                    v-model="sidesInfo.claimant_id"
-                    :rules="[rules.required]"
-                    :error-messages="stepOneValidation(sidesInfo.claimant_id)"
-                    clearable
-                    @click:clear="clearClaimantSelect"
-                  >
-                  </v-select>
-                </v-col>
-                <v-col cols="12">
-                  <v-select
-                    :items="defendantUsers"
-                    :label="$t('cases.defendant')"
-                    :item-text="(item) => item.name"
-                    :item-value="(item) => item.id"
-                    dense
-                    outlined
-                    v-model="sidesInfo.defendant_id"
-                    :rules="[rules.required]"
-                    :error-messages="stepOneValidation(sidesInfo.defendant_id)"
-                    clearable
-                    @click:clear="clearDefendantSelect"
-                  >
-                  </v-select>
-                </v-col>
-                <v-col cols="12">
-                  <v-select
-                    :items="departments"
-                    :label="$t('tables.department')"
-                    :item-text="(item) => item.name"
-                    :item-value="(item) => item.id"
-                    disabled
-                    dense
-                    outlined
-                    v-model="sidesInfo.department_id"
-                  >
-                  </v-select>
-                </v-col>
-                <v-col cols="12">
-                  <v-text-field
-                    type="number"
-                    v-model="sidesInfo.civil"
-                    :label="$t('cases.civil')"
-                    disabled
-                    dense
-                    outlined
-                  ></v-text-field>
-                </v-col>
-              </v-row>
-            </v-card-text>
-          </div>
-
-          <v-card-actions>
-            <v-btn color="primary" @click="storeRequestSide">
-              {{ $t("general.continue") }}
-            </v-btn>
-            <v-btn color="grey" @click="stepBack" class="ms-2">
-              {{ $t("general.back") }}
-            </v-btn>
-          </v-card-actions>
-        </v-stepper-content>
-
-        <v-stepper-content step="4">
           <div class="d-flex flex-column flex-sm-row">
             <div class="flex-grow-1 pt-2 pa-sm-2">
               <v-row dense>
-                <v-col cols="6">
-                  <v-text-field
-                    type="number"
-                    v-model="caseAction.amount"
-                    :label="$t('cases.amount')"
-                    outlined
-                    dense
-                  >
-                    <template v-slot:append>
-                      <v-icon> mdi-cash </v-icon>
-                    </template>
-                  </v-text-field>
-                </v-col>
-                <v-col cols="6">
-                  <v-text-field
-                    type="number"
-                    v-model="caseAction.percentage"
-                    :label="$t('cases.percentageLose')"
-                    dense
-                    outlined
-                  >
-                    <template v-slot:append>
-                      <v-icon> mdi-percent </v-icon>
-                    </template>
-                  </v-text-field>
-                </v-col>
                 <v-col cols="6">
                   <v-select
                     :items="caseTypes"
@@ -316,19 +204,6 @@
                       </v-btn>
                     </v-date-picker>
                   </v-dialog>
-                </v-col>
-
-                <v-col cols="12">
-                  <v-select
-                    :items="courts"
-                    :label="$t('tables.court')"
-                    item-text="title"
-                    item-value="value"
-                    dense
-                    outlined
-                    v-model="caseAction.court"
-                  >
-                  </v-select>
                 </v-col>
                 <v-col cols="12">
                   <v-textarea
@@ -391,19 +266,10 @@ export default {
       requiredRule: (v) => !!v || this.$t("general.required_input"),
       showErrors: false,
       stepOneErrors: false,
-      sidesInfo: {
-        claimant_id: "",
-        defendant_id: "",
-        civil: "",
-        department_id: "",
-      },
       caseAction: {
-        amount: "",
         form_request_id: "",
-        percentage: "",
         details: "",
         status: "",
-        court: "",
         date: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
           .toISOString()
           .substr(0, 10),
@@ -434,16 +300,10 @@ export default {
       pageTitle: this.$t("cases.casesList"),
     });
     this.init();
-    this.fetchUsers();
-    this.fetchDepartments();
-
-    this.$root.$on("userCreated", () => {
-      this.fetchUsers();
-    });
   },
   watch: {
     e1(val) {
-      if (val === 4) {
+      if (val === 3) {
         this.getCourts();
       }
     },
@@ -454,48 +314,6 @@ export default {
     ...mapState("app", ["navTemplates"]),
     ...mapState("departments", ["departments"]),
 
-    defendantUsers() {
-      // return this.sidesInfo.claimant_id
-      //   ? this.users.filter((obj) => {
-      //       return obj.id !== this.sidesInfo.claimant_id;
-      //     })
-      //   : this.users;
-      if (this.sidesInfo.claimant_id) {
-        const user = this.users.find(
-          (user) => user.id === this.sidesInfo.claimant_id
-        );
-        const civilNumber = user?.user_information?.civil_number || null;
-        if (civilNumber) {
-          this.sidesInfo.civil = civilNumber;
-
-          return this.users.filter((user) => !user.user_information);
-        }
-        this.sidesInfo.department_id = user.department_id;
-        return this.users.filter((user) => user.user_information);
-      }
-      return this.users;
-    },
-    claimantUsers() {
-      // return this.sidesInfo.defendant_id
-      //   ? this.users.filter((obj) => {
-      //       return obj.id !== this.sidesInfo.defendant_id;
-      //     })
-      //   : this.users;
-      if (this.sidesInfo.defendant_id) {
-        const user = this.users.find(
-          (user) => user.id === this.sidesInfo.defendant_id
-        );
-        const civilNumber = user?.user_information?.civil_number || null;
-        if (civilNumber) {
-          this.sidesInfo.civil = civilNumber;
-          this.claimantType = "civil";
-          return this.users.filter((user) => !user.user_information);
-        }
-        this.sidesInfo.department_id = user.department_id;
-        return this.users.filter((user) => user.user_information);
-      }
-      return this.users;
-    },
   },
   methods: {
     ...mapActions("app", ["setBreadCrumb"]),
@@ -527,72 +345,6 @@ export default {
         this.stepOneErrors = false;
       }
       return;
-    },
-    getUserDepartment(id) {
-      this.isLoading = true;
-      let data = {
-        user_id: id,
-      };
-      this.userDepartment(data)
-        .then((response) => {
-          this.isLoading = false;
-          const userDepartmentId = response.data?.data?.department?.id || "";
-          const userCivilId =
-            response.data?.data?.userInformation?.civil_number || "";
-
-          this.sidesInfo.department_id = userDepartmentId;
-          this.sidesInfo.civil = userCivilId;
-        })
-        .catch(() => {
-          this.isLoading = false;
-        });
-    },
-    clearClaimantSelect() {
-      const user = this.users.find(
-        (user) => user.id === this.sidesInfo.claimant_id
-      );
-      if (user.user_information) {
-        this.sidesInfo.civil = null;
-      } else {
-        this.sidesInfo.department_id = null;
-      }
-    },
-    clearDefendantSelect() {
-      const user = this.users.find(
-        (user) => user.id === this.sidesInfo.defendant_id
-      );
-      if (user.user_information) {
-        this.sidesInfo.civil = null;
-      } else {
-        this.sidesInfo.department_id = null;
-      }
-    },
-
-    fetchUsers() {
-      this.isLoading = true;
-      this.getUserType()
-        .then((response) => {
-          this.isLoading = false;
-          this.users = response.data.data.users;
-          // this.claimantUsers = response.data.data.users
-          // this.defendantUsers = response.data.data.users
-        })
-        .catch(() => {
-          this.isLoading = false;
-        });
-    },
-    fetchDepartments() {
-      this.isLoading = true;
-      let data = {
-        pageSize: -1,
-      };
-      this.getDepartments(data)
-        .then((response) => {
-          this.isLoading = false;
-        })
-        .catch(() => {
-          this.isLoading = false;
-        });
     },
     setCurrentBread() {
       const { formType: currentFormId } = this.$route.params;
@@ -714,12 +466,9 @@ export default {
 
       let data = {
         form_request_id: this.formRequestId,
-        amount: this.caseAction.amount,
-        percentage: this.caseAction.percentage,
         details: this.caseAction.details,
         status: this.caseAction.status,
         date: this.caseAction.date,
-        court: this.caseAction.court,
       };
 
       // if (await this.validateFormData()) {
@@ -727,7 +476,7 @@ export default {
       if (result) {
         this.isLoading = false;
         const { formType: currentFormId } = this.$route.params;
-        makeToast("success", "تم انشاء القضية بنجاح");
+        makeToast("success", "تم انشاء المراجعة بنجاح");
         this.$router.push(`/cases/${currentFormId}`);
       } else {
         this.isLoading = false;
