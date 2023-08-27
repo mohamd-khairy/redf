@@ -21,9 +21,11 @@ class FormRequestService
 {
     public function storeFormFill($requestData)
     {
+
         return DB::transaction(function () use ($requestData) {
             $formRequest = FormRequest::create([
                 'form_id' => $requestData['id'],
+                'branche_id' => $requestData['branche_id'],
                 'user_id' => Auth::id(),
                 'status' => FormRequestStatus::PENDING,
             ]);
