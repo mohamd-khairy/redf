@@ -6,125 +6,33 @@
       <v-card-text class="p-3 roles">
         <v-form>
           <v-row dense>
-            <v-col cols="6">
+            <v-col cols="12">
               <v-text-field
                 v-model="form.name"
-                :label="$t('documents.docName')"
+                :label="$t('branches.BranchName')"
                 :error-messages="errors['name']"
+                :rules="[rules.required]"
+                outlined
+                required
+                dense
+              />
+            </v-col>
+            <v-col cols="12">
+              <v-textarea
+                v-model="form.description"
+                :label="$t('branches.BranchDesc')"
+                :error-messages="errors['status']"
                 outlined
                 dense
               />
             </v-col>
-            <v-col cols="6">
-              <v-select
-                v-model="form.status"
-                :items="status"
-                :label="$t('documents.status')"
-                :error-messages="errors['status']"
-                outlined
-                dense
-              ></v-select>
-            </v-col>
-            <v-col cols="6">
-              <v-select
-                v-model="form.type"
-                :items="types"
-                :label="$t('documents.types')"
-                :error-messages="errors['types']"
-                outlined
-                dense
-              ></v-select>
-            </v-col>
-            <v-col cols="6">
-              <v-select
-                v-model="form.priority"
-                :items="priority"
-                :label="$t('documents.priority')"
-                :error-messages="errors['priority']"
-                outlined
-                dense
-              ></v-select>
-            </v-col>
-            <v-col cols="12" sm="6" md="6">
-              <v-dialog
-                ref="dialogStart"
-                v-model="startDateModal"
-                :return-value.sync="form.start_date"
-                persistent
-                width="290px"
-              >
-                <template v-slot:activator="{ on, attrs }">
-                  <v-text-field
-                    v-model="form.start_date"
-                    @input="validateDates"
-                    :label="$t('general.start_date')"
-                    prepend-icon="mdi-calendar"
-                    readonly
-                    outlined
-                    dense
-                    v-bind="attrs"
-                    v-on="on"
-                  ></v-text-field>
-                </template>
-                <v-date-picker v-model="form.start_date" scrollable>
-                  <v-spacer></v-spacer>
-                  <v-btn text color="primary" @click="startDateModal = false">
-                    {{ $t("general.cancel") }}
-                  </v-btn>
-                  <v-btn
-                    text
-                    color="primary"
-                    @click="$refs.dialogStart.save(form.start_date)"
-                  >
-                    {{ $t("general.ok") }}
-                  </v-btn>
-                </v-date-picker>
-              </v-dialog>
-            </v-col>
-            <v-col cols="12" sm="6" md="6">
-              <v-dialog
-                ref="dialog"
-                v-model="endDateModal"
-                :return-value.sync="form.end_date"
-                persistent
-                width="290px"
-              >
-                <template v-slot:activator="{ on, attrs }">
-                  <v-text-field
-                    v-model="form.end_date"
-                    @input="validateDates"
-                    :label="$t('general.end_date')"
-                    prepend-icon="mdi-calendar"
-                    readonly
-                    outlined
-                    dense
-                    v-bind="attrs"
-                    v-on="on"
-                  ></v-text-field>
-                </template>
-                <v-date-picker v-model="form.end_date" scrollable>
-                  <v-spacer></v-spacer>
-                  <v-btn text color="primary" @click="endDateModal = false">
-                    Cancel
-                  </v-btn>
-                  <v-btn
-                    text
-                    color="primary"
-                    @click="$refs.dialog.save(form.end_date)"
-                  >
-                    OK
-                  </v-btn>
-                </v-date-picker>
-              </v-dialog>
-            </v-col>
           </v-row>
-
           <div class="d-flex">
             <v-btn
               :loading="loading"
               :disabled="loading"
               color="primary"
-              @click="updateDoc()"
+              @click="updateBran()"
             >
               {{ $t("general.update") }}
             </v-btn>
@@ -137,6 +45,7 @@
 
 <script>
 import { mapActions, mapState } from "vuex";
+import { makeToast } from "@/helpers";
 
 export default {
   components: {},
@@ -144,87 +53,79 @@ export default {
     return {
       breadcrumbs: [
         {
-          text: this.$t("documents.documentsManagement"),
+          text: this.$t("branches.branches"),
           disabled: false,
           href: "#",
         },
 
         {
-          text: this.$t("documents.documentsList"),
-          to: "/documents/list",
+          text: this.$t("branches.branchesList"),
+          to: "/branches/list",
           exact: true,
         },
         {
-          text: this.$t("documents.editDoc"),
+          text: this.$t("branches.editBranch"),
         },
       ],
+      rules: {
+        required: (value) =>
+          (value && Boolean(value)) || this.$t("general.fieldRequired"),
+      },
       loading: false,
       form: {
         name: "",
-        status: "",
-        priority: "",
-        type: "",
-        user_id: null,
-        start_date: new Date(
-          Date.now() - new Date().getTimezoneOffset() * 60000
-        )
-          .toISOString()
-          .substr(0, 10),
-        end_date: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
-          .toISOString()
-          .substr(0, 10),
+        description: "",
       },
-
-      startDateModal: false,
-      endDateModal: false,
-      status: ["s1", "s2", "s3"],
-      priority: ["p1", "p2"],
-      types: ["t1", "t2", "t3"],
+      dateFormat: "dd-MM-yyyy",
       errors: {},
       isDateInvalid: false,
     };
   },
   computed: {
-    ...mapState("auth", ["user"]),
-    ...mapState("documents", ["document"]),
+    ...mapState("branches", ["branch"]),
   },
   created() {
     this.setBreadCrumb({
       breadcrumbs: this.breadcrumbs,
-      pageTitle: this.$t("documents.documentsList"),
+      pageTitle: this.$t("documents.branchesList"),
     });
     this.open();
   },
 
   methods: {
     ...mapActions("app", ["setBreadCrumb"]),
-    ...mapActions("documents", ["updateDocument", "getDocument"]),
+    ...mapActions("branches", ["updateBranch", "getBranch"]),
     open() {
       const { id } = this.$route.params;
       if (!id) {
-        this.$router.push({ name: "documents-list" });
+        this.$router.push({ name: "branches-list" });
         return;
       }
 
       this.loading = true;
-      this.getDocument(id)
+      this.getBranch(id)
         .then(() => {
           this.loading = false;
-          const { name, status, type, priority, start_date, end_date } =
-            this.document ?? {};
-          this.form = { name, status, type, priority, start_date, end_date };
+          const { name, description } = this.document ?? {};
+          this.form = { name, description };
         })
         .catch(() => {
           this.loading = false;
         });
     },
-    updateDoc() {
+    updateBran() {
       this.loading = true;
       this.errors = {};
-      this.updateDocument(this.form)
+      if (!this.form.name) {
+        this.errors.name = this.$t("branches.branchNameReq");
+        this.loading = false;
+        return;
+      }
+      this.updateBranch(this.form)
         .then(() => {
           this.loading = false;
-          this.$router.push({ name: "documents-list" });
+          makeToast("success", this.$t("branches.branchUpdated"));
+          this.$router.push({ name: "branches-list" });
         })
         .catch((error) => {
           this.loading = false;

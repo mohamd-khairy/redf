@@ -80,9 +80,7 @@ export default {
       isDateInvalid: false,
     };
   },
-  computed: {
-    ...mapState("auth", ["user"]),
-  },
+  computed: {},
   created() {
     this.setBreadCrumb({
       breadcrumbs: this.breadcrumbs,
