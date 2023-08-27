@@ -466,9 +466,9 @@ export default {
     percentageLose: "احتمالية خسارة القضية",
     action: "الاجراء",
     courtDate: "ميعاد الجلسة",
-    adviceActions:"اجراءات الاستشارة",
-    reviewActions:"اجراءات المراجعة",
-
+    adviceActions: "اجراءات الاستشارة",
+    reviewActions: "اجراءات المراجعة",
+    actions: "الاجراءات",
 
     createCase: "إنشاء قضية",
     editUser: "تعديل بيانات المستخدم",
@@ -476,8 +476,9 @@ export default {
     createNewUser: "إنشاء مستخدم جديد",
     account: "تعديل البيانات الاساسيه",
 
-
     addAction: "اضافة اجراء",
+    name: "الاسم",
+    number: "الرقم",
     caseName: "اسم القضية",
     caseNumber: "رقم القضية",
     adviceName: "اسم الاستشارة",
@@ -486,7 +487,14 @@ export default {
     reviewNumber: "رقم المراجعة",
     new_beneficiary: "مستفيد جديد",
     belongToCase: "تنتمى لقضية",
+    sessionDate: "تاريخ الجلسة",
     cases: "القضايا",
+    add_session: "اضافة جلسة",
+    view_timeline: "عرض الخط الزمني للقضية",
+    assign_user: "تعيين مستخدم",
+    editCase: "تحديث بيانات القضية",
+    add_action: "اضافة اجراء",
+    delete: "حذف القضية",
   },
 
   departments: {
@@ -748,6 +756,9 @@ export default {
     appeal: "الاستئناف",
     supreme: "العليا",
     implementation: "التنفيذ",
+    delete_confirmation: "هل انت متأكد من الحذف ؟",
+    actionPreview: "عرض الاجراء",
+    new_beneficiary_added: "تم اضافة مستفيد جديد",
   },
   reports: {
     buildReport: "انشاء تقرير",

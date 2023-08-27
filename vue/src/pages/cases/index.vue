@@ -61,6 +61,7 @@
                 v-bind="attrs"
                 v-on="on"
                 :to="caseUrl"
+                :disabled="currentPageId > 3"
                 v-can="'create-user'"
               >
                 <v-icon> mdi-plus </v-icon>
@@ -100,17 +101,20 @@
         :pageCount="numberOfPages"
         :server-items-length="total"
       >
-        <template v-slot:item.id="{ item }">
+        <!-- <template v-slot:item.id="{ item }">
           <div class="font-weight-bold">
             # <copy-label :text="item.id + ''" />
           </div>
-        </template>
+        </template> -->
 
         <template v-slot:item.name="{ item }">
           <div>{{ item.name ?? "---" }}</div>
         </template>
         <template v-slot:item.form_request_number="{ item }">
-          <div>{{ item.form_request_number ?? "---" }}</div>
+          <div class="font-weight-bold">
+            <copy-label :text="item.form_request_number + ''" />
+          </div>
+          <!-- <div>{{ item.form_request_number ?? "---" }}</div> -->
         </template>
 
         <template v-slot:item.user="{ item }">
@@ -119,7 +123,16 @@
 
         <template v-slot:item.assigner="{ item }">
           <div>
-            {{ item.form_assigned_requests[0]?.assigner.name ?? "---" }}
+            {{ item.form_assigned_requests[0]?.user.name ?? "---" }}
+          </div>
+        </template>
+        <template v-slot:item.court="{ item }">
+          <div>
+            {{
+              item?.last_form_request_information?.court
+                ? $t(`general.${item.last_form_request_information?.court}`)
+                : "---"
+            }}
           </div>
         </template>
 
@@ -141,38 +154,101 @@
 
         <template v-slot:item.action="{ item }">
           <div class="actions">
-            <v-btn color="primary" icon @click="openActionDialog(item)">
-              <v-icon>mdi-pencil</v-icon>
-            </v-btn>
-            <v-btn color="primary" icon @click="openCasePreviewDialog(item.id)">
-              <v-icon>mdi-eye</v-icon>
-            </v-btn>
+            <!-- add action button -->
+            <v-tooltip top>
+              <template v-slot:activator="{ on, attrs }">
+                <v-btn
+                  color="primary"
+                  icon
+                  elevation="0"
+                  v-bind="attrs"
+                  v-on="on"
+                  @click="openActionDialog(item)"
+                >
+                  <v-icon>mdi-plus-circle-outline</v-icon>
+                </v-btn>
+              </template>
+              <span>{{ $t("cases.add_action") }}</span>
+            </v-tooltip>
 
-            <v-btn
-              title="Assign"
-              @click="openAssignDialog(item.id)"
-              elevation="0"
-              color="primary"
-              icon
-            >
-              <v-icon>mdi-at</v-icon>
-            </v-btn>
-            <v-btn
-              color="primary"
-              icon
-              :to="`/cases/${currentPageId}/edit/${item.id}`"
-              v-can="'update-user'"
-            >
-              <v-icon>mdi-open-in-new</v-icon>
-            </v-btn>
-            <v-btn
+            <!-- view case timeline button -->
+            <v-tooltip top>
+              <template v-slot:activator="{ on, attrs }">
+                <v-btn
+                  color="primary"
+                  icon
+                  elevation="0"
+                  v-bind="attrs"
+                  v-on="on"
+                  @click="openCasePreviewDialog(item.id)"
+                >
+                  <v-icon>mdi-timeline-text-outline</v-icon>
+                </v-btn>
+              </template>
+              <span>{{ $t("cases.view_timeline") }}</span>
+            </v-tooltip>
+
+            <!-- assign user button -->
+            <v-tooltip top>
+              <template v-slot:activator="{ on, attrs }">
+                <v-btn
+                  color="primary"
+                  icon
+                  elevation="0"
+                  v-bind="attrs"
+                  v-on="on"
+                  @click="openAssignDialog(item.id)"
+                >
+                  <v-icon>mdi-at</v-icon>
+                </v-btn>
+              </template>
+              <span>{{ $t("cases.assign_user") }}</span>
+            </v-tooltip>
+
+            <!-- edit case button -->
+            <v-tooltip top>
+              <template v-slot:activator="{ on, attrs }">
+                <v-btn
+                  color="primary"
+                  icon
+                  elevation="0"
+                  v-bind="attrs"
+                  v-on="on"
+                  :to="`/cases/${currentPageId}/edit/${item.id}`"
+                  v-can="'update-user'"
+                >
+                  <v-icon>mdi-open-in-new</v-icon>
+                </v-btn>
+              </template>
+              <span>{{ $t("cases.editCase") }}</span>
+            </v-tooltip>
+
+            <!-- delete case button -->
+            <v-tooltip top>
+              <template v-slot:activator="{ on, attrs }">
+                <v-btn
+                  color="error"
+                  icon
+                  elevation="0"
+                  v-bind="attrs"
+                  v-on="on"
+                  @click.prevent="deleteItem(item.id)"
+                  v-can="'delete-user'"
+                >
+                  <v-icon>mdi-close</v-icon>
+                </v-btn>
+              </template>
+              <span>{{ $t("cases.delete") }}</span>
+            </v-tooltip>
+
+            <!-- <v-btn
               color="error"
               icon
               @click.prevent="deleteItem(item.id)"
               v-can="'delete-user'"
             >
               <v-icon>mdi-close</v-icon>
-            </v-btn>
+            </v-btn> -->
           </div>
         </template>
         <template v-slot:no-data>
@@ -242,11 +318,12 @@ export default {
       selected: [],
       items: [],
       headers: [
-        { text: this.$t("tables.id"), value: "id" },
-        { text: this.$t("tables.requestNumber"), value: "form_request_number" },
+        // { text: this.$t("tables.id"), value: "id" },
+        { text: this.$t("tables.caseNumber"), value: "form_request_number" },
         { text: this.$t("tables.name"), value: "name" },
         { text: this.$t("tables.user"), value: "user" },
         { text: this.$t("tables.assigner"), value: "assigner" },
+        { text: this.$t("tables.court"), value: "court" },
         { text: this.$t("tables.status"), value: "status" },
         { text: this.$t("tables.created"), value: "created_at" },
         { text: "", sortable: false, align: "right", value: "action" },
@@ -378,7 +455,8 @@ export default {
     },
 
     async deleteItem(id) {
-      const { isConfirmed } = await ask("Are you sure to delete it?", "info");
+      const msg = this.$t("general.delete_confirmation");
+      const { isConfirmed } = await ask(msg, "error");
 
       if (isConfirmed) {
         this.isLoading = true;

@@ -21,7 +21,7 @@ export default [
       import(/* webpackChunkName: "form-types" */ "@/pages/cases/FormTypes"),
   },
   {
-    path: "/cases/1/create/:id",
+    path: "/cases/:formType/create/:id",
     name: "cases-create",
     meta: {
       title: "menu.requests",
@@ -29,29 +29,7 @@ export default [
       // permissions: 'read-event'
     },
     component: () =>
-      import(/* webpackChunkName: "pipes-list" */ "@/pages/cases/CreateCase"),
-  },
-  {
-    path: "/cases/2/create/:id",
-    name: "cases-create",
-    meta: {
-      title: "menu.requests",
-      auth: true,
-      // permissions: 'read-event'
-    },
-    component: () =>
-      import(/* webpackChunkName: "pipes-list" */ "@/pages/cases/CreateLegalAdvice"),
-  },
-  {
-    path: "/cases/3/create/:id",
-    name: "cases-create",
-    meta: {
-      title: "menu.requests",
-      auth: true,
-      // permissions: 'read-event'
-    },
-    component: () =>
-      import(/* webpackChunkName: "pipes-list" */ "@/pages/cases/CreateReviewAndAudit"),
+      import(/* webpackChunkName: "pipes-list" */ "@/pages/cases/CreateDynamic"),
   },
   {
     path: "/cases/:formType/edit/:id",
@@ -62,7 +40,7 @@ export default [
       // permissions: 'read-event'
     },
     component: () =>
-      import(/* webpackChunkName: "pipes-list" */ "@/pages/cases/EditCase"),
+      import(/* webpackChunkName: "pipes-list" */ "@/pages/cases/EditDynamic"),
   },
   {
     path: "/flights/show",

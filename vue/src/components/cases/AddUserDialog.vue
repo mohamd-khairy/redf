@@ -18,6 +18,7 @@
               <v-text-field
                 type="number"
                 v-model="user.civil_number"
+                @keydown="handleInput"
                 outlined
                 dense
                 :rules="civilRules"
@@ -166,6 +167,11 @@ export default {
       const { status, notes, id } = this.eventItem ?? {};
       this.form = { status, notes, id };
     },
+    handleInput(event) {
+      if (event.key.toLowerCase() === "e") {
+        event.preventDefault();
+      }
+    },
     showErrorMsg(value) {
       const msg = this.$t("general.required_input");
       return this.showError && !value ? [msg] : [];
@@ -194,7 +200,7 @@ export default {
       let data = {
         name: this.user.name,
         civil_number: Number(this.user.civil_number),
-        phone: Number(this.user.phone),
+        phone: this.user.phone,
         email: this.user.email,
         // department_id: this.user.department_id,
       };
@@ -204,7 +210,7 @@ export default {
           this.dialog = false;
           this.fetchData();
           this.errors = {};
-          makeToast("success", response.data.message);
+          makeToast("success", this.$t("general.new_beneficiary_added"));
         })
         .catch((error) => {
           this.loading = false;

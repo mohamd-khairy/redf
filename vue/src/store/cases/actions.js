@@ -26,7 +26,7 @@ const actions = {
     commit("SET_formRequests", formRequests);
   },
   async deleteForm({ commit }, id) {
-    return await axios.delete(`delete-formmmmm/${id}`);
+    return await axios.delete(`delete-form-Requests/${id}`);
   },
 
   async userDepartment({ commit }, data) {
@@ -210,7 +210,7 @@ const actions = {
       return false;
     }
   },
-  async savePages({ state }, { caseName, caseNumber }) {
+  async savePages({ state }, { caseName, caseNumber, case_id }) {
     try {
       const customFormData = {
         id: state.selectedForm.id,
@@ -238,6 +238,9 @@ const actions = {
       }
       bodyFormData.set("case_name", caseName);
       bodyFormData.set("case_number", caseNumber);
+      if (case_id) {
+        bodyFormData.set("case_id", case_id);
+      }
       const result = await axios.post(`store-form-fill`, bodyFormData, {
         headers: {
           "Content-Type": "multipart/form-data",

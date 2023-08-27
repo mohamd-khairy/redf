@@ -50,6 +50,7 @@ class FormRequestController extends Controller
             return responseFail($th->getMessage());
         }
     }
+
     public function getFormRequest(PageRequest $request)
     {
         try {
@@ -67,7 +68,8 @@ class FormRequestController extends Controller
     public function getFormRequestfill($id)
     {
         try {
-            $formfill = FormRequest::with('form.pages.items', 'user', 'form_page_item_fill', 'formRequestInformation', 'formRequestSide', 'lastFormRequestInformation')->find($id);
+            $formfill = FormRequest::with('form.pages.items', 'user', 'form_page_item_fill', 'formRequestInformation', 'formRequestSide', 'lastFormRequestInformation', 'request')
+                ->find($id);
             // dd($form)
             return responseSuccess(new FormRequestResource($formfill), 'Form requests retrieved successfully');
         } catch (\Throwable $th) {

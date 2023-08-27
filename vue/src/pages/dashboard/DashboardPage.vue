@@ -41,21 +41,9 @@
         </v-col>
       </v-row>
       <v-card v-if="!loading" class="mt-3">
-        <v-row align="center" justify="center">
-          <v-col cols="12">
-            <calendar />
-          </v-col>
-          <!-- <v-col cols="12" align="center" justify="center">
-            <div class="py-3">
-              <img
-                src="../../assets/images/demo/empty-box.png"
-                alt="No Data"
-                width="300"
-              />
-              <h3 class="mb-3">{{ $t("general.no_data_available") }}</h3>
-            </div>
-          </v-col> -->
-        </v-row>
+        <v-card-text>
+          <calendar @selectedEventId="setEventId" :events="calendarData" />
+        </v-card-text>
       </v-card>
     </div>
     <div id="loading-bg" v-else>
@@ -147,6 +135,12 @@
   </v-col>
   </div>
   </v-row> -->
+    <action-preview-dialog
+      :actionInfo="selectedActionInfo?.last_form_request_information || null"
+      :dialogVisible="actionPreviewDialog"
+      @close-action-dialog="closeActionPrevDialog"
+      v-if="actionPreviewDialog"
+    />
   </div>
 </template>
 
@@ -160,6 +154,7 @@ import tableCard from "../../components/dashboard/TableCard";
 import showBuilderCards from "@/pages/reports/builder/ShowBuilderCards";
 import StatCards from "../reports/builder/StatCards.vue";
 import Calendar from "../../components/dashboard/Calendar.vue";
+import ActionPreviewDialog from "../../components/dashboard/ActionPreviewDialog.vue";
 
 export default {
   name: "DashboardPage",
@@ -171,12 +166,14 @@ export default {
     showBuilderCards,
     StatCards,
     Calendar,
+    ActionPreviewDialog,
   },
   created() {
     // const { id } = this.$route.params;
     // if (!id) {
     //   window.location.replace("/reports/drafted");
     // }
+    this.getCalendar();
     this.setBreadCrumb({
       breadcrumbs: this.breadcrumbs,
       pageTitle: this.$t("menu.dashboard"),
@@ -188,8 +185,11 @@ export default {
   data() {
     return {
       reports: {},
+      actionPreviewDialog: false,
       loading: true,
       isLoading: false,
+      calendarData: [],
+      selectedActionInfo: null,
       // pinnedCards: {},
 
       breadcrumbs: [
@@ -220,6 +220,36 @@ export default {
         .catch(() => {
           this.isLoading = false;
         });
+    },
+    getCalendar() {
+      this.$axios
+        .get("/calenders", {
+          params: {
+            // pageSize: -1,
+          },
+        })
+        .then((res) => {
+          const { calendars } = res.data.data;
+          this.calendarData = calendars.data.map((c) => ({
+            title: c.details,
+            start: new Date(c.date),
+            id: c.id,
+            actionInfo: c.calendarable,
+          }));
+          console.log(this.calendarData);
+        });
+    },
+    closeActionPrevDialog() {
+      this.actionPreviewDialog = false;
+      this.selectedActionInfo = null;
+    },
+    setEventId(id) {
+      const { actionInfo } = this.calendarData.find((c) => +c.id === +id);
+      if (!actionInfo) return;
+      this.selectedActionInfo = actionInfo;
+
+      this.actionPreviewDialog = true;
+      console.log(actionInfo);
     },
     fetchPinned() {
       this.loading = true;

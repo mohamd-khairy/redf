@@ -33,7 +33,6 @@
                             class="custom-disabled-input"
                             :value="lastAction?.amount || ''"
                             solo
-                            label="Solo"
                             disabled
                             hide-details
                           ></v-text-field>
@@ -51,7 +50,6 @@
                             class="custom-disabled-input"
                             :value="lastAction?.percentage || ''"
                             solo
-                            label="Solo"
                             disabled
                             hide-details
                           ></v-text-field>
@@ -66,11 +64,10 @@
                         <v-col cols="12" sm="9">
                           <v-text-field
                             class="custom-disabled-input"
-                            :value="lastAction?.court || ''"
+                            :value="$t(`general.${lastAction?.court}`) || ''"
                             item-text="title"
                             item-value="value"
                             solo
-                            label="Solo"
                             disabled
                             hide-details
                             dense
@@ -88,7 +85,6 @@
                             class="custom-disabled-input"
                             :value="lastAction?.date || ''"
                             solo
-                            label="Solo"
                             disabled
                             hide-details
                             dense
@@ -122,11 +118,15 @@
                         </v-col>
                         <v-col cols="12" sm="9">
                           <v-chip
-                            :color="getStatusColor(lastAction?.status)"
+                            :color="
+                              getStatusColor(lastAction?.status?.toLowerCase())
+                            "
                             label
                             text-color="white"
                           >
-                            {{ $t(`general.${lastAction?.status}`) }}
+                            {{
+                              $t(`general.${lastAction?.status?.toLowerCase()}`)
+                            }}
                           </v-chip>
                         </v-col>
                       </v-row>
@@ -139,6 +139,7 @@
               <v-col cols="6">
                 <v-text-field
                   type="number"
+                  @keydown="handleInput"
                   v-model="caseAction.amount"
                   :label="$t('cases.amount')"
                   dense
@@ -152,6 +153,7 @@
               <v-col cols="6">
                 <v-text-field
                   type="number"
+                  @keydown="handleInput"
                   v-model="caseAction.percentage"
                   :label="$t('cases.percentageLose')"
                   dense
@@ -231,6 +233,48 @@
                   outlined
                 ></v-textarea>
               </v-col>
+
+              <v-col cols="12">
+                <v-checkbox
+                  v-model="sessionDate"
+                  :label="$t('cases.add_session')"
+                ></v-checkbox>
+              </v-col>
+              <v-col cols="12" sm="12" v-if="sessionDate">
+                <v-dialog
+                  ref="sessionDialog"
+                  v-model="sessionDialog"
+                  :return-value.sync="caseAction.sessionDate"
+                  persistent
+                  width="290px"
+                >
+                  <template v-slot:activator="{ on, attrs }">
+                    <v-text-field
+                      v-model="caseAction.sessionDate"
+                      :label="$t('cases.sessionDate')"
+                      prepend-icon="mdi-calendar"
+                      readonly
+                      v-bind="attrs"
+                      v-on="on"
+                      dense
+                      outlined
+                    ></v-text-field>
+                  </template>
+                  <v-date-picker v-model="caseAction.sessionDate" scrollable>
+                    <v-spacer></v-spacer>
+                    <v-btn text color="primary" @click="modal = false">
+                      Cancel
+                    </v-btn>
+                    <v-btn
+                      text
+                      color="primary"
+                      @click="$refs.sessionDialog.save(caseAction.sessionDate)"
+                    >
+                      OK
+                    </v-btn>
+                  </v-date-picker>
+                </v-dialog>
+              </v-col>
             </v-row>
           </div>
         </div>
@@ -274,6 +318,8 @@ export default {
       loading: false,
       isLoading: false,
       dateDialog: false,
+      sessionDialog: false,
+      sessionDate: false,
       caseAction: {
         form_request_id: this.formRequestId,
         amount: "",
@@ -282,6 +328,11 @@ export default {
         court_name: "",
         status: "",
         date: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
+          .toISOString()
+          .substr(0, 10),
+        sessionDate: new Date(
+          Date.now() - new Date().getTimezoneOffset() * 60000
+        )
           .toISOString()
           .substr(0, 10),
         dates: [
@@ -310,6 +361,11 @@ export default {
     closeDialog() {
       this.$emit("close-action-dialog");
     },
+    handleInput(event) {
+      if (event.key.toLowerCase() === "e") {
+        event.preventDefault();
+      }
+    },
     async storeFormAction() {
       this.isLoading = true;
       this.caseAction.dates = this.caseAction.dates.map(
@@ -323,7 +379,8 @@ export default {
         details: this.caseAction.details,
         status: this.caseAction.status,
         date: this.caseAction.date,
-        court_name: this.caseAction.court_name,
+        court: this.caseAction.court_name,
+        sessionDate: this.caseAction.sessionDate,
       };
       this.isLoading = true;
       const result = await this.saveFormInformation(data);

@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::create('form_page_items', function (Blueprint $table) {
             $table->id();
-            $table->enum('type', ['line', 'radio', 'label', 'text', 'textarea', 'checkbox', 'select', 'table', 'tree', 'file'])->default('text');
+            $table->enum('type', ['line', 'radio', 'label', 'text', 'textarea', 'checkbox', 'select', 'table', 'tree', 'file' , 'date'])->default('text');
             $table->text('label')->nullable();
             $table->boolean('enabled')->default(true);
             $table->boolean('required')->default(false);

@@ -1,51 +1,44 @@
 <template>
-  <div class="d-flex flex-column flex-grow-1" v-if="formData">
+  <div v-if="formData">
     <v-stepper v-model="e1" class="mb-4">
       <v-stepper-header>
         <v-stepper-step :complete="e1 > 1" step="1">
-          {{ $t("general.edit") + " " + selectedTitle }}
-        </v-stepper-step>
-        <v-divider></v-divider>
-        <v-stepper-step :complete="e1 > 2" step="2">
           {{ $t("general.info") + " " + selectedTitle }}
         </v-stepper-step>
         <v-divider></v-divider>
-        <v-stepper-step :complete="e1 > 3" step="3">
+        <v-stepper-step :complete="e1 > 2" step="2">
           {{ $t("cases.sidesInfo") }}
         </v-stepper-step>
         <v-divider></v-divider>
-        <v-stepper-step step="4">
+        <v-stepper-step step="3">
           {{ $t("cases.caseActions") }}
         </v-stepper-step>
       </v-stepper-header>
       <v-stepper-items>
         <v-stepper-content step="1">
-          <div class="mt-2">
-            <v-text-field
-              outlined
-              v-model="caseName"
-              :label="$t('cases.caseName')"
-              :required="true"
-              :error-messages="stepOneValidation(caseName)"
-              :rules="[requiredRule]"
-              dense
-            ></v-text-field>
-            <v-text-field
-              outlined
-              v-model="caseNumber"
-              :label="$t('cases.caseNumber')"
-              :required="true"
-              :rules="[requiredRule]"
-              :error-messages="stepOneValidation(caseNumber)"
-              dense
-            ></v-text-field>
-          </div>
-          <v-btn color="primary" @click="saveCaseInfo">
-            {{ $t("general.continue") }}
-          </v-btn>
-        </v-stepper-content>
-        <v-stepper-content step="2">
           <div v-if="!initialLoading">
+            <div class="mt-2">
+              <v-text-field
+                outlined
+                v-model="caseName"
+                :label="$t('cases.caseName')"
+                :required="true"
+                :error-messages="stepOneValidation(caseName)"
+                :rules="[requiredRule]"
+                dense
+              ></v-text-field>
+              <v-text-field
+                outlined
+                type="number"
+                @keydown="handleInput"
+                v-model="caseNumber"
+                :label="$t('cases.caseNumber')"
+                :required="true"
+                :rules="[requiredRule]"
+                :error-messages="stepOneValidation(caseNumber)"
+                dense
+              ></v-text-field>
+            </div>
             <v-tabs v-model="activeTab">
               <v-tab v-for="(tab, index) in pagesValues" :key="index">{{
                 tab.title
@@ -204,13 +197,13 @@
                 @click="saveForm"
                 >{{ $t("general.continue") }}</v-btn
               >
-              <v-btn color="grey" @click="stepBack" class="ms-2">
+              <!-- <v-btn color="grey" @click="stepBack" class="ms-2">
                 {{ $t("general.back") }}
-              </v-btn>
+              </v-btn> -->
             </v-card-actions>
           </div>
         </v-stepper-content>
-        <v-stepper-content step="3">
+        <v-stepper-content step="2">
           <div class="mt-2">
             <v-card-title>
               <v-flex class="text-left">
@@ -298,7 +291,7 @@
           </v-card-actions>
         </v-stepper-content>
 
-        <v-stepper-content step="4">
+        <v-stepper-content step="3">
           <div class="d-flex flex-column flex-sm-row">
             <div class="flex-grow-1 pt-2 pa-sm-2">
               <v-row dense v-if="lastAction" class="mb-2">
@@ -408,11 +401,19 @@
                           </v-col>
                           <v-col cols="12" sm="9">
                             <v-chip
-                              :color="getStatusColor(lastAction?.status)"
+                              :color="
+                                getStatusColor(
+                                  lastAction?.status?.toLowerCase()
+                                )
+                              "
                               label
                               text-color="white"
                             >
-                              {{ $t(`general.${lastAction?.status}`) }}
+                              {{
+                                $t(
+                                  `general.${lastAction?.status?.toLowerCase()}`
+                                )
+                              }}
                             </v-chip>
                           </v-col>
                         </v-row>
@@ -421,10 +422,11 @@
                   </v-expansion-panels>
                 </v-col>
               </v-row>
-              <v-row>
+              <v-row dense>
                 <v-col cols="6">
                   <v-text-field
                     type="number"
+                    @keydown="handleInput"
                     v-model="caseAction.amount"
                     :label="$t('cases.amount')"
                     dense
@@ -438,6 +440,7 @@
                 <v-col cols="6">
                   <v-text-field
                     type="number"
+                    @keydown="handleInput"
                     v-model="caseAction.percentage"
                     :label="$t('cases.percentageLose')"
                     dense
@@ -522,6 +525,49 @@
                     outlined
                   ></v-textarea>
                 </v-col>
+                <v-col cols="12">
+                  <v-checkbox
+                    v-model="sessionDate"
+                    :label="$t('cases.add_session')"
+                  ></v-checkbox>
+                </v-col>
+                <v-col cols="12" sm="12" v-if="sessionDate">
+                  <v-dialog
+                    ref="sessionDialog"
+                    v-model="sessionDialog"
+                    :return-value.sync="caseAction.sessionDate"
+                    persistent
+                    width="290px"
+                  >
+                    <template v-slot:activator="{ on, attrs }">
+                      <v-text-field
+                        v-model="caseAction.sessionDate"
+                        :label="$t('cases.sessionDate')"
+                        prepend-icon="mdi-calendar"
+                        readonly
+                        v-bind="attrs"
+                        v-on="on"
+                        dense
+                        outlined
+                      ></v-text-field>
+                    </template>
+                    <v-date-picker v-model="caseAction.sessionDate" scrollable>
+                      <v-spacer></v-spacer>
+                      <v-btn text color="primary" @click="modal = false">
+                        Cancel
+                      </v-btn>
+                      <v-btn
+                        text
+                        color="primary"
+                        @click="
+                          $refs.sessionDialog.save(caseAction.sessionDate)
+                        "
+                      >
+                        OK
+                      </v-btn>
+                    </v-date-picker>
+                  </v-dialog>
+                </v-col>
               </v-row>
             </div>
           </div>
@@ -554,6 +600,8 @@ export default {
       e1: 1,
       selectedTitle: "",
       dateDialog: false,
+      sessionDialog: false,
+      sessionDate: false,
       formData: null,
       caseNumber: "",
       caseName: "",
@@ -584,7 +632,7 @@ export default {
         form_request_id: "",
         percentage: "",
         details: "",
-
+        sessionDate: null,
         court: "",
         date: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
           .toISOString()
@@ -686,6 +734,11 @@ export default {
         this.stepOneErrors = false;
       }
       return;
+    },
+    handleInput(event) {
+      if (event.key.toLowerCase() === "e") {
+        event.preventDefault();
+      }
     },
     fetchUsers() {
       this.isLoading = true;
@@ -790,6 +843,11 @@ export default {
               this.formData?.form_request_information?.status || null;
             this.caseAction.details =
               this.formData?.form_request_information?.details;
+            if (this.formData?.form_request_information?.sessionDate) {
+              this.sessionDate = true;
+              this.caseAction.sessionDate =
+                this.formData.form_request_information.sessionDate;
+            }
           }
           console.log(data);
         })
@@ -872,7 +930,11 @@ export default {
       const { id } = this.$route.params;
       const { formType: currentFormId } = this.$route.params;
       this.isSubmitingForm = true;
-      if (await this.validateFormData()) {
+      if (
+        (await this.validateFormData()) ||
+        !this.caseName ||
+        !this.caseAction
+      ) {
         const saveResult = await this.updatePages({
           caseName: this.caseName,
           caseNumber: this.caseNumber,
@@ -880,7 +942,7 @@ export default {
         });
         if (saveResult) {
           this.showErrors = false;
-          this.e1 = 3;
+          this.e1 = 2;
         } else {
           console.log("Failed To save data");
         }
@@ -889,6 +951,7 @@ export default {
         // this.$router.push({ path: `/cases/${currentFormId}` });
       } else {
         this.showErrors = true;
+        this.stepOneErrors = true;
         this.isSubmitingForm = false;
 
         console.log("some fields is required");
@@ -906,7 +969,7 @@ export default {
       const result = await this.saveRequestSide(data);
       if (result) {
         this.isLoading = false;
-        this.e1 = 4;
+        this.e1 = 3;
         this.stepOneErrors = true;
       } else {
         this.stepOneErrors = true;
@@ -923,6 +986,7 @@ export default {
         status: this.caseAction.status,
         date: this.caseAction.date,
         court: this.caseAction.court,
+        sessionDate: this.caseAction.sessionDate,
       };
 
       // if (await this.validateFormData()) {

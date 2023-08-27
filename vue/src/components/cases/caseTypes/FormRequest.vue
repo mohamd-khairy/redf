@@ -98,7 +98,7 @@
           label
           text-color="white"
         >
-          {{ $t(`general.${action?.formable?.status}`) }}
+          {{ $t(`general.${action?.formable?.status?.toLocaleLowerCase()}`) }}
         </v-chip>
       </v-col>
     </v-row>
@@ -117,14 +117,14 @@ export default {
       }
       return date.split("T")[0];
     },
-    getStatusColor(status) {
+    getStatusColor(status = "") {
       const colors = {
         processing: "blue",
         pending: "orange",
         accepted: "green",
       };
 
-      return colors[status] || "primary";
+      return colors[status.toLocaleLowerCase()] || "primary";
     },
   },
 };

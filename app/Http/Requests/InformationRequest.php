@@ -28,7 +28,7 @@ class InformationRequest extends FormRequest
             'amount' => 'nullable|numeric',
             'percentage' => 'nullable|numeric',
             'details' => 'required|string',
-            'date' => 'required|date',
+             'date' => 'required|date',
             'status' => 'required',
             'court' => 'nullable|in:first_degree,appeal,supreme,implementation',
             'sessionDate' => 'nullable|date',
