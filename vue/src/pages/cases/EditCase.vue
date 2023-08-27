@@ -851,7 +851,6 @@ export default {
                 )[0];
             }
           }
-          console.log(data);
         })
         .finally((_) => {
           this.initialLoading = false;
