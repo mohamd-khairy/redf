@@ -1,5 +1,9 @@
 <template>
-  <v-dialog v-model="dialogVisible" max-width="800">
+  <v-dialog
+    v-model="dialogVisible"
+    @click:outside="closeDialog"
+    max-width="800"
+  >
     <v-card>
       <v-toolbar dark color="primary">
         <v-toolbar-title>{{ $t("cases.addAction") }}</v-toolbar-title>
