@@ -6,14 +6,15 @@ use Throwable;
 use Carbon\Carbon;
 use App\Models\File;
 use App\Models\Task;
+use App\Models\FormRequest;
 use App\Filters\SortFilters;
 use Illuminate\Http\Request;
 use App\Filters\SearchFilters;
+use App\Services\UploadService;
 use Illuminate\Pipeline\Pipeline;
 use App\Http\Requests\PageRequest;
 use App\Http\Requests\TaskRequest;
 use App\Http\Controllers\Controller;
-use App\Services\UploadService;
 use Illuminate\Support\Facades\Storage;
 
 class TaskController extends Controller
@@ -55,6 +56,7 @@ class TaskController extends Controller
      */
     public function store(TaskRequest $request)
     {
+
         try {
             $validatedData = $request->validated();
             unset($validatedData['file']);
@@ -65,7 +67,6 @@ class TaskController extends Controller
             $task = Task::create($validatedData);
             // Handle the file upload
             if ($request->hasFile('file')) {
-
                 $file = $request->file('file');
                 $filename = $file->getClientOriginalName();
                 $filePath = UploadService::store($file, 'tasks');
@@ -78,6 +79,13 @@ class TaskController extends Controller
                 $fileRecord->save();
             }
 
+            $actionData = [
+                'form_request_id' => $request->form_request_id,
+                'formable_id' => $request->form_request_id,
+                'formable_type' => FormRequest::class,
+                 'msg' =>  'تم اسناد المهمه الي قضيه جديده',
+            ];
+            saveFormRequestAction($actionData);
             return responseSuccess($task, 'Task has been successfully created');
         } catch (Throwable $e) {
             return responseFail($e->getMessage());

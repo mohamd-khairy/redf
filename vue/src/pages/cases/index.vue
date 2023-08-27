@@ -123,7 +123,7 @@
 
         <template v-slot:item.assigner="{ item }">
           <div>
-            {{ item.form_assigned_requests[0]?.assigner.name ?? "---" }}
+            {{ item.form_assigned_requests[0]?.user.name ?? "---" }}
           </div>
         </template>
         <template v-slot:item.court="{ item }">
