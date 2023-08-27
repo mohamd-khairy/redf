@@ -668,7 +668,7 @@ export default {
   },
   watch: {
     e1(val) {
-      if (val === 4) {
+      if (val === 3) {
         this.getCourts();
       }
     },
