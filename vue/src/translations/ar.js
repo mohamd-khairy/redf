@@ -544,6 +544,7 @@ export default {
     drone8: "طائرة 8",
   },
   tables: {
+    number: "الرقم",
     name: "الإسم",
     file: "ملف",
     notes: "التعليقات",
