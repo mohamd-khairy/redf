@@ -79,20 +79,13 @@
         <template v-slot:item.name="{ item }">
           {{ item.name }}
         </template>
-        <template v-slot:item.status="{ item }">
-          {{ item.status }}
+
+        <template v-slot:item.description="{ item }">
+          {{ item.description }}
         </template>
-        <template v-slot:item.type="{ item }">
-          {{ item.type }}
-        </template>
-        <template v-slot:item.priority="{ item }">
-          {{ item.priority }}
-        </template>
-        <template v-slot:item.start_date="{ item }">
-          <div>{{ item.start_date | formatDate("lll") }}</div>
-        </template>
-        <template v-slot:item.end_date="{ item }">
-          <div>{{ item.end_date | formatDate("lll") }}</div>
+
+        <template v-slot:item.created_at="{ item }">
+          <div>{{ item.created_at | formatDate("lll") }}</div>
         </template>
 
         <template v-slot:item.action="{ item }">
@@ -151,7 +144,7 @@ export default {
         { text: this.$t("tables.id"), value: "id" },
         { text: this.$t("tables.name"), value: "name" },
         { text: this.$t("tables.description"), value: "description" },
-        { text: this.$t("tables.start_date"), value: "start_date" },
+        { text: this.$t("tables.created_at"), value: "created_at" },
         { text: "", sortable: false, align: "right", value: "action" },
       ],
     };

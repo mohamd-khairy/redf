@@ -17,7 +17,6 @@ const actions = {
   async getBranch({ commit }, id) {
     const response = await axios.get(`branches/${id}`);
     const branch = response?.data.data;
-
     commit("SET_BRANCH", branch);
   },
   async deleteBranch({ commit, dispatch }, id) {
@@ -33,8 +32,8 @@ const actions = {
     });
   },
   async updateBranch({ state }, form) {
-    const { id } = state?.branches ?? {};
-    return await axios.put(`branchess/${id}`, form);
+    const { id } = state?.branch ?? {};
+    return await axios.put(`branches/${id}`, form);
   },
   async createBranch({ commit }, data) {
     return await axios.post("branches", data);
