@@ -17,7 +17,7 @@ import EditCase from "@/pages/cases/EditCase";
 import EditLegalAdvice from "@/pages/cases/EditAdviceLegal";
 
 export default {
-  name: "CreateDynamic",
+  name: "EditDynamic",
   components: {EditLegalAdvice, EditCase, Create},
   data() {
     return {

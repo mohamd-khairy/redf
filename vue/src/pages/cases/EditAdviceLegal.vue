@@ -290,7 +290,7 @@
                                   label
                                   text-color="white"
                                 >
-                                  {{ $t(`general.${lastAction?.status}`) }}
+                                  {{ $t(`general.${lastAction?.status?.toLowerCase()}`) }}
                                 </v-chip>
                               </v-col>
                             </v-row>
@@ -422,11 +422,6 @@ export default {
       },
       errors: {},
       lastAction: null,
-      status: [
-        { key: "error", value: 0 },
-        { key: "confirmed", value: 1 },
-        { key: "pending", value: 2 },
-      ],
     };
   },
   created() {
@@ -435,7 +430,7 @@ export default {
   },
   watch: {
     e1(val) {
-      if (val === 4) {
+      if (val === 3) {
         this.getCourts();
       }
     },
@@ -504,10 +499,11 @@ export default {
         .then((data) => {
           this.setCurrentBread();
           this.formData = data;
+          console.log(this.formData)
           this.lastAction = data?.lastFormRequestInformation || null;
           this.caseName = data.name;
           this.caseNumber = data.form_request_number;
-          this.case_id = data.formable?.formable_id
+          this.case_id = data.request?.formable_id
           if(this.case_id)
             this.caseCheck = true
 
