@@ -10,6 +10,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\DocumentRequest;
 use App\Http\Requests\PageRequest;
 use App\Models\File;
+use App\Models\FormRequest;
 use App\Services\UploadService;
 use Illuminate\Pipeline\Pipeline;
 use Throwable;
@@ -62,7 +63,7 @@ class DocumentController extends Controller
             $start_date = Carbon::createFromFormat('d-m-Y', $validatedData['start_date'])->format('Y-m-d');
             $end_date = Carbon::createFromFormat('d-m-Y', $validatedData['end_date'])->format('Y-m-d');
 
-            if ($request->hasFile('file')) {
+            if ($request->has('file')) {
                 $file = $request->file('file');
                 $filename = $file->getClientOriginalName();
                 $filePath = UploadService::store($file, 'files');
@@ -78,7 +79,7 @@ class DocumentController extends Controller
                 'priority' => 'high',
                 'status' => $request->status ?? null
             ]);
-            $fileRecord->fileable()->associate([]); // Associate the file with the task
+            $fileRecord->fileable()->associate(FormRequest::find($request->form_request_id)); // Associate the file with the task
             $fileRecord->save();
 
             return responseSuccess($fileRecord, 'document has been successfully created');
@@ -109,10 +110,7 @@ class DocumentController extends Controller
 
         $data = $request->except('file');
 
-        $data['start_date'] = $request->start_date ?  Carbon::createFromFormat('d-m-Y', $data['start_date'])->format('Y-m-d') : $document->start_date;
-        $data['end_date'] = $request->end_date ?  Carbon::createFromFormat('d-m-Y', $data['end_date'])->format('Y-m-d') : $document->end_date;
-
-        if ($request->hasFile('file')) {
+        if ($request->file('file')) {
             $file = $request->file('file');
             $data['name'] = $file->getClientOriginalName();
             $data['path'] = UploadService::store($file, 'files');

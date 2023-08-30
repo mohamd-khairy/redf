@@ -32,13 +32,35 @@ const actions = {
       },
     });
   },
-  async updateDocument({ state }, form) {
+  async updateDocument({ state }, formData) {
     const { id } = state?.document ?? {};
-    return await axios.put(`documents/${id}`, form);
+    const bodyFormData = new FormData();
+
+    for (const key in formData) {
+      let value = formData[key];
+      bodyFormData.set(key, value);
+    }
+    bodyFormData.set("_method", "PUT");
+    return await axios.post(`documents/${id}`, bodyFormData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
   },
-  async createDocument({ commit }, data) {
-    return await axios.post("documents", data);
+  async createDocument({ commit }, formData) {
+    const bodyFormData = new FormData();
+
+    for (const key in formData) {
+      let value = formData[key];
+      bodyFormData.set(key, value);
+    }
+    return await axios.post(`documents`, bodyFormData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
   },
+
   async storeDepartment({ commit }, data) {
     return await axios.post("documents", data);
   },
