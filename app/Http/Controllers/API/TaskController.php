@@ -74,6 +74,10 @@ class TaskController extends Controller
                 $fileRecord = new File([
                     'name' => $filename,
                     'path' => $filePath,
+                    'user_id' => auth()->id(),
+                    'start_date' => now(),
+                    'type' => 'task',
+                    'priority' => 'high'
                 ]);
                 $fileRecord->fileable()->associate($task); // Associate the file with the task
                 $fileRecord->save();
@@ -83,7 +87,7 @@ class TaskController extends Controller
                 'form_request_id' => $request->form_request_id,
                 'formable_id' => $request->form_request_id,
                 'formable_type' => FormRequest::class,
-                 'msg' =>  'تم اسناد المهمه الي قضيه جديده',
+                'msg' =>  'تم اسناد المهمه الي قضيه جديده',
             ];
             saveFormRequestAction($actionData);
             return responseSuccess($task, 'Task has been successfully created');
@@ -135,6 +139,10 @@ class TaskController extends Controller
             $fileRecord = new File([
                 'name' => $filename,
                 'path' => $filePath,
+                'user_id' => auth()->id(),
+                'start_date' => now(),
+                'type' => 'task',
+                'priority' => 'high'
             ]);
 
             // Associate the new file with the updated task

@@ -157,7 +157,7 @@ Route::group(['prefix' => 'v1'], function () {
         Route::post('store-form-fill', [FormRequestController::class, 'storeFormFill']);
         Route::put('update-form-fill/{id}', [FormRequestController::class, 'updateFormFill']);
         Route::get('get-form-Requests', [FormRequestController::class, 'getFormRequest']);
-        Route::get('get-form-Requests/{id}', [FormRequestController::class, 'getFormRequestfill']);
+        Route::get('get-form-Requests/{i}', [FormRequestController::class, 'getFormRequestfill']);
         Route::delete('delete-form-Requests/{id}', [FormRequestController::class, 'deleteFormRequest']);
 
         Route::post('assign-request', [FormRequestController::class, 'assignRequest']);
