@@ -8,23 +8,23 @@
         </v-list-item-icon>
         <v-list-item-title>{{ $t(item.key) }}</v-list-item-title>
       </v-list-item>
-      <v-list-group v-else-if="item.text === 'requests'" no-action exact-active-class="primary--text"
-        class="reports-group-cont">
-        <template v-slot:activator>
-          <v-list-item class="pa-0">
-            <v-list-item-icon>
-              <v-icon>{{ item.icon }}</v-icon>
-            </v-list-item-icon>
-            <v-list-item-title>{{ $t(item.key) }}</v-list-item-title>
-          </v-list-item>
-        </template>
-        <v-list-item v-for="(template, i) in templates" :key="i" exact :to="`/cases/${template.id}`">
-          <v-list-item-icon>
-            <v-icon small>mdi-scale-balance</v-icon>
-          </v-list-item-icon>
-          <v-list-item-title>{{ template.title }}</v-list-item-title>
-        </v-list-item>
-      </v-list-group>
+<!--      <v-list-group v-else-if="item.text === 'requests'" no-action exact-active-class="primary&#45;&#45;text"-->
+<!--        class="reports-group-cont">-->
+<!--        <template v-slot:activator>-->
+<!--          <v-list-item class="pa-0">-->
+<!--            <v-list-item-icon>-->
+<!--              <v-icon>{{ item.icon }}</v-icon>-->
+<!--            </v-list-item-icon>-->
+<!--            <v-list-item-title>{{ $t(item.key) }}</v-list-item-title>-->
+<!--          </v-list-item>-->
+<!--        </template>-->
+<!--        <v-list-item v-for="(template, i) in templates" :key="i" exact :to="`/cases/${template.id}`">-->
+<!--          <v-list-item-icon>-->
+<!--            <v-icon small>mdi-scale-balance</v-icon>-->
+<!--          </v-list-item-icon>-->
+<!--          <v-list-item-title>{{ template.title }}</v-list-item-title>-->
+<!--        </v-list-item>-->
+<!--      </v-list-group>-->
       <v-list-group v-else-if="item.text === 'reports'" no-action exact-active-class="primary--text"
         class="reports-group-cont">
         <template v-slot:activator>

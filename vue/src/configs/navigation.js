@@ -11,10 +11,56 @@ export default {
     },
     {
       icon: "mdi-gavel",
-      text: "requests",
-      key: "menu.requests",
+      text: "cases",
+      key: "menu.cases",
       permission: "read-role",
-      // link: "/reports",
+      // link: "/cases/1",
+      items: [
+        {
+          icon: "mdi-list-box",
+          text: "cases",
+          key: "menu.cases",
+          permission: "read-role",
+          link: "/cases/1"
+        },
+        {
+          icon: "mdi-list-box",
+          text: "review_Doc",
+          key: "menu.review_Doc",
+          permission: "read-role",
+          // link: "/cases/1"
+        }
+      ],
+    },
+    {
+      icon: "mdi-gavel",
+      text: "legal_advice",
+      key: "menu.legal_advice",
+      permission: "read-role",
+      // link: "/cases/2",
+      items: [
+        {
+          icon: "mdi-list-box",
+          text: "legal_advice",
+          key: "menu.legal_advice",
+          permission: "read-role",
+          link: "/cases/2"
+        },
+        {
+          icon: "mdi-list-box",
+          text: "review_Doc",
+          key: "menu.review_Doc",
+          permission: "read-role",
+          // link: "/cases/1"
+        }
+      ],
+    },
+    {
+      icon: "mdi-gavel",
+      text: "review_and_audit",
+      key: "menu.review_and_audit",
+      permission: "read-role",
+      link: "/cases/3",
       items: [],
     },
     {
