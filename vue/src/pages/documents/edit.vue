@@ -125,9 +125,9 @@ export default {
       full_path: null,
       startDateModal: false,
       endDateModal: false,
-      status: ["s1", "s2", "s3"],
-      priority: ["p1", "p2"],
-      types: ["t1", "t2", "t3"],
+      status: ["active", "notactive"],
+      priority: ["high", "medium", "low"],
+      types: ["case", "consultation", "task"],
       errors: {},
       isDateInvalid: false,
     };
