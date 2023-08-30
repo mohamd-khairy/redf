@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Services;
 
 use Carbon\Carbon;
@@ -14,15 +15,17 @@ use App\Models\FormAssignRequest;
 use Illuminate\Pipeline\Pipeline;
 use Illuminate\Support\Facades\DB;
 use App\Enums\FormAssignRequestType;
+use App\Models\File;
 use Illuminate\Support\Facades\Auth;
 use App\Models\FormRequestInformation;
+use Illuminate\Support\Facades\Storage;
 
 class FormRequestService
 {
     public function storeFormFill($requestData)
     {
-
         return DB::transaction(function () use ($requestData) {
+            $type = 'case';
             $formRequest = FormRequest::create([
                 'form_id' => $requestData['id'],
                 'branche_id' => $requestData['branche_id'],
@@ -33,7 +36,8 @@ class FormRequestService
             $formRequest->name = $requestData['case_name'] ?? ($formRequest->form->name . "($formRequest->case_number)");
             $formRequest->save();
             // save related tables if get case_id
-            if($requestData->case_id){
+            if ($requestData->case_id) {
+                $type = 'consultation';
                 // Create a new Formable record
                 Formable::create([
                     'formable_id' => $requestData->case_id,
@@ -49,7 +53,7 @@ class FormRequestService
                 ];
                 saveFormRequestAction($actionData);
             }
-            $this->processFormPages($requestData, $formRequest);
+            $this->processFormPages($requestData, $formRequest, $type);
 
             $actionData = [
                 'form_request_id' => $formRequest->id,
@@ -64,9 +68,8 @@ class FormRequestService
 
     public function updateFormFill($requestData, $id)
     {
-
         return DB::transaction(function () use ($requestData, $id) {
-
+            $type = 'case';
             $formRequest = FormRequest::findOrFail($id);
             $formRequest->form_request_number = $requestData['case_number'] ?? $formRequest->form_request_number;
             $formRequest->name = $requestData['case_name'] ?? $formRequest->name;
@@ -76,7 +79,8 @@ class FormRequestService
             $formRequest->save();
 
             // save related tables if get case_id
-            if($requestData->case_id){
+            if ($requestData->case_id) {
+                $type = 'consultation';
                 // Update Formable record
                 Formable::updateOrCreate([
                     'formable_id' => $requestData->case_id,
@@ -87,18 +91,18 @@ class FormRequestService
                     'form_request_id' => $requestData->case_id,
                     'formable_id' => $formRequest->id,
                     'formable_type' => FormRequest::class,
-                    'msg' =>    'تم تحديث استشاره قانونيه',
+                    'msg' => 'تم تحديث استشاره قانونيه',
                 ];
                 saveFormRequestAction($actionData);
             }
             FormPageItemFill::where('form_request_id', $formRequest->id)->delete();
-            $this->processFormPages($requestData, $formRequest);
+            $this->processFormPages($requestData, $formRequest, $type);
 
             $actionData = [
                 'form_request_id' => $formRequest->id,
                 'formable_id' => $formRequest->id,
                 'formable_type' => FormRequest::class,
-                 'msg' =>  $requestData->case_id ? 'تم تحديث استشاره قانونيه ' : 'تم تحديث القضيه',
+                'msg' =>  $requestData->case_id ? 'تم تحديث استشاره قانونيه ' : 'تم تحديث القضيه',
             ];
 
             saveFormRequestAction($actionData);
@@ -107,15 +111,32 @@ class FormRequestService
         });
     }
 
-    private function processFormPages($request, FormRequest $formRequest)
+    private function processFormPages($request, FormRequest $formRequest, $type = null)
     {
         $pagesInput = $request->input('pages', []);
 
         $pages = is_string($pagesInput) ? json_decode($pagesInput, true) : $pagesInput;
         $pageItems = collect($pages)->flatMap(fn ($page) => $page['items'] ?? []);
 
-        $pageItems->each(function ($pageItem) use ($formRequest) {
-            $decodedValue = $pageItem['type'] === 'file' ? UploadService::store($pageItem['value'], 'formPages') : $pageItem['value'];
+        $pageItems->each(function ($pageItem) use ($formRequest, $type) {
+            $decodedValue = $pageItem['value'];
+
+            if ($pageItem['type'] === 'file') {
+                $file = $pageItem['value'];
+                $decodedValue = $filePath = UploadService::store($file, 'formPages');
+                // Create a new file record
+                $fileRecord = new File([
+                    'name' => 'form file',
+                    'path' => $filePath,
+                    'user_id' => auth()->id(),
+                    'start_date' => now(),
+                    'type' => $type ?? 'form',
+                    'priority' => 'high',
+                    'status' => 'active',
+                ]);
+                $fileRecord->fileable()->associate($formRequest); // Associate the file with the task
+                $fileRecord->save();
+            }
 
             FormPageItemFill::create([
                 'value' => $decodedValue,
@@ -152,7 +173,7 @@ class FormRequestService
         try {
             return DB::transaction(function () use ($requestData) {
                 $formattedDate = Carbon::createFromFormat('Y-m-d', $requestData['date'])->toDateString();
-                 foreach ($requestData['form_request_id'] as $formRequestId) {
+                foreach ($requestData['form_request_id'] as $formRequestId) {
                     FormAssignRequest::where('form_request_id', $formRequestId)
                         ->where('status', 'active')
                         ->where('status', '!=', 'deleted')
@@ -204,8 +225,8 @@ class FormRequestService
             // $validatedData['status'] = FormRequestStatus::PROCESSING;
             $courtFromRequest = $request->court;
             $latestCourtFromDatabase = FormRequestInformation::where('form_request_id', $request->form_request_id)
-            ->latest()
-            ->value('court');
+                ->latest()
+                ->value('court');
 
             if ($latestCourtFromDatabase !== null && $courtFromRequest !== $latestCourtFromDatabase) {
                 return responseFail('You cannot add the same court');
@@ -219,7 +240,7 @@ class FormRequestService
                 'form_request_id' => $formRequestInfo->form_request_id,
                 'calendarable_id' => $formRequestInfo->form_request_id,
                 'calendarable_type' => FormRequest::class,
-                'details' => $request->details ? $request->details : 'تم اضافه اجراء جديد' ,
+                'details' => $request->details ? $request->details : 'تم اضافه اجراء جديد',
                 'user_id' => auth()->id(),
                 'date' => $request->date,
             ];
@@ -228,7 +249,7 @@ class FormRequestService
                 'form_request_id' => $formRequestInfo->form_request_id,
                 'formable_id' => $formRequestInfo->id,
                 'formable_type' => FormRequestInformation::class,
-                'msg' => $request->details ? $request->details : 'تم اضافه اجراء جديد' ,
+                'msg' => $request->details ? $request->details : 'تم اضافه اجراء جديد',
             ];
             $action = saveFormRequestAction($actionData);
             DB::commit();
@@ -238,6 +259,4 @@ class FormRequestService
             return responseFail($e->getMessage());
         }
     }
- }
-
-?>
+}

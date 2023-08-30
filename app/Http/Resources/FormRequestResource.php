@@ -25,7 +25,7 @@ class FormRequestResource extends JsonResource
             'name' => $this->name,
             'form' => new FormResource($this->form),
             'form_page_item_fill' => $this->form_page_item_fill,
-            'form_request_information' => $this->formRequestInformation,
+            'form_request_informations' => $this->formRequestInformations,
             'user' => $this->user,
             'form_request_side' => $this->formRequestSide,
             'lastFormRequestInformation' => $this->lastFormRequestInformation,
