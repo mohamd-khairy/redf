@@ -18,6 +18,15 @@ return new class extends Migration
             $table->string('name');
             $table->string('path');
             $table->morphs('fileable');
+            $table->string('status')->nullable();
+            $table->string('priority')->nullable();
+            $table->dateTime('start_date')->nullable();
+            $table->dateTime('end_date')->nullable();
+            $table->string('type')->nullable();
+            $table->unsignedBigInteger('user_id');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+
+            $table->softDeletes();
             $table->timestamps();
         });
     }

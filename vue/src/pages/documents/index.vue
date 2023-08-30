@@ -88,6 +88,11 @@
         <template v-slot:item.priority="{ item }">
           {{ item.priority }}
         </template>
+        <template v-slot:item.file="{ item }">
+          <a :href="item.path" target="_blank">
+            <v-icon> mdi-file </v-icon>
+          </a>
+        </template>
         <template v-slot:item.start_date="{ item }">
           <div>{{ item.start_date | formatDate("lll") }}</div>
         </template>
@@ -153,6 +158,7 @@ export default {
         { text: this.$t("tables.status"), value: "status" },
         { text: this.$t("tables.type"), value: "type" },
         { text: this.$t("tables.priority"), value: "priority" },
+        { text: this.$t("tables.file"), value: "file" },
         { text: this.$t("tables.start_date"), value: "start_date" },
         { text: this.$t("tables.end_date"), value: "end_date" },
         { text: "", sortable: false, align: "right", value: "action" },
