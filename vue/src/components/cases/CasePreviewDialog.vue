@@ -7,7 +7,7 @@
   >
     <v-card>
       <v-toolbar dark color="primary">
-        <v-toolbar-title>{{ $t("general.casePreview") }}</v-toolbar-title>
+        <v-toolbar-title>{{ $t("cases.view_timeline") }}</v-toolbar-title>
         <v-spacer></v-spacer>
         <v-toolbar-items>
           <v-btn icon dark @click="closeDialog">

@@ -187,6 +187,22 @@
               </template>
               <span>{{ $t("cases.view_timeline") }}</span>
             </v-tooltip>
+            <!-- view case info button -->
+            <v-tooltip top>
+              <template v-slot:activator="{ on, attrs }">
+                <v-btn
+                  color="primary"
+                  icon
+                  elevation="0"
+                  v-bind="attrs"
+                  v-on="on"
+                  @click="openCaseInfoDialog(item.id)"
+                >
+                  <v-icon>mdi-eye-outline</v-icon>
+                </v-btn>
+              </template>
+              <span>{{ $t("cases.view_info") }}</span>
+            </v-tooltip>
 
             <!-- assign user button -->
             <v-tooltip top>
@@ -266,18 +282,24 @@
         v-if="casePrevDialog"
         @closePrevDialog="casePrevDialog = false"
       />
+      <CaseInfoDialog
+        :dialogVisible="caseInfoDialog"
+        :case-id="formId"
+        v-if="caseInfoDialog"
+        @closeInfoDialog="caseInfoDialog = false"
+      />
       <AddAction
         :dialogVisible="addActionDialog"
         :formRequestId="formId"
         :lastAction="selectedForm.last_form_request_information || null"
-        v-if="addActionDialog && currentPageId==1"
+        v-if="addActionDialog && currentPageId == 1"
         @close-action-dialog="closeActionDialog"
       />
       <AddDynamicAction
         :dialogVisible="addDynamicActionDialog"
         :formRequestId="formId"
         :lastAction="selectedForm.last_form_request_information || null"
-        v-else-if="addDynamicActionDialog && currentPageId!=1"
+        v-else-if="addDynamicActionDialog && currentPageId != 1"
         @close-action-dialog="closeDynamicActionDialog"
       />
       <assign
@@ -295,6 +317,7 @@ import { mapActions, mapState } from "vuex";
 import { ask, makeToast } from "@/helpers";
 import emptyDataSvg from "@/assets/images/illustrations/empty-data.svg";
 import CasePreviewDialog from "../../components/cases/CasePreviewDialog.vue";
+import CaseInfoDialog from "../../components/cases/CaseInfoDialog.vue";
 import Assign from "../../components/cases/Assign";
 import AddAction from "../../components/cases/AddAction.vue";
 import AddDynamicAction from "@/components/cases/AddDynamicAction";
@@ -302,11 +325,12 @@ import AddDynamicAction from "@/components/cases/AddDynamicAction";
 export default {
   components: {
     CasePreviewDialog,
+    CaseInfoDialog,
     Assign,
     CopyLabel,
     emptyDataSvg,
     AddAction,
-    AddDynamicAction
+    AddDynamicAction,
   },
   data() {
     return {
@@ -345,6 +369,7 @@ export default {
       formId: 0,
       dialog: false,
       casePrevDialog: false,
+      caseInfoDialog: false,
       addActionDialog: false,
       addDynamicActionDialog: false,
       selectedForm: null,
@@ -374,6 +399,7 @@ export default {
   },
   created() {
     let { id } = this.$route.params;
+
     this.currentPageId = id;
     this.formTypesUrl = `/cases/${id}/form-types`;
     this.caseUrl = `/cases/${id}/create/${id}`;
@@ -441,16 +467,18 @@ export default {
       this.formId = id;
     },
     openActionDialog(item) {
-      if(this.currentPageId == 1)
-        this.addActionDialog = true;
-      else
-        this.addDynamicActionDialog = true
+      if (this.currentPageId == 1) this.addActionDialog = true;
+      else this.addDynamicActionDialog = true;
       this.formId = item.id;
       this.selectedForm = item;
     },
     openCasePreviewDialog(id) {
       this.formId = id;
       this.casePrevDialog = true;
+    },
+    openCaseInfoDialog(id) {
+      this.formId = id;
+      this.caseInfoDialog = true;
     },
     closeActionDialog() {
       this.addActionDialog = false;
