@@ -117,6 +117,32 @@
                 </v-date-picker>
               </v-dialog>
             </v-col>
+            <v-col cols="6">
+              <v-file-input
+                outlined
+                dense
+                counter
+                show-size
+                :v-model="form.file"
+                :label="$t('tasks.document')"
+                @change="(file) => handleFileUpload(file)"
+                click:clear="handleRemoveFile"
+                :error-messages="errors['document']"
+              >
+              </v-file-input>
+            </v-col>
+            <v-col cols="6">
+              <v-autocomplete
+                v-model="form.form_request_id"
+                :items="casesNames"
+                item-text="name"
+                item-value="id"
+                :label="$t('tasks.case')"
+                :error-messages="errors['form_id']"
+                outlined
+                dense
+              ></v-autocomplete>
+            </v-col>
           </v-row>
 
           <div class="d-flex">
@@ -165,8 +191,10 @@ export default {
         priority: "",
         type: "",
         user_id: null,
+        form_request_id: "",
         start_date: null,
         end_date:null,
+        file: null,
         // start_date: new Date(
         //   Date.now() - new Date().getTimezoneOffset() * 60000
         // )
@@ -177,29 +205,44 @@ export default {
         //   .substr(0, 10),
       },
       dateFormat: 'dd-MM-yyyy',
-
       startDateModal: false,
       endDateModal: false,
-      status: ["s1", "s2", "s3"],
-      priority: ["p1", "p2"],
-      types: ["t1", "t2", "t3"],
+      status: ["active", "notactive"],
+      priority: ["high", "medium", "low"],
+      types: ["case", "consultation", "task"],
       errors: {},
       isDateInvalid: false,
     };
   },
   computed: {
     ...mapState("auth", ["user"]),
+    ...mapState("tasks", ["casesNames"]),
   },
   created() {
     this.setBreadCrumb({
       breadcrumbs: this.breadcrumbs,
       pageTitle: this.$t("documents.documentsList"),
     });
+    this.open();
   },
 
   methods: {
     ...mapActions("app", ["setBreadCrumb"]),
     ...mapActions("documents", ["createDocument"]),
+    ...mapActions("tasks", [ "getCasesNames"]),
+    open() {
+      this.getCasesNames();
+    },
+    handleRemoveFile() {
+      this.form.file = null;
+    },
+    handleFileUpload(file, input) {
+      if (file) {
+        const fileName = file.name.split(".")[0];
+        const fileExtension = file.name.split(".")[1];
+        this.form.file = file;
+      }
+    },
     validateDates() {
       if (this.startDate && this.endDate) {
         if (this.startDate >= this.endDate) {
@@ -219,11 +262,9 @@ export default {
       this.loading = true;
       this.errors = {};
       this.form.user_id = this.user.id;
-      const modForm = {...this.form}
-      console.log(modForm);
-      modForm.start_date = this.formatDate(this.form.start_date)
-      modForm.end_date = this.formatDate(this.form.end_date)
-      this.createDocument(modForm)
+      this.form.start_date = this.formatDate(this.form.start_date)
+      this.form.end_date = this.formatDate(this.form.end_date)
+      this.createDocument(this.form)
         .then(() => {
           this.loading = false;
           this.$router.push({ name: "documents-list" });
