@@ -121,7 +121,7 @@
                 >
               </div>
             </div>
-            <v-tabs v-model="activeTab">
+            <v-tabs class="mt-2" v-model="activeTab">
               <v-tab v-for="(tab, index) in pages" :key="index">{{
                 tab.title
               }}</v-tab>

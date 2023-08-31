@@ -351,17 +351,7 @@ export default {
       searchQuery: "",
       selected: [],
       items: [],
-      headers: [
-        // { text: this.$t("tables.id"), value: "id" },
-        { text: this.$t("tables.number"), value: "form_request_number" },
-        { text: this.$t("tables.name"), value: "name" },
-        { text: this.$t("tables.user"), value: "user" },
-        { text: this.$t("tables.assigner"), value: "assigner" },
-        { text: this.$t("tables.court"), value: "court" },
-        { text: this.$t("tables.status"), value: "status" },
-        { text: this.$t("tables.created"), value: "created_at" },
-        { text: "", sortable: false, align: "right", value: "action" },
-      ],
+
       formTypesUrl: "",
       caseUrl: "",
       buttonName: "",
@@ -396,6 +386,27 @@ export default {
   computed: {
     ...mapState("cases", ["formRequests"]),
     ...mapState("app", ["navTemplates"]),
+    headers() {
+      const headers = [
+        { text: this.$t("tables.number"), value: "form_request_number" },
+        { text: this.$t("tables.name"), value: "name" },
+        { text: this.$t("tables.user"), value: "user" },
+        { text: this.$t("tables.assigner"), value: "assigner" },
+
+        { text: this.$t("tables.status"), value: "status" },
+        { text: this.$t("tables.created"), value: "created_at" },
+        {
+          text: this.$t("tables.actions"),
+          sortable: false,
+          align: "right",
+          value: "action",
+        },
+      ];
+      if (+this.currentPageId === 1) {
+        headers.splice(4, 0, { text: this.$t("tables.court"), value: "court" });
+      }
+      return headers;
+    },
   },
   created() {
     let { id } = this.$route.params;
