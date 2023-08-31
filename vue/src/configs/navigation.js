@@ -21,15 +21,15 @@ export default {
           text: "cases",
           key: "menu.cases",
           permission: "read-role",
-          link: "/cases/1"
+          link: "/cases/1",
         },
         {
           icon: "mdi-list-box",
           text: "review_Doc",
           key: "menu.review_Doc",
           permission: "read-role",
-          // link: "/cases/1"
-        }
+          link: "/cases/1/review-doc",
+        },
       ],
     },
     {
@@ -44,7 +44,7 @@ export default {
           text: "legal_advice",
           key: "menu.legal_advice",
           permission: "read-role",
-          link: "/cases/2"
+          link: "/cases/2",
         },
         {
           icon: "mdi-list-box",
@@ -52,7 +52,7 @@ export default {
           key: "menu.review_Doc",
           permission: "read-role",
           // link: "/cases/1"
-        }
+        },
       ],
     },
     {

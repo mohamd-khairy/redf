@@ -599,6 +599,8 @@ export default {
     requestNumber: "رقم الطلب",
     court: "المحكمة",
     created_at: "تاريخ الانشاء",
+    assigned_to: "مكلفة الي",
+    added_date: "تاريخ الاضافة",
     // causer_type: "",
   },
   texts: {

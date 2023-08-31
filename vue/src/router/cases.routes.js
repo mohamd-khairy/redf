@@ -10,6 +10,16 @@ export default [
       import(/* webpackChunkName: "cases-list" */ "@/pages/cases/index"),
   },
   {
+    path: "/cases/:id/review-doc",
+    name: "cases-review_doc",
+    meta: {
+      title: "menu.review_Doc",
+      auth: true,
+    },
+    component: () =>
+      import(/* webpackChunkName: "cases-list" */ "@/pages/cases/reviewDoc"),
+  },
+  {
     path: "/cases/:id/form-types",
     name: "form-types",
     meta: {
@@ -29,7 +39,9 @@ export default [
       // permissions: 'read-event'
     },
     component: () =>
-      import(/* webpackChunkName: "pipes-list" */ "@/pages/cases/CreateDynamic"),
+      import(
+        /* webpackChunkName: "pipes-list" */ "@/pages/cases/CreateDynamic"
+      ),
   },
   {
     path: "/cases/:formType/edit/:id",
