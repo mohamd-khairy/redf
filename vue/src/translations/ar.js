@@ -772,6 +772,8 @@ export default {
     delete_confirmation: "هل انت متأكد من الحذف ؟",
     actionPreview: "عرض الاجراء",
     new_beneficiary_added: "تم اضافة مستفيد جديد",
+    consultation: "استشارة",
+    belongsTo: "تنتمي الي",
   },
   reports: {
     buildReport: "انشاء تقرير",
