@@ -168,23 +168,98 @@
               {{ $t("cases.actions") }}
             </h4>
           </div>
-          <v-row dense class="mb-3">
-            <v-col
-              :cols="key === 'details' ? 12 : 3"
-              :order="key === 'details' ? 7 : undefined"
-              :class="key === 'details' ? 'textarea-bg' : ''"
-              class="input-cont mb-2"
-              v-for="(elm, key) in formRequestInformation"
-              :key="key"
-            >
-              <div class="input-label">
-                {{ $t(`cases.${key}`) }}
-              </div>
-              <div class="input-value">
-                {{ elm }}
-              </div>
-            </v-col>
-          </v-row>
+          <div v-for="(action, index) in formRequestInformation">
+            <div class="form-title-bg mb-1">
+              <h5 class="mb-0">
+                {{ $t(`cases.action`) + " " + (index + 1) }}
+              </h5>
+            </div>
+            <v-row dense class="mb-3">
+              <v-col cols="3" class="input-cont mb-2">
+                <div class="input-label">
+                  {{ $t(`cases.amount`) }}
+                </div>
+                <div class="input-value">
+                  {{ action?.amount || "---" }}
+                </div>
+              </v-col>
+              <v-col cols="3" class="input-cont mb-2">
+                <div class="input-label">
+                  {{ $t(`cases.percentageLose`) }}
+                </div>
+                <div class="input-value">
+                  {{ action?.percentage || "---" }}
+                </div>
+              </v-col>
+              <v-col cols="3" class="input-cont mb-2">
+                <div class="input-label">
+                  {{ $t(`cases.date`) }}
+                </div>
+                <div class="input-value">
+                  {{ action?.date || "---" }}
+                </div>
+              </v-col>
+              <v-col cols="3" class="input-cont mb-2">
+                <div class="input-label">
+                  {{ $t(`cases.status`) }}
+                </div>
+                <div class="input-value">
+                  {{
+                    action.status
+                      ? $t(`general.${action.status.toLowerCase()}`)
+                      : "---"
+                  }}
+                </div>
+              </v-col>
+              <v-col cols="3" class="input-cont mb-2">
+                <div class="input-label">
+                  {{ $t(`cases.court`) }}
+                </div>
+                <div class="input-value">
+                  {{
+                    action.court
+                      ? $t(`general.${action.court.toLowerCase()}`)
+                      : "---"
+                  }}
+                </div>
+              </v-col>
+              <v-col
+                cols="3"
+                class="input-cont mb-2"
+                v-if="action?.sessionDate"
+              >
+                <div class="input-label">
+                  {{ $t(`cases.sessionDate`) }}
+                </div>
+                <div class="input-value">
+                  {{ action?.sessionDate || "---" }}
+                </div>
+              </v-col>
+              <v-col cols="12" class="input-cont textarea-bg mb-2">
+                <div class="input-label">
+                  {{ $t(`cases.details`) }}
+                </div>
+                <div class="input-value">
+                  {{ action.details }}
+                </div>
+              </v-col>
+              <!-- <v-col
+                :cols="key === 'details' ? 12 : 3"
+                :order="key === 'details' ? 7 : undefined"
+                :class="key === 'details' ? 'textarea-bg' : ''"
+                class="input-cont mb-2"
+                v-for="(elm, key) in action"
+                :key="key"
+              >
+                <div class="input-label">
+                  {{ $t(`cases.${key}`) }}
+                </div>
+                <div class="input-value">
+                  {{ elm }}
+                </div>
+              </v-col> -->
+            </v-row>
+          </div>
         </div>
       </v-card-text>
       <v-card-text v-if="!loading && !caseName">
@@ -220,7 +295,7 @@ export default {
       panelExpanded: true,
       caseNumber: null,
       caseName: null,
-      formRequestInformation: {},
+      formRequestInformation: [],
       formRequestSide: {},
       pageTabs: [],
     };
@@ -296,17 +371,18 @@ export default {
       try {
         this.loading = true;
         const response = await this.$axios.get(`get-form-Requests/${id}`);
-        // console.log(response?.data?.data);
+        console.log(response?.data?.data);
         const {
           form,
           form_request_number,
           name,
-          form_request_information,
+          form_request_informations,
           form_page_item_fill,
           form_request_side,
         } = response?.data?.data;
         this.caseNumber = form_request_number;
         this.caseName = name;
+        console.log(response?.data?.data);
         const propertiesToRemove = [
           "updated_at",
           "created_at",
@@ -315,13 +391,13 @@ export default {
           "id",
         ];
 
-        propertiesToRemove.forEach((property) => {
-          if (form_request_information.hasOwnProperty(property)) {
-            delete form_request_information[property];
-          }
-        });
+        // propertiesToRemove.forEach((property) => {
+        //   if (form_request_information.hasOwnProperty(property)) {
+        //     delete form_request_information[property];
+        //   }
+        // });
 
-        this.formRequestInformation = form_request_information;
+        this.formRequestInformation = form_request_informations;
         this.formRequestSide = form_request_side;
         this.form = form;
         let pageTabs = form.pages;
