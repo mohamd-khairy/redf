@@ -245,6 +245,7 @@ export default {
     activities: "النشاطات",
     branches: "الفروع",
     cases: "القضايا",
+    editCase: "تعديل البيانات",
   },
   breadcrumbs: {
     pipesList: "قائمة النماذج",
@@ -870,6 +871,7 @@ export default {
   },
   branches: {
     branches: "الفروع",
+    branch: "الفرع",
     branchesList: "قائمة الفروع",
     branchesManagement: "ادارة الفروع",
     createBranch: "انشاء فرع ",

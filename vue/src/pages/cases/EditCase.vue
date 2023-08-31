@@ -503,7 +503,8 @@
                     </v-date-picker>
                   </v-dialog>
                 </v-col>
-                <v-col cols="12">
+
+                <v-col cols="6">
                   <v-select
                     :items="courts"
                     item-text="title"
@@ -513,6 +514,18 @@
                     dense
                     outlined
                     v-model="caseAction.court"
+                  >
+                  </v-select>
+                </v-col>
+                <v-col cols="6">
+                  <v-select
+                    :items="branches?.data || []"
+                    :label="$t('branches.branch')"
+                    item-text="name"
+                    item-value="id"
+                    dense
+                    outlined
+                    v-model="caseAction.branch_id"
                   >
                   </v-select>
                 </v-col>
@@ -630,6 +643,7 @@ export default {
       caseAction: {
         amount: "",
         form_request_id: "",
+        branch_id: "",
         percentage: "",
         details: "",
         sessionDate: null,
@@ -670,6 +684,7 @@ export default {
     e1(val) {
       if (val === 3) {
         this.getCourts();
+        this.getBranches({});
       }
     },
   },
@@ -683,6 +698,7 @@ export default {
     ...mapState("app", ["navTemplates"]),
     ...mapState("departments", ["departments"]),
     ...mapState("auth", ["user"]),
+    ...mapState("branches", ["branches"]),
     defendantUsers() {
       if (this.sidesInfo.claimant_id) {
         const user = this.users.find(
@@ -720,6 +736,7 @@ export default {
     ...mapActions("app", ["setBreadCrumb"]),
     ...mapActions("users", ["getUserType"]),
     ...mapActions("departments", ["getDepartments"]),
+    ...mapActions("branches", ["getBranches"]),
     ...mapActions("cases", [
       "getPagesValues",
       "validateFormData",
@@ -817,6 +834,7 @@ export default {
         .then((data) => {
           this.setCurrentBread();
           this.formData = data;
+
           this.lastAction = data?.lastFormRequestInformation || null;
           this.caseName = data.name;
           this.caseNumber = data.form_request_number;
@@ -829,6 +847,17 @@ export default {
             this.sidesInfo.civil = this.formData?.form_request_side?.civil;
             this.sidesInfo.department_id =
               this.formData?.form_request_side?.department_id;
+          }
+
+          //  temp solution
+          if (
+            this.formData.form_request_informations &&
+            this.formData.form_request_informations.length
+          ) {
+            this.formData.form_request_information =
+              this.formData.form_request_informations[
+                this.formData.form_request_informations.length - 1
+              ];
           }
           if (this.formData.form_request_information) {
             this.caseAction.amount =
@@ -988,6 +1017,7 @@ export default {
         date: this.caseAction.date,
         court: this.caseAction.court,
         sessionDate: this.caseAction.sessionDate,
+        branch_id: this.caseAction.branch_id,
       };
 
       // if (await this.validateFormData()) {

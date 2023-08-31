@@ -309,7 +309,7 @@
                   </v-dialog>
                 </v-col>
 
-                <v-col cols="12">
+                <v-col cols="6">
                   <v-select
                     :items="courts"
                     :label="$t('tables.court')"
@@ -318,6 +318,18 @@
                     dense
                     outlined
                     v-model="caseAction.court"
+                  >
+                  </v-select>
+                </v-col>
+                <v-col cols="6">
+                  <v-select
+                    :items="branches?.data || []"
+                    :label="$t('branches.branch')"
+                    item-text="name"
+                    item-value="id"
+                    dense
+                    outlined
+                    v-model="caseAction.branch_id"
                   >
                   </v-select>
                 </v-col>
@@ -436,6 +448,7 @@ export default {
       caseAction: {
         amount: "",
         form_request_id: "",
+        branch_id: "",
         percentage: "",
         details: "",
         status: "",
@@ -478,6 +491,7 @@ export default {
     e1(val) {
       if (val === 3) {
         this.getCourts();
+        this.getBranches({});
       }
     },
   },
@@ -486,6 +500,7 @@ export default {
     ...mapState("auth", ["user"]),
     ...mapState("app", ["navTemplates"]),
     ...mapState("departments", ["departments"]),
+    ...mapState("branches", ["branches"]),
 
     defendantUsers() {
       // return this.sidesInfo.claimant_id
@@ -534,6 +549,7 @@ export default {
     ...mapActions("app", ["setBreadCrumb"]),
     ...mapActions("users", ["getUserType"]),
     ...mapActions("departments", ["getDepartments"]),
+    ...mapActions("branches", ["getBranches"]),
     ...mapActions("cases", [
       "getPages",
       "validateFormData",
@@ -770,6 +786,7 @@ export default {
         status: this.caseAction.status,
         date: this.caseAction.date,
         court: this.caseAction.court,
+        branch_id: this.caseAction.branch_id,
         sessionDate: this.caseAction.sessionDate,
       };
 
