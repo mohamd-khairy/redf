@@ -6,20 +6,16 @@
           {{ $t("general.create") + " " + selectedTitle }}
         </v-stepper-step>
         <v-divider></v-divider>
-        <v-stepper-step :complete="e1 > 2" step="2">
-          {{ $t("general.info") + " " + selectedTitle }}
-        </v-stepper-step>
-        <v-divider></v-divider>
 
-        <v-stepper-step step="3">
+        <v-stepper-step step="2">
           {{ $t("cases.adviceActions") }}
         </v-stepper-step>
       </v-stepper-header>
 
       <v-stepper-items>
         <v-stepper-content step="1">
-          <v-card class="mb-12" v-if="!initialLoading">
-            <v-card-text>
+          <div class="mt-2" v-if="!initialLoading">
+            <div class="mt-2">
               <v-text-field
                 outlined
                 v-model="caseName"
@@ -54,118 +50,105 @@
                 clearable
               >
               </v-select>
-            </v-card-text>
-          </v-card>
-          <v-btn color="primary" @click="saveAdviceInfo">
-            {{ $t("general.continue") }}
-          </v-btn>
-        </v-stepper-content>
-        <v-stepper-content step="2">
-          <v-card class="mb-12" v-if="!initialLoading">
-            <v-tabs v-model="activeTab">
+            </div>
+            <v-tabs class="mt-2" v-model="activeTab">
               <v-tab v-for="(tab, index) in pages" :key="index">{{
                   tab.title
                 }}</v-tab>
             </v-tabs>
-            <v-card-text>
-              <v-tabs-items v-model="activeTab">
-                <v-tab-item v-for="(tab, tabIndex) in pages" :key="tabIndex">
-                  <v-form>
-                    <v-container>
-                      <v-row dense>
-                        <v-col
-                          v-for="(input, inputIndex) in tab.items"
-                          :key="inputIndex"
-                          :cols="inputWidth(input.width)"
-                        >
-                          <template v-if="input.type === 'text'">
-                            <v-text-field
-                              outlined
-                              v-model="input.value"
-                              :label="getInputLabel(input)"
-                              :required="input.required"
-                              :rules="input.required ? [requiredRule] : []"
-                              :error-messages="errorMessage(input)"
-                              dense
-                            ></v-text-field>
-                          </template>
-                          <template v-else-if="input.type === 'textarea'">
-                            <v-textarea
-                              outlined
-                              dense
-                              v-model="input.value"
-                              :label="getInputLabel(input)"
-                              :required="input.required"
-                              :rules="input.required ? [requiredRule] : []"
-                              :error-messages="errorMessage(input)"
-                            ></v-textarea>
-                          </template>
-                          <template v-else-if="input.type === 'file'">
-                            <v-file-input
-                              outlined
-                              dense
-                              counter
-                              show-size
-                              :label="getInputLabel(input)"
-                              @change="(file) => handleFileUpload(file, input)"
-                              :required="input.required"
-                              :rules="input.required ? [requiredRule] : []"
-                              :error-messages="errorMessage(input)"
-                            >
-                            </v-file-input>
-                          </template>
-                          <template v-else-if="input.type === 'select'">
-                            <v-select
-                              v-model="input.value"
-                              :items="input.childList"
-                              item-text="text"
-                              :label="getInputLabel(input)"
-                              :required="input.required"
-                              :rules="input.required ? [requiredRule] : []"
-                              :error-messages="errorMessage(input)"
-                              outlined
-                              dense
-                            ></v-select>
-                          </template>
-                          <template v-else-if="input.type === 'radio'">
-                            <v-radio-group
-                              v-model="input.selectedOption"
-                              :label="getInputLabel(input)"
-                              :required="input.required"
-                              :rules="input.required ? [requiredRule] : []"
-                              :error-messages="errorMessage(input)"
-                            >
-                              <v-radio
-                                v-for="(option, optionIndex) in input.childList"
-                                :key="optionIndex"
-                                :label="option.text"
-                                :value="option.text"
-                              ></v-radio>
-                            </v-radio-group>
-                          </template>
-                        </v-col>
-                      </v-row>
-                    </v-container>
-                  </v-form>
-                </v-tab-item>
-              </v-tabs-items>
-            </v-card-text>
-            <!--            <v-card-actions class="px-5 pb-4">-->
-            <!--              <v-btn-->
-            <!--                color="primary"-->
-            <!--                :disabled="isSubmitingForm"-->
-            <!--                :loading="isSubmitingForm"-->
-            <!--                @click="saveForm"-->
-            <!--              >{{ $t("general.saveChanges") }}</v-btn-->
-            <!--              >-->
-            <!--            </v-card-actions>-->
-          </v-card>
-          <v-btn color="primary" @click="saveForm">
-            {{ $t("general.continue") }}
-          </v-btn>
+            <v-tabs-items v-model="activeTab">
+              <v-tab-item v-for="(tab, tabIndex) in pages" :key="tabIndex">
+                <v-form>
+                  <v-container>
+                    <v-row dense>
+                      <v-col
+                        v-for="(input, inputIndex) in tab.items"
+                        :key="inputIndex"
+                        :cols="inputWidth(input.width)"
+                      >
+                        <template v-if="input.type === 'text'">
+                          <v-text-field
+                            outlined
+                            v-model="input.value"
+                            :label="getInputLabel(input)"
+                            :required="input.required"
+                            :rules="input.required ? [requiredRule] : []"
+                            :error-messages="errorMessage(input)"
+                            dense
+                          ></v-text-field>
+                        </template>
+                        <template v-else-if="input.type === 'textarea'">
+                          <v-textarea
+                            outlined
+                            dense
+                            v-model="input.value"
+                            :label="getInputLabel(input)"
+                            :required="input.required"
+                            :rules="input.required ? [requiredRule] : []"
+                            :error-messages="errorMessage(input)"
+                          ></v-textarea>
+                        </template>
+                        <template v-else-if="input.type === 'file'">
+                          <v-file-input
+                            outlined
+                            dense
+                            counter
+                            show-size
+                            :label="getInputLabel(input)"
+                            @change="(file) => handleFileUpload(file, input)"
+                            :required="input.required"
+                            :rules="input.required ? [requiredRule] : []"
+                            :error-messages="errorMessage(input)"
+                          >
+                          </v-file-input>
+                        </template>
+                        <template v-else-if="input.type === 'select'">
+                          <v-select
+                            v-model="input.value"
+                            :items="input.childList"
+                            item-text="text"
+                            :label="getInputLabel(input)"
+                            :required="input.required"
+                            :rules="input.required ? [requiredRule] : []"
+                            :error-messages="errorMessage(input)"
+                            outlined
+                            dense
+                          ></v-select>
+                        </template>
+                        <template v-else-if="input.type === 'radio'">
+                          <v-radio-group
+                            v-model="input.selectedOption"
+                            :label="getInputLabel(input)"
+                            :required="input.required"
+                            :rules="input.required ? [requiredRule] : []"
+                            :error-messages="errorMessage(input)"
+                          >
+                            <v-radio
+                              v-for="(option, optionIndex) in input.childList"
+                              :key="optionIndex"
+                              :label="option.text"
+                              :value="option.text"
+                            ></v-radio>
+                          </v-radio-group>
+                        </template>
+                      </v-col>
+                    </v-row>
+                  </v-container>
+                </v-form>
+              </v-tab-item>
+            </v-tabs-items>
+          </div>
+          <v-card-actions>
+            <v-btn color="primary" @click="saveForm">
+              {{ $t("general.continue") }}
+            </v-btn>
+            <!-- <v-btn color="grey" @click="stepBack" class="ms-2">
+              {{ $t("general.back") }}
+            </v-btn> -->
+          </v-card-actions>
         </v-stepper-content>
 
-        <v-stepper-content step="3">
+        <v-stepper-content step="2">
           <v-card class="mb-12">
             <v-card-title> </v-card-title>
             <v-card-text>
@@ -339,7 +322,7 @@ export default {
   },
   watch: {
     e1(val) {
-      if (val === 3) {
+      if (val === 2) {
         this.getCourts();
       }
     },
@@ -461,7 +444,7 @@ export default {
         if (result) {
           this.isSubmitingForm = false;
           this.formRequestId = result.data?.data?.formRequest?.id;
-          this.e1 = 3;
+          this.e1 = 2;
           // makeToast("success", response.data.message);
         } else {
           makeToast("error", "Failed to save data");
