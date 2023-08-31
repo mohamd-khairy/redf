@@ -3,22 +3,22 @@
     <v-stepper v-model="e1">
       <v-stepper-header>
         <v-stepper-step :complete="e1 > 1" step="1">
-          {{ $t("general.create") + " " + selectedTitle }}
-        </v-stepper-step>
-        <v-divider></v-divider>
-        <v-stepper-step :complete="e1 > 2" step="2">
           {{ $t("general.info") + " " + selectedTitle }}
         </v-stepper-step>
+        <!-- <v-divider></v-divider>
+        <v-stepper-step :complete="e1 > 2" step="2">
+          {{ $t("general.info") + " " + selectedTitle }}
+        </v-stepper-step> -->
 
         <v-divider></v-divider>
 
-        <v-stepper-step step="3">
+        <v-stepper-step step="2">
           {{ $t("cases.actions") }}
         </v-stepper-step>
       </v-stepper-header>
 
       <v-stepper-items>
-        <v-stepper-content step="1">
+        <!-- <v-stepper-content step="1">
           <div class="mt-2">
             <v-text-field
               class="mb-2"
@@ -42,15 +42,85 @@
               :error-messages="stepOneValidation(caseNumber)"
               dense
             ></v-text-field>
+
+            <div class="d-flex">
+              <v-select
+                :items="formRequests"
+                :label="$t('cases.belongToCase')"
+                :item-text="(item) => item.name"
+                :item-value="(item) => item.id"
+                hide-details
+                dense
+                outlined
+                v-model="caseId"
+                clearable
+              >
+              </v-select>
+              <v-spacer></v-spacer>
+              <v-btn
+                v-if="caseId"
+                color="primary"
+                outlined
+                @click="openCaseInfoDialog()"
+                >{{ $t("cases.view_info") }}</v-btn
+              >
+            </div>
           </div>
-          <v-card-actions class="px-2">
+          <v-card-actions class="px-2 mt-2">
             <v-btn color="primary" @click="saveCaseInfo">
               {{ $t("general.continue") }}
             </v-btn>
           </v-card-actions>
-        </v-stepper-content>
-        <v-stepper-content step="2">
+        </v-stepper-content> -->
+        <v-stepper-content step="1">
           <div class="mt-2" v-if="!initialLoading">
+            <div class="mt-2">
+              <v-text-field
+                class="mb-2"
+                v-model="caseName"
+                :label="$t('cases.name')"
+                outlined
+                :required="true"
+                :error-messages="stepOneValidation(caseName)"
+                dense
+                :rules="[requiredRule]"
+              ></v-text-field>
+              <v-text-field
+                outlined
+                type="number"
+                class="mb-2"
+                v-model="caseNumber"
+                @keydown="handleInput"
+                :label="$t('cases.number')"
+                :required="true"
+                :rules="[requiredRule]"
+                :error-messages="stepOneValidation(caseNumber)"
+                dense
+              ></v-text-field>
+
+              <div class="d-flex">
+                <v-select
+                  :items="formRequests"
+                  :label="$t('cases.belongToCase')"
+                  :item-text="(item) => item.name"
+                  :item-value="(item) => item.id"
+                  hide-details
+                  dense
+                  outlined
+                  v-model="caseId"
+                  clearable
+                >
+                </v-select>
+                <v-spacer></v-spacer>
+                <v-btn
+                  v-if="caseId"
+                  color="primary"
+                  outlined
+                  @click="openCaseInfoDialog()"
+                  >{{ $t("cases.view_info") }}</v-btn
+                >
+              </div>
+            </div>
             <v-tabs v-model="activeTab">
               <v-tab v-for="(tab, index) in pages" :key="index">{{
                 tab.title
@@ -142,13 +212,13 @@
             <v-btn color="primary" @click="saveForm">
               {{ $t("general.continue") }}
             </v-btn>
-            <v-btn color="grey" @click="stepBack" class="ms-2">
+            <!-- <v-btn color="grey" @click="stepBack" class="ms-2">
               {{ $t("general.back") }}
-            </v-btn>
+            </v-btn> -->
           </v-card-actions>
         </v-stepper-content>
 
-        <v-stepper-content step="3">
+        <v-stepper-content step="2">
           <div class="d-flex flex-column flex-sm-row">
             <div class="flex-grow-1 pt-2 pa-sm-2">
               <v-row dense>
@@ -270,17 +340,24 @@
     </v-stepper>
 
     <add-user-dialog v-model="dialog"></add-user-dialog>
+    <CaseInfoDialog
+      :dialogVisible="caseInfoDialog"
+      :case-id="caseId"
+      v-if="caseInfoDialog"
+      @closeInfoDialog="caseInfoDialog = false"
+    />
   </div>
 </template>
 
 <script>
 import { mapActions, mapState } from "vuex";
 import AddUserDialog from "../../components/cases/AddUserDialog";
+import CaseInfoDialog from "../../components/cases/CaseInfoDialog.vue";
 import { makeToast } from "@/helpers";
 
 export default {
   name: "Create",
-  components: { AddUserDialog },
+  components: { AddUserDialog, CaseInfoDialog },
   data() {
     return {
       e1: 1,
@@ -288,12 +365,14 @@ export default {
       dateDialog: false,
       caseNumber: "",
       caseName: "",
+      caseId: null,
+      caseInfoDialog: false,
       initialLoading: false,
       isLoading: false,
       isSubmitingForm: false,
       users: [],
       formRequestId: null,
-
+      caseCheck: false,
       breadcrumbs: [
         {
           text: this.$t("menu.requests"),
@@ -350,6 +429,7 @@ export default {
     this.init();
     this.fetchUsers();
     this.fetchDepartments();
+    this.fetchCases();
 
     this.$root.$on("userCreated", () => {
       this.fetchUsers();
@@ -357,13 +437,19 @@ export default {
   },
   watch: {
     e1(val) {
-      if (val === 4) {
+      if (val === 2) {
         this.getCourts();
       }
     },
   },
   computed: {
-    ...mapState("cases", ["pages", "selectedForm", "courts", "caseTypes"]),
+    ...mapState("cases", [
+      "pages",
+      "selectedForm",
+      "courts",
+      "caseTypes",
+      "formRequests",
+    ]),
     ...mapState("auth", ["user"]),
     ...mapState("app", ["navTemplates"]),
     ...mapState("departments", ["departments"]),
@@ -423,7 +509,20 @@ export default {
       "saveRequestSide",
       "saveFormInformation",
       "getCourts",
+      "getFormRequests",
     ]),
+    openCaseInfoDialog(id) {
+      this.caseInfoDialog = true;
+    },
+    fetchCases() {
+      let data = {
+        template_id: 1,
+        pageSize: -1,
+      };
+      this.getFormRequests(data)
+        .then(() => {})
+        .catch(() => {});
+    },
     addDate(index) {
       this.caseAction.dates.push({ caseDate: "" });
     },
@@ -583,24 +682,27 @@ export default {
     },
     async saveForm() {
       this.isSubmitingForm = true;
-      if (await this.validateFormData()) {
+
+      if ((await this.validateFormData()) && this.caseName && this.caseNumber) {
         const result = await this.savePages({
           caseName: this.caseName,
           caseNumber: this.caseNumber,
+          belongToCase: this.caseId,
         });
         if (result) {
           this.isSubmitingForm = false;
           this.formRequestId = result.data?.data?.formRequest?.id;
           this.showErrors = false;
-          this.e1 = 3;
+          this.stepOneErrors = false;
+          this.e1 = 2;
           // makeToast("success", response.data.message);
         } else {
           makeToast("error", "Failed to save data");
         }
       } else {
         this.showErrors = true;
+        this.stepOneErrors = true;
         this.isSubmitingForm = false;
-
         console.log("some fields is required");
       }
     },

@@ -466,10 +466,6 @@ export default {
   },
 
   created() {
-    // this.setBreadCrumb({
-    //   breadcrumbs: this.breadcrumbs,
-    //   pageTitle: this.$t("cases.casesList"),
-    // });
     this.init();
     this.fetchUsers();
     this.fetchDepartments();
