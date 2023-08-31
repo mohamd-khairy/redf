@@ -134,17 +134,13 @@ export default {
     return {
       page: 1,
       totalDocuments: 0,
+      currentPageId: null,
       numberOfPages: 0,
       options: {},
       isLoading: false,
       breadcrumbs: [
         {
-          text: this.$t("documents.documentsManagement"),
-          disabled: false,
-          href: "#",
-        },
-        {
-          text: this.$t("documents.documentsList"),
+          text: this.$t("menu.review_Doc"),
         },
       ],
 
@@ -176,22 +172,49 @@ export default {
     searchQuery() {
       this.open();
     },
+    navTemplates() {
+      this.setCurrentBread();
+    },
+    currentPageId() {
+      this.setCurrentBread();
+    },
   },
   computed: {
     ...mapState("documents", ["documents"]),
+    ...mapState("app", ["navTemplates"]),
   },
   created() {
-    this.setBreadCrumb({
-      breadcrumbs: this.breadcrumbs,
-      pageTitle: this.$t("documents.documentsList"),
-    });
+    let { id } = this.$route.params;
+    this.currentPageId = id;
+    // this.setBreadCrumb({
+    //   breadcrumbs: this.breadcrumbs,
+    //   pageTitle: this.$t("documents.documentsList"),
+    // });
   },
 
   methods: {
     ...mapActions("app", ["setBreadCrumb"]),
     ...mapActions("documents", ["getDocuments", "deleteDocument", "deleteAll"]),
+    setCurrentBread() {
+      const currentPage = this.navTemplates.find((nav) => {
+        return nav.id === +this.currentPageId;
+      });
+
+      if (currentPage) {
+        this.breadcrumbs.unshift({
+          text: currentPage.title,
+          disabled: false,
+          href: "#",
+        });
+      }
+      this.setBreadCrumb({
+        breadcrumbs: this.breadcrumbs,
+        pageTitle: currentPage.title,
+      });
+    },
     open() {
-      this.isLoading = true;
+      // this.isLoading = true;
+      const { id } = this.$route.params;
       let { page, itemsPerPage } = this.options;
       const direction = this.options.sortDesc[0] ? "asc" : "desc";
 
@@ -202,22 +225,22 @@ export default {
         sortDirection: direction,
         sortColumn: this.options.sortBy[0] ?? "",
       };
-      this.getDocuments(data)
-        .then(() => {
-          this.isLoading = false;
-          if (itemsPerPage != -1) {
-            this.documentItems = this.documents.data;
-            this.totalDocuments = this.documents.total;
-            this.numberOfPages = this.documents.last_page;
-          } else {
-            this.documentItems = this.documents;
-            this.totalDocuments = this.documents.length;
-            this.numberOfPages = 1;
-          }
-        })
-        .catch(() => {
-          this.isLoading = false;
-        });
+      // this.getDocuments(data)
+      //   .then(() => {
+      //     this.isLoading = false;
+      //     if (itemsPerPage != -1) {
+      //       this.documentItems = this.documents.data;
+      //       this.totalDocuments = this.documents.total;
+      //       this.numberOfPages = this.documents.last_page;
+      //     } else {
+      //       this.documentItems = this.documents;
+      //       this.totalDocuments = this.documents.length;
+      //       this.numberOfPages = 1;
+      //     }
+      //   })
+      //   .catch(() => {
+      //     this.isLoading = false;
+      //   });
     },
     async deleteItem(id) {
       const { isConfirmed } = await ask(

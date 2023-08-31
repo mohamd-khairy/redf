@@ -75,12 +75,26 @@ const actions = {
   async getCasesNames({ commit }) {
     const response = await axios.get("get-form-Requests", {
       params: {
+        template_id: 1,
         pageSize: -1,
       },
     });
     const resData = response?.data.data;
+
     const casesNames = resData.map((c) => ({ name: c.name, id: c.id }));
     commit("SET_CASES_NAMES", casesNames);
+  },
+  async getConsultationNames({ commit }) {
+    const response = await axios.get("get-form-Requests", {
+      params: {
+        template_id: 2,
+        pageSize: -1,
+      },
+    });
+    const resData = response?.data.data;
+
+    const consultationNames = resData.map((c) => ({ name: c.name, id: c.id }));
+    commit("SET_CONSULTATION_NAMES", consultationNames);
   },
 };
 

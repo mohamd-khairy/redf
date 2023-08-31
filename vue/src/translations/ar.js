@@ -245,6 +245,7 @@ export default {
     activities: "النشاطات",
     branches: "الفروع",
     cases: "القضايا",
+    editCase: "تعديل البيانات",
   },
   breadcrumbs: {
     pipesList: "قائمة النماذج",
@@ -255,6 +256,7 @@ export default {
     "location 1": "موقع 1",
     "location 2": "موقع 2",
     "location 3": "موقع 3",
+    list: "قائمة",
   },
   $vuetify: {
     badge: "شارة",
@@ -771,6 +773,8 @@ export default {
     delete_confirmation: "هل انت متأكد من الحذف ؟",
     actionPreview: "عرض الاجراء",
     new_beneficiary_added: "تم اضافة مستفيد جديد",
+    consultation: "استشارة",
+    belongsTo: "تنتمي الي",
   },
   reports: {
     buildReport: "انشاء تقرير",
@@ -867,6 +871,7 @@ export default {
   },
   branches: {
     branches: "الفروع",
+    branch: "الفرع",
     branchesList: "قائمة الفروع",
     branchesManagement: "ادارة الفروع",
     createBranch: "انشاء فرع ",

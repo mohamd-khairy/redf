@@ -51,7 +51,7 @@ export default {
           text: "review_Doc",
           key: "menu.review_Doc",
           permission: "read-role",
-          // link: "/cases/1"
+          link: "/cases/2/review-doc",
         },
       ],
     },

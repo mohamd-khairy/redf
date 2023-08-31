@@ -14,6 +14,9 @@ const mutations = {
   SET_CASES_NAMES(state, value) {
     state.casesNames = value;
   },
+  SET_CONSULTATION_NAMES(state, value) {
+    state.consultationNames = value;
+  },
 };
 
 export default mutations;

@@ -66,7 +66,11 @@
                     v-on="on"
                   ></v-text-field>
                 </template>
-                <v-date-picker :format="dateFormat" v-model="form.start_date" scrollable>
+                <v-date-picker
+                  :format="dateFormat"
+                  v-model="form.start_date"
+                  scrollable
+                >
                   <v-spacer></v-spacer>
                   <v-btn text color="primary" @click="startDateModal = false">
                     {{ $t("general.cancel") }}
@@ -102,7 +106,11 @@
                     v-on="on"
                   ></v-text-field>
                 </template>
-                <v-date-picker :format="dateFormat" v-model="form.end_date" scrollable>
+                <v-date-picker
+                  :format="dateFormat"
+                  v-model="form.end_date"
+                  scrollable
+                >
                   <v-spacer></v-spacer>
                   <v-btn text color="primary" @click="endDateModal = false">
                     Cancel
@@ -127,18 +135,48 @@
                 :label="$t('tasks.document')"
                 @change="(file) => handleFileUpload(file)"
                 click:clear="handleRemoveFile"
-                :error-messages="errors['document']"
+                :error-messages="errors['file']"
               >
               </v-file-input>
             </v-col>
             <v-col cols="6">
+              <div class="d-flex align-items-center">
+                <label class="ms-2" for="">{{ $t("general.belongsTo") }}</label>
+                <v-spacer></v-spacer>
+                <v-checkbox
+                  class="me-3 mt-0"
+                  v-model="belongsTo"
+                  :label="$t('general.case')"
+                  value="case"
+                ></v-checkbox>
+                <v-checkbox
+                  class="mt-0"
+                  v-model="belongsTo"
+                  :label="$t('general.consultation')"
+                  value="consultation"
+                ></v-checkbox>
+              </div>
+            </v-col>
+            <v-col cols="6" v-if="belongsTo">
               <v-autocomplete
+                v-if="belongsTo === 'case'"
                 v-model="form.form_request_id"
                 :items="casesNames"
                 item-text="name"
                 item-value="id"
                 :label="$t('tasks.case')"
                 :error-messages="errors['form_id']"
+                outlined
+                dense
+              ></v-autocomplete>
+              <v-autocomplete
+                v-else
+                v-model="form.consultation_id"
+                :items="consultationNames"
+                item-text="name"
+                item-value="id"
+                :label="$t('general.consultation')"
+                :error-messages="errors['consultation_id']"
                 outlined
                 dense
               ></v-autocomplete>
@@ -168,6 +206,7 @@ export default {
   components: {},
   data() {
     return {
+      belongsTo: null,
       breadcrumbs: [
         {
           text: this.$t("documents.documentsManagement"),
@@ -192,8 +231,9 @@ export default {
         type: "",
         user_id: null,
         form_request_id: "",
+        consultation_id: "",
         start_date: null,
-        end_date:null,
+        end_date: null,
         file: null,
         // start_date: new Date(
         //   Date.now() - new Date().getTimezoneOffset() * 60000
@@ -204,7 +244,7 @@ export default {
         //   .toISOString()
         //   .substr(0, 10),
       },
-      dateFormat: 'dd-MM-yyyy',
+      dateFormat: "dd-MM-yyyy",
       startDateModal: false,
       endDateModal: false,
       status: ["active", "notactive"],
@@ -216,7 +256,15 @@ export default {
   },
   computed: {
     ...mapState("auth", ["user"]),
-    ...mapState("tasks", ["casesNames"]),
+    ...mapState("tasks", ["casesNames", "consultationNames"]),
+  },
+  watch: {
+    belongsTo(val) {
+      if (!val) {
+        this.form.form_request_id = "";
+        this.form.consultation_id = "";
+      }
+    },
   },
   created() {
     this.setBreadCrumb({
@@ -229,9 +277,10 @@ export default {
   methods: {
     ...mapActions("app", ["setBreadCrumb"]),
     ...mapActions("documents", ["createDocument"]),
-    ...mapActions("tasks", [ "getCasesNames"]),
+    ...mapActions("tasks", ["getCasesNames", "getConsultationNames"]),
     open() {
       this.getCasesNames();
+      this.getConsultationNames();
     },
     handleRemoveFile() {
       this.form.file = null;
@@ -252,18 +301,18 @@ export default {
         }
       }
     },
-    formatDate (date) {
-        if (!date) return null
+    formatDate(date) {
+      if (!date) return null;
 
-        const [year, month, day] = date.split('-')
-        return `${day}-${month}-${year}`
-      },
+      const [year, month, day] = date.split("-");
+      return `${day}-${month}-${year}`;
+    },
     createDoc() {
       this.loading = true;
       this.errors = {};
       this.form.user_id = this.user.id;
-      this.form.start_date = this.formatDate(this.form.start_date)
-      this.form.end_date = this.formatDate(this.form.end_date)
+      this.form.start_date = this.formatDate(this.form.start_date);
+      this.form.end_date = this.formatDate(this.form.end_date);
       this.createDocument(this.form)
         .then(() => {
           this.loading = false;
