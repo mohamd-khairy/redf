@@ -255,6 +255,7 @@ export default {
     "location 1": "موقع 1",
     "location 2": "موقع 2",
     "location 3": "موقع 3",
+    list: "قائمة",
   },
   $vuetify: {
     badge: "شارة",

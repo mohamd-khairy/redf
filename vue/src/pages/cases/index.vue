@@ -341,11 +341,11 @@ export default {
       options: {},
       isLoading: false,
       breadcrumbs: [
-        {
-          text: this.$t("menu.requests"),
-          disabled: false,
-          href: "#",
-        },
+        // {
+        //   text: this.$t("menu.requests"),
+        //   disabled: false,
+        //   href: "#",
+        // },
       ],
 
       searchQuery: "",
@@ -434,10 +434,13 @@ export default {
           disabled: false,
           href: "#",
         });
+        this.breadcrumbs.push({
+          text: this.$t("breadcrumbs.list") + " " + currentPage.title,
+        });
       }
       this.setBreadCrumb({
         breadcrumbs: this.breadcrumbs,
-        pageTitle: this.$t("cases.casesList"),
+        pageTitle: currentPage.title,
       });
     },
     userAssigned() {
