@@ -136,6 +136,9 @@
                         :key="inputIndex"
                         :cols="inputWidth(input.width)"
                       >
+                        <template v-if="input.type === 'label'">
+                          <small style="font-weight: bold">{{ input.label }}</small>
+                        </template>
                         <template v-if="input.type === 'text'">
                           <v-text-field
                             outlined
