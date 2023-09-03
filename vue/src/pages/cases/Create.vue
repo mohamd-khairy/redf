@@ -12,7 +12,12 @@
 
         <v-divider></v-divider>
 
-        <v-stepper-step step="2">
+        <v-stepper-step :complete="e1 > 2" step="2">
+          {{ $t("cases.preview") }}
+        </v-stepper-step>
+        <v-divider></v-divider>
+
+        <v-stepper-step step="3">
           {{ $t("cases.actions") }}
         </v-stepper-step>
       </v-stepper-header>
@@ -137,7 +142,9 @@
                         :cols="inputWidth(input.width)"
                       >
                         <template v-if="input.type === 'label'">
-                          <small style="font-weight: bold">{{ input.label }}</small>
+                          <small style="font-weight: bold">{{
+                            input.label
+                          }}</small>
                         </template>
                         <template v-if="input.type === 'text'">
                           <v-text-field
@@ -212,7 +219,7 @@
             </v-tabs-items>
           </div>
           <v-card-actions>
-            <v-btn color="primary" @click="saveForm">
+            <v-btn color="primary" @click="saveCaseInfo">
               {{ $t("general.continue") }}
             </v-btn>
             <!-- <v-btn color="grey" @click="stepBack" class="ms-2">
@@ -220,8 +227,18 @@
             </v-btn> -->
           </v-card-actions>
         </v-stepper-content>
-
         <v-stepper-content step="2">
+          <div class="mt-2" v-if="!initialLoading"></div>
+          <v-card-actions>
+            <v-btn color="primary" @click="saveForm">
+              {{ $t("general.continue") }}
+            </v-btn>
+            <v-btn color="grey" @click="stepBack" class="ms-2">
+              {{ $t("general.back") }}
+            </v-btn>
+          </v-card-actions>
+        </v-stepper-content>
+        <v-stepper-content step="3">
           <div class="d-flex flex-column flex-sm-row">
             <div class="flex-grow-1 pt-2 pa-sm-2">
               <v-row dense>
@@ -440,7 +457,7 @@ export default {
   },
   watch: {
     e1(val) {
-      if (val === 2) {
+      if (val === 3) {
         this.getCourts();
       }
     },
@@ -675,29 +692,43 @@ export default {
       const msg = this.$t("general.required_input");
       return this.stepOneErrors && !value ? [msg] : [];
     },
-    saveCaseInfo() {
-      if (!this.caseName || !this.caseNumber) {
+    async saveCaseInfo() {
+      if (
+        !(await this.validateFormData()) ||
+        !this.caseName ||
+        !this.caseNumber
+      ) {
         this.stepOneErrors = true;
+        this.showErrors = true;
         return;
       }
+      this.showErrors = false;
       this.stepOneErrors = false;
       this.e1 = 2;
     },
     async saveForm() {
       this.isSubmitingForm = true;
-
       if ((await this.validateFormData()) && this.caseName && this.caseNumber) {
-        const result = await this.savePages({
-          caseName: this.caseName,
-          caseNumber: this.caseNumber,
-          belongToCase: this.caseId,
-        });
+        let result = null;
+        if (!this.formRequestId) {
+          result = await this.savePages({
+            caseName: this.caseName,
+            caseNumber: this.caseNumber,
+          });
+        } else {
+          result = await this.updatePages({
+            caseName: this.caseName,
+            caseNumber: this.caseNumber,
+            formId: this.formRequestId,
+          });
+        }
+
         if (result) {
           this.isSubmitingForm = false;
-          this.formRequestId = result.data?.data?.formRequest?.id;
+          this.formRequestId =
+            this.formRequestId || result.data?.data?.formRequest?.id;
           this.showErrors = false;
-          this.stepOneErrors = false;
-          this.e1 = 2;
+          this.e1 = 3;
           // makeToast("success", response.data.message);
         } else {
           makeToast("error", "Failed to save data");
@@ -706,6 +737,7 @@ export default {
         this.showErrors = true;
         this.stepOneErrors = true;
         this.isSubmitingForm = false;
+
         console.log("some fields is required");
       }
     },

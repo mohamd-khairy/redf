@@ -171,12 +171,12 @@
               ></v-autocomplete>
               <v-autocomplete
                 v-else
-                v-model="form.consultation_id"
+                v-model="form.form_request_id"
                 :items="consultationNames"
                 item-text="name"
                 item-value="id"
                 :label="$t('general.consultation')"
-                :error-messages="errors['consultation_id']"
+                :error-messages="errors['form_request_id']"
                 outlined
                 dense
               ></v-autocomplete>
@@ -230,8 +230,9 @@ export default {
         priority: "",
         type: "",
         user_id: null,
+        belongs_to: this.belongsTo,
         form_request_id: "",
-        consultation_id: "",
+        // consultation_id: "",
         start_date: null,
         end_date: null,
         file: null,
@@ -262,7 +263,7 @@ export default {
     belongsTo(val) {
       if (!val) {
         this.form.form_request_id = "";
-        this.form.consultation_id = "";
+        // this.form.consultation_id = "";
       }
     },
   },
@@ -311,6 +312,7 @@ export default {
       this.loading = true;
       this.errors = {};
       this.form.user_id = this.user.id;
+      this.form.belongs_to = this.belongsTo;
       this.form.start_date = this.formatDate(this.form.start_date);
       this.form.end_date = this.formatDate(this.form.end_date);
       this.createDocument(this.form)
