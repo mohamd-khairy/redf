@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Enums\FormEnum;
 use App\Models\Form;
 use App\Models\FormPage;
 use Illuminate\Database\Seeder;
@@ -53,7 +54,7 @@ class FormSeeder extends Seeder
         ]);
         //template
         $form1 = Form::firstOrCreate([
-            'id' => 1,
+            'id' => FormEnum::CASE,
             'name' => 'استمارة التقاضي والطلب',
             'description' => 'استمارة التقاضي والطلب',
             'user_id' => 1,
@@ -61,7 +62,7 @@ class FormSeeder extends Seeder
             'template_id' => 1,
         ]);
         $form2 = Form::firstOrCreate([
-            'id' => 2,
+            'id' => FormEnum::LEGAL_ADVICE,
             'name' => 'طلب استمارة استشارة قانونية',
             'description' => 'طلب استمارة استشارة قانونية',
             'user_id' => 1,
@@ -69,7 +70,7 @@ class FormSeeder extends Seeder
             'template_id' => 2,
         ]);
         $form3 = Form::firstOrCreate([
-            'id' => 3,
+            'id' => FormEnum::LEGAL_REVIEW,
             'name' => 'استمارة مراجعة العقد',
             'description' => 'استمارة مراجعة العقد',
             'user_id' => 1,
