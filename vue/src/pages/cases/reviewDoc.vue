@@ -172,11 +172,13 @@ export default {
     searchQuery() {
       this.open();
     },
-    navTemplates() {
-      this.setCurrentBread();
-    },
+    // navTemplates() {
+    //   this.setCurrentBread();
+    // },
     currentPageId() {
-      this.setCurrentBread();
+      this.getNavTemplate().then((_) => {
+        this.setCurrentBread();
+      });
     },
   },
   computed: {
@@ -186,6 +188,7 @@ export default {
   created() {
     let { id } = this.$route.params;
     this.currentPageId = id;
+    this.getNavTemplate().then((_) => this.setCurrentBread());
     // this.setBreadCrumb({
     //   breadcrumbs: this.breadcrumbs,
     //   pageTitle: this.$t("documents.documentsList"),
@@ -193,7 +196,7 @@ export default {
   },
 
   methods: {
-    ...mapActions("app", ["setBreadCrumb"]),
+    ...mapActions("app", ["setBreadCrumb", "getNavTemplate"]),
     ...mapActions("documents", ["getDocuments", "deleteDocument", "deleteAll"]),
     setCurrentBread() {
       const currentPage = this.navTemplates.find((nav) => {
@@ -207,6 +210,7 @@ export default {
           href: "#",
         });
       }
+
       this.setBreadCrumb({
         breadcrumbs: this.breadcrumbs,
         pageTitle: currentPage.title,
@@ -217,30 +221,40 @@ export default {
       const { id } = this.$route.params;
       let { page, itemsPerPage } = this.options;
       const direction = this.options.sortDesc[0] ? "asc" : "desc";
+      if (!id) return;
+
+      let type = "";
+      if (+id === 1) {
+        type = "case";
+      } else if (+id === 2) {
+        type = "consultation";
+      }
 
       let data = {
         search: this.searchQuery,
+        type,
         pageSize: itemsPerPage,
         pageNumber: page,
         sortDirection: direction,
         sortColumn: this.options.sortBy[0] ?? "",
       };
-      // this.getDocuments(data)
-      //   .then(() => {
-      //     this.isLoading = false;
-      //     if (itemsPerPage != -1) {
-      //       this.documentItems = this.documents.data;
-      //       this.totalDocuments = this.documents.total;
-      //       this.numberOfPages = this.documents.last_page;
-      //     } else {
-      //       this.documentItems = this.documents;
-      //       this.totalDocuments = this.documents.length;
-      //       this.numberOfPages = 1;
-      //     }
-      //   })
-      //   .catch(() => {
-      //     this.isLoading = false;
-      //   });
+
+      this.getDocuments(data)
+        .then(() => {
+          this.isLoading = false;
+          if (itemsPerPage != -1) {
+            this.documentItems = this.documents.data;
+            this.totalDocuments = this.documents.total;
+            this.numberOfPages = this.documents.last_page;
+          } else {
+            this.documentItems = this.documents;
+            this.totalDocuments = this.documents.length;
+            this.numberOfPages = 1;
+          }
+        })
+        .catch(() => {
+          this.isLoading = false;
+        });
     },
     async deleteItem(id) {
       const { isConfirmed } = await ask(

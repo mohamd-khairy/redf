@@ -5,6 +5,7 @@ const actions = {
     const response = await axios.get("documents", {
       params: {
         search: data.search,
+        type: data.type,
         pageSize: data.pageSize,
         page: data.pageNumber,
         sortDirection: data.sortDirection,
