@@ -51,10 +51,10 @@ class RelatedFormRequestController extends Controller
         }
     }
 
-    public function getFormRequest(PageRequest $request)
+    public function getRelatedFormRequest(PageRequest $request)
     {
         try {
-            $data = $this->formRequestService->getFormRequest($request);
+            $data = $this->formRequestService->getRelatedFormRequest($request);
             if ($data) {
                 return responseSuccess($data, 'Form requests retrieved successfully');
             } else {

@@ -75,29 +75,6 @@
         <v-stepper-content step="1">
           <div class="mt-2" v-if="!initialLoading">
             <div class="mt-2">
-              <v-text-field
-                class="mb-2"
-                v-model="caseName"
-                :label="$t('cases.name')"
-                outlined
-                :required="true"
-                :error-messages="stepOneValidation(caseName)"
-                dense
-                :rules="[requiredRule]"
-              ></v-text-field>
-              <v-text-field
-                outlined
-                type="number"
-                class="mb-2"
-                v-model="caseNumber"
-                @keydown="handleInput"
-                :label="$t('cases.number')"
-                :required="true"
-                :rules="[requiredRule]"
-                :error-messages="stepOneValidation(caseNumber)"
-                dense
-              ></v-text-field>
-
               <div class="d-flex">
                 <v-select
                   :items="formRequests"
@@ -109,6 +86,9 @@
                   outlined
                   v-model="caseId"
                   clearable
+                  :required="true"
+                  :error-messages="stepOneValidation(caseId)"
+                  :rules="[requiredRule]"
                 >
                 </v-select>
                 <v-spacer></v-spacer>
@@ -357,6 +337,7 @@ import { mapActions, mapState } from "vuex";
 import AddUserDialog from "../../components/cases/AddUserDialog";
 import CaseInfoDialog from "../../components/cases/CaseInfoDialog.vue";
 import { makeToast } from "@/helpers";
+import axios from "@/plugins/axios";
 
 export default {
   name: "Create",
@@ -507,7 +488,8 @@ export default {
     ...mapActions("cases", [
       "getPages",
       "validateFormData",
-      "savePages",
+      "saveRelatedPages",
+      "updateRelatedPages",
       "userDepartment",
       "saveRequestSide",
       "saveFormInformation",
@@ -686,10 +668,8 @@ export default {
     async saveForm() {
       this.isSubmitingForm = true;
 
-      if ((await this.validateFormData()) && this.caseName && this.caseNumber) {
-        const result = await this.savePages({
-          caseName: this.caseName,
-          caseNumber: this.caseNumber,
+      if ((await this.validateFormData()) && this.caseId) {
+        const result = await this.saveRelatedPages({
           belongToCase: this.caseId,
         });
         if (result) {
@@ -709,6 +689,50 @@ export default {
         console.log("some fields is required");
       }
     },
+    async updatePages({ state }, {formId}) {
+      try {
+        const customFormData = {
+          id: state.selectedForm.id,
+
+          name: state.selectedForm.name,
+          pages: state.pagesValues.map((page) => ({
+            id: page.id,
+            title: page.title,
+            items: page.items
+              .filter((input) => input.value)
+              .map((input) => {
+                return {
+                  form_page_item_id: input.id,
+                  value: input.value,
+                  type: input.type,
+                };
+              }),
+          })),
+        };
+
+        const bodyFormData = new FormData();
+
+        for (const key in customFormData) {
+          let value = customFormData[key];
+          bodyFormData.set(key, JSON.stringify(value));
+          bodyFormData.set("_method", "PUT");
+        }
+        const response = await axios.post(
+          `update-form-fill/${formId}`,
+          bodyFormData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
+        return true;
+      } catch (error) {
+        console.error("Error saving form data:", error);
+        return false;
+      }
+    },
+
     async storeRequestSide() {
       this.isLoading = true;
       let data = {

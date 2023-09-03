@@ -210,7 +210,7 @@ const actions = {
       return false;
     }
   },
-  async savePages({ state }, { caseName, caseNumber, case_id }) {
+  async savePages({ state }, { caseName, caseNumber, case_id,branch_id,caseDate }) {
     try {
       const customFormData = {
         id: state.selectedForm.id,
@@ -238,8 +238,12 @@ const actions = {
       }
       bodyFormData.set("case_name", caseName);
       bodyFormData.set("case_number", caseNumber);
+      bodyFormData.set("case_date", caseDate);
       if (case_id) {
         bodyFormData.set("case_id", case_id);
+      }
+      if (branch_id) {
+        bodyFormData.set("branch_id", branch_id);
       }
       const result = await axios.post(`store-form-fill`, bodyFormData, {
         headers: {
@@ -252,7 +256,7 @@ const actions = {
       return false;
     }
   },
-  async updatePages({ state }, { caseName, caseNumber, formId }) {
+  async updatePages({ state }, { caseName, caseNumber, formId,branch_id,caseDate }) {
     try {
       const customFormData = {
         id: state.selectedForm.id,
@@ -283,8 +287,93 @@ const actions = {
 
       bodyFormData.set("case_name", caseName);
       bodyFormData.set("case_number", caseNumber);
+      bodyFormData.set("case_date", caseDate);
+      if (branch_id) {
+        bodyFormData.set("branch_id", branch_id);
+      }
       const response = await axios.post(
         `update-form-fill/${formId}`,
+        bodyFormData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+      return true;
+    } catch (error) {
+      console.error("Error saving form data:", error);
+      return false;
+    }
+  },
+  async saveRelatedPages({ state }, {case_id}) {
+    try {
+      const customFormData = {
+        id: state.selectedForm.id,
+        name: state.selectedForm.name,
+        pages: state.pages.map((page) => ({
+          id: page.id,
+          title: page.title,
+          items: page.items
+            .filter((input) => input.value)
+            .map((input) => {
+              return {
+                form_page_item_id: input.id,
+                value: input.value,
+                type: input.type,
+              };
+            }),
+        })),
+      };
+
+      const bodyFormData = new FormData();
+
+      for (const key in customFormData) {
+        let value = customFormData[key];
+        bodyFormData.set(key, JSON.stringify(value));
+      }
+      bodyFormData.set("case_id", case_id);
+      const result = await axios.post(`store-related-case-form-fill`, bodyFormData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      return result;
+    } catch (error) {
+      console.error("Error saving form data:", error);
+      return false;
+    }
+  },
+  async updateRelatedPages({ state }, {formId}) {
+    try {
+      const customFormData = {
+        id: state.selectedForm.id,
+
+        name: state.selectedForm.name,
+        pages: state.pagesValues.map((page) => ({
+          id: page.id,
+          title: page.title,
+          items: page.items
+            .filter((input) => input.value)
+            .map((input) => {
+              return {
+                form_page_item_id: input.id,
+                value: input.value,
+                type: input.type,
+              };
+            }),
+        })),
+      };
+
+      const bodyFormData = new FormData();
+
+      for (const key in customFormData) {
+        let value = customFormData[key];
+        bodyFormData.set(key, JSON.stringify(value));
+        bodyFormData.set("_method", "PUT");
+      }
+      const response = await axios.post(
+        `update-related-case-form-fill/${formId}`,
         bodyFormData,
         {
           headers: {
