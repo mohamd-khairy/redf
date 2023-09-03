@@ -530,6 +530,7 @@ export default {
     this.init();
     this.fetchUsers();
     this.fetchDepartments();
+    this.getBranches({});
 
     this.$root.$on("userCreated", () => {
       this.fetchUsers();
@@ -539,7 +540,6 @@ export default {
     e1(val) {
       if (val === 3) {
         this.getCourts();
-        this.getBranches({});
       }
     },
   },
