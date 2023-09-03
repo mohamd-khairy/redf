@@ -135,10 +135,11 @@ class RelatedFormRequestService
         });
     }
 
-    public function getFormRequest($request)
+    public function getRelatedFormRequest($request)
     {
         try {
-            $query = FormRequest::with('form.pages.items', 'user', 'formAssignedRequests.assigner', 'form_page_item_fill.page_item', 'lastFormRequestInformation');
+            $query = FormRequest::with('form.pages.items', 'user', 'formAssignedRequests.assigner', 'form_page_item_fill.page_item', 'lastFormRequestInformation')
+                ->where('form_type', 'related_case');
 
             if ($request->has('template_id')) {
                 $query = $query->whereHas('form', fn ($q) => $q->where('template_id', $request->input('template_id')));
