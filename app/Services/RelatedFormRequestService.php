@@ -15,31 +15,29 @@ use App\Models\FormAssignRequest;
 use Illuminate\Pipeline\Pipeline;
 use Illuminate\Support\Facades\DB;
 use App\Enums\FormAssignRequestType;
+use App\Enums\StatusEnum;
 use App\Models\File;
 use Illuminate\Support\Facades\Auth;
 use App\Models\FormRequestInformation;
 use Illuminate\Support\Facades\Storage;
 
-class FormRequestService
+class RelatedFormRequestService
 {
-    public function storeFormFill($requestData)
+    public function storeRelatedFormFill($requestData)
     {
         return DB::transaction(function () use ($requestData) {
-
-            $type = $requestData->case_id ? 'consultation' : 'case';
+            $type = 'case';
 
             $formRequest = FormRequest::create([
                 'form_id' => $requestData['id'],
-                'branche_id' => $requestData['branche_id'],
+                'branche_id' => $requestData['branche_id'] ?? null,
                 'user_id' => Auth::id(),
-                'status' => FormRequestStatus::PENDING,
-                'form_type' => $type
+                'status' => StatusEnum::active,
+                'form_type' => 'related_case'
             ]);
-
             $formRequest->form_request_number = $requestData['case_number'] ?? rand(100000, 999999);
-            $formRequest->name = $requestData['case_name'] ?? ($formRequest->form->name . "($formRequest->case_number)");
+            $formRequest->name = $requestData['case_name'] ?? ($formRequest->form->name . "($formRequest->form_request_number)");
             $formRequest->save();
-
             // save related tables if get case_id
             if ($requestData->case_id) {
                 // Create a new Formable record
@@ -53,26 +51,25 @@ class FormRequestService
                     'form_request_id' => $requestData->case_id,
                     'formable_id' => $formRequest->id,
                     'formable_type' => FormRequest::class,
-                    'msg' =>    'تم اضافه استشاره قانونيه جديده',
+                    'msg' =>   $formRequest->form->name . ' تم اضافه ',
                 ];
                 saveFormRequestAction($actionData);
             }
+
             $this->processFormPages($requestData, $formRequest, $type);
 
             return $formRequest;
         });
     }
 
-    public function updateFormFill($requestData, $id)
+    public function updateRelatedFormFill($requestData, $id)
     {
         return DB::transaction(function () use ($requestData, $id) {
-
-            $type = $requestData->case_id ? 'consultation' : 'case';
-
+            $type = 'case';
             $formRequest = FormRequest::findOrFail($id);
             $formRequest->form_request_number = $requestData['case_number'] ?? $formRequest->form_request_number;
             $formRequest->name = $requestData['case_name'] ?? $formRequest->name;
-            $formRequest->branche_id = $requestData['branche_id'] ?? $formRequest->branche_id;
+            $formRequest->branche_id = $requestData['branche_id'] ?? $formRequest->branche_id ?? null;
             // dd($formRequest,$formRequest->branche_id , $requestData);
 
             $formRequest->save();
@@ -89,7 +86,7 @@ class FormRequestService
                     'form_request_id' => $requestData->case_id,
                     'formable_id' => $formRequest->id,
                     'formable_type' => FormRequest::class,
-                    'msg' => 'تم تحديث استشاره قانونيه',
+                    'msg' =>  $formRequest->name  . ' تم تحديث  ',
                 ];
                 saveFormRequestAction($actionData);
             }

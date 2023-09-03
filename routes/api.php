@@ -21,6 +21,7 @@ use App\Http\Controllers\API\NotificationController;
 use App\Http\Controllers\Api\OrganizationController;
 use App\Http\Controllers\API\VerificationController;
 use App\Http\Controllers\Api\FormRequestSideController;
+use App\Http\Controllers\API\RelatedFormRequestController;
 
 Route::group(['prefix' => 'v1'], function () {
 
@@ -161,8 +162,15 @@ Route::group(['prefix' => 'v1'], function () {
         Route::delete('delete-form-Requests/{id}', [FormRequestController::class, 'deleteFormRequest']);
 
         Route::post('assign-request', [FormRequestController::class, 'assignRequest']);
-         Route::get('all-forms', [FormsController::class, 'allForm']);
-        Route::post('form-request-side', [FormRequestController::class , 'storeFormRequestSide']);
-        Route::post('form-request-information', [FormRequestController::class , 'formRequestInformation']);
-      });
+        Route::get('all-forms', [FormsController::class, 'allForm']);
+        Route::post('form-request-side', [FormRequestController::class, 'storeFormRequestSide']);
+        Route::post('form-request-information', [FormRequestController::class, 'formRequestInformation']);
+    });
+
+
+    /*********************FormRequestController***************** */
+    Route::group(['middleware' => 'auth:sanctum'], function () {
+        Route::post('store-related-case-form-fill', [RelatedFormRequestController::class, 'storeRelatedFormFill']);
+        Route::put('update-related-case-form-fill/{id}', [RelatedFormRequestController::class, 'updateRelatedFormFill']);
+    });
 });
