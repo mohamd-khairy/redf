@@ -27,6 +27,7 @@ class FormPageItem extends Model
         'website_view',
         'childList',
         'form_page_id',
+        'key'
     ];
 
     protected $casts = [
