@@ -29,11 +29,11 @@ class RelatedFormRequestController extends Controller
         // $this->middleware('permission:delete-form', ['only' => ['destroy', 'delete_all']]);
         $this->formRequestService = $formRequestService;
     }
+
     public function storeRelatedFormFill(Request $request)
     {
         try {
             $requestData = $request->all();
-//            $requestData['id'] = $request->id;
             $formRequest = $this->formRequestService->storeRelatedFormFill($request);
             return responseSuccess(['formRequest' => $formRequest], 'Form Fill has been successfully Created');
         } catch (\Throwable $th) {
@@ -51,10 +51,10 @@ class RelatedFormRequestController extends Controller
         }
     }
 
-    public function getFormRequest(PageRequest $request)
+    public function getRelatedFormRequest(PageRequest $request)
     {
         try {
-            $data = $this->formRequestService->getFormRequest($request);
+            $data = $this->formRequestService->getRelatedFormRequest($request);
             if ($data) {
                 return responseSuccess($data, 'Form requests retrieved successfully');
             } else {
