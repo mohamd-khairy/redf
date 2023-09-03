@@ -29,11 +29,11 @@ class RelatedFormRequestController extends Controller
         // $this->middleware('permission:delete-form', ['only' => ['destroy', 'delete_all']]);
         $this->formRequestService = $formRequestService;
     }
-    public function storeRelatedFormFill(FormFillRequest $request)
+    public function storeRelatedFormFill(Request $request)
     {
         try {
-            $requestData = $request->validated();
-            $requestData['id'] = $request->id;
+            $requestData = $request->all();
+//            $requestData['id'] = $request->id;
             $formRequest = $this->formRequestService->storeRelatedFormFill($request);
             return responseSuccess(['formRequest' => $formRequest], 'Form Fill has been successfully Created');
         } catch (\Throwable $th) {

@@ -490,6 +490,7 @@ export default {
     number: "الرقم",
     caseName: "اسم القضية",
     caseNumber: "رقم القضية",
+    caseDate: "تاريخ القضية",
     adviceName: "اسم الاستشارة",
     adviceNumber: "رقم الاستشارة",
     reviewName: "اسم المراجعة",
