@@ -1,5 +1,5 @@
 <template>
-  <div class="d-flex flex-column flex-grow-1">
+  <v-container class="">
     <!-- <div class="d-flex align-center pb-3">
       <div class="d-flex flex-column ">
         <div class="d-flex align-baseline">
@@ -67,7 +67,7 @@
         </v-hover>
       </v-col>
     </v-row>
-  </div>
+  </v-container>
 </template>
 
 <script>
