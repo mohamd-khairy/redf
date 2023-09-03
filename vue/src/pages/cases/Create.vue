@@ -208,7 +208,11 @@
           </v-card-actions>
         </v-stepper-content>
         <v-stepper-content step="2">
-          <div class="mt-2" v-if="!initialLoading"></div>
+          <div class="mt-2" v-if="!initialLoading">
+            <v-card-text>
+              <appeal-form></appeal-form>
+            </v-card-text>
+          </div>
           <v-card-actions>
             <v-btn color="primary" @click="saveForm">
               {{ $t("general.continue") }}
@@ -351,6 +355,7 @@
 
 <script>
 import { mapActions, mapState } from "vuex";
+import AppealForm from "./AppealForm.vue";
 import AddUserDialog from "../../components/cases/AddUserDialog";
 import CaseInfoDialog from "../../components/cases/CaseInfoDialog.vue";
 import { makeToast } from "@/helpers";
@@ -358,7 +363,7 @@ import axios from "@/plugins/axios";
 
 export default {
   name: "Create",
-  components: { AddUserDialog, CaseInfoDialog },
+  components: { AddUserDialog, CaseInfoDialog, AppealForm },
   data() {
     return {
       e1: 1,
@@ -675,11 +680,7 @@ export default {
       return this.stepOneErrors && !value ? [msg] : [];
     },
     async saveCaseInfo() {
-      if (
-        !(await this.validateFormData()) ||
-        !this.caseName ||
-        !this.caseNumber
-      ) {
+      if (!(await this.validateFormData())) {
         this.stepOneErrors = true;
         this.showErrors = true;
         return;
