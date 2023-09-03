@@ -22,29 +22,87 @@
       <v-stepper-items>
         <v-stepper-content step="1">
           <div class="mt-2" v-if="!initialLoading">
-            <div class="mt-2">
-              <v-text-field
-                class="mb-2"
-                v-model="caseName"
-                :label="$t('cases.caseName')"
-                outlined
-                :required="true"
-                :error-messages="stepOneValidation(caseName)"
-                dense
-                :rules="[requiredRule]"
-              ></v-text-field>
-              <v-text-field
-                outlined
-                type="number"
-                class="mb-2"
-                v-model="caseNumber"
-                @keydown="handleInput"
-                :label="$t('cases.caseNumber')"
-                :required="true"
-                :rules="[requiredRule]"
-                :error-messages="stepOneValidation(caseNumber)"
-                dense
-              ></v-text-field>
+            <div class="d-flex flex-column flex-sm-row">
+              <div class="flex-grow-1 pt-2 pa-sm-2">
+                <v-row dense>
+                  <v-col cols="6">
+                    <v-text-field
+                      class="mb-2"
+                      v-model="caseName"
+                      :label="$t('cases.caseName')"
+                      outlined
+                      :required="true"
+                      :error-messages="stepOneValidation(caseName)"
+                      dense
+                      :rules="[requiredRule]"
+                    ></v-text-field>
+                  </v-col>
+                  <v-col cols="6">
+                    <v-text-field
+                      outlined
+                      type="number"
+                      class="mb-2"
+                      v-model="caseNumber"
+                      @keydown="handleInput"
+                      :label="$t('cases.caseNumber')"
+                      :required="true"
+                      :rules="[requiredRule]"
+                      :error-messages="stepOneValidation(caseNumber)"
+                      dense
+                    ></v-text-field>
+                  </v-col>
+                  <v-col cols="6">
+                    <v-select
+                      :items="branches?.data || []"
+                      :label="$t('branches.branch')"
+                      item-text="name"
+                      item-value="id"
+                      dense
+                      outlined
+                      v-model="branch_id"
+                    >
+                    </v-select>
+                  </v-col>
+                  <v-col cols="6">
+                    <v-dialog
+                      ref="caseDateDialog"
+                      v-model="caseDateDialog"
+                      :return-value.sync="caseDate"
+                      persistent
+                      width="290px"
+                    >
+                      <template v-slot:activator="{ on, attrs }">
+                        <v-text-field
+                          v-model="caseDate"
+                          :label="$t('tables.date')"
+                          prepend-icon="mdi-calendar"
+                          readonly
+                          v-bind="attrs"
+                          v-on="on"
+                          dense
+                          required="true"
+                          :rules="[rules.required]"
+                          :error-messages="stepOneValidation(caseDate)"
+                          outlined
+                        ></v-text-field>
+                      </template>
+                      <v-date-picker v-model="caseDate" scrollable>
+                        <v-spacer></v-spacer>
+                        <v-btn text color="primary" @click="modal = false">
+                          Cancel
+                        </v-btn>
+                        <v-btn
+                          text
+                          color="primary"
+                          @click="$refs.caseDateDialog.save(caseDate)"
+                        >
+                          OK
+                        </v-btn>
+                      </v-date-picker>
+                    </v-dialog>
+                  </v-col>
+                </v-row>
+              </div>
             </div>
             <v-tabs v-model="activeTab">
               <v-tab v-for="(tab, index) in pages" :key="index">{{
@@ -321,18 +379,6 @@
                   >
                   </v-select>
                 </v-col>
-                <v-col cols="6">
-                  <v-select
-                    :items="branches?.data || []"
-                    :label="$t('branches.branch')"
-                    item-text="name"
-                    item-value="id"
-                    dense
-                    outlined
-                    v-model="caseAction.branch_id"
-                  >
-                  </v-select>
-                </v-col>
                 <v-col cols="12">
                   <v-textarea
                     :label="$t('cases.action')"
@@ -417,11 +463,14 @@ export default {
     return {
       e1: 1,
       selectedTitle: "",
+      caseDateDialog: false,
       dateDialog: false,
       sessionDialog: false,
       sessionDate: false,
       caseNumber: "",
       caseName: "",
+      caseDate: "",
+      branch_id: "",
       initialLoading: false,
       isLoading: false,
       isSubmitingForm: false,
@@ -448,7 +497,6 @@ export default {
       caseAction: {
         amount: "",
         form_request_id: "",
-        branch_id: "",
         percentage: "",
         details: "",
         status: "",
@@ -710,7 +758,7 @@ export default {
       return this.stepOneErrors && !value ? [msg] : [];
     },
     saveCaseInfo() {
-      if (!this.caseName || !this.caseNumber) {
+      if (!this.caseName || !this.caseNumber || !this.caseDate) {
         this.stepOneErrors = true;
         return;
       }
@@ -720,20 +768,25 @@ export default {
     async saveForm() {
       this.isSubmitingForm = true;
       if (
-        (await this.validateFormData()) ||
-        !this.caseName ||
-        !this.caseNumber
+        (await this.validateFormData()) &&
+        this.caseName &&
+        this.caseNumber &&
+        this.caseDate
       ) {
         let result = null;
         if (!this.formRequestId) {
           result = await this.savePages({
             caseName: this.caseName,
             caseNumber: this.caseNumber,
+            caseDate: this.caseDate,
+            branch_id: this.branch_id,
           });
         } else {
           result = await this.updatePages({
             caseName: this.caseName,
             caseNumber: this.caseNumber,
+            caseDate: this.caseDate,
+            branch_id: this.branch_id,
             formId: this.formRequestId,
           });
         }
@@ -786,7 +839,6 @@ export default {
         status: this.caseAction.status,
         date: this.caseAction.date,
         court: this.caseAction.court,
-        branch_id: this.caseAction.branch_id,
         sessionDate: this.caseAction.sessionDate,
       };
 
