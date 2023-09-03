@@ -186,10 +186,10 @@ export default {
     ]),
     ...mapState("app", {
       websiteLogo: (state) => {
-        if (!state.websiteLoginIcon) {
-          return "/images/logo.svg";
-        }
-        return state.websiteLoginIcon;
+        // if (!state.websiteLoginIcon) {
+          return "/images/logo.png";
+        // }
+        // return state.websiteLoginIcon;
       },
       websitefavIcon: (state) => {
         const result = state.generalSettings.filter(
