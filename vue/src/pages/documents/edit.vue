@@ -181,12 +181,12 @@
               ></v-autocomplete>
               <v-autocomplete
                 v-else
-                v-model="form.consultation_id"
+                v-model="form.form_request_id"
                 :items="consultationNames"
                 item-text="name"
                 item-value="id"
                 :label="$t('general.consultation')"
-                :error-messages="errors['consultation_id']"
+                :error-messages="errors['form_request_id']"
                 outlined
                 dense
               ></v-autocomplete>
@@ -240,7 +240,7 @@ export default {
         priority: "",
         type: "",
         form_request_id: "",
-        consultation_id: "",
+        belongs_to: this.belongsTo,
         user_id: null,
         file: null,
         path: null,
@@ -266,7 +266,7 @@ export default {
     belongsTo(val) {
       if (!val) {
         this.form.form_request_id = "";
-        this.form.consultation_id = "";
+        // this.form.consultation_id = "";
       }
     },
   },
@@ -282,6 +282,15 @@ export default {
     ...mapActions("app", ["setBreadCrumb"]),
     ...mapActions("documents", ["updateDocument", "getDocument"]),
     ...mapActions("tasks", ["getCasesNames", "getConsultationNames"]),
+    validateDates() {
+      if (this.startDate && this.endDate) {
+        if (this.startDate >= this.endDate) {
+          this.isDateInvalid = true;
+        } else {
+          this.isDateInvalid = false;
+        }
+      }
+    },
     handleFileUpload(file, input) {
       if (file) {
         const fileName = file.name.split(".")[0];
@@ -305,17 +314,36 @@ export default {
       this.getDocument(id)
         .then(() => {
           this.loading = false;
-          const { name, status, type, priority } = this.document ?? {};
-          this.form = { name, status, type, priority };
+          const {
+            name,
+            status,
+            type,
+            priority,
+            belongs_to,
+            start_date,
+            end_date,
+          } = this.document ?? {};
+          this.form = {
+            name,
+            status,
+            type,
+            priority,
+            belongs_to,
+            start_date,
+            end_date,
+          };
           this.form.form_request_id = this.document.fileable_id;
           this.form.path = this.document.path.split("storage/")[1];
           this.full_path = this.document.path;
-          this.form.start_date = this.formatDate(
-            this.document.start_date.split(" ")[0]
-          );
-          this.form.end_date = this.formatDate(
-            this.document.end_date.split(" ")[0]
-          );
+          this.form.start_date = this.formatDate(start_date.split(" ")[0]);
+          this.form.end_date = this.formatDate(end_date.split(" ")[0]);
+          if (this.form.belongs_to) {
+            this.belongsTo = this.form.belongs_to;
+            this.form.form_request_id = this;
+          }
+          if (this.belongsTo === "case") {
+          } else {
+          }
         })
         .catch(() => {
           this.loading = false;
@@ -324,6 +352,7 @@ export default {
     updateDoc() {
       this.loading = true;
       this.errors = {};
+      this.form.belongs_to = this.belongsTo;
       this.updateDocument(this.form)
         .then(() => {
           this.loading = false;

@@ -12,7 +12,12 @@
 
         <v-divider></v-divider>
 
-        <v-stepper-step step="2">
+        <v-stepper-step :complete="e1 > 2" step="2">
+          {{ $t("cases.preview") }}
+        </v-stepper-step>
+        <v-divider></v-divider>
+
+        <v-stepper-step step="3">
           {{ $t("cases.actions") }}
         </v-stepper-step>
       </v-stepper-header>
@@ -117,7 +122,9 @@
                         :cols="inputWidth(input.width)"
                       >
                         <template v-if="input.type === 'label'">
-                          <small style="font-weight: bold">{{ input.label }}</small>
+                          <small style="font-weight: bold">{{
+                            input.label
+                          }}</small>
                         </template>
                         <template v-if="input.type === 'text'">
                           <v-text-field
@@ -192,7 +199,7 @@
             </v-tabs-items>
           </div>
           <v-card-actions>
-            <v-btn color="primary" @click="saveForm">
+            <v-btn color="primary" @click="saveCaseInfo">
               {{ $t("general.continue") }}
             </v-btn>
             <!-- <v-btn color="grey" @click="stepBack" class="ms-2">
@@ -200,8 +207,22 @@
             </v-btn> -->
           </v-card-actions>
         </v-stepper-content>
-
         <v-stepper-content step="2">
+          <div class="mt-2" v-if="!initialLoading">
+            <v-card-text>
+              <appeal-form></appeal-form>
+            </v-card-text>
+          </div>
+          <v-card-actions>
+            <v-btn color="primary" @click="saveForm">
+              {{ $t("general.continue") }}
+            </v-btn>
+            <v-btn color="grey" @click="stepBack" class="ms-2">
+              {{ $t("general.back") }}
+            </v-btn>
+          </v-card-actions>
+        </v-stepper-content>
+        <v-stepper-content step="3">
           <div class="d-flex flex-column flex-sm-row">
             <div class="flex-grow-1 pt-2 pa-sm-2">
               <v-row dense>
@@ -334,6 +355,7 @@
 
 <script>
 import { mapActions, mapState } from "vuex";
+import AppealForm from "./AppealForm.vue";
 import AddUserDialog from "../../components/cases/AddUserDialog";
 import CaseInfoDialog from "../../components/cases/CaseInfoDialog.vue";
 import { makeToast } from "@/helpers";
@@ -341,7 +363,7 @@ import axios from "@/plugins/axios";
 
 export default {
   name: "Create",
-  components: { AddUserDialog, CaseInfoDialog },
+  components: { AddUserDialog, CaseInfoDialog, AppealForm },
   data() {
     return {
       e1: 1,
@@ -421,7 +443,7 @@ export default {
   },
   watch: {
     e1(val) {
-      if (val === 2) {
+      if (val === 3) {
         this.getCourts();
       }
     },
@@ -657,27 +679,39 @@ export default {
       const msg = this.$t("general.required_input");
       return this.stepOneErrors && !value ? [msg] : [];
     },
-    saveCaseInfo() {
-      if (!this.caseName || !this.caseNumber) {
+    async saveCaseInfo() {
+      if (!(await this.validateFormData())) {
         this.stepOneErrors = true;
+        this.showErrors = true;
         return;
       }
+      this.showErrors = false;
       this.stepOneErrors = false;
       this.e1 = 2;
     },
     async saveForm() {
       this.isSubmitingForm = true;
+      if ((await this.validateFormData()) && this.caseName && this.caseNumber) {
+        let result = null;
+        if (!this.formRequestId) {
+          result = await this.savePages({
+            caseName: this.caseName,
+            caseNumber: this.caseNumber,
+          });
+        } else {
+          result = await this.updatePages({
+            caseName: this.caseName,
+            caseNumber: this.caseNumber,
+            formId: this.formRequestId,
+          });
+        }
 
-      if ((await this.validateFormData()) && this.caseId) {
-        const result = await this.saveRelatedPages({
-          belongToCase: this.caseId,
-        });
         if (result) {
           this.isSubmitingForm = false;
-          this.formRequestId = result.data?.data?.formRequest?.id;
+          this.formRequestId =
+            this.formRequestId || result.data?.data?.formRequest?.id;
           this.showErrors = false;
-          this.stepOneErrors = false;
-          this.e1 = 2;
+          this.e1 = 3;
           // makeToast("success", response.data.message);
         } else {
           makeToast("error", "Failed to save data");
@@ -686,10 +720,11 @@ export default {
         this.showErrors = true;
         this.stepOneErrors = true;
         this.isSubmitingForm = false;
+
         console.log("some fields is required");
       }
     },
-    async updatePages({ state }, {formId}) {
+    async updatePages({ state }, { formId }) {
       try {
         const customFormData = {
           id: state.selectedForm.id,
