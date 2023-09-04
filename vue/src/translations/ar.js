@@ -245,6 +245,7 @@ export default {
     activities: "النشاطات",
     branches: "الفروع",
     cases: "القضايا",
+    cases_child: "مراجعة القضايا",
     editCase: "تعديل البيانات",
   },
   breadcrumbs: {

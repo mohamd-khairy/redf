@@ -19,7 +19,7 @@ export default {
         {
           icon: "mdi-list-box",
           text: "cases",
-          key: "menu.cases",
+          key: "menu.cases_child",
           permission: "read-role",
           link: "/cases/1",
         },
