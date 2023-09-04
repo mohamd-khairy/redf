@@ -240,9 +240,15 @@ const actions = {
         let value = customFormData[key];
         bodyFormData.set(key, JSON.stringify(value));
       }
-      bodyFormData.set("case_name", caseName);
-      bodyFormData.set("case_number", caseNumber);
-      bodyFormData.set("case_date", caseDate);
+      if (caseName) {
+        bodyFormData.set("case_name", caseName);
+      }
+      if (caseNumber) {
+        bodyFormData.set("case_number", caseNumber);
+      }
+      if (caseDate) {
+        bodyFormData.set("case_date", caseDate);
+      }
       if (case_id) {
         bodyFormData.set("case_id", case_id);
       }
@@ -294,10 +300,15 @@ const actions = {
         bodyFormData.set(key, JSON.stringify(value));
         bodyFormData.set("_method", "PUT");
       }
-
-      bodyFormData.set("case_name", caseName);
-      bodyFormData.set("case_number", caseNumber);
-      bodyFormData.set("case_date", caseDate);
+      if (caseName) {
+        bodyFormData.set("case_name", caseName);
+      }
+      if (caseNumber) {
+        bodyFormData.set("case_number", caseNumber);
+      }
+      if (caseDate) {
+        bodyFormData.set("case_date", caseDate);
+      }
       if (branch_id) {
         bodyFormData.set("branche_id", branch_id);
       }

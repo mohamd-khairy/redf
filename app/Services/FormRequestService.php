@@ -28,8 +28,10 @@ class FormRequestService
 {
     public function storeFormFill($requestData)
     {
+        //  return $requestData;
         return DB::transaction(function () use ($requestData) {
 
+            $number = $requestData['case_number'] ?? rand(100000, 999999);
             $formRequest = FormRequest::create([
                 'form_id' => $requestData['id'],
                 'branche_id' => $requestData['branche_id'],
@@ -37,11 +39,9 @@ class FormRequestService
                 'status' => StatusEnum::PENDING,
                 'form_type' => $requestData['type'],
                 'case_date' => $requestData['case_date'],
-                'form_request_number' => $requestData['case_number'] ?? rand(100000, 999999),
+                'form_request_number' => $number,
+                'name' => $requestData['case_name'] ?? ($requestData['name'] . "($number)")
             ]);
-
-            $formRequest->name = $requestData['case_name'] ?? ($formRequest->form->name . "($formRequest->case_number)");
-            $formRequest->save();
 
             // save related tables if get case_id
             if ($requestData->case_id) {
@@ -181,9 +181,8 @@ class FormRequestService
                 $query = $query->whereHas('form', fn ($q) => $q->where('template_id', $request->input('template_id')));
             }
 
-            if ($request->has('form_type')) {
-                $query = $query->where('form_type', request('form_type'));
-            }
+            $query = $query->where('form_type', request('form_type', 'case'));
+
 
             $data = app(Pipeline::class)->send($query)->through([SortFilters::class])->thenReturn();
 

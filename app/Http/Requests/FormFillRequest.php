@@ -49,6 +49,10 @@ class FormFillRequest extends FormRequest
             $data['branche_id'] = 'required';
         }
 
+        if (request('type') == 'related_case') {
+            $data['case_id'] = 'required';
+        }
+
         return $data;
     }
 }
