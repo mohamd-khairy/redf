@@ -274,8 +274,6 @@ class CaseRelatedSeeder extends Seeder
             'key'=>'judgment_proves'
         ]);
 
-
-
         // second model
         FormPageItem::create([
             'label' => 'العام الهجرى',
@@ -1074,8 +1072,7 @@ class CaseRelatedSeeder extends Seeder
             'form_page_id' => $form_page6->id,
             'key'=>'defense_date'
         ]);
-
-        FormPageItem::create([
+         FormPageItem::create([
             'label' => 'رقم الهويه الوطنيه',
             'type' => 'text',
             'enabled' => 1,

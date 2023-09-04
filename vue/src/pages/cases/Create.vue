@@ -640,6 +640,7 @@ export default {
             caseNumber: null,
             caseDate: null,
             type: "related_case",
+            case_id: this.caseId,
           });
         } else {
           result = await this.updatePages({
@@ -648,6 +649,7 @@ export default {
             caseDate: null,
             type: "related_case",
             formId: this.formRequestId,
+            case_id: this.caseId,
           });
         }
 
