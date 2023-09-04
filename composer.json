@@ -9,6 +9,7 @@
     "license": "MIT",
     "require": {
         "php": "^8.1",
+        "archtechx/enums": "^0.3.2",
         "beyondcode/laravel-websockets": "^1.14",
         "directorytree/ldaprecord-laravel": "*",
         "ejarnutowski/laravel-api-key": "^1.0",

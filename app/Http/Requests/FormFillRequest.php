@@ -34,6 +34,7 @@ class FormFillRequest extends FormRequest
             'type' => 'required|in:related_case,case,consultation',
             'case_number' => 'nullable|required_if:type,case|regex:/^[0-9]+$/',
             'case_name' => 'nullable|required_if:type,case|string',
+            'case_date' => 'required|date',
             'branche_id' => 'nullable',
             'pages' => 'required',
             'pages.*' => 'required',

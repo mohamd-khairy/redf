@@ -440,6 +440,7 @@ export default {
           caseName: this.caseName,
           caseNumber: this.caseNumber,
           case_id: this.case_id,
+          type: 'consultation'
         });
         if (result) {
           this.isSubmitingForm = false;
