@@ -111,7 +111,7 @@
           <div>{{ item.name ?? "---" }}</div>
         </template>
         <template v-slot:item.branch="{ item }">
-          <div>{{ item.branch.name ?? "---" }}</div>
+          <div>{{ item?.branch?.name ?? "---" }}</div>
         </template>
         <template v-slot:item.form_request_number="{ item }">
           <div class="font-weight-bold">
@@ -148,9 +148,7 @@
             <!-- {{
               item?.status ? $t(`general.${item.status.toLowerCase()}`) : "---"
             }} -->
-            {{
-              item?.status ? item.status : "---"
-            }}
+            {{ item?.status ? item.status : "---" }}
           </v-chip>
         </template>
 

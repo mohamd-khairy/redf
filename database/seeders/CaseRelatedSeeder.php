@@ -63,7 +63,7 @@ class CaseRelatedSeeder extends Seeder
         ]);
 
         $form2 = Form::firstOrCreate([
-            'id' => FormEnum::RESUME_CASE_FORM,
+            'id' => FormEnum::OBJECTION_CASE_FORM,
             'name' => 'طلب اعتراض بالعليا',
             'description' => 'طلب اعتراض بالعليا',
             'user_id' => 1,
@@ -72,7 +72,7 @@ class CaseRelatedSeeder extends Seeder
         ]);
 
         $form3 = Form::firstOrCreate([
-            'id' => FormEnum::RESUME_CASE_FORM,
+            'id' => FormEnum::SOLICITATION_CASE_FORM,
             'name' => 'طلب التماس',
             'description' => 'طلب التماس',
             'user_id' => 1,
@@ -81,7 +81,7 @@ class CaseRelatedSeeder extends Seeder
         ]);
 
         $form4 = Form::firstOrCreate([
-            'id' => FormEnum::RESUME_CASE_FORM,
+            'id' => FormEnum::IMPLEMENTATION_CASE_FORM,
             'name' => 'خطاب تنفيذ',
             'description' => 'خطاب تنفيذ',
             'user_id' => 1,
@@ -90,7 +90,7 @@ class CaseRelatedSeeder extends Seeder
         ]);
 
         $form5 = Form::firstOrCreate([
-            'id' => FormEnum::RESUME_CASE_FORM,
+            'id' => FormEnum::CLAIM_CASE_FORM,
             'name' => 'لائحة دعوى',
             'description' => 'لائحة دعوى',
             'user_id' => 1,
@@ -99,7 +99,7 @@ class CaseRelatedSeeder extends Seeder
         ]);
 
         $form6 = Form::firstOrCreate([
-            'id' => FormEnum::RESUME_CASE_FORM,
+            'id' => FormEnum::DEFENCE_CASE_FORM,
             'name' => 'مذكرة الدفاع',
             'description' => 'مذكرة الدفاع',
             'user_id' => 1,
@@ -137,10 +137,10 @@ class CaseRelatedSeeder extends Seeder
             'form_id' => $form6->id
         ]);
 
-
+        // first model
         FormPageItem::create([
             'label' => 'فرع المحكمة الادارية',
-            'type' => 'select',
+            'type' => 'text',
             'enabled' => 1,
             'required' => 1,
             'website_view' => 1,
@@ -150,14 +150,14 @@ class CaseRelatedSeeder extends Seeder
             'input_type' => 'text',
             'height' => '',
             'length' => '20',
-            'childList' => json_encode($branches),
+            'childList' => json_encode([]),
             'form_page_id' => $form_page1->id,
             'key'=>'branch'
         ]);
 
         FormPageItem::create([
             'label' => 'الدائرة',
-            'type' => 'select',
+            'type' => 'text',
             'enabled' => 1,
             'required' => 1,
             'website_view' => 1,
@@ -167,7 +167,7 @@ class CaseRelatedSeeder extends Seeder
             'input_type' => 'text',
             'height' => '',
             'length' => '20',
-            'childList' => $courts,
+            'childList' => json_encode([]),
             'form_page_id' => $form_page1->id,
             'key'=>'court'
         ]);
@@ -276,9 +276,7 @@ class CaseRelatedSeeder extends Seeder
 
 
 
-
-
-
+        // second model
         FormPageItem::create([
             'label' => 'العام الهجرى',
             'type' => 'text',
@@ -567,5 +565,583 @@ class CaseRelatedSeeder extends Seeder
             'form_page_id' => $form_page2->id,
             'key'=>'redf_requests'
         ]);
+
+
+
+        // third model
+        FormPageItem::create([
+            'label' => 'المحكمة',
+            'type' => 'text',
+            'enabled' => 1,
+            'required' => 1,
+            'website_view' => 1,
+            'notes' => '',
+            'comment' => '',
+            'width' => 'col-12',
+            'input_type' => 'text',
+            'height' => '',
+            'length' => '20',
+            'childList' => json_encode([]),
+            'form_page_id' => $form_page3->id,
+            'key'=>'petition_court'
+        ]);
+
+        FormPageItem::create([
+            'label' => 'المحكمه الاداريه',
+            'type' => 'text',
+            'enabled' => 1,
+            'required' => 1,
+            'website_view' => 1,
+            'notes' => '',
+            'comment' => '',
+            'width' => 'col-12',
+            'input_type' => 'text',
+            'height' => '',
+            'length' => '20',
+            'childList' => json_encode([]),
+            'form_page_id' => $form_page3->id,
+            'key'=>'petition_administrative_court'
+        ]);
+
+
+
+        FormPageItem::create([
+            'label' => 'العام الهجري',
+            'type' => 'text',
+            'enabled' => 1,
+            'required' => 1,
+            'website_view' => 1,
+            'notes' => '',
+            'comment' => '',
+            'width' => 'col-12',
+            'input_type' => 'text',
+            'height' => '',
+            'length' => '',
+            'childList' => json_encode([]),
+            'form_page_id' => $form_page3->id,
+            'key'=>'petition_hijri_year'
+        ]);
+
+        FormPageItem::create([
+            'label' => 'فرع صندوق التنميه العقاريه',
+            'type' => 'text',
+            'enabled' => 1,
+            'required' => 1,
+            'website_view' => 1,
+            'notes' => '',
+            'comment' => '',
+            'width' => 'col-12',
+            'input_type' => 'text',
+            'height' => '',
+            'length' => '',
+            'childList' => json_encode([]),
+            'form_page_id' => $form_page3->id,
+            'key'=>'petition_real_estate_development_fund_branch'
+        ]);
+
+
+
+        FormPageItem::create([
+            'label' => 'القاضي',
+            'type' => 'text',
+            'enabled' => 1,
+            'required' => 1,
+            'website_view' => 1,
+            'notes' => '',
+            'comment' => '',
+            'width' => 'col-12',
+            'input_type' => 'text',
+            'height' => '',
+            'length' => '500',
+            'childList' => json_encode([]),
+            'form_page_id' => $form_page3->id,
+            'key'=>'petition_judge'
+        ]);
+
+        FormPageItem::create([
+            'label' => 'اسباب الأستئناف',
+            'type' => 'textarea',
+            'enabled' => 1,
+            'required' => 1,
+            'website_view' => 1,
+            'notes' => '',
+            'comment' => '',
+            'width' => 'col-12',
+            'input_type' => 'textarea',
+            'height' => '',
+            'length' => '500',
+            'childList' => json_encode([]),
+            'form_page_id' => $form_page3->id,
+            'key'=>'petition_reasons_for_appeal'
+        ]);
+
+        FormPageItem::create([
+            'label' => 'المدعي قام ب',
+            'type' => 'textarea',
+            'enabled' => 1,
+            'required' => 1,
+            'website_view' => 1,
+            'notes' => '',
+            'comment' => '',
+            'width' => 'col-12',
+            'input_type' => 'text',
+            'height' => '',
+            'length' => '500',
+            'childList' => json_encode([]),
+            'form_page_id' => $form_page3->id,
+            'key'=>'petition_the_plaintiff'
+        ]);
+
+        FormPageItem::create([
+            'label' => 'يود الصندوق الاشاره ب',
+            'type' => 'textarea',
+            'enabled' => 1,
+            'required' => 1,
+            'website_view' => 1,
+            'notes' => '',
+            'comment' => '',
+            'width' => 'col-12',
+            'input_type' => 'textarea',
+            'height' => '',
+            'length' => '500',
+            'childList' => json_encode([]),
+            'form_page_id' => $form_page3->id,
+            'key'=>'petition_fund_would_like_to_point_out'
+        ]);
+
+        FormPageItem::create([
+            'label' => 'الحكم',
+            'type' => 'textarea',
+            'enabled' => 1,
+            'required' => 1,
+            'website_view' => 1,
+            'notes' => '',
+            'comment' => '',
+            'width' => 'col-12',
+            'input_type' => 'textarea',
+            'height' => '',
+            'length' => '500',
+            'childList' => json_encode([]),
+            'form_page_id' => $form_page3->id,
+            'key'=>'petition_Judgment'
+        ]);
+
+        FormPageItem::create([
+            'label' => 'الرد علي الحكم',
+            'type' => 'textarea',
+            'enabled' => 1,
+            'required' => 1,
+            'website_view' => 1,
+            'notes' => '',
+            'comment' => '',
+            'width' => 'col-12',
+            'input_type' => 'textarea',
+            'height' => '',
+            'length' => '500',
+            'childList' => json_encode([]),
+            'form_page_id' => $form_page3->id,
+            'key'=>'petition_response_to_the_ruling'
+        ]);
+
+
+
+
+        // four model
+        FormPageItem::create([
+            'label' => 'اسم المواطن',
+            'type' => 'text',
+            'enabled' => 1,
+            'required' => 1,
+            'website_view' => 1,
+            'notes' => '',
+            'comment' => '',
+            'width' => 'col-12',
+            'input_type' => 'text',
+            'height' => '',
+            'length' => '500',
+            'childList' => json_encode([]),
+            'form_page_id' => $form_page4->id,
+            'key'=>'letter_citizen_name'
+        ]);
+
+
+        FormPageItem::create([
+            'label' => 'الدائرة',
+            'type' => 'text',
+            'enabled' => 1,
+            'required' => 1,
+            'website_view' => 1,
+            'notes' => '',
+            'comment' => '',
+            'width' => 'col-3',
+            'input_type' => 'text',
+            'height' => '',
+            'length' => '20',
+            'childList' => json_encode([]),
+            'form_page_id' => $form_page4->id,
+            'key'=> 'letter_ring_of_the_administrative_court'
+        ]);
+
+        FormPageItem::create([
+            'label' => 'الاختصاص',
+            'type' => 'text',
+            'enabled' => 1,
+            'required' => 1,
+            'website_view' => 1,
+            'notes' => '',
+            'comment' => '',
+            'width' => 'col-3',
+            'input_type' => 'text',
+            'height' => '',
+            'length' => '20',
+            'childList' => json_encode([]),
+            'form_page_id' => $form_page4->id,
+            'key'=>'letter_jurisdiction_of_the_administrative_court'
+        ]);
+
+        FormPageItem::create([
+            'label' => 'المحكمه الاداريه',
+            'type' => 'text',
+            'enabled' => 1,
+            'required' => 1,
+            'website_view' => 1,
+            'notes' => '',
+            'comment' => '',
+            'width' => 'col-3',
+            'input_type' => 'text',
+            'height' => '',
+            'length' => '',
+            'childList' => json_encode([]),
+            'form_page_id' => $form_page4->id,
+            'key'=>'letter_administrative_court'
+        ]);
+
+
+        FormPageItem::create([
+            'label' => 'العام الهجري',
+            'type' => 'text',
+            'enabled' => 1,
+            'required' => 1,
+            'website_view' => 1,
+            'notes' => '',
+            'comment' => '',
+            'width' => 'col-12',
+            'input_type' => 'text',
+            'height' => '',
+            'length' => '',
+            'childList' => json_encode([]),
+            'form_page_id' => $form_page4->id,
+            'key'=>'letter_hijri_year'
+        ]);
+
+        FormPageItem::create([
+            'label' => 'مقامه من',
+            'type' => 'text',
+            'enabled' => 1,
+            'required' => 1,
+            'website_view' => 1,
+            'notes' => '',
+            'comment' => '',
+            'width' => 'col-12',
+            'input_type' => 'text',
+            'height' => '',
+            'length' => '500',
+            'childList' => json_encode([]),
+            'form_page_id' => $form_page4->id,
+            'key'=>'letter_position_from'
+        ]);
+
+        FormPageItem::create([
+            'label' => 'رقم هويه المدعي',
+            'type' => 'text',
+            'enabled' => 1,
+            'required' => 1,
+            'website_view' => 1,
+            'notes' => '',
+            'comment' => '',
+            'width' => 'col-12',
+            'input_type' => 'text',
+            'height' => '',
+            'length' => '500',
+            'childList' => json_encode([]),
+            'form_page_id' => $form_page4->id,
+            'key'=>'letter_plaintiff_id_number'
+        ]);
+
+        FormPageItem::create([
+            'label' => 'القاضي ب',
+            'type' => 'text',
+            'enabled' => 1,
+            'required' => 1,
+            'website_view' => 1,
+            'notes' => '',
+            'comment' => '',
+            'width' => 'col-12',
+            'input_type' => 'text',
+            'height' => '',
+            'length' => '500',
+            'childList' => json_encode([]),
+            'form_page_id' => $form_page4->id,
+            'key'=>'letter_judge'
+        ]);
+
+        FormPageItem::create([
+            'label' => 'الدائرة',
+            'type' => 'text',
+            'enabled' => 1,
+            'required' => 1,
+            'website_view' => 1,
+            'notes' => '',
+            'comment' => '',
+            'width' => 'col-3',
+            'input_type' => 'text',
+            'height' => '',
+            'length' => '20',
+            'childList' => json_encode([]),
+            'form_page_id' => $form_page4->id,
+            'key'=>'letter_circuit_court_of_appeals'
+        ]);
+
+        FormPageItem::create([
+            'label' => 'الاختصاص',
+            'type' => 'text',
+            'enabled' => 1,
+            'required' => 1,
+            'website_view' => 1,
+            'notes' => '',
+            'comment' => '',
+            'width' => 'col-3',
+            'input_type' => 'text',
+            'height' => '',
+            'length' => '20',
+            'childList' => json_encode([]),
+            'form_page_id' => $form_page4->id,
+            'key'=>'letter_jurisdiction_court_of_appeals'
+        ]);
+
+        FormPageItem::create([
+            'label' => 'محكمه الاستئناف الاداريه',
+            'type' => 'text',
+            'enabled' => 1,
+            'required' => 1,
+            'website_view' => 1,
+            'notes' => '',
+            'comment' => '',
+            'width' => 'col-3',
+            'input_type' => 'text',
+            'height' => '',
+            'length' => '500',
+            'childList' => json_encode([]),
+            'form_page_id' => $form_page4->id,
+            'key'=>'letter_administrative_court_of_appeal'
+        ]);
+
+        FormPageItem::create([
+            'label' => 'رقم الحكم',
+            'type' => 'text',
+            'enabled' => 1,
+            'required' => 1,
+            'website_view' => 1,
+            'notes' => '',
+            'comment' => '',
+            'width' => 'col-12',
+            'input_type' => 'text',
+            'height' => '',
+            'length' => '500',
+            'childList' => json_encode([]),
+            'form_page_id' => $form_page4->id,
+            'key'=>'letter_development_fund_confirms'
+        ]);
+
+        FormPageItem::create([
+            'label' => 'العام الهجري',
+            'type' => 'text',
+            'enabled' => 1,
+            'required' => 1,
+            'website_view' => 1,
+            'notes' => '',
+            'comment' => '',
+            'width' => 'col-12',
+            'input_type' => 'text',
+            'height' => '',
+            'length' => '500',
+            'childList' => json_encode([]),
+            'form_page_id' => $form_page4->id,
+            'key'=>'letter_development_fund_confirms'
+        ]);
+
+
+        // five model
+        FormPageItem::create([
+            'label' => 'رقم السجل لمدني / التجاري',
+            'type' => 'text',
+            'enabled' => 1,
+            'required' => 1,
+            'website_view' => 1,
+            'notes' => '',
+            'comment' => '',
+            'width' => 'col-12',
+            'input_type' => 'text',
+            'height' => '',
+            'length' => '20',
+            'childList' => json_encode([]),
+            'form_page_id' => $form_page5->id,
+            'key'=>'litigation_civil_or_commercial_registry'
+        ]);
+
+        FormPageItem::create([
+            'label' => 'المحكمه الاداريه',
+            'type' => 'text',
+            'enabled' => 1,
+            'required' => 1,
+            'website_view' => 1,
+            'notes' => '',
+            'comment' => '',
+            'width' => 'col-12',
+            'input_type' => 'text',
+            'height' => '',
+            'length' => '',
+            'childList' => json_encode([]),
+            'form_page_id' => $form_page5->id,
+            'key'=>'litigation_administrative_court'
+        ]);
+
+        FormPageItem::create([
+            'label' => 'البيان',
+            'type' => 'textarea',
+            'enabled' => 1,
+            'required' => 1,
+            'website_view' => 1,
+            'notes' => '',
+            'comment' => '',
+            'width' => 'col-12',
+            'input_type' => 'textarea',
+            'height' => '',
+            'length' => '',
+            'childList' => json_encode([]),
+            'form_page_id' => $form_page5->id,
+            'key'=>'litigation_statement'
+        ]);
+
+        FormPageItem::create([
+            'label' => 'رقم الخطاب',
+            'type' => 'text',
+            'enabled' => 1,
+            'required' => 1,
+            'website_view' => 1,
+            'notes' => '',
+            'comment' => '',
+            'width' => 'col-4',
+            'input_type' => 'text',
+            'height' => '',
+            'length' => '500',
+            'childList' => json_encode([]),
+            'form_page_id' => $form_page5->id,
+            'key'=>'litigation_letter_number'
+        ]);
+
+        FormPageItem::create([
+            'label' => 'التاريخ',
+            'type' => 'text',
+            'enabled' => 1,
+            'required' => 1,
+            'website_view' => 1,
+            'notes' => '',
+            'comment' => '',
+            'width' => 'col-12',
+            'input_type' => 'text',
+            'height' => '',
+            'length' => '500',
+            'childList' => json_encode([]),
+            'form_page_id' => $form_page5->id,
+            'key'=>'litigation_date'
+        ]);
+
+        // six model
+        FormPageItem::create([
+            'label' => 'التاريخ',
+            'type' => 'text',
+            'enabled' => 1,
+            'required' => 1,
+            'website_view' => 1,
+            'notes' => '',
+            'comment' => '',
+            'width' => 'col-12',
+            'input_type' => 'text',
+            'height' => '',
+            'length' => '20',
+            'childList' => json_encode([]),
+            'form_page_id' => $form_page6->id,
+            'key'=>'defense_date'
+        ]);
+
+        FormPageItem::create([
+            'label' => 'رقم الهويه الوطنيه',
+            'type' => 'text',
+            'enabled' => 1,
+            'required' => 1,
+            'website_view' => 1,
+            'notes' => '',
+            'comment' => '',
+            'width' => 'col-12',
+            'input_type' => 'text',
+            'height' => '',
+            'length' => '',
+            'childList' => json_encode([]),
+            'form_page_id' => $form_page6->id,
+            'key'=>'defense_national_identification_number'
+        ]);
+
+        FormPageItem::create([
+            'label' => 'المحكمه الاداريه',
+            'type' => 'text',
+            'enabled' => 1,
+            'required' => 1,
+            'website_view' => 1,
+            'notes' => '',
+            'comment' => '',
+            'width' => 'col-12',
+            'input_type' => 'text',
+            'height' => '',
+            'length' => '',
+            'childList' => json_encode([]),
+            'form_page_id' => $form_page5->id,
+            'key'=>'defense_administrative_court'
+        ]);
+
+        FormPageItem::create([
+            'label' => 'نفيد فضيلتكم بان',
+            'type' => 'textarea',
+            'enabled' => 1,
+            'required' => 1,
+            'website_view' => 1,
+            'notes' => '',
+            'comment' => '',
+            'width' => 'col-4',
+            'input_type' => 'textarea',
+            'height' => '',
+            'length' => '500',
+            'childList' => json_encode([]),
+            'form_page_id' => $form_page5->id,
+            'key'=>'defense_we_inform_you_that'
+        ]);
+
+        FormPageItem::create([
+            'label' => 'بالاضافه',
+            'type' => 'textarea',
+            'enabled' => 1,
+            'required' => 1,
+            'website_view' => 1,
+            'notes' => '',
+            'comment' => '',
+            'width' => 'col-12',
+            'input_type' => 'textarea',
+            'height' => '',
+            'length' => '500',
+            'childList' => json_encode([]),
+            'form_page_id' => $form_page5->id,
+            'key'=>'defense_in_addition'
+        ]);
+
     }
 }
