@@ -3,8 +3,11 @@
 namespace App\Services;
 
 use Carbon\Carbon;
+use App\Models\File;
 use App\Models\Form;
+use App\Enums\FormEnum;
 use App\Models\Formable;
+use App\Enums\CaseTypeEnum;
 use App\Models\FormRequest;
 use App\Filters\SortFilters;
 use App\Models\FormRequestSide;
@@ -15,16 +18,15 @@ use App\Models\FormAssignRequest;
 use Illuminate\Pipeline\Pipeline;
 use Illuminate\Support\Facades\DB;
 use App\Enums\FormAssignRequestType;
-use App\Models\File;
 use Illuminate\Support\Facades\Auth;
 use App\Models\FormRequestInformation;
 use Illuminate\Support\Facades\Storage;
 
 class FormRequestService
 {
-    public function storeFormFill($requestData)
+    public function storeFormFill($requestData )
     {
-        return DB::transaction(function () use ($requestData) {
+         return DB::transaction(function () use ($requestData) {
 
             $formRequest = FormRequest::create([
                 'form_id' => $requestData['id'],
@@ -40,6 +42,44 @@ class FormRequestService
 
             // save related tables if get case_id
             if ($requestData->case_id) {
+                // if type related_case
+                if($requestData['type'] == 'related_case'){
+                    $formId = $requestData['id'];
+                    $formEnum = FormEnum::from($formId);
+                    $status = '';
+                    if ($formEnum !== null) {
+                         switch ($formEnum) {
+                            case FormEnum::DEFENCE_CASE_FORM:
+                                if ($formId == 4) {
+                                    $status = CaseTypeEnum::FIRST_RULE;
+                                }
+                                break;
+
+                            case FormEnum::CLAIM_CASE_FORM:
+                                if ($formId == 5) {
+                                    $status = CaseTypeEnum::FIRST_RULE;
+                                }
+                                break;
+
+                            case FormEnum::RESUME_CASE_FORM:
+                                if ($formId == 6) {
+                                    $status = CaseTypeEnum::SECOND_RULE;
+                                }
+                                break;
+
+                            case FormEnum::SOLICITATION_CASE_FORM:
+                                if ($formId == 7) {
+                                    $status = CaseTypeEnum::THIRD_RULE;
+                                }
+                                break;
+
+                            default:
+                                // Handle the default case if necessary
+                                break;
+                        }
+                        dd($status);
+                    }
+                }
                 // Create a new Formable record
                 Formable::create([
                     'formable_id' => $requestData->case_id,
@@ -98,7 +138,7 @@ class FormRequestService
 
     private function processFormPages($request, FormRequest $formRequest)
     {
-        $pagesInput = $request->input('pages', []);
+         $pagesInput = $request->input('pages', []);
 
         $pages = is_string($pagesInput) ? json_decode($pagesInput, true) : $pagesInput;
         $pageItems = collect($pages)->flatMap(fn ($page) => $page['items'] ?? []);
