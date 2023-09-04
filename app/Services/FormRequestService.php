@@ -42,10 +42,6 @@ class FormRequestService
                 'form_request_number' => $number,
                 'name' => $requestData['case_name'] ?? ($requestData['name'] . "($number)")
             ]);
-
-            $formRequest->name = $requestData['case_name'] ?? ($formRequest->form->name . "($formRequest->case_number)");
-            $formRequest->save();
-
             // save related tables if get case_id
             if ($requestData->case_id) {
                 // Create a new Formable record
@@ -54,11 +50,11 @@ class FormRequestService
                     'form_request_id' => $formRequest->id,
                     'formable_type' => FormRequest::class,
                 ]);
-                $test = $formable->formRequest;
-                dd($test);
+
+                // dd($formRequest->request);
 
                 // if type related_case
-                $relatedCase = $this->updateStatus($requestData);
+                // $relatedCase = $this->updateStatus($requestData);
                 $actionData = [
                     'form_request_id' => $requestData->case_id,
                     'formable_id' => $formRequest->id,
