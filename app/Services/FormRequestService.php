@@ -51,10 +51,10 @@ class FormRequestService
                     'formable_type' => FormRequest::class,
                 ]);
 
-                // dd($formRequest->request);
-
                 // if type related_case
-                // $relatedCase = $this->updateStatus($requestData);
+                $relatedCase = $this->updateStatus($requestData);
+
+                $formRequest->request->formable->update(['status'=>$relatedCase->value]);
                 $actionData = [
                     'form_request_id' => $requestData->case_id,
                     'formable_id' => $formRequest->id,
@@ -94,8 +94,7 @@ class FormRequestService
                 default:
                      break;
              }
-
-            $formRequest->update(['status' => $status]);
+             return $status;
         }
     }
     public function updateFormFill($requestData, $id)
