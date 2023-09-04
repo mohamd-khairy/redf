@@ -79,7 +79,6 @@ class FormRequestService
                         }
                     }
                     $formRequest->update(['status' => $status]);
-
                 }
                  // Create a new Formable record
                 Formable::create([
