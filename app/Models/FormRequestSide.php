@@ -8,8 +8,10 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class FormRequestSide extends Model
 {
-    use HasFactory , SoftDeletes;
-    protected $fillable = ['claimant_id', 'defendant_id','form_request_id']; // Define other fillable attributes
+    use HasFactory, SoftDeletes;
+    protected $fillable = ['claimant_id', 'defendant_id', 'form_request_id']; // Define other fillable attributes
+
+    public $with = ['claimant', 'defendant'];
 
     public function formRequest()
     {
