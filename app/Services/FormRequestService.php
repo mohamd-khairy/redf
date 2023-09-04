@@ -22,6 +22,7 @@ use App\Enums\StatusEnum;
 use App\Http\Requests\PageRequest;
 use Illuminate\Support\Facades\Auth;
 use App\Models\FormRequestInformation;
+use App\Models\Status;
 use Illuminate\Support\Facades\Storage;
 
 class FormRequestService
@@ -43,11 +44,12 @@ class FormRequestService
                 'name' => $requestData['case_name'] ?? ($requestData['name'] . "($number)")
             ]);
 
-            $formRequest->name = $requestData['case_name'] ?? ($formRequest->form->name . "($formRequest->case_number)");
-            $formRequest->save();
 
             // save related tables if get case_id
             if ($requestData->case_id) {
+
+                $formRequest->update(['status' => StatusEnum::notactive]);
+
                 // Create a new Formable record
                 Formable::create([
                     'formable_id' => $requestData->case_id,
@@ -71,31 +73,32 @@ class FormRequestService
         });
     }
 
-    public function updateStatus($requestData){
+    public function updateStatus($requestData)
+    {
 
         if ($requestData['type'] == 'related_case') {
             $formId = $requestData['id']; //4
-             $status = '';
-             switch ($formId) {
+            $status = '';
+            switch ($formId) {
                 case FormEnum::DEFENCE_CASE_FORM->value:
-                     $status = CaseTypeEnum::FIRST_RULE;
-                     break;
+                    $status = CaseTypeEnum::FIRST_RULE;
+                    break;
 
                 case FormEnum::CLAIM_CASE_FORM->value:
-                     $status = CaseTypeEnum::FIRST_RULE;
-                     break;
+                    $status = CaseTypeEnum::FIRST_RULE;
+                    break;
 
                 case FormEnum::RESUME_CASE_FORM->value:
-                     $status = CaseTypeEnum::SECOND_RULE;
-                     break;
+                    $status = CaseTypeEnum::SECOND_RULE;
+                    break;
 
                 case FormEnum::SOLICITATION_CASE_FORM->value:
-                     $status = CaseTypeEnum::THIRD_RULE;
-                     break;
+                    $status = CaseTypeEnum::THIRD_RULE;
+                    break;
 
                 default:
-                     break;
-             }
+                    break;
+            }
             $formRequest->update(['status' => $status]);
         }
     }

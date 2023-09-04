@@ -698,6 +698,7 @@ export default {
     pending: "Pending",
     processing: "Processing",
     active: "Active",
+    notactive:"Not Active",
     assigner: "Assigner",
   },
   reports: {
