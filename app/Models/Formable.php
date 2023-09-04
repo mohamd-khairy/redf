@@ -17,4 +17,9 @@ class Formable extends Model
     {
         return $this->morphTo();
     }
+
+    public function formRequest()
+    {
+        return $this->belongsTo(FormRequest::class, 'form_request_id');
+    }
 }

@@ -49,11 +49,13 @@ class FormRequestService
             // save related tables if get case_id
             if ($requestData->case_id) {
                 // Create a new Formable record
-                Formable::create([
+               $formable = Formable::create([
                     'formable_id' => $requestData->case_id,
                     'form_request_id' => $formRequest->id,
                     'formable_type' => FormRequest::class,
                 ]);
+                $test = $formable->formRequest;
+                dd($test);
 
                 // if type related_case
                 $relatedCase = $this->updateStatus($requestData);
@@ -96,6 +98,7 @@ class FormRequestService
                 default:
                      break;
              }
+
             $formRequest->update(['status' => $status]);
         }
     }
