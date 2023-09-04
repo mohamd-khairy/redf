@@ -88,6 +88,7 @@
         <template v-slot:activator="{ on, attrs }">
           <v-text-field
             v-model="pages[0].items[getFieldIndex('hijri_year')].value"
+            hide-details
             :rules="
               pages[0].items[getFieldIndex('hijri_year')].required
                 ? [requiredRule]
