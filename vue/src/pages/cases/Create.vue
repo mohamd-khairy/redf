@@ -452,8 +452,8 @@ export default {
         this.caseNumber = form_request_number;
         console.log(this.caseNumber);
         this.caseClaimant = {
-          id: form_request_side.claimant_id,
-          name: form_request_side.claimant_name,
+          id: form_request_side.claimant.id,
+          name: form_request_side.claimant.name,
         };
       } catch (error) {
         console.log(error);
