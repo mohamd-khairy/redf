@@ -33,8 +33,8 @@
               <!--              <v-divider></v-divider>-->
               <v-list-item @click="deleteAllCases()">
                 <v-list-item-title>{{
-                  $t("general.delete")
-                }}</v-list-item-title>
+                    $t("general.delete")
+                  }}</v-list-item-title>
               </v-list-item>
             </v-list>
           </v-menu>
@@ -52,32 +52,32 @@
             @keyup.enter="search(searchQuery)"
           ></v-text-field>
 
-          <v-tooltip top>
-            <template v-slot:activator="{ on, attrs }">
-              <v-btn
-                color="primary"
-                class="mx-2"
-                elevation="0"
-                v-bind="attrs"
-                v-on="on"
-                :to="caseUrl"
-                :disabled="currentPageId > 3"
-                v-can="'create-user'"
-              >
-                <v-icon> mdi-plus </v-icon>
-              </v-btn>
-            </template>
-            <span>{{ plusButtonTitle }}</span>
-          </v-tooltip>
-          <v-btn
-            color="primary"
-            class="me-1"
-            elevation="0"
-            :to="formTypesUrl"
-            v-can="'create-user'"
-          >
-            {{ buttonName }}
-          </v-btn>
+<!--          <v-tooltip top>-->
+<!--            <template v-slot:activator="{ on, attrs }">-->
+<!--              <v-btn-->
+<!--                color="primary"-->
+<!--                class="mx-2"-->
+<!--                elevation="0"-->
+<!--                v-bind="attrs"-->
+<!--                v-on="on"-->
+<!--                :to="caseUrl"-->
+<!--                :disabled="currentPageId > 3"-->
+<!--                v-can="'create-user'"-->
+<!--              >-->
+<!--                <v-icon> mdi-plus </v-icon>-->
+<!--              </v-btn>-->
+<!--            </template>-->
+<!--            <span>{{ plusButtonTitle }}</span>-->
+<!--          </v-tooltip>-->
+<!--          <v-btn-->
+<!--            color="primary"-->
+<!--            class="me-1"-->
+<!--            elevation="0"-->
+<!--            :to="formTypesUrl"-->
+<!--            v-can="'create-user'"-->
+<!--          >-->
+<!--            {{ buttonName }}-->
+<!--          </v-btn>-->
           <v-btn
             :loading="isLoading"
             icon
@@ -109,9 +109,6 @@
 
         <template v-slot:item.name="{ item }">
           <div>{{ item.name ?? "---" }}</div>
-        </template>
-        <template v-slot:item.branch="{ item }">
-          <div>{{ item?.branch?.name ?? "---" }}</div>
         </template>
         <template v-slot:item.form_request_number="{ item }">
           <div class="font-weight-bold">
@@ -145,18 +142,14 @@
             :color="getStatusColor(item?.status?.toLowerCase())"
             text-color="white"
           >
-            <!-- {{
+            {{
               item?.status ? $t(`general.${item.status.toLowerCase()}`) : "---"
-            }} -->
-            {{ item?.status ? item.status : "---" }}
+            }}
           </v-chip>
         </template>
 
-        <template v-slot:item.case_date="{ item }">
-          <div>{{ item.case_date | formatDate("ll") }}</div>
-        </template>
         <template v-slot:item.created_at="{ item }">
-          <div>{{ item.created_at | formatDate("ll") }}</div>
+          <div>{{ item.created_at | formatDate("lll") }}</div>
         </template>
 
         <template v-slot:item.action="{ item }">
@@ -330,6 +323,7 @@ import AddAction from "../../components/cases/AddAction.vue";
 import AddDynamicAction from "@/components/cases/AddDynamicAction";
 
 export default {
+  name:'RequestReview',
   components: {
     CasePreviewDialog,
     CaseInfoDialog,
@@ -397,16 +391,15 @@ export default {
       const headers = [
         { text: this.$t("tables.number"), value: "form_request_number" },
         { text: this.$t("tables.name"), value: "name" },
-        { text: this.$t("tables.branch"), value: "branch" },
         { text: this.$t("tables.user"), value: "user" },
         { text: this.$t("tables.assigner"), value: "assigner" },
+
         { text: this.$t("tables.status"), value: "status" },
-        { text: this.$t("tables.case_date"), value: "case_date" },
         { text: this.$t("tables.created"), value: "created_at" },
         {
           text: this.$t("tables.actions"),
           sortable: false,
-          align: "left",
+          align: "right",
           value: "action",
         },
       ];
@@ -461,7 +454,7 @@ export default {
       let { id } = this.$route.params;
       let data = {
         template_id: id,
-        form_type:'case',
+        form_type:'related_case',
         search: this.searchQuery,
         pageSize: itemsPerPage,
         pageNumber: page,
