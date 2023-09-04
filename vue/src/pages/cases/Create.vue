@@ -124,6 +124,7 @@
                 v-if="caseClaimant && caseNumber"
                 :claimant="caseClaimant"
                 :caseNumber="caseNumber"
+                :show-errors="showErrors"
               ></appeal-form>
             </v-card-text>
           </div>

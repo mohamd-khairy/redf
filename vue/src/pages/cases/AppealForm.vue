@@ -8,6 +8,14 @@
           hide-details
           class="d-inline-block"
           label="المحكمة الادارية"
+          :rules="
+            pages[0].items[getFieldIndex('branch')].required
+              ? [requiredRule]
+              : []
+          "
+          :error-messages="
+            errorMessage(pages[0].items[getFieldIndex('branch')])
+          "
           v-model="pages[0].items[getFieldIndex('branch')].value"
         >
         </v-text-field>
@@ -21,6 +29,10 @@
         hide-details
         class="d-inline-block"
         label="الدائرة"
+        :error-messages="errorMessage(pages[0].items[getFieldIndex('court')])"
+        :rules="
+          pages[0].items[getFieldIndex('court')].required ? [requiredRule] : []
+        "
         v-model="pages[0].items[getFieldIndex('court')].value"
       >
       </v-text-field>
@@ -31,6 +43,14 @@
         hide-details
         class="d-inline-block"
         label="منطقة"
+        :rules="
+          pages[0].items[getFieldIndex('redf_location')].required
+            ? [requiredRule]
+            : []
+        "
+        :error-messages="
+          errorMessage(pages[0].items[getFieldIndex('redf_location')])
+        "
         v-model="pages[0].items[getFieldIndex('redf_location')].value"
       >
       </v-text-field>
@@ -68,6 +88,15 @@
         <template v-slot:activator="{ on, attrs }">
           <v-text-field
             v-model="pages[0].items[getFieldIndex('hijri_year')].value"
+            hide-details
+            :rules="
+              pages[0].items[getFieldIndex('hijri_year')].required
+                ? [requiredRule]
+                : []
+            "
+            :error-messages="
+              errorMessage(pages[0].items[getFieldIndex('hijri_year')])
+            "
             :label="$t('tables.date')"
             class="d-inline-block"
             readonly
@@ -104,6 +133,11 @@
         hide-details
         class="d-inline-block"
         label="منطقة"
+        :rules="
+          pages[0].items[getFieldIndex('redf_location')].required
+            ? [requiredRule]
+            : []
+        "
         v-model="pages[0].items[getFieldIndex('redf_location')].value"
       >
       </v-text-field>
@@ -125,6 +159,10 @@
         hide-details
         class="d-inline-block"
         label="اسم القاضي"
+        :rules="
+          pages[0].items[getFieldIndex('judge')].required ? [requiredRule] : []
+        "
+        :error-messages="errorMessage(pages[0].items[getFieldIndex('judge')])"
         v-model="pages[0].items[getFieldIndex('judge')].value"
       >
       </v-text-field>
@@ -136,6 +174,14 @@
         hide-details
         class=""
         label="نص الحكم"
+        :error-messages="
+          errorMessage(pages[0].items[getFieldIndex('judgment')])
+        "
+        :rules="
+          pages[0].items[getFieldIndex('judgment')].required
+            ? [requiredRule]
+            : []
+        "
         v-model="pages[0].items[getFieldIndex('judgment')].value"
       >
       </v-textarea>
@@ -149,6 +195,14 @@
         <v-textarea
           hide-details
           label="النص"
+          :rules="
+            pages[0].items[getFieldIndex('judgment_reasons')].required
+              ? [requiredRule]
+              : []
+          "
+          :error-messages="
+            errorMessage(pages[0].items[getFieldIndex('judgment_reasons')])
+          "
           v-model="pages[0].items[getFieldIndex('judgment_reasons')].value"
         >
         </v-textarea>
@@ -161,6 +215,14 @@
           class="d-inline-block w-100 pt-0 mt-0"
           hide-details
           label="التأكيد"
+          :rules="
+            pages[0].items[getFieldIndex('judgment_proves')].required
+              ? [requiredRule]
+              : []
+          "
+          :error-messages="
+            errorMessage(pages[0].items[getFieldIndex('judgment_proves')])
+          "
           v-model="pages[0].items[getFieldIndex('judgment_proves')].value"
         >
         </v-text-field>
@@ -177,6 +239,12 @@
           hide-details
           class="d-inline-block"
           label="الدائرة الإدارية"
+          :rules="
+            pages[0].items[getFieldIndex('court')].required
+              ? [requiredRule]
+              : []
+          "
+          :error-messages="errorMessage(pages[0].items[getFieldIndex('court')])"
           v-model="pages[0].items[getFieldIndex('court')].value"
         >
         </v-text-field>
@@ -187,6 +255,14 @@
           hide-details
           class="d-inline-block"
           label="الفرع"
+          :rules="
+            pages[0].items[getFieldIndex('branch')].required
+              ? [requiredRule]
+              : []
+          "
+          :error-messages="
+            errorMessage(pages[0].items[getFieldIndex('branch')])
+          "
           v-model="pages[0].items[getFieldIndex('branch')].value"
         >
         </v-text-field>
@@ -209,12 +285,17 @@ export default {
       type: String,
       default: "",
     },
+    showErrors: {
+      type: Boolean,
+      default: false,
+    },
   },
   created() {
     console.log(this.caseNumber);
   },
   data() {
     return {
+      requiredRule: (v) => !!v || this.$t("general.required_input"),
       courtName: "",
       caseDateDialog: false,
       circleNumber: "",
@@ -237,6 +318,10 @@ export default {
       if (elm === -1) return;
 
       return elm;
+    },
+    errorMessage(input) {
+      const msg = this.$t("general.required_input");
+      return this.showErrors && input.required && !input.value ? [msg] : [];
     },
   },
 };
