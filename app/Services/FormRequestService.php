@@ -50,12 +50,14 @@ class FormRequestService
 
                 $formRequest->update(['status' => StatusEnum::notactive]);
 
+
                 // Create a new Formable record
-                Formable::create([
+                $formable = Formable::create([
                     'formable_id' => $requestData->case_id,
                     'form_request_id' => $formRequest->id,
                     'formable_type' => FormRequest::class,
                 ]);
+
 
                 // if type related_case
                 $relatedCase = $this->updateStatus($requestData);
@@ -99,7 +101,8 @@ class FormRequestService
                 default:
                     break;
             }
-            $formRequest->update(['status' => $status]);
+
+            return $status;
         }
     }
     public function updateFormFill($requestData, $id)
