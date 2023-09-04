@@ -213,7 +213,7 @@ const actions = {
   },
   async savePages(
     { state },
-    { caseName, caseNumber, case_id, branch_id, caseDate }
+    { caseName, caseNumber, case_id, branch_id, caseDate, type }
   ) {
     try {
       const customFormData = {
@@ -247,7 +247,10 @@ const actions = {
         bodyFormData.set("case_id", case_id);
       }
       if (branch_id) {
-        bodyFormData.set("branch_id", branch_id);
+        bodyFormData.set("branche_id", branch_id);
+      }
+      if (type) {
+        bodyFormData.set("type", type);
       }
       const result = await axios.post(`store-form-fill`, bodyFormData, {
         headers: {
@@ -262,7 +265,7 @@ const actions = {
   },
   async updatePages(
     { state },
-    { caseName, caseNumber, formId, branch_id, caseDate }
+    { caseName, caseNumber, formId, branch_id, caseDate, type }
   ) {
     try {
       const customFormData = {
@@ -296,7 +299,10 @@ const actions = {
       bodyFormData.set("case_number", caseNumber);
       bodyFormData.set("case_date", caseDate);
       if (branch_id) {
-        bodyFormData.set("branch_id", branch_id);
+        bodyFormData.set("branche_id", branch_id);
+      }
+      if (type) {
+        bodyFormData.set("type", type);
       }
       const response = await axios.post(
         `update-form-fill/${formId}`,

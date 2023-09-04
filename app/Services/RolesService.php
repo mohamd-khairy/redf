@@ -13,7 +13,15 @@ class RolesService
      *  Define basic operations to be used for each model permissions.
      */
     public const BASIC_ROLES = ['admin','manager','tasks','consultant','reports','settings','employee'];
-
+    public const BASIC_Arabic_Name  = [
+        'admin' => 'مدير',
+        'manager' => 'مدير عام',
+        'tasks' => 'المهام',
+        'consultant' => 'مستشار',
+        'reports' => 'التقارير',
+        'settings' => 'الإعدادات',
+        'employee' => 'موظف',
+    ];
     /**
      *  Define basic operations to be used for each model permissions.
      */
@@ -62,11 +70,14 @@ class RolesService
     {
         collect(array_filter(array_merge(self::BASIC_ROLES, $role)))->each(function ($item) use ($models) {
 
-            $label = ucwords(str_replace(['-', '_'], ' ', $item));
+            // $label = ucwords(str_replace(['-', '_'], ' ', $item));
+            // $roleModel = Role::create(['name' => $item, 'display_name' => $label]);
 
+            // Retrieve the Arabic display name based on the role name
 
-            $roleModel = Role::create(['name' => $item, 'display_name' => $label]);
+            $arabicDisplayName = self::BASIC_Arabic_Name[$item] ?? $englishDisplayName;
 
+            $roleModel = Role::create(['name' => $item, 'display_name' => $arabicDisplayName]);
 
             $models = is_null($models) ? self::GetModels() : $models;
 

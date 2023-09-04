@@ -50,13 +50,53 @@
     </span>
     <span> لعام </span>
     <span>
-      <v-text-field
+      <!-- <v-text-field
         hide-details
         class="d-inline-block"
         label="عام"
         v-model="pages[0].items[getFieldIndex('hijri_year')].value"
       >
-      </v-text-field>
+      </v-text-field> -->
+
+      <v-dialog
+        ref="caseDateDialog"
+        v-model="caseDateDialog"
+        :return-value.sync="pages[0].items[getFieldIndex('hijri_year')].value"
+        persistent
+        width="290px"
+      >
+        <template v-slot:activator="{ on, attrs }">
+          <v-text-field
+            v-model="pages[0].items[getFieldIndex('hijri_year')].value"
+            :label="$t('tables.date')"
+            class="d-inline-block"
+            readonly
+            v-bind="attrs"
+            v-on="on"
+            required="true"
+          ></v-text-field>
+        </template>
+        <v-date-picker
+          v-model="pages[0].items[getFieldIndex('hijri_year')].value"
+          scrollable
+        >
+          <v-spacer></v-spacer>
+          <v-btn text color="primary" @click="caseDateDialog = false">
+            Cancel
+          </v-btn>
+          <v-btn
+            text
+            color="primary"
+            @click="
+              $refs.caseDateDialog.save(
+                pages[0].items[getFieldIndex('hijri_year')].value
+              )
+            "
+          >
+            OK
+          </v-btn>
+        </v-date-picker>
+      </v-dialog>
     </span>
     <span> ضد فرع صندوق التنمية العقارية بمنطقة </span>
     <span>
@@ -176,6 +216,7 @@ export default {
   data() {
     return {
       courtName: "",
+      caseDateDialog: false,
       circleNumber: "",
       courtLocation: "",
       plaintiffName: "",

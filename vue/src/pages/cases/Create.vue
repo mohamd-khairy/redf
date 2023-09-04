@@ -636,13 +636,15 @@ export default {
         let result = null;
         if (!this.formRequestId) {
           result = await this.savePages({
-            caseName: this.caseName,
-            caseNumber: this.caseNumber,
+            caseName: null,
+            caseNumber: null,
+            type: "related_case",
           });
         } else {
           result = await this.updatePages({
-            caseName: this.caseName,
-            caseNumber: this.caseNumber,
+            caseName: null,
+            caseNumber: null,
+            type: "related_case",
             formId: this.formRequestId,
           });
         }

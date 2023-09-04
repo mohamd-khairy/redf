@@ -530,6 +530,7 @@ export default {
     this.init();
     this.fetchUsers();
     this.fetchDepartments();
+    this.getBranches({});
 
     this.$root.$on("userCreated", () => {
       this.fetchUsers();
@@ -539,7 +540,6 @@ export default {
     e1(val) {
       if (val === 3) {
         this.getCourts();
-        this.getBranches({});
       }
     },
   },
@@ -780,6 +780,7 @@ export default {
             caseNumber: this.caseNumber,
             caseDate: this.caseDate,
             branch_id: this.branch_id,
+            type: 'case'
           });
         } else {
           result = await this.updatePages({
@@ -788,6 +789,7 @@ export default {
             caseDate: this.caseDate,
             branch_id: this.branch_id,
             formId: this.formRequestId,
+            type: 'case'
           });
         }
 

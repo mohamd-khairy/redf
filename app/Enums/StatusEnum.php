@@ -2,10 +2,11 @@
 
 namespace App\Enums;
 
+use ArchTech\Enums\InvokableCases;
+
 enum StatusEnum: string
 {
-    case active = 'active';
-    case notactive = 'notactive';
+    use InvokableCases;
 
     case PENDING = 'بانتظار الحكم الإبتدائي';
     case WAIT_SECOND_RULE = 'بانتظار حكم الإستئناف';

@@ -3,8 +3,11 @@
 namespace App\Services;
 
 use Carbon\Carbon;
+use App\Models\File;
 use App\Models\Form;
+use App\Enums\FormEnum;
 use App\Models\Formable;
+use App\Enums\CaseTypeEnum;
 use App\Models\FormRequest;
 use App\Filters\SortFilters;
 use App\Models\FormRequestSide;
@@ -15,7 +18,8 @@ use App\Models\FormAssignRequest;
 use Illuminate\Pipeline\Pipeline;
 use Illuminate\Support\Facades\DB;
 use App\Enums\FormAssignRequestType;
-use App\Models\File;
+use App\Enums\StatusEnum;
+use App\Http\Requests\PageRequest;
 use Illuminate\Support\Facades\Auth;
 use App\Models\FormRequestInformation;
 use Illuminate\Support\Facades\Storage;
@@ -26,22 +30,59 @@ class FormRequestService
     {
         return DB::transaction(function () use ($requestData) {
 
-            $type = $requestData->case_id ? 'consultation' : 'case';
-
             $formRequest = FormRequest::create([
                 'form_id' => $requestData['id'],
                 'branche_id' => $requestData['branche_id'],
                 'user_id' => Auth::id(),
-                'status' => FormRequestStatus::PENDING,
-                'form_type' => $type
+                'status' => StatusEnum::PENDING,
+                'form_type' => $requestData['type'],
+                'case_date' => $requestData['case_date'],
+                'form_request_number' => $requestData['case_number'] ?? rand(100000, 999999),
             ]);
 
-            $formRequest->form_request_number = $requestData['case_number'] ?? rand(100000, 999999);
             $formRequest->name = $requestData['case_name'] ?? ($formRequest->form->name . "($formRequest->case_number)");
             $formRequest->save();
 
             // save related tables if get case_id
             if ($requestData->case_id) {
+                // if type related_case
+                if ($requestData['type'] == 'related_case') {
+                    $formId = $requestData['id']; //4
+                    // $formEnum = FormEnum::from($formId); //4
+                    $status = '';
+                    // if ($formEnum !== null) {
+                    switch ($formId) {
+                        case FormEnum::DEFENCE_CASE_FORM->value:
+                            // if ($formId == 4) {
+                            $status = CaseTypeEnum::FIRST_RULE;
+                            // }
+                            break;
+
+                        case FormEnum::CLAIM_CASE_FORM->value:
+                            // if ($formId == 5) {
+                            $status = CaseTypeEnum::FIRST_RULE;
+                            // }
+                            break;
+
+                        case FormEnum::RESUME_CASE_FORM->value:
+                            // if ($formId == 6) {
+                            $status = CaseTypeEnum::SECOND_RULE;
+                            // }
+                            break;
+
+                        case FormEnum::SOLICITATION_CASE_FORM->value:
+                            // if ($formId == 7) {
+                            $status = CaseTypeEnum::THIRD_RULE;
+                            // }
+                            break;
+
+                        default:
+                            // Handle the default case if necessary
+                            break;
+                            // }
+                    }
+                    $formRequest->update(['status' => $status]);
+                }
                 // Create a new Formable record
                 Formable::create([
                     'formable_id' => $requestData->case_id,
@@ -53,11 +94,11 @@ class FormRequestService
                     'form_request_id' => $requestData->case_id,
                     'formable_id' => $formRequest->id,
                     'formable_type' => FormRequest::class,
-                    'msg' =>    'تم اضافه استشاره قانونيه جديده',
+                    'msg' =>   $formRequest->form->name . ' تم اضافه ',
                 ];
                 saveFormRequestAction($actionData);
             }
-            $this->processFormPages($requestData, $formRequest, $type);
+            $this->processFormPages($requestData, $formRequest);
 
             return $formRequest;
         });
@@ -67,15 +108,8 @@ class FormRequestService
     {
         return DB::transaction(function () use ($requestData, $id) {
 
-            $type = $requestData->case_id ? 'consultation' : 'case';
-
             $formRequest = FormRequest::findOrFail($id);
-            $formRequest->form_request_number = $requestData['case_number'] ?? $formRequest->form_request_number;
-            $formRequest->name = $requestData['case_name'] ?? $formRequest->name;
-            $formRequest->branche_id = $requestData['branche_id'] ?? $formRequest->branche_id;
-            // dd($formRequest,$formRequest->branche_id , $requestData);
-
-            $formRequest->save();
+            $formRequest->update($requestData);
 
             // save related tables if get case_id
             if ($requestData->case_id) {
@@ -89,27 +123,27 @@ class FormRequestService
                     'form_request_id' => $requestData->case_id,
                     'formable_id' => $formRequest->id,
                     'formable_type' => FormRequest::class,
-                    'msg' => 'تم تحديث استشاره قانونيه',
+                    'msg' => $formRequest->form->name . ' تم تحديث   ',
                 ];
                 saveFormRequestAction($actionData);
             }
 
             FormPageItemFill::where('form_request_id', $formRequest->id)->delete();
 
-            $this->processFormPages($requestData, $formRequest, $type);
+            $this->processFormPages($requestData, $formRequest);
 
             return $formRequest;
         });
     }
 
-    private function processFormPages($request, FormRequest $formRequest, $type = null)
+    private function processFormPages($request, FormRequest $formRequest)
     {
         $pagesInput = $request->input('pages', []);
 
         $pages = is_string($pagesInput) ? json_decode($pagesInput, true) : $pagesInput;
         $pageItems = collect($pages)->flatMap(fn ($page) => $page['items'] ?? []);
 
-        $pageItems->each(function ($pageItem) use ($formRequest, $type) {
+        $pageItems->each(function ($pageItem) use ($formRequest) {
             $decodedValue = $pageItem['value'];
 
             if ($pageItem['type'] === 'file') {
@@ -121,7 +155,7 @@ class FormRequestService
                     'path' => $filePath,
                     'user_id' => auth()->id(),
                     'start_date' => now(),
-                    'type' => $type ?? 'form',
+                    'type' => $formRequest->form_type,
                     'priority' => 'high',
                     'status' => 'active',
                 ]);
@@ -138,20 +172,24 @@ class FormRequestService
         });
     }
 
-    public function getFormRequest($request)
+    public function getFormRequest(PageRequest $request)
     {
         try {
-            $query = FormRequest::with('form.pages.items', 'user', 'formAssignedRequests.assigner', 'form_page_item_fill.page_item', 'lastFormRequestInformation');
+            $query = FormRequest::with('form.pages.items', 'user', 'formAssignedRequests.assigner', 'form_page_item_fill.page_item', 'lastFormRequestInformation', 'branch');
 
             if ($request->has('template_id')) {
                 $query = $query->whereHas('form', fn ($q) => $q->where('template_id', $request->input('template_id')));
             }
 
-            $data = app(Pipeline::class)->send($query)
-                ->through([SortFilters::class])
-                ->thenReturn();
+            if ($request->has('form_type')) {
+                $query = $query->where('form_type', request('form_type'));
+            }
+
+            $data = app(Pipeline::class)->send($query)->through([SortFilters::class])->thenReturn();
+
             $pageSize = $request->input('pageSize', 15);
             $data = $pageSize == -1 ?  $data->get() : $data->paginate($pageSize);
+
             return $data;
         } catch (\Throwable $e) {
             // You could consider throwing an exception here if needed
