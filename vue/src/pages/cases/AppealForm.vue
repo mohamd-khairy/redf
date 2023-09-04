@@ -1,104 +1,202 @@
 <template>
   <div>
-    <span>
-      طلب استئناف حكم ابتدائي صاحب الفضيلة رئيس محكمة الاستئناف الإدارية ب
-    </span>
+    <h6 class="text-center">طلب استئناف حكم ابتدائي صاحب الفضيلة</h6>
+    <div>
+      <span> رئيس محكمة الاستئناف الإدارية ب </span>
+      <span>
+        <v-text-field
+          hide-details
+          class="d-inline-block"
+          label="المحكمة الادارية"
+          v-model="pages[0].items[getFieldIndex('branch')].value"
+        >
+        </v-text-field>
+      </span>
+      <span class="float-left"> حفظه الله </span>
+    </div>
+    <div class="mt-2 text-center">السلام عليكم ورحمة الله وبركاته..</div>
+    <span> فأشير إلى الحكم الابتدائي الصادر من الدائرة </span>
     <span>
       <v-text-field
         hide-details
         class="d-inline-block"
-        label="المحكمة الادارية"
+        label="الدائرة"
+        v-model="pages[0].items[getFieldIndex('court')].value"
       >
       </v-text-field>
     </span>
+    <span> في المحكمة الإدارية ب </span>
     <span>
-      حفظه الله السلام عليكم ورحمة الله وبركاته.. فأشير إلى الحكم الابتدائي
-      الصادر من الدائرة
+      <v-text-field
+        hide-details
+        class="d-inline-block"
+        label="منطقة"
+        v-model="pages[0].items[getFieldIndex('redf_location')].value"
+      >
+      </v-text-field>
     </span>
-    <span
-      ><v-text-field
+    <span> في القضية رقم </span>
+    <span>
+      (
+      <v-text-field
         hide-details
         class="d-inline-block"
-        type="number"
-        label="aa"
+        label="رقم"
+        :value="caseNumber"
+        disabled
       >
       </v-text-field
-    ></span>
-    <span></span>
-
-    من الدائرة
-    <span
-      ><v-text-field
+      >)
+    </span>
+    <span> لعام </span>
+    <span>
+      <v-text-field
         hide-details
         class="d-inline-block"
-        type="number"
-        label="aa"
+        label="عام"
+        v-model="pages[0].items[getFieldIndex('hijri_year')].value"
       >
-      </v-text-field
-    ></span>
-    في المحكمة الإدارية ب
-    <span
-      ><v-text-field
+      </v-text-field>
+    </span>
+    <span> ضد فرع صندوق التنمية العقارية بمنطقة </span>
+    <span>
+      <v-text-field
         hide-details
         class="d-inline-block"
-        type="number"
-        label="aa"
+        label="منطقة"
+        v-model="pages[0].items[getFieldIndex('redf_location')].value"
       >
-      </v-text-field
-    ></span>
-    في القضية رقم (
-    <span
-      ><v-text-field
+      </v-text-field>
+    </span>
+    <span> ، من المدعي/ </span>
+    <span>
+      <v-text-field
         hide-details
         class="d-inline-block"
-        type="number"
-        label="aa"
+        label="اسم المدعي"
+        disabled
+        :value="claimant.id"
       >
-      </v-text-field></span
-    >) لعام
-    <span
-      ><v-text-field
+      </v-text-field>
+    </span>
+    <span> ، القاضي ب </span>
+    <span>
+      <v-text-field
         hide-details
         class="d-inline-block"
-        type="number"
-        label="aa"
+        label="اسم القاضي"
+        v-model="pages[0].items[getFieldIndex('judge')].value"
       >
-      </v-text-field></span
-    >هـ المقامة ضد فرع صندوق التنمية العقارية بمنطقة __-، من المدعي/
-    <span
-      ><v-text-field
+      </v-text-field>
+    </span>
+    <div class="mt-2">أسباب الحكم:</div>
+    <div class="mt-2">ذكرت الدائرة الموقرة في أسباب الحكم ما نصه</div>
+    <span>
+      <v-textarea
         hide-details
-        class="d-inline-block"
-        type="number"
-        label="aa"
+        class=""
+        label="نص الحكم"
+        v-model="pages[0].items[getFieldIndex('judgment')].value"
       >
-      </v-text-field
-    ></span>
-    ، القاضي ب
-    <span
-      ><v-text-field
-        hide-details
-        class="d-inline-block"
-        type="number"
-        label="aa"
-      >
-      </v-text-field
-    ></span>
-    . أسباب الحكم: ذكرت الدائرة الموقرة في أسباب الحكم ما نصه
-    (______________________________________________________________________ ) .
-    أصحاب الفضيلة: يود صندوق التنمية العقارية الايضاح لفضيلتكم حيال ما نص عليه
-    الحكم من
-    "_______________________________________(Text)__________________________________________________________________________________________
-    وهنا يؤكد صندوق التنمية العقارية
-    _______________________(Text)_______________________ لما سبق ايضاحه أعلاه.
-    عليه يطلب صندوق التنمية العقارية من فضيلتكم نقض الحكم الابتدائي الصادر من
-    الدائرة الإدارية ____ بالمحكمة الادارية ___(فرع)___ والحكم مجدداً برفض
-    الدعوى. والله يحفظكم ويرعاكم,،
+      </v-textarea>
+    </span>
+    <div class="mt-2">أصحاب الفضيلة:</div>
+    <div>
+      يود صندوق التنمية العقارية الايضاح لفضيلتكم حيال ما نص عليه الحكم من
+    </div>
+    <div>
+      <span>
+        <v-textarea
+          hide-details
+          label="النص"
+          v-model="pages[0].items[getFieldIndex('judgment_reasons')].value"
+        >
+        </v-textarea>
+      </span>
+    </div>
+    <div class="d-flex align-center mt-2">
+      <span>وهنا يؤكد صندوق التنمية العقارية</span>
+      <span class="flex-sm-grow-1 mx-1">
+        <v-text-field
+          class="d-inline-block w-100 pt-0 mt-0"
+          hide-details
+          label="التأكيد"
+          v-model="pages[0].items[getFieldIndex('judgment_proves')].value"
+        >
+        </v-text-field>
+      </span>
+      <span> لما سبق ايضاحه اعلاه </span>
+    </div>
+    <div>
+      <span>
+        عليه يطلب صندوق التنمية العقارية من فضيلتكم نقض الحكم الابتدائي الصادر
+        من الدائرة الإدارية
+      </span>
+      <span>
+        <v-text-field
+          hide-details
+          class="d-inline-block"
+          label="الدائرة الإدارية"
+          v-model="pages[0].items[getFieldIndex('court')].value"
+        >
+        </v-text-field>
+      </span>
+      <span> فرع </span>
+      <span>
+        <v-text-field
+          hide-details
+          class="d-inline-block"
+          label="الفرع"
+          v-model="pages[0].items[getFieldIndex('branch')].value"
+        >
+        </v-text-field>
+      </span>
+      <span> والله يحفظكم ويرعاكم، </span>
+    </div>
   </div>
 </template>
 
 <script>
-export default {};
-</script>
+import { mapState } from "vuex";
 
-<style lang="scss" scoped></style>
+export default {
+  props: {
+    claimant: {
+      type: Object,
+      default: { id: 0, name: "" },
+    },
+    caseNumber: {
+      type: String,
+      default: "",
+    },
+  },
+  created() {
+    console.log(this.caseNumber);
+  },
+  data() {
+    return {
+      courtName: "",
+      circleNumber: "",
+      courtLocation: "",
+      plaintiffName: "",
+      judgeName: "",
+      reason: "",
+      clarification: "",
+      confirmation: "",
+      adminCircle: "",
+      branch: "",
+    };
+  },
+  computed: {
+    ...mapState("cases", ["pages"]),
+  },
+  methods: {
+    getFieldIndex(type) {
+      const elm = this.pages[0].items.findIndex((item) => item.key === type);
+      if (elm === -1) return;
+
+      return elm;
+    },
+  },
+};
+</script>

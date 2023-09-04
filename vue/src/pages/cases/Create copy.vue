@@ -96,7 +96,6 @@
                   :rules="[requiredRule]"
                 >
                 </v-select>
-
                 <v-spacer></v-spacer>
                 <v-btn
                   v-if="caseId"
@@ -107,6 +106,97 @@
                 >
               </div>
             </div>
+            <v-tabs class="mt-2" v-model="activeTab">
+              <v-tab v-for="(tab, index) in pages" :key="index">{{
+                tab.title
+              }}</v-tab>
+            </v-tabs>
+            <v-tabs-items v-model="activeTab">
+              <v-tab-item v-for="(tab, tabIndex) in pages" :key="tabIndex">
+                <v-form>
+                  <v-container>
+                    <v-row dense>
+                      <v-col
+                        v-for="(input, inputIndex) in tab.items"
+                        :key="inputIndex"
+                        :cols="inputWidth(input.width)"
+                      >
+                        <template v-if="input.type === 'label'">
+                          <small style="font-weight: bold">{{
+                            input.label
+                          }}</small>
+                        </template>
+                        <template v-if="input.type === 'text'">
+                          <v-text-field
+                            outlined
+                            v-model="input.value"
+                            :label="getInputLabel(input)"
+                            :rules="input.required ? [requiredRule] : []"
+                            :required="input.required"
+                            :error-messages="errorMessage(input)"
+                            dense
+                          ></v-text-field>
+                        </template>
+                        <template v-else-if="input.type === 'textarea'">
+                          <v-textarea
+                            outlined
+                            dense
+                            v-model="input.value"
+                            :label="getInputLabel(input)"
+                            :required="input.required"
+                            :rules="input.required ? [requiredRule] : []"
+                            :error-messages="errorMessage(input)"
+                          ></v-textarea>
+                        </template>
+                        <template v-else-if="input.type === 'file'">
+                          <v-file-input
+                            outlined
+                            dense
+                            counter
+                            show-size
+                            :label="getInputLabel(input)"
+                            @change="(file) => handleFileUpload(file, input)"
+                            :required="input.required"
+                            :rules="input.required ? [requiredRule] : []"
+                            :error-messages="errorMessage(input)"
+                          >
+                          </v-file-input>
+                        </template>
+                        <template v-else-if="input.type === 'select'">
+                          <v-select
+                            v-model="input.value"
+                            :items="input.childList"
+                            item-text="text"
+                            :label="getInputLabel(input)"
+                            :required="input.required"
+                            :rules="input.required ? [requiredRule] : []"
+                            :error-messages="errorMessage(input)"
+                            outlined
+                            dense
+                          ></v-select>
+                        </template>
+                        <template v-else-if="input.type === 'radio'">
+                          <v-radio-group
+                            v-model="input.selectedOption"
+                            :label="getInputLabel(input)"
+                            :required="input.required"
+                            :rules="input.required ? [requiredRule] : []"
+                            :error-messages="errorMessage(input)"
+                          >
+                            <v-radio
+                              v-for="(option, optionIndex) in input.childList"
+                              :key="optionIndex"
+                              :label="option.text"
+                              :value="option.text"
+                            ></v-radio>
+                          </v-radio-group>
+                        </template>
+                      </v-col>
+                    </v-row>
+                  </v-container>
+                </v-form>
+              </v-tab-item>
+            </v-tabs-items>
           </div>
           <v-card-actions>
             <v-btn color="primary" @click="saveCaseInfo">
@@ -120,11 +210,7 @@
         <v-stepper-content step="2">
           <div class="mt-2" v-if="!initialLoading">
             <v-card-text>
-              <appeal-form
-                v-if="caseClaimant && caseNumber"
-                :claimant="caseClaimant"
-                :caseNumber="caseNumber"
-              ></appeal-form>
+              <appeal-form></appeal-form>
             </v-card-text>
           </div>
           <v-card-actions>
@@ -282,7 +368,6 @@ export default {
     return {
       e1: 1,
       selectedTitle: "",
-      caseClaimant: null,
       dateDialog: false,
       caseNumber: "",
       caseName: "",
@@ -437,28 +522,6 @@ export default {
     ]),
     openCaseInfoDialog(id) {
       this.caseInfoDialog = true;
-    },
-    async getCaseTimeline(id) {
-      try {
-        this.loading = true;
-        const response = await this.$axios.get(`get-form-Requests/${id}`);
-        console.log(response?.data?.data);
-        const { form_request_side, form_request_number, name } =
-          response?.data?.data;
-
-        this.formRequestSide = form_request_side;
-        this.caseName = name;
-        this.caseNumber = form_request_number;
-        console.log(this.caseNumber);
-        this.caseClaimant = {
-          id: form_request_side.claimant_id,
-          name: form_request_side.claimant_name,
-        };
-      } catch (error) {
-        console.log(error);
-      } finally {
-        this.loading = false;
-      }
     },
     fetchCases() {
       let data = {
@@ -620,12 +683,11 @@ export default {
       return this.stepOneErrors && !value ? [msg] : [];
     },
     async saveCaseInfo() {
-      if (!this.caseId) {
+      if (!(await this.validateFormData())) {
         this.stepOneErrors = true;
         this.showErrors = true;
         return;
       }
-      this.getCaseTimeline(this.caseId);
       this.showErrors = false;
       this.stepOneErrors = false;
       this.e1 = 2;

@@ -15,6 +15,7 @@ const actions = {
     const response = await axios.get(`get-form-Requests`, {
       params: {
         template_id: data.template_id,
+        type: "case",
         search: data.search,
         pageSize: data.pageSize,
         page: data.pageNumber,
@@ -210,7 +211,10 @@ const actions = {
       return false;
     }
   },
-  async savePages({ state }, { caseName, caseNumber, case_id,branch_id,caseDate }) {
+  async savePages(
+    { state },
+    { caseName, caseNumber, case_id, branch_id, caseDate }
+  ) {
     try {
       const customFormData = {
         id: state.selectedForm.id,
@@ -256,7 +260,10 @@ const actions = {
       return false;
     }
   },
-  async updatePages({ state }, { caseName, caseNumber, formId,branch_id,caseDate }) {
+  async updatePages(
+    { state },
+    { caseName, caseNumber, formId, branch_id, caseDate }
+  ) {
     try {
       const customFormData = {
         id: state.selectedForm.id,
@@ -306,7 +313,7 @@ const actions = {
       return false;
     }
   },
-  async saveRelatedPages({ state }, {case_id}) {
+  async saveRelatedPages({ state }, { case_id }) {
     try {
       const customFormData = {
         id: state.selectedForm.id,
@@ -333,18 +340,22 @@ const actions = {
         bodyFormData.set(key, JSON.stringify(value));
       }
       bodyFormData.set("case_id", case_id);
-      const result = await axios.post(`store-related-case-form-fill`, bodyFormData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
+      const result = await axios.post(
+        `store-related-case-form-fill`,
+        bodyFormData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
       return result;
     } catch (error) {
       console.error("Error saving form data:", error);
       return false;
     }
   },
-  async updateRelatedPages({ state }, {formId}) {
+  async updateRelatedPages({ state }, { formId }) {
     try {
       const customFormData = {
         id: state.selectedForm.id,
