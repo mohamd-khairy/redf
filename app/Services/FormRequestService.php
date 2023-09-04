@@ -77,17 +77,18 @@ class FormRequestService
                                 // Handle the default case if necessary
                                 break;
                         }
-                        dd($status);
                     }
+                    $formRequest->update(['status' => $status]);
+
                 }
-                // Create a new Formable record
+                 // Create a new Formable record
                 Formable::create([
                     'formable_id' => $requestData->case_id,
                     'form_request_id' => $formRequest->id,
                     'formable_type' => FormRequest::class,
                 ]);
 
-                $actionData = [
+                 $actionData = [
                     'form_request_id' => $requestData->case_id,
                     'formable_id' => $formRequest->id,
                     'formable_type' => FormRequest::class,
