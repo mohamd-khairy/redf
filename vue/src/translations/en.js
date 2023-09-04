@@ -487,7 +487,7 @@ export default {
     percentageLose: "Percentage Lose Case",
     action: "Action",
     courtDate: "Court Date",
-    adviceActions:"Advice Actions",
+    adviceActions: "Advice Actions",
 
 
     createCase: "Create case",
@@ -507,6 +507,8 @@ export default {
     drone4: "Drone 4",
   },
   tables: {
+    case_date: "Case Date",
+    branch: "Branch",
     name: "name",
     display_name: "display name",
     file: "file",

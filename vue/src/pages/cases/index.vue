@@ -110,6 +110,9 @@
         <template v-slot:item.name="{ item }">
           <div>{{ item.name ?? "---" }}</div>
         </template>
+        <template v-slot:item.branch="{ item }">
+          <div>{{ item?.branch?.name ?? "---" }}</div>
+        </template>
         <template v-slot:item.form_request_number="{ item }">
           <div class="font-weight-bold">
             <copy-label :text="item.form_request_number + ''" />
@@ -142,14 +145,18 @@
             :color="getStatusColor(item?.status?.toLowerCase())"
             text-color="white"
           >
-            {{
+            <!-- {{
               item?.status ? $t(`general.${item.status.toLowerCase()}`) : "---"
-            }}
+            }} -->
+            {{ item?.status ? item.status : "---" }}
           </v-chip>
         </template>
 
+        <template v-slot:item.case_date="{ item }">
+          <div>{{ item.case_date | formatDate("ll") }}</div>
+        </template>
         <template v-slot:item.created_at="{ item }">
-          <div>{{ item.created_at | formatDate("lll") }}</div>
+          <div>{{ item.created_at | formatDate("ll") }}</div>
         </template>
 
         <template v-slot:item.action="{ item }">
@@ -390,15 +397,16 @@ export default {
       const headers = [
         { text: this.$t("tables.number"), value: "form_request_number" },
         { text: this.$t("tables.name"), value: "name" },
+        { text: this.$t("tables.branch"), value: "branch" },
         { text: this.$t("tables.user"), value: "user" },
         { text: this.$t("tables.assigner"), value: "assigner" },
-
         { text: this.$t("tables.status"), value: "status" },
+        { text: this.$t("tables.case_date"), value: "case_date" },
         { text: this.$t("tables.created"), value: "created_at" },
         {
           text: this.$t("tables.actions"),
           sortable: false,
-          align: "right",
+          align: "left",
           value: "action",
         },
       ];

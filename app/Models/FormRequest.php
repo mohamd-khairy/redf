@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\StatusEnum;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
@@ -24,7 +25,8 @@ class FormRequest extends Model
         'form_request_number',
         'name',
         'branche_id',
-        'form_type'
+        'form_type',
+        'case_date'
     ];
 
     protected $with = ['user', 'lastFormRequestInformation'];
@@ -98,4 +100,9 @@ class FormRequest extends Model
     {
         return $this->belongsTo(Branch::class, 'branche_id');
     }
+
+    // public function getStatusAttribute($value)
+    // {
+    //     return $value ? StatusEnum::$value() : $value;
+    // }
 }

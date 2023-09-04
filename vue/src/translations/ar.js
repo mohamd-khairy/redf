@@ -554,6 +554,8 @@ export default {
     drone8: "طائرة 8",
   },
   tables: {
+    case_date: "تاريخ القضية",
+    branch: "الفرع",
     number: "الرقم",
     name: "الإسم",
     file: "ملف",

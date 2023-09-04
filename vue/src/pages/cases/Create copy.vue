@@ -5,106 +5,108 @@
         <v-stepper-step :complete="e1 > 1" step="1">
           {{ $t("general.info") + " " + selectedTitle }}
         </v-stepper-step>
+        <!-- <v-divider></v-divider>
+        <v-stepper-step :complete="e1 > 2" step="2">
+          {{ $t("general.info") + " " + selectedTitle }}
+        </v-stepper-step> -->
 
         <v-divider></v-divider>
 
         <v-stepper-step :complete="e1 > 2" step="2">
-          {{ $t("cases.sidesInfo") }}
+          {{ $t("cases.preview") }}
         </v-stepper-step>
-
         <v-divider></v-divider>
 
         <v-stepper-step step="3">
-          {{ $t("cases.caseActions") }}
+          {{ $t("cases.actions") }}
         </v-stepper-step>
       </v-stepper-header>
 
       <v-stepper-items>
+        <!-- <v-stepper-content step="1">
+          <div class="mt-2">
+            <v-text-field
+              class="mb-2"
+              v-model="caseName"
+              :label="$t('cases.name')"
+              outlined
+              :required="true"
+              :error-messages="stepOneValidation(caseName)"
+              dense
+              :rules="[requiredRule]"
+            ></v-text-field>
+            <v-text-field
+              outlined
+              type="number"
+              class="mb-2"
+              v-model="caseNumber"
+              @keydown="handleInput"
+              :label="$t('cases.number')"
+              :required="true"
+              :rules="[requiredRule]"
+              :error-messages="stepOneValidation(caseNumber)"
+              dense
+            ></v-text-field>
+
+            <div class="d-flex">
+              <v-select
+                :items="formRequests"
+                :label="$t('cases.belongToCase')"
+                :item-text="(item) => item.name"
+                :item-value="(item) => item.id"
+                hide-details
+                dense
+                outlined
+                v-model="caseId"
+                clearable
+              >
+              </v-select>
+              <v-spacer></v-spacer>
+              <v-btn
+                v-if="caseId"
+                color="primary"
+                outlined
+                @click="openCaseInfoDialog()"
+                >{{ $t("cases.view_info") }}</v-btn
+              >
+            </div>
+          </div>
+          <v-card-actions class="px-2 mt-2">
+            <v-btn color="primary" @click="saveCaseInfo">
+              {{ $t("general.continue") }}
+            </v-btn>
+          </v-card-actions>
+        </v-stepper-content> -->
         <v-stepper-content step="1">
           <div class="mt-2" v-if="!initialLoading">
-            <div class="d-flex flex-column flex-sm-row">
-              <div class="flex-grow-1 pt-2 pa-sm-2">
-                <v-row dense>
-                  <v-col cols="6">
-                    <v-text-field
-                      class="mb-2"
-                      v-model="caseName"
-                      :label="$t('cases.caseName')"
-                      outlined
-                      :required="true"
-                      :error-messages="stepOneValidation(caseName)"
-                      dense
-                      :rules="[requiredRule]"
-                    ></v-text-field>
-                  </v-col>
-                  <v-col cols="6">
-                    <v-text-field
-                      outlined
-                      type="number"
-                      class="mb-2"
-                      v-model="caseNumber"
-                      @keydown="handleInput"
-                      :label="$t('cases.caseNumber')"
-                      :required="true"
-                      :rules="[requiredRule]"
-                      :error-messages="stepOneValidation(caseNumber)"
-                      dense
-                    ></v-text-field>
-                  </v-col>
-                  <v-col cols="6">
-                    <v-select
-                      :items="branches?.data || []"
-                      :label="$t('branches.branch')"
-                      item-text="name"
-                      item-value="id"
-                      dense
-                      outlined
-                      v-model="branch_id"
-                    >
-                    </v-select>
-                  </v-col>
-                  <v-col cols="6">
-                    <v-dialog
-                      ref="caseDateDialog"
-                      v-model="caseDateDialog"
-                      :return-value.sync="caseDate"
-                      persistent
-                      width="290px"
-                    >
-                      <template v-slot:activator="{ on, attrs }">
-                        <v-text-field
-                          v-model="caseDate"
-                          :label="$t('tables.date')"
-                          prepend-icon="mdi-calendar"
-                          readonly
-                          v-bind="attrs"
-                          v-on="on"
-                          dense
-                          required="true"
-                          :rules="[rules.required]"
-                          :error-messages="stepOneValidation(caseDate)"
-                          outlined
-                        ></v-text-field>
-                      </template>
-                      <v-date-picker v-model="caseDate" scrollable>
-                        <v-spacer></v-spacer>
-                        <v-btn text color="primary" @click="modal = false">
-                          Cancel
-                        </v-btn>
-                        <v-btn
-                          text
-                          color="primary"
-                          @click="$refs.caseDateDialog.save(caseDate)"
-                        >
-                          OK
-                        </v-btn>
-                      </v-date-picker>
-                    </v-dialog>
-                  </v-col>
-                </v-row>
+            <div class="mt-2">
+              <div class="d-flex">
+                <v-select
+                  :items="formRequests"
+                  :label="$t('cases.belongToCase')"
+                  :item-text="(item) => item.name"
+                  :item-value="(item) => item.id"
+                  hide-details
+                  dense
+                  outlined
+                  v-model="caseId"
+                  clearable
+                  :required="true"
+                  :error-messages="stepOneValidation(caseId)"
+                  :rules="[requiredRule]"
+                >
+                </v-select>
+                <v-spacer></v-spacer>
+                <v-btn
+                  v-if="caseId"
+                  color="primary"
+                  outlined
+                  @click="openCaseInfoDialog()"
+                  >{{ $t("cases.view_info") }}</v-btn
+                >
               </div>
             </div>
-            <v-tabs v-model="activeTab">
+            <v-tabs class="mt-2" v-model="activeTab">
               <v-tab v-for="(tab, index) in pages" :key="index">{{
                 tab.title
               }}</v-tab>
@@ -119,6 +121,11 @@
                         :key="inputIndex"
                         :cols="inputWidth(input.width)"
                       >
+                        <template v-if="input.type === 'label'">
+                          <small style="font-weight: bold">{{
+                            input.label
+                          }}</small>
+                        </template>
                         <template v-if="input.type === 'text'">
                           <v-text-field
                             outlined
@@ -192,7 +199,7 @@
             </v-tabs-items>
           </div>
           <v-card-actions>
-            <v-btn color="primary" @click="saveForm">
+            <v-btn color="primary" @click="saveCaseInfo">
               {{ $t("general.continue") }}
             </v-btn>
             <!-- <v-btn color="grey" @click="stepBack" class="ms-2">
@@ -201,78 +208,13 @@
           </v-card-actions>
         </v-stepper-content>
         <v-stepper-content step="2">
-          <div class="mt-2">
-            <v-card-title>
-              <v-flex class="text-left">
-                <v-btn color="primary" large @click.stop="dialog = true">
-                  <v-icon> mdi-plus </v-icon>
-                  {{ $t("cases.addUser") }}
-                </v-btn>
-              </v-flex>
-            </v-card-title>
+          <div class="mt-2" v-if="!initialLoading">
             <v-card-text>
-              <v-row dense>
-                <v-col cols="12">
-                  <v-select
-                    :items="claimantUsers"
-                    :label="$t('cases.claimant')"
-                    :item-text="(item) => item.name"
-                    :item-value="(item) => item.id"
-                    dense
-                    outlined
-                    v-model="sidesInfo.claimant_id"
-                    :rules="[rules.required]"
-                    :error-messages="stepOneValidation(sidesInfo.claimant_id)"
-                    clearable
-                    @click:clear="clearClaimantSelect"
-                  >
-                  </v-select>
-                </v-col>
-                <v-col cols="12">
-                  <v-select
-                    :items="defendantUsers"
-                    :label="$t('cases.defendant')"
-                    :item-text="(item) => item.name"
-                    :item-value="(item) => item.id"
-                    dense
-                    outlined
-                    v-model="sidesInfo.defendant_id"
-                    :rules="[rules.required]"
-                    :error-messages="stepOneValidation(sidesInfo.defendant_id)"
-                    clearable
-                    @click:clear="clearDefendantSelect"
-                  >
-                  </v-select>
-                </v-col>
-                <v-col cols="12">
-                  <v-select
-                    :items="departments"
-                    :label="$t('tables.department')"
-                    :item-text="(item) => item.name"
-                    :item-value="(item) => item.id"
-                    disabled
-                    dense
-                    outlined
-                    v-model="sidesInfo.department_id"
-                  >
-                  </v-select>
-                </v-col>
-                <v-col cols="12">
-                  <v-text-field
-                    type="number"
-                    v-model="sidesInfo.civil"
-                    :label="$t('cases.civil')"
-                    disabled
-                    dense
-                    outlined
-                  ></v-text-field>
-                </v-col>
-              </v-row>
+              <appeal-form></appeal-form>
             </v-card-text>
           </div>
-
           <v-card-actions>
-            <v-btn color="primary" @click="storeRequestSide">
+            <v-btn color="primary" @click="saveForm">
               {{ $t("general.continue") }}
             </v-btn>
             <v-btn color="grey" @click="stepBack" class="ms-2">
@@ -280,7 +222,6 @@
             </v-btn>
           </v-card-actions>
         </v-stepper-content>
-
         <v-stepper-content step="3">
           <div class="d-flex flex-column flex-sm-row">
             <div class="flex-grow-1 pt-2 pa-sm-2">
@@ -288,7 +229,6 @@
                 <v-col cols="6">
                   <v-text-field
                     type="number"
-                    @keydown="handleInput"
                     v-model="caseAction.amount"
                     :label="$t('cases.amount')"
                     outlined
@@ -302,7 +242,6 @@
                 <v-col cols="6">
                   <v-text-field
                     type="number"
-                    @keydown="handleInput"
                     v-model="caseAction.percentage"
                     :label="$t('cases.percentageLose')"
                     dense
@@ -367,7 +306,7 @@
                   </v-dialog>
                 </v-col>
 
-                <v-col cols="6">
+                <v-col cols="12">
                   <v-select
                     :items="courts"
                     :label="$t('tables.court')"
@@ -388,49 +327,6 @@
                     outlined
                   ></v-textarea>
                 </v-col>
-                <v-col cols="12">
-                  <v-checkbox
-                    v-model="sessionDate"
-                    :label="$t('cases.add_session')"
-                  ></v-checkbox>
-                </v-col>
-                <v-col cols="12" sm="12" v-if="sessionDate">
-                  <v-dialog
-                    ref="sessionDialog"
-                    v-model="sessionDialog"
-                    :return-value.sync="caseAction.sessionDate"
-                    persistent
-                    width="290px"
-                  >
-                    <template v-slot:activator="{ on, attrs }">
-                      <v-text-field
-                        v-model="caseAction.sessionDate"
-                        :label="$t('cases.sessionDate')"
-                        prepend-icon="mdi-calendar"
-                        readonly
-                        v-bind="attrs"
-                        v-on="on"
-                        dense
-                        outlined
-                      ></v-text-field>
-                    </template>
-                    <v-date-picker v-model="caseAction.sessionDate" scrollable>
-                      <v-spacer></v-spacer>
-                      <v-btn text color="primary" @click="modal = false">
-                        Cancel
-                      </v-btn>
-                      <v-btn
-                        text
-                        color="primary"
-                        @click="
-                          $refs.sessionDialog.save(caseAction.sessionDate)
-                        "
-                      >
-                        OK
-                      </v-btn>
-                    </v-date-picker>
-                  </v-dialog>
-                </v-col>
               </v-row>
             </div>
           </div>
@@ -448,35 +344,41 @@
     </v-stepper>
 
     <add-user-dialog v-model="dialog"></add-user-dialog>
+    <CaseInfoDialog
+      :dialogVisible="caseInfoDialog"
+      :case-id="caseId"
+      v-if="caseInfoDialog"
+      @closeInfoDialog="caseInfoDialog = false"
+    />
   </div>
 </template>
 
 <script>
 import { mapActions, mapState } from "vuex";
+import AppealForm from "./AppealForm.vue";
 import AddUserDialog from "../../components/cases/AddUserDialog";
+import CaseInfoDialog from "../../components/cases/CaseInfoDialog.vue";
 import { makeToast } from "@/helpers";
+import axios from "@/plugins/axios";
 
 export default {
-  name: "CreateCase",
-  components: { AddUserDialog },
+  name: "Create",
+  components: { AddUserDialog, CaseInfoDialog, AppealForm },
   data() {
     return {
       e1: 1,
       selectedTitle: "",
-      caseDateDialog: false,
       dateDialog: false,
-      sessionDialog: false,
-      sessionDate: false,
       caseNumber: "",
       caseName: "",
-      caseDate: "",
-      branch_id: "",
+      caseId: null,
+      caseInfoDialog: false,
       initialLoading: false,
       isLoading: false,
       isSubmitingForm: false,
       users: [],
       formRequestId: null,
-
+      caseCheck: false,
       breadcrumbs: [
         {
           text: this.$t("menu.requests"),
@@ -501,7 +403,6 @@ export default {
         details: "",
         status: "",
         court: "",
-        sessionDate: null,
         date: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
           .toISOString()
           .substr(0, 10),
@@ -527,10 +428,14 @@ export default {
   },
 
   created() {
+    this.setBreadCrumb({
+      breadcrumbs: this.breadcrumbs,
+      pageTitle: this.$t("cases.casesList"),
+    });
     this.init();
     this.fetchUsers();
     this.fetchDepartments();
-    this.getBranches({});
+    this.fetchCases();
 
     this.$root.$on("userCreated", () => {
       this.fetchUsers();
@@ -544,11 +449,16 @@ export default {
     },
   },
   computed: {
-    ...mapState("cases", ["pages", "selectedForm", "courts", "caseTypes"]),
+    ...mapState("cases", [
+      "pages",
+      "selectedForm",
+      "courts",
+      "caseTypes",
+      "formRequests",
+    ]),
     ...mapState("auth", ["user"]),
     ...mapState("app", ["navTemplates"]),
     ...mapState("departments", ["departments"]),
-    ...mapState("branches", ["branches"]),
 
     defendantUsers() {
       // return this.sidesInfo.claimant_id
@@ -597,17 +507,31 @@ export default {
     ...mapActions("app", ["setBreadCrumb"]),
     ...mapActions("users", ["getUserType"]),
     ...mapActions("departments", ["getDepartments"]),
-    ...mapActions("branches", ["getBranches"]),
     ...mapActions("cases", [
       "getPages",
       "validateFormData",
-      "savePages",
+      "saveRelatedPages",
+      "updateRelatedPages",
       "userDepartment",
       "saveRequestSide",
       "saveFormInformation",
       "getCourts",
+      "getFormRequests",
+      "savePages",
       "updatePages",
     ]),
+    openCaseInfoDialog(id) {
+      this.caseInfoDialog = true;
+    },
+    fetchCases() {
+      let data = {
+        template_id: 1,
+        pageSize: -1,
+      };
+      this.getFormRequests(data)
+        .then(() => {})
+        .catch(() => {});
+    },
     addDate(index) {
       this.caseAction.dates.push({ caseDate: "" });
     },
@@ -721,6 +645,7 @@ export default {
       this.initialLoading = true;
       this.getPages(id)
         .then((_) => {
+          console.log(this.pages);
           this.setCurrentBread();
         })
         .finally((_) => {
@@ -757,39 +682,30 @@ export default {
       const msg = this.$t("general.required_input");
       return this.stepOneErrors && !value ? [msg] : [];
     },
-    saveCaseInfo() {
-      if (!this.caseName || !this.caseNumber || !this.caseDate) {
+    async saveCaseInfo() {
+      if (!(await this.validateFormData())) {
         this.stepOneErrors = true;
+        this.showErrors = true;
         return;
       }
+      this.showErrors = false;
       this.stepOneErrors = false;
       this.e1 = 2;
     },
     async saveForm() {
       this.isSubmitingForm = true;
-      if (
-        (await this.validateFormData()) &&
-        this.caseName &&
-        this.caseNumber &&
-        this.caseDate
-      ) {
+      if ((await this.validateFormData()) && this.caseName && this.caseNumber) {
         let result = null;
         if (!this.formRequestId) {
           result = await this.savePages({
             caseName: this.caseName,
             caseNumber: this.caseNumber,
-            caseDate: this.caseDate,
-            branch_id: this.branch_id,
-            type: 'case'
           });
         } else {
           result = await this.updatePages({
             caseName: this.caseName,
             caseNumber: this.caseNumber,
-            caseDate: this.caseDate,
-            branch_id: this.branch_id,
             formId: this.formRequestId,
-            type: 'case'
           });
         }
 
@@ -798,7 +714,7 @@ export default {
           this.formRequestId =
             this.formRequestId || result.data?.data?.formRequest?.id;
           this.showErrors = false;
-          this.e1 = 2;
+          this.e1 = 3;
           // makeToast("success", response.data.message);
         } else {
           makeToast("error", "Failed to save data");
@@ -811,6 +727,50 @@ export default {
         console.log("some fields is required");
       }
     },
+    async updatePages({ state }, { formId }) {
+      try {
+        const customFormData = {
+          id: state.selectedForm.id,
+
+          name: state.selectedForm.name,
+          pages: state.pagesValues.map((page) => ({
+            id: page.id,
+            title: page.title,
+            items: page.items
+              .filter((input) => input.value)
+              .map((input) => {
+                return {
+                  form_page_item_id: input.id,
+                  value: input.value,
+                  type: input.type,
+                };
+              }),
+          })),
+        };
+
+        const bodyFormData = new FormData();
+
+        for (const key in customFormData) {
+          let value = customFormData[key];
+          bodyFormData.set(key, JSON.stringify(value));
+          bodyFormData.set("_method", "PUT");
+        }
+        const response = await axios.post(
+          `update-form-fill/${formId}`,
+          bodyFormData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
+        return true;
+      } catch (error) {
+        console.error("Error saving form data:", error);
+        return false;
+      }
+    },
+
     async storeRequestSide() {
       this.isLoading = true;
       let data = {
@@ -823,7 +783,7 @@ export default {
       const result = await this.saveRequestSide(data);
       if (result) {
         this.isLoading = false;
-        this.e1 = 3;
+        this.e1 = 4;
         this.stepOneErrors = false;
       } else {
         this.stepOneErrors = true;
@@ -841,7 +801,6 @@ export default {
         status: this.caseAction.status,
         date: this.caseAction.date,
         court: this.caseAction.court,
-        sessionDate: this.caseAction.sessionDate,
       };
 
       // if (await this.validateFormData()) {
