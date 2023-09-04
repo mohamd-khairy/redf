@@ -93,4 +93,9 @@ class FormRequest extends Model
     {
         return $this->morphOne(File::class, 'fileable');
     }
+
+    public function branch()
+    {
+        return $this->belongsTo(Branch::class, 'branche_id');
+    }
 }

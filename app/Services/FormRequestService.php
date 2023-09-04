@@ -175,17 +175,17 @@ class FormRequestService
     public function getFormRequest($request)
     {
         try {
-            $query = FormRequest::with('form.pages.items', 'user', 'formAssignedRequests.assigner', 'form_page_item_fill.page_item', 'lastFormRequestInformation');
+            $query = FormRequest::with('form.pages.items', 'user', 'formAssignedRequests.assigner', 'form_page_item_fill.page_item', 'lastFormRequestInformation', 'branch');
 
             if ($request->has('template_id')) {
                 $query = $query->whereHas('form', fn ($q) => $q->where('template_id', $request->input('template_id')));
             }
 
-            $data = app(Pipeline::class)->send($query)
-                ->through([SortFilters::class])
-                ->thenReturn();
+            $data = app(Pipeline::class)->send($query)->through([SortFilters::class])->thenReturn();
+
             $pageSize = $request->input('pageSize', 15);
             $data = $pageSize == -1 ?  $data->get() : $data->paginate($pageSize);
+
             return $data;
         } catch (\Throwable $e) {
             // You could consider throwing an exception here if needed
