@@ -43,24 +43,25 @@ class FormRequestService
                 'form_request_number' => $number,
                 'name' => $requestData['case_name'] ?? ($requestData['name'] . "($number)")
             ]);
-
-
             // save related tables if get case_id
             if ($requestData->case_id) {
 
-                $formRequest->update(['status' => StatusEnum::notactive]);
-
-
                 // Create a new Formable record
-                $formable = Formable::create([
+                Formable::create([
                     'formable_id' => $requestData->case_id,
                     'form_request_id' => $formRequest->id,
                     'formable_type' => FormRequest::class,
                 ]);
 
+                if ($requestData['type'] == 'related_case') {
+                    $formRequest->update(['status' => StatusEnum::notactive]);
+                    $relatedCase = $this->updateStatus($requestData['id']); //form_id
+                    if (isset($formRequest->request->formable)) {
+                        $formRequest->request->formable->update(['status' => $relatedCase->value]);
+                    }
+                }
 
-                // if type related_case
-                $relatedCase = $this->updateStatus($requestData);
+                /*********** add action ********* */
                 $actionData = [
                     'form_request_id' => $requestData->case_id,
                     'formable_id' => $formRequest->id,
@@ -69,42 +70,40 @@ class FormRequestService
                 ];
                 saveFormRequestAction($actionData);
             }
+
             $this->processFormPages($requestData, $formRequest);
 
             return $formRequest;
         });
     }
 
-    public function updateStatus($requestData)
+    public function updateStatus($formId)
     {
+        switch ($formId) {
+            case FormEnum::DEFENCE_CASE_FORM->value:
+                $status = CaseTypeEnum::FIRST_RULE;
+                break;
 
-        if ($requestData['type'] == 'related_case') {
-            $formId = $requestData['id']; //4
-            $status = '';
-            switch ($formId) {
-                case FormEnum::DEFENCE_CASE_FORM->value:
-                    $status = CaseTypeEnum::FIRST_RULE;
-                    break;
+            case FormEnum::CLAIM_CASE_FORM->value:
+                $status = CaseTypeEnum::FIRST_RULE;
+                break;
 
-                case FormEnum::CLAIM_CASE_FORM->value:
-                    $status = CaseTypeEnum::FIRST_RULE;
-                    break;
+            case FormEnum::RESUME_CASE_FORM->value:
+                $status = CaseTypeEnum::SECOND_RULE;
+                break;
 
-                case FormEnum::RESUME_CASE_FORM->value:
-                    $status = CaseTypeEnum::SECOND_RULE;
-                    break;
+            case FormEnum::SOLICITATION_CASE_FORM->value:
+                $status = CaseTypeEnum::THIRD_RULE;
+                break;
 
-                case FormEnum::SOLICITATION_CASE_FORM->value:
-                    $status = CaseTypeEnum::THIRD_RULE;
-                    break;
-
-                default:
-                    break;
-            }
-
-            return $status;
+            default:
+                $status = null;
+                break;
         }
+
+        return $status;
     }
+
     public function updateFormFill($requestData, $id)
     {
         return DB::transaction(function () use ($requestData, $id) {

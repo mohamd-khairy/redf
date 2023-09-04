@@ -149,7 +149,7 @@
         class="d-inline-block"
         label="اسم المدعي"
         disabled
-        :value="claimant.id"
+        :value="claimant.name"
       >
       </v-text-field>
     </span>
