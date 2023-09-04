@@ -15,6 +15,7 @@ const actions = {
     const response = await axios.get(`get-form-Requests`, {
       params: {
         template_id: data.template_id,
+        form_type: data.form_type,
         type: "case",
         search: data.search,
         pageSize: data.pageSize,
@@ -211,10 +212,7 @@ const actions = {
       return false;
     }
   },
-  async savePages(
-    { state },
-    { caseName, caseNumber, case_id, branch_id, caseDate, type }
-  ) {
+  async savePages({ state }, { caseName, caseNumber, case_id, branch_id, caseDate, type }) {
     try {
       const customFormData = {
         id: state.selectedForm.id,
@@ -240,9 +238,15 @@ const actions = {
         let value = customFormData[key];
         bodyFormData.set(key, JSON.stringify(value));
       }
-      bodyFormData.set("case_name", caseName);
-      bodyFormData.set("case_number", caseNumber);
-      bodyFormData.set("case_date", caseDate);
+      if (caseName) {
+        bodyFormData.set("case_name", caseName);
+      }
+      if (caseNumber) {
+        bodyFormData.set("case_number", caseNumber);
+      }
+      if (caseDate) {
+        bodyFormData.set("case_date", caseDate);
+      }
       if (case_id) {
         bodyFormData.set("case_id", case_id);
       }
@@ -263,10 +267,7 @@ const actions = {
       return false;
     }
   },
-  async updatePages(
-    { state },
-    { caseName, caseNumber, formId, branch_id, caseDate, type }
-  ) {
+  async updatePages({ state }, { caseName, caseNumber, formId, branch_id, caseDate, type }) {
     try {
       const customFormData = {
         id: state.selectedForm.id,
@@ -294,10 +295,15 @@ const actions = {
         bodyFormData.set(key, JSON.stringify(value));
         bodyFormData.set("_method", "PUT");
       }
-
-      bodyFormData.set("case_name", caseName);
-      bodyFormData.set("case_number", caseNumber);
-      bodyFormData.set("case_date", caseDate);
+      if (caseName) {
+        bodyFormData.set("case_name", caseName);
+      }
+      if (caseNumber) {
+        bodyFormData.set("case_number", caseNumber);
+      }
+      if (caseDate) {
+        bodyFormData.set("case_date", caseDate);
+      }
       if (branch_id) {
         bodyFormData.set("branche_id", branch_id);
       }
@@ -346,15 +352,11 @@ const actions = {
         bodyFormData.set(key, JSON.stringify(value));
       }
       bodyFormData.set("case_id", case_id);
-      const result = await axios.post(
-        `store-related-case-form-fill`,
-        bodyFormData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
+      const result = await axios.post(`store-related-case-form-fill`, bodyFormData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
       return result;
     } catch (error) {
       console.error("Error saving form data:", error);

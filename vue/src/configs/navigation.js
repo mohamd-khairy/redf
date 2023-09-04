@@ -25,6 +25,13 @@ export default {
         },
         {
           icon: "mdi-list-box",
+          text: "request_review",
+          key: "menu.request_review",
+          permission: "read-role",
+          link: "/cases/1/request-review",
+        },
+        {
+          icon: "mdi-list-box",
           text: "review_Doc",
           key: "menu.review_Doc",
           permission: "read-role",

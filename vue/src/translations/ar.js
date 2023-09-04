@@ -247,6 +247,7 @@ export default {
     cases: "القضايا",
     cases_child: "مراجعة القضايا",
     editCase: "تعديل البيانات",
+    request_review: "مراجعة الطلبات",
   },
   breadcrumbs: {
     pipesList: "قائمة النماذج",

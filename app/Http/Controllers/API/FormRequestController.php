@@ -37,6 +37,7 @@ class FormRequestController extends Controller
             $formRequest = $this->formRequestService->storeFormFill($request);
             return responseSuccess(['formRequest' => $formRequest], 'Form Fill has been successfully Created');
         } catch (\Throwable $th) {
+            // throw $th;
             return responseFail($th->getMessage());
         }
     }

@@ -638,14 +638,18 @@ export default {
           result = await this.savePages({
             caseName: null,
             caseNumber: null,
+            caseDate: null,
             type: "related_case",
+            case_id: this.caseId,
           });
         } else {
           result = await this.updatePages({
             caseName: null,
             caseNumber: null,
+            caseDate: null,
             type: "related_case",
             formId: this.formRequestId,
+            case_id: this.caseId,
           });
         }
 

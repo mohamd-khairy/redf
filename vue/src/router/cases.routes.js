@@ -20,6 +20,16 @@ export default [
       import(/* webpackChunkName: "cases-list" */ "@/pages/cases/reviewDoc"),
   },
   {
+    path: "/cases/:id/request-review",
+    name: "cases-request_review",
+    meta: {
+      title: "menu.request_review",
+      auth: true,
+    },
+    component: () =>
+      import(/* webpackChunkName: "cases-list" */ "@/pages/cases/RequestReview"),
+  },
+  {
     path: "/cases/:id/form-types",
     name: "form-types",
     meta: {
