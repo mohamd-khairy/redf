@@ -101,8 +101,8 @@ class FormRequest extends Model
         return $this->belongsTo(Branch::class, 'branche_id');
     }
 
-    public function getStatusAttribute($value)
-    {
-        return $value ? StatusEnum::$value() : $value;
-    }
+    // public function getStatusAttribute($value)
+    // {
+    //     return $value ? StatusEnum::$value() : $value;
+    // }
 }
