@@ -26,14 +26,12 @@ class FormRequestService
     {
         return DB::transaction(function () use ($requestData) {
 
-            $type = $requestData->case_id ? 'consultation' : 'case';
-
             $formRequest = FormRequest::create([
                 'form_id' => $requestData['id'],
                 'branche_id' => $requestData['branche_id'],
                 'user_id' => Auth::id(),
                 'status' => FormRequestStatus::PENDING,
-                'form_type' => $type
+                'form_type' => $requestData['type']
             ]);
 
             $formRequest->form_request_number = $requestData['case_number'] ?? rand(100000, 999999);
@@ -53,11 +51,11 @@ class FormRequestService
                     'form_request_id' => $requestData->case_id,
                     'formable_id' => $formRequest->id,
                     'formable_type' => FormRequest::class,
-                    'msg' =>    'تم اضافه استشاره قانونيه جديده',
+                    'msg' =>   $formRequest->form->name . ' تم اضافه ',
                 ];
                 saveFormRequestAction($actionData);
             }
-            $this->processFormPages($requestData, $formRequest, $type);
+            $this->processFormPages($requestData, $formRequest);
 
             return $formRequest;
         });
@@ -67,14 +65,10 @@ class FormRequestService
     {
         return DB::transaction(function () use ($requestData, $id) {
 
-            $type = $requestData->case_id ? 'consultation' : 'case';
-
             $formRequest = FormRequest::findOrFail($id);
             $formRequest->form_request_number = $requestData['case_number'] ?? $formRequest->form_request_number;
             $formRequest->name = $requestData['case_name'] ?? $formRequest->name;
             $formRequest->branche_id = $requestData['branche_id'] ?? $formRequest->branche_id;
-            // dd($formRequest,$formRequest->branche_id , $requestData);
-
             $formRequest->save();
 
             // save related tables if get case_id
@@ -89,27 +83,27 @@ class FormRequestService
                     'form_request_id' => $requestData->case_id,
                     'formable_id' => $formRequest->id,
                     'formable_type' => FormRequest::class,
-                    'msg' => 'تم تحديث استشاره قانونيه',
+                    'msg' => $formRequest->form->name . ' تم تحديث   ',
                 ];
                 saveFormRequestAction($actionData);
             }
 
             FormPageItemFill::where('form_request_id', $formRequest->id)->delete();
 
-            $this->processFormPages($requestData, $formRequest, $type);
+            $this->processFormPages($requestData, $formRequest);
 
             return $formRequest;
         });
     }
 
-    private function processFormPages($request, FormRequest $formRequest, $type = null)
+    private function processFormPages($request, FormRequest $formRequest)
     {
         $pagesInput = $request->input('pages', []);
 
         $pages = is_string($pagesInput) ? json_decode($pagesInput, true) : $pagesInput;
         $pageItems = collect($pages)->flatMap(fn ($page) => $page['items'] ?? []);
 
-        $pageItems->each(function ($pageItem) use ($formRequest, $type) {
+        $pageItems->each(function ($pageItem) use ($formRequest) {
             $decodedValue = $pageItem['value'];
 
             if ($pageItem['type'] === 'file') {
@@ -121,7 +115,7 @@ class FormRequestService
                     'path' => $filePath,
                     'user_id' => auth()->id(),
                     'start_date' => now(),
-                    'type' => $type ?? 'form',
+                    'type' => $formRequest->form_type,
                     'priority' => 'high',
                     'status' => 'active',
                 ]);

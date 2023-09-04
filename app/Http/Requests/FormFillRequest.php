@@ -31,8 +31,9 @@ class FormFillRequest extends FormRequest
     public function rules()
     {
         return [
-            'case_number' => 'required|regex:/^[0-9]+$/',
-            'case_name' => 'nullable|string',
+            'type' => 'required|in:related_case,case,consultation',
+            'case_number' => 'nullable|required_if:type,case|regex:/^[0-9]+$/',
+            'case_name' => 'nullable|required_if:type,case|string',
             'branche_id' => 'nullable',
             'pages' => 'required',
             'pages.*' => 'required',
