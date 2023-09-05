@@ -22,6 +22,7 @@ use App\Enums\StatusEnum;
 use App\Http\Requests\PageRequest;
 use Illuminate\Support\Facades\Auth;
 use App\Models\FormRequestInformation;
+use App\Models\Status;
 use Illuminate\Support\Facades\Storage;
 
 class FormRequestService
@@ -44,66 +45,79 @@ class FormRequestService
             ]);
             // save related tables if get case_id
             if ($requestData->case_id) {
+
                 // Create a new Formable record
-               $formable = Formable::create([
+                Formable::create([
                     'formable_id' => $requestData->case_id,
                     'form_request_id' => $formRequest->id,
                     'formable_type' => FormRequest::class,
                 ]);
 
-                // dd($formRequest->request);
+                if ($requestData['type'] == 'related_case') {
+                    $formRequest->update(['status' => StatusEnum::notactive]);
+                    $relatedCase = $this->updateStatus($requestData['id']); //form_id
+                    if (isset($formRequest->request->formable)) {
+                        $formRequest->request->formable->update(['status' => $relatedCase->value]);
+                    }
+                }
 
-                // if type related_case
-                // $relatedCase = $this->updateStatus($requestData);
-                $actionData = [
-                    'form_request_id' => $requestData->case_id,
-                    'formable_id' => $formRequest->id,
-                    'formable_type' => FormRequest::class,
-                    'msg' =>   $formRequest->form->name . ' تم اضافه ',
-                ];
-                saveFormRequestAction($actionData);
+                /*********** add action ********* */
+                saveFormRequestAction(
+                    form_request_id: $requestData->case_id,
+                    formable_id: $formRequest->id,
+                    formable_type: FormRequest::class,
+                    msg: ' تم اضافه ' . $formRequest->form->name
+                );
             }
+
+            saveFormRequestAction(
+                form_request_id: $formRequest->id,
+                formable_id: $formRequest->id,
+                formable_type: FormRequest::class,
+                msg: ' تم اضافه ' . $formRequest->name
+            );
+
             $this->processFormPages($requestData, $formRequest);
 
             return $formRequest;
         });
     }
 
-    public function updateStatus($requestData){
+    public function updateStatus($formId)
+    {
+        switch ($formId) {
+            case FormEnum::DEFENCE_CASE_FORM->value:
+                $status = CaseTypeEnum::FIRST_RULE;
+                break;
 
-        if ($requestData['type'] == 'related_case') {
-            $formId = $requestData['id']; //4
-             $status = '';
-             switch ($formId) {
-                case FormEnum::DEFENCE_CASE_FORM->value:
-                     $status = CaseTypeEnum::FIRST_RULE;
-                     break;
+            case FormEnum::CLAIM_CASE_FORM->value:
+                $status = CaseTypeEnum::FIRST_RULE;
+                break;
 
-                case FormEnum::CLAIM_CASE_FORM->value:
-                     $status = CaseTypeEnum::FIRST_RULE;
-                     break;
+            case FormEnum::RESUME_CASE_FORM->value:
+                $status = CaseTypeEnum::SECOND_RULE;
+                break;
 
-                case FormEnum::RESUME_CASE_FORM->value:
-                     $status = CaseTypeEnum::SECOND_RULE;
-                     break;
+            case FormEnum::SOLICITATION_CASE_FORM->value:
+                $status = CaseTypeEnum::THIRD_RULE;
+                break;
 
-                case FormEnum::SOLICITATION_CASE_FORM->value:
-                     $status = CaseTypeEnum::THIRD_RULE;
-                     break;
-
-                default:
-                     break;
-             }
-
-            $formRequest->update(['status' => $status]);
+            default:
+                $status = null;
+                break;
         }
+
+        return $status;
     }
+
     public function updateFormFill($requestData, $id)
     {
         return DB::transaction(function () use ($requestData, $id) {
 
             $formRequest = FormRequest::findOrFail($id);
-            $formRequest->update($requestData);
+            $formRequest->form_request_number = $requestData['case_number'] ?? $formRequest->form_request_number;
+            $formRequest->name = $requestData['case_name'] ?? $formRequest->name;
+            $formRequest->save();
 
             // save related tables if get case_id
             if ($requestData->case_id) {
@@ -113,18 +127,25 @@ class FormRequestService
                     'form_request_id' => $formRequest->id,
                     'formable_type' => FormRequest::class,
                 ]);
-                $actionData = [
-                    'form_request_id' => $requestData->case_id,
-                    'formable_id' => $formRequest->id,
-                    'formable_type' => FormRequest::class,
-                    'msg' => $formRequest->form->name . ' تم تحديث   ',
-                ];
-                saveFormRequestAction($actionData);
+
+                saveFormRequestAction(
+                    form_request_id: $requestData->case_id,
+                    formable_id: $formRequest->id,
+                    formable_type: FormRequest::class,
+                    msg: ' تم تحديث   ' . $formRequest->name
+                );
             }
 
             FormPageItemFill::where('form_request_id', $formRequest->id)->delete();
 
             $this->processFormPages($requestData, $formRequest);
+
+            saveFormRequestAction(
+                form_request_id: $requestData->id,
+                formable_id: $formRequest->id,
+                formable_type: FormRequest::class,
+                msg: ' تم تحديث   ' . $formRequest->name
+            );
 
             return $formRequest;
         });
@@ -169,7 +190,15 @@ class FormRequestService
     public function getFormRequest(PageRequest $request)
     {
         try {
-            $query = FormRequest::with('form.pages.items', 'user', 'formAssignedRequests.assigner', 'form_page_item_fill.page_item', 'lastFormRequestInformation', 'branch');
+            $query = FormRequest::with(
+                'form.pages.items',
+                'user',
+                'formAssignedRequests.assigner',
+                'form_page_item_fill.page_item',
+                'lastFormRequestInformation',
+                'branch',
+                'request'
+            );
 
             if ($request->has('template_id')) {
                 $query = $query->whereHas('form', fn ($q) => $q->where('template_id', $request->input('template_id')));
@@ -211,14 +240,13 @@ class FormRequestService
                         'type' => FormAssignRequestType::EMPLOYEE,
                     ]);
                     FormRequest::where('id', $formRequestId)->update(['status' => 'assigned']);
-                    $actionData = [
-                        'form_request_id' => $formRequestId,
-                        'formable_id' => $assignNew->id,
-                        'formable_type' => FormAssignRequest::class,
-                        'msg' => 'تم اسناد القضيه ل موظف جديد',
-                    ];
 
-                    saveFormRequestAction($actionData);
+                    saveFormRequestAction(
+                        form_request_id: $formRequestId,
+                        formable_id: $assignNew->id,
+                        formable_type: FormAssignRequest::class,
+                        msg: 'تم اسناد الطلب ل موظف جديد',
+                    );
                 }
                 return ['assignNew' => $assignNew];
             });
@@ -257,6 +285,7 @@ class FormRequestService
             $formRequestInfo = FormRequestInformation::create($validatedData);
             // $formRequestInfo->form_request->status = FormRequestStatus::PROCESSING;
             $formRequestInfo->form_request->save();
+
             $calendarData = [
                 'form_request_id' => $formRequestInfo->form_request_id,
                 'calendarable_id' => $formRequestInfo->form_request_id,
@@ -266,14 +295,16 @@ class FormRequestService
                 'date' => $request->date,
             ];
             $calendar = saveCalendarFromRequest($calendarData);
-            $actionData = [
-                'form_request_id' => $formRequestInfo->form_request_id,
-                'formable_id' => $formRequestInfo->id,
-                'formable_type' => FormRequestInformation::class,
-                'msg' => $request->details ? $request->details : 'تم اضافه اجراء جديد',
-            ];
-            $action = saveFormRequestAction($actionData);
+
+            saveFormRequestAction(
+                form_request_id: $formRequestInfo->form_request_id,
+                formable_id: $formRequestInfo->id,
+                formable_type: FormRequestInformation::class,
+                msg: $request->details ? $request->details : 'تم اضافه اجراء جديد',
+            );
+
             DB::commit();
+
             return responseSuccess($formRequestInfo, 'Form Request Information and Sessions have been successfully created.');
         } catch (\Exception $e) {
             DB::rollBack();

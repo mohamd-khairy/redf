@@ -1,10 +1,5 @@
 <template>
-  <v-dialog
-    v-model="dialogVisible"
-    fullscreen
-    hide-overlay
-    transition="dialog-bottom-transition"
-  >
+  <v-dialog v-model="dialogVisible" fullscreen hide-overlay transition="dialog-bottom-transition">
     <v-card>
       <v-toolbar dark color="primary">
         <v-toolbar-title>{{ $t("cases.view_timeline") }}</v-toolbar-title>
@@ -21,31 +16,18 @@
             {{ $t("general.getting_data") }}
           </v-col>
           <v-col cols="12">
-            <v-progress-linear
-              color="primary accent-4"
-              indeterminate
-              rounded
-              height="6"
-            ></v-progress-linear>
+            <v-progress-linear color="primary accent-4" indeterminate rounded height="6"></v-progress-linear>
           </v-col>
         </v-row>
       </v-card-text>
       <v-card-text v-if="!loading && formActions.length">
         <v-timeline>
-          <v-timeline-item
-            v-for="(action, i) in formActions"
-            :key="i"
-            :color="getTimeColor(action.formable_type)"
-            fill-dot
-            icon="mdi-calendar"
-          >
+          <v-timeline-item v-for="(action, i) in formActions" :key="i" :color="getTimeColor(action.formable_type)"
+            fill-dot icon="mdi-calendar">
             <template v-slot:opposite>
-              <span
-                :class="`headline font-weight-bold ${getTimeColor(
-                  action.formable_type
-                )}--text`"
-                v-text="formatDate(action.created_at)"
-              ></span>
+              <span :class="`headline font-weight-bold ${getTimeColor(
+                action.formable_type
+              )}--text`" v-text="formatDate(action.created_at)"></span>
             </template>
             <v-row dense>
               <v-col cols="12">
@@ -54,10 +36,7 @@
                     <v-expansion-panel-header>
                       <h5>{{ action.msg }}</h5>
                     </v-expansion-panel-header>
-                    <component
-                      :action="action"
-                      :is="getFormType(action.formable_type)"
-                    />
+                    <component :action="action" :is="getFormType(action.formable_type)" />
                   </v-expansion-panel>
                 </v-expansion-panels>
               </v-col>
@@ -156,12 +135,15 @@ export default {
   color: rgba(0, 0, 0, 0.87) !important;
   pointer-events: auto !important;
 }
+
 .c-h6 {
   font-weight: 600;
 }
+
 .theme--light.v-input--is-disabled.custom-disabled-input input {
   color: rgba(0, 0, 0, 0.87) !important;
 }
+
 .dialog-loading-cont {
   height: calc(100vh - 65px);
   text-align: center;
