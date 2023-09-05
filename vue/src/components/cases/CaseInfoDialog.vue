@@ -149,7 +149,7 @@
                 {{ $t(`cases.claimant`) }}
               </div>
               <div class="input-value">
-                {{ formRequestSide.claimant_id }}
+                {{ formRequestSide?.claimant?.name ?? '' }}
               </div>
             </v-col>
             <v-col cols="3" class="input-cont mb-2">
@@ -157,7 +157,7 @@
                 {{ $t(`cases.defendant`) }}
               </div>
               <div class="input-value">
-                {{ formRequestSide.defendant_id }}
+                {{ formRequestSide?.defendant?.name ?? '' }}
               </div>
             </v-col>
           </v-row>
