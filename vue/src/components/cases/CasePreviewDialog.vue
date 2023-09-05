@@ -58,8 +58,8 @@
 
 <script>
 import { mapActions } from "vuex";
-import FormRequest from "../caseTypes/FormRequest.vue";
-import FormAssignRequest from "../caseTypes/FormAssignRequest.vue";
+import FormRequest from "./caseTypes/FormRequest.vue";
+import FormAssignRequest from "./caseTypes/FormAssignRequest.vue";
 import FormRequestInformation from "./caseTypes/FormRequestInformation.vue";
 import emptyDataSvg from "@/assets/images/illustrations/empty-data.svg";
 
