@@ -62,14 +62,20 @@ class FormRequestService
                 }
 
                 /*********** add action ********* */
-                $actionData = [
-                    'form_request_id' => $requestData->case_id,
-                    'formable_id' => $formRequest->id,
-                    'formable_type' => FormRequest::class,
-                    'msg' =>   $formRequest->form->name . ' تم اضافه ',
-                ];
-                saveFormRequestAction($actionData);
+                saveFormRequestAction(
+                    form_request_id: $requestData->case_id,
+                    formable_id: $formRequest->id,
+                    formable_type: FormRequest::class,
+                    msg: ' تم اضافه ' . $formRequest->form->name
+                );
             }
+
+            saveFormRequestAction(
+                form_request_id: $formRequest->id,
+                formable_id: $formRequest->id,
+                formable_type: FormRequest::class,
+                msg: ' تم اضافه ' . $formRequest->name
+            );
 
             $this->processFormPages($requestData, $formRequest);
 
@@ -119,18 +125,25 @@ class FormRequestService
                     'form_request_id' => $formRequest->id,
                     'formable_type' => FormRequest::class,
                 ]);
-                $actionData = [
-                    'form_request_id' => $requestData->case_id,
-                    'formable_id' => $formRequest->id,
-                    'formable_type' => FormRequest::class,
-                    'msg' => $formRequest->form->name . ' تم تحديث   ',
-                ];
-                saveFormRequestAction($actionData);
+
+                saveFormRequestAction(
+                    form_request_id: $requestData->case_id,
+                    formable_id: $formRequest->id,
+                    formable_type: FormRequest::class,
+                    msg: ' تم تحديث   ' . $formRequest->name
+                );
             }
 
             FormPageItemFill::where('form_request_id', $formRequest->id)->delete();
 
             $this->processFormPages($requestData, $formRequest);
+
+            saveFormRequestAction(
+                form_request_id: $requestData->id,
+                formable_id: $formRequest->id,
+                formable_type: FormRequest::class,
+                msg: ' تم تحديث   ' . $formRequest->name
+            );
 
             return $formRequest;
         });
@@ -175,7 +188,15 @@ class FormRequestService
     public function getFormRequest(PageRequest $request)
     {
         try {
-            $query = FormRequest::with('form.pages.items', 'user', 'formAssignedRequests.assigner', 'form_page_item_fill.page_item', 'lastFormRequestInformation', 'branch');
+            $query = FormRequest::with(
+                'form.pages.items',
+                'user',
+                'formAssignedRequests.assigner',
+                'form_page_item_fill.page_item',
+                'lastFormRequestInformation',
+                'branch',
+                'request'
+            );
 
             if ($request->has('template_id')) {
                 $query = $query->whereHas('form', fn ($q) => $q->where('template_id', $request->input('template_id')));
@@ -217,14 +238,13 @@ class FormRequestService
                         'type' => FormAssignRequestType::EMPLOYEE,
                     ]);
                     FormRequest::where('id', $formRequestId)->update(['status' => 'assigned']);
-                    $actionData = [
-                        'form_request_id' => $formRequestId,
-                        'formable_id' => $assignNew->id,
-                        'formable_type' => FormAssignRequest::class,
-                        'msg' => 'تم اسناد القضيه ل موظف جديد',
-                    ];
 
-                    saveFormRequestAction($actionData);
+                    saveFormRequestAction(
+                        form_request_id: $formRequestId,
+                        formable_id: $assignNew->id,
+                        formable_type: FormAssignRequest::class,
+                        msg: 'تم اسناد الطلب ل موظف جديد',
+                    );
                 }
                 return ['assignNew' => $assignNew];
             });
@@ -263,6 +283,7 @@ class FormRequestService
             $formRequestInfo = FormRequestInformation::create($validatedData);
             // $formRequestInfo->form_request->status = FormRequestStatus::PROCESSING;
             $formRequestInfo->form_request->save();
+
             $calendarData = [
                 'form_request_id' => $formRequestInfo->form_request_id,
                 'calendarable_id' => $formRequestInfo->form_request_id,
@@ -272,14 +293,16 @@ class FormRequestService
                 'date' => $request->date,
             ];
             $calendar = saveCalendarFromRequest($calendarData);
-            $actionData = [
-                'form_request_id' => $formRequestInfo->form_request_id,
-                'formable_id' => $formRequestInfo->id,
-                'formable_type' => FormRequestInformation::class,
-                'msg' => $request->details ? $request->details : 'تم اضافه اجراء جديد',
-            ];
-            $action = saveFormRequestAction($actionData);
+
+            saveFormRequestAction(
+                form_request_id: $formRequestInfo->form_request_id,
+                formable_id: $formRequestInfo->id,
+                formable_type: FormRequestInformation::class,
+                msg: $request->details ? $request->details : 'تم اضافه اجراء جديد',
+            );
+
             DB::commit();
+
             return responseSuccess($formRequestInfo, 'Form Request Information and Sessions have been successfully created.');
         } catch (\Exception $e) {
             DB::rollBack();

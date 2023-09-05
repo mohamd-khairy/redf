@@ -655,6 +655,8 @@ export default {
     ResponseToCustomerFeedback: "الرد على ملاحظات العملاء",
   },
   general: {
+    name:"الاسم",
+    number:"الرقم",
     edit: "تعديل",
     count: "الاجمالى",
     title: "العنوان",

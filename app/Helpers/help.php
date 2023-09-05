@@ -190,15 +190,23 @@ if (!function_exists('saveCalendarFromRequest')) {
 }
 
 if (!function_exists('saveFormRequestAction')) {
-    function saveFormRequestAction(array $data)
+    function saveFormRequestAction(array $data = null, $formable_type = null, $form_request_id = null, $formable_id = null, $msg = null)
     {
+        if (!$data) {
+            $data =  [
+                'form_request_id' => $form_request_id,
+                'formable_id' => $formable_id,
+                'formable_type' => $formable_type,
+                'msg' => $msg,
+            ];
+        }
         $validatedData = validator($data, [
             'formable_type' => 'nullable|string',
             'form_request_id' => 'required|integer',
             'formable_id' => 'nullable|integer',
             'msg' => 'required|string',
-
         ])->validate();
+
         return FormRequestAction::create($validatedData);
     }
 }
