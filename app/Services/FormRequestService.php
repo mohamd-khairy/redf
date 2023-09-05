@@ -115,7 +115,9 @@ class FormRequestService
         return DB::transaction(function () use ($requestData, $id) {
 
             $formRequest = FormRequest::findOrFail($id);
-            $formRequest->update($requestData);
+            $formRequest->form_request_number = $requestData['case_number'] ?? $formRequest->form_request_number;
+            $formRequest->name = $requestData['case_name'] ?? $formRequest->name;
+            $formRequest->save();
 
             // save related tables if get case_id
             if ($requestData->case_id) {
