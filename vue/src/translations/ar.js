@@ -780,6 +780,7 @@ export default {
     new_beneficiary_added: "تم اضافة مستفيد جديد",
     consultation: "استشارة",
     belongsTo: "تنتمي الي",
+    downloadWord: "تحميل ملف Word",
   },
   reports: {
     buildReport: "انشاء تقرير",

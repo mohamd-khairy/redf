@@ -18,6 +18,8 @@
     },
     "dependencies": {
         "@mdi/font": "^7.2.96",
+        "docx": "^8.2.2",
+        "file-saver": "^2.0.5",
         "jquery": "^3.7.0",
         "laravel-echo": "^1.15.0",
         "pusher-js": "^8.0.2",
