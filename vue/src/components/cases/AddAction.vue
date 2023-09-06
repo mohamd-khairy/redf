@@ -213,12 +213,12 @@
               </v-col>
               <v-col cols="12" md="6">
                 <v-select
-                  :items="courts"
+                  :items="claimant"
                   :label="$t('cases.judgment_for')"
                   dense
                   outlined
-                  item-text="title"
-                  item-value="value"
+                  item-text="name"
+                  item-value="id"
                   v-model="caseAction.judgment_for"
                 >
                 </v-select>
@@ -234,7 +234,7 @@
                   <template v-slot:activator="{ on, attrs }">
                     <v-text-field
                       v-model="caseAction.date"
-                      :label="$t('cases.judgementDate')"
+                      :label="$t('cases.judgmentDate')"
                       append-icon="mdi-calendar"
                       readonly
                       v-bind="attrs"
@@ -436,7 +436,7 @@ export default {
     },
   },
   computed: {
-    ...mapState("cases", ["courts", "caseTypes"]),
+    ...mapState("cases", ["courts", "caseTypes", "claimant"]),
     ...mapState("branches", ["branches"]),
   },
   methods: {

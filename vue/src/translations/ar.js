@@ -510,7 +510,7 @@ export default {
     view_info: "عرض معلومات القضية",
     judgment_for: "الحكم ل",
     receiptDate: "تاريخ استلام الحكم",
-    judgementDate: "تاريخ الحكم",
+    judgmentDate: "تاريخ الحكم",
     casePlace: "مكان الجلسة",
   },
 
