@@ -425,6 +425,7 @@ export default {
   created() {
     this.getCourts();
     this.getBranches({});
+    this.retrieveClaimant({ form_request_id: this.formRequestId });
   },
   watch: {
     "caseAction.status"(newVal) {
@@ -439,7 +440,11 @@ export default {
     ...mapState("branches", ["branches"]),
   },
   methods: {
-    ...mapActions("cases", ["saveFormInformation", "getCourts"]),
+    ...mapActions("cases", [
+      "saveFormInformation",
+      "getCourts",
+      "retrieveClaimant",
+    ]),
     ...mapActions("branches", ["getBranches"]),
     closeDialog() {
       this.$emit("close-action-dialog");
