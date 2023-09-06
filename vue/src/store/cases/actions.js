@@ -487,6 +487,17 @@ const actions = {
     commit("SET_CASE_TYPES", case_types);
     commit("SET_specializations", specialization);
   },
+  async retrieveClaimant({ commit }, { form_request_id }) {
+    const response = await axios.get(`retrieve-claimant`, {
+      params: {
+        form_request_id,
+      },
+    });
+    console.log(response);
+    return;
+    commit("SET_CORTS", court_types);
+    commit("SET_CASE_TYPES", case_types);
+  },
   async getCasePreview({ commit }, id) {
     const response = await axios.get(`action-preview/${id}`);
     const { formRequestActions } = response?.data?.data;

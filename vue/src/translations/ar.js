@@ -514,6 +514,10 @@ export default {
     against_redf:"ضد الصندوق",
     entry:"مُدخل",
     specialization:"الدائرة",
+    judgment_for: "الحكم ل",
+    receiptDate: "تاريخ استلام الحكم",
+    judgementDate: "تاريخ الحكم",
+    casePlace: "مكان الجلسة",
   },
 
   departments: {
@@ -767,7 +771,7 @@ export default {
     closed: "تم اكمال الطلب",
     assigned: "لدي الموظف المختص",
     active: "نشط",
-    notactive:"غير نشط",
+    notactive: "غير نشط",
     assigner: "مكلفة من",
     no_action_yet: "لم يتم اتخاذ اي اجراء في القضية حتي الان",
     getting_data: "جاري جلب البيانات",
