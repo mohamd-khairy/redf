@@ -24,10 +24,10 @@ class CaseRelatedSeeder extends Seeder
         ]);
 
         Branch::firstOrCreate([
-            'name' => 'جده'
+            'name' => 'جدة'
         ]);
         Branch::firstOrCreate([
-            'name' => 'المطقه الشرقيه'
+            'name' => 'المنطقة الشرقية'
         ]);
 
         $branches = Branch::pluck('name')->map(function ($item) {

@@ -107,6 +107,9 @@
                       dense
                       outlined
                       v-model="caseModel"
+                      required="true"
+                      :rules="[rules.required]"
+                      :error-messages="stepOneValidation(caseModel)"
                     >
                     </v-select>
                   </v-col>
@@ -114,11 +117,14 @@
                     <v-select
                       :items="specializations"
                       :label="$t('cases.specialization')"
-                      item-text="title"
-                      item-value="value"
+                      item-text="name"
+                      item-value="id"
                       dense
                       outlined
                       v-model="specialization_id"
+                      required="true"
+                      :rules="[rules.required]"
+                      :error-messages="stepOneValidation(specialization_id)"
                     >
                     </v-select>
                   </v-col>
@@ -131,6 +137,9 @@
                       dense
                       outlined
                       v-model="branch_id"
+                      required="true"
+                      :rules="[rules.required]"
+                      :error-messages="stepOneValidation(branch_id)"
                     >
                     </v-select>
                   </v-col>
@@ -822,7 +831,10 @@ export default {
         (await this.validateFormData()) &&
         this.caseName &&
         this.caseNumber &&
-        this.caseDate
+        this.caseDate &&
+        this.branch_id &&
+        this.specialization_id &&
+        this.caseModel
       ) {
         let result = null;
         if (!this.formRequestId) {
@@ -831,7 +843,10 @@ export default {
             caseNumber: this.caseNumber,
             caseDate: this.caseDate,
             branch_id: this.branch_id,
-            type: 'case'
+            type: 'case',
+            case_type: this.caseModel,
+            specialization_id: this.specialization_id,
+            category: this.classification,
           });
         } else {
           result = await this.updatePages({

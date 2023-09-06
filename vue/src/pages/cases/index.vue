@@ -40,67 +40,28 @@
           </v-menu>
         </v-col>
         <v-col cols="6" class="d-flex text-right align-center">
-          <v-text-field
-            v-model="searchQuery"
-            append-icon="mdi-magnify"
-            class="flex-grow-1 mr-md-2"
-            solo
-            hide-details
-            dense
-            clearable
-            :placeholder="$t('general.search')"
-            @keyup.enter="search(searchQuery)"
-          ></v-text-field>
+          <v-text-field v-model="searchQuery" append-icon="mdi-magnify" class="flex-grow-1 mr-md-2" solo hide-details
+            dense clearable :placeholder="$t('general.search')" @keyup.enter="search(searchQuery)"></v-text-field>
 
           <v-tooltip top>
             <template v-slot:activator="{ on, attrs }">
-              <v-btn
-                color="primary"
-                class="mx-2"
-                elevation="0"
-                v-bind="attrs"
-                v-on="on"
-                :to="caseUrl"
-                :disabled="currentPageId > 3"
-                v-can="'create-user'"
-              >
+              <v-btn color="primary" class="mx-2" elevation="0" v-bind="attrs" v-on="on" :to="caseUrl"
+                :disabled="currentPageId > 3" v-can="'create-user'">
                 <v-icon> mdi-plus </v-icon>
               </v-btn>
             </template>
             <span>{{ plusButtonTitle }}</span>
           </v-tooltip>
-          <v-btn
-            color="primary"
-            class="me-1"
-            elevation="0"
-            :to="formTypesUrl"
-            v-can="'create-user'"
-          >
+          <v-btn color="primary" class="me-1" elevation="0" :to="formTypesUrl" v-can="'create-user'">
             {{ buttonName }}
           </v-btn>
-          <v-btn
-            :loading="isLoading"
-            icon
-            @click.prevent="open()"
-            small
-            class="ml-2"
-          >
+          <v-btn :loading="isLoading" icon @click.prevent="open()" small class="ml-2">
             <v-icon>mdi-refresh</v-icon>
           </v-btn>
         </v-col>
       </v-row>
-      <v-data-table
-        show-select
-        v-model="selected"
-        :headers="headers"
-        :items="items"
-        :options.sync="options"
-        class="flex-grow-1"
-        :loading="isLoading"
-        :page="page"
-        :pageCount="numberOfPages"
-        :server-items-length="total"
-      >
+      <v-data-table show-select v-model="selected" :headers="headers" :items="items" :options.sync="options"
+        class="flex-grow-1" :loading="isLoading" :page="page" :pageCount="numberOfPages" :server-items-length="total">
         <!-- <template v-slot:item.id="{ item }">
           <div class="font-weight-bold">
             # <copy-label :text="item.id + ''" />
@@ -112,6 +73,9 @@
         </template>
         <template v-slot:item.branch="{ item }">
           <div>{{ item?.branch?.name ?? "---" }}</div>
+        </template>
+        <template v-slot:item.specialization="{ item }">
+          <div>{{ item?.specialization?.name ?? "---" }}</div>
         </template>
         <template v-slot:item.form_request_number="{ item }">
           <div class="font-weight-bold">
@@ -140,11 +104,7 @@
         </template> -->
 
         <template v-slot:item.status="{ item }">
-          <v-chip
-            small
-            :color="getStatusColor(item?.status?.toLowerCase())"
-            text-color="white"
-          >
+          <v-chip small :color="getStatusColor(item?.status?.toLowerCase())" text-color="white">
             <!-- {{
               item?.status ? $t(`general.${item.status.toLowerCase()}`) : "---"
             }} -->
@@ -152,26 +112,25 @@
           </v-chip>
         </template>
 
+        <template v-slot:item.sub_status="{ item }">
+          <v-chip small :color="getStatusColor(item?.status?.toLowerCase())" text-color="white">
+            {{ item?.sub_status ? item.sub_status : "---" }}
+          </v-chip>
+        </template>
+
         <template v-slot:item.case_date="{ item }">
           <div>{{ item.case_date | formatDate("ll") }}</div>
         </template>
-        <template v-slot:item.created_at="{ item }">
+        <!-- <template v-slot:item.created_at="{ item }">
           <div>{{ item.created_at | formatDate("ll") }}</div>
-        </template>
+        </template> -->
 
         <template v-slot:item.action="{ item }">
           <div class="actions">
             <!-- add action button -->
             <v-tooltip top>
               <template v-slot:activator="{ on, attrs }">
-                <v-btn
-                  color="primary"
-                  icon
-                  elevation="0"
-                  v-bind="attrs"
-                  v-on="on"
-                  @click="openActionDialog(item)"
-                >
+                <v-btn color="primary" icon elevation="0" v-bind="attrs" v-on="on" @click="openActionDialog(item)">
                   <v-icon>mdi-plus-circle-outline</v-icon>
                 </v-btn>
               </template>
@@ -181,14 +140,8 @@
             <!-- view case timeline button -->
             <v-tooltip top>
               <template v-slot:activator="{ on, attrs }">
-                <v-btn
-                  color="primary"
-                  icon
-                  elevation="0"
-                  v-bind="attrs"
-                  v-on="on"
-                  @click="openCasePreviewDialog(item.id)"
-                >
+                <v-btn color="primary" icon elevation="0" v-bind="attrs" v-on="on"
+                  @click="openCasePreviewDialog(item.id)">
                   <v-icon>mdi-timeline-text-outline</v-icon>
                 </v-btn>
               </template>
@@ -197,14 +150,7 @@
             <!-- view case info button -->
             <v-tooltip top>
               <template v-slot:activator="{ on, attrs }">
-                <v-btn
-                  color="primary"
-                  icon
-                  elevation="0"
-                  v-bind="attrs"
-                  v-on="on"
-                  @click="openCaseInfoDialog(item.id)"
-                >
+                <v-btn color="primary" icon elevation="0" v-bind="attrs" v-on="on" @click="openCaseInfoDialog(item.id)">
                   <v-icon>mdi-eye-outline</v-icon>
                 </v-btn>
               </template>
@@ -214,14 +160,7 @@
             <!-- assign user button -->
             <v-tooltip top>
               <template v-slot:activator="{ on, attrs }">
-                <v-btn
-                  color="primary"
-                  icon
-                  elevation="0"
-                  v-bind="attrs"
-                  v-on="on"
-                  @click="openAssignDialog(item.id)"
-                >
+                <v-btn color="primary" icon elevation="0" v-bind="attrs" v-on="on" @click="openAssignDialog(item.id)">
                   <v-icon>mdi-at</v-icon>
                 </v-btn>
               </template>
@@ -231,15 +170,8 @@
             <!-- edit case button -->
             <v-tooltip top>
               <template v-slot:activator="{ on, attrs }">
-                <v-btn
-                  color="primary"
-                  icon
-                  elevation="0"
-                  v-bind="attrs"
-                  v-on="on"
-                  :to="`/cases/${currentPageId}/edit/${item.id}`"
-                  v-can="'update-user'"
-                >
+                <v-btn color="primary" icon elevation="0" v-bind="attrs" v-on="on"
+                  :to="`/cases/${currentPageId}/edit/${item.id}`" v-can="'update-user'">
                   <v-icon>mdi-open-in-new</v-icon>
                 </v-btn>
               </template>
@@ -249,15 +181,8 @@
             <!-- delete case button -->
             <v-tooltip top>
               <template v-slot:activator="{ on, attrs }">
-                <v-btn
-                  color="error"
-                  icon
-                  elevation="0"
-                  v-bind="attrs"
-                  v-on="on"
-                  @click.prevent="deleteItem(item.id)"
-                  v-can="'delete-user'"
-                >
+                <v-btn color="error" icon elevation="0" v-bind="attrs" v-on="on" @click.prevent="deleteItem(item.id)"
+                  v-can="'delete-user'">
                   <v-icon>mdi-close</v-icon>
                 </v-btn>
               </template>
@@ -283,37 +208,17 @@
           </div>
         </template>
       </v-data-table>
-      <CasePreviewDialog
-        :dialogVisible="casePrevDialog"
-        :case-id="formId"
-        v-if="casePrevDialog"
-        @closePrevDialog="casePrevDialog = false"
-      />
-      <CaseInfoDialog
-        :dialogVisible="caseInfoDialog"
-        :case-id="formId"
-        v-if="caseInfoDialog"
-        @closeInfoDialog="caseInfoDialog = false"
-      />
-      <AddAction
-        :dialogVisible="addActionDialog"
-        :formRequestId="formId"
+      <CasePreviewDialog :dialogVisible="casePrevDialog" :case-id="formId" v-if="casePrevDialog"
+        @closePrevDialog="casePrevDialog = false" />
+      <CaseInfoDialog :dialogVisible="caseInfoDialog" :case-id="formId" v-if="caseInfoDialog"
+        @closeInfoDialog="caseInfoDialog = false" />
+      <AddAction :dialogVisible="addActionDialog" :formRequestId="formId"
+        :lastAction="selectedForm.last_form_request_information || null" v-if="addActionDialog && currentPageId == 1"
+        @close-action-dialog="closeActionDialog" />
+      <AddDynamicAction :dialogVisible="addDynamicActionDialog" :formRequestId="formId"
         :lastAction="selectedForm.last_form_request_information || null"
-        v-if="addActionDialog && currentPageId == 1"
-        @close-action-dialog="closeActionDialog"
-      />
-      <AddDynamicAction
-        :dialogVisible="addDynamicActionDialog"
-        :formRequestId="formId"
-        :lastAction="selectedForm.last_form_request_information || null"
-        v-else-if="addDynamicActionDialog && currentPageId != 1"
-        @close-action-dialog="closeDynamicActionDialog"
-      />
-      <assign
-        @userAssigned="userAssigned"
-        v-model="dialog"
-        :id="formId"
-      ></assign>
+        v-else-if="addDynamicActionDialog && currentPageId != 1" @close-action-dialog="closeDynamicActionDialog" />
+      <assign @userAssigned="userAssigned" v-model="dialog" :id="formId"></assign>
     </v-card>
   </div>
 </template>
@@ -373,7 +278,7 @@ export default {
     };
   },
   watch: {
-    selected(val) {},
+    selected(val) { },
     options: {
       handler() {
         this.open();
@@ -398,11 +303,13 @@ export default {
         { text: this.$t("tables.number"), value: "form_request_number" },
         { text: this.$t("tables.name"), value: "name" },
         { text: this.$t("tables.branch"), value: "branch" },
+        { text: this.$t("tables.specialization"), value: "specialization" },
         { text: this.$t("tables.user"), value: "user" },
         { text: this.$t("tables.assigner"), value: "assigner" },
         { text: this.$t("tables.status"), value: "status" },
+        { text: this.$t("tables.sub_status"), value: "sub_status" },
         { text: this.$t("tables.case_date"), value: "case_date" },
-        { text: this.$t("tables.created"), value: "created_at" },
+        // { text: this.$t("tables.created"), value: "created_at" },
         {
           text: this.$t("tables.actions"),
           sortable: false,
@@ -429,7 +336,7 @@ export default {
   methods: {
     ...mapActions("cases", ["getFormRequests", "deleteForm", "deleteAll"]),
     ...mapActions("app", ["setBreadCrumb"]),
-    search() {},
+    search() { },
     setCurrentBread() {
       const currentPage = this.navTemplates.find((nav) => {
         return nav.id === +this.currentPageId;
@@ -461,7 +368,7 @@ export default {
       let { id } = this.$route.params;
       let data = {
         template_id: id,
-        form_type:'case',
+        form_type: 'case',
         search: this.searchQuery,
         pageSize: itemsPerPage,
         pageNumber: page,
@@ -575,9 +482,11 @@ export default {
 .slide-fade-enter-active {
   transition: all 0.3s ease;
 }
+
 .slide-fade-leave-active {
   transition: all 0.3s cubic-bezier(1, 0.5, 0.8, 1);
 }
+
 .slide-fade-enter,
 .slide-fade-leave-to {
   transform: translateX(10px);

@@ -21,7 +21,8 @@ class FormRequestResource extends JsonResource
             'note' => $this->note,
             'form_id' => $this->form_id,
             'user_id' => $this->user_id,
-            'form_request_number' => $this->form_request_number,
+            'category' => $this->category,
+            'case_type' => $this->case_type,
             'name' => $this->name,
             'form' => new FormResource($this->form),
             'form_page_item_fill' => $this->form_page_item_fill,
@@ -29,7 +30,14 @@ class FormRequestResource extends JsonResource
             'user' => $this->user,
             'form_request_side' => $this->formRequestSide,
             'lastFormRequestInformation' => $this->lastFormRequestInformation,
-            'request' => $this->request
+            'request' => $this->request,
+            'form_request_number' => $this->form_request_number,
+            'branche_id' => $this->branche_id,
+            'branche' => $this->branche,
+            'form_type' => $this->form_type,
+            'case_date' => $this->case_date,
+            'specialization_id' => $this->specialization_id,
+            'specialization' => $this->specialization
         ];
     }
 }

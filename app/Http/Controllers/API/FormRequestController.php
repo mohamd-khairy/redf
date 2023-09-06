@@ -71,8 +71,15 @@ class FormRequestController extends Controller
     public function getFormRequestfill($id)
     {
         try {
-            $formfill = FormRequest::with('form.pages.items', 'user', 'form_page_item_fill', 'formRequestInformations', 'formRequestSide', 'lastFormRequestInformation', 'request')
-                ->find($id);
+            $formfill = FormRequest::with(
+                'form.pages.items',
+                'user',
+                'form_page_item_fill',
+                'formRequestInformations',
+                'formRequestSide',
+                'lastFormRequestInformation',
+                'request'
+            )->find($id);
 
             return responseSuccess(new FormRequestResource($formfill), 'Form requests retrieved successfully');
         } catch (\Throwable $th) {
@@ -128,16 +135,15 @@ class FormRequestController extends Controller
     {
         $formRequestSide = FormRequestSide::select('claimant_id', 'defendant_id')->where('form_request_id', $request->form_request_id)->first();
 
-        if (!$formRequestSide) {
-            return responseFail('FormRequestSide not found');
+        if ($formRequestSide) {
+
+            $users = User::select('id', 'name')->whereIn('id', [$formRequestSide->claimant_id, $formRequestSide->defendant_id])->get();
+
+            if ($users) {
+                return responseSuccess($users, 'Retrieve Claimant And Defendant');
+            }
         }
 
-        $users = User::select('id', 'name')->whereIn('id', [$formRequestSide->claimant_id, $formRequestSide->defendant_id])->get();
-
-        if (!$users) {
-            return responseFail('Claimant or defendant not found');
-        }
-
-        return responseSuccess($users, 'Retrieve Claimant And Defendant');
+        return responseSuccess([], 'Retrieve Claimant And Defendant');
     }
 }

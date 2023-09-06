@@ -4,7 +4,6 @@ namespace App\Services;
 
 use Carbon\Carbon;
 use App\Models\File;
-use App\Models\Form;
 use App\Enums\FormEnum;
 use App\Models\Formable;
 use App\Enums\CaseTypeEnum;
@@ -12,7 +11,6 @@ use App\Models\FormRequest;
 use App\Filters\SortFilters;
 use App\Models\FormRequestSide;
 use App\Services\UploadService;
-use App\Enums\FormRequestStatus;
 use App\Models\FormPageItemFill;
 use App\Models\FormAssignRequest;
 use Illuminate\Pipeline\Pipeline;
@@ -22,9 +20,7 @@ use App\Enums\StatusEnum;
 use App\Http\Requests\PageRequest;
 use Illuminate\Support\Facades\Auth;
 use App\Models\FormRequestInformation;
-use App\Models\Status;
 use App\Models\User;
-use Illuminate\Support\Facades\Storage;
 
 class FormRequestService
 {
@@ -37,6 +33,9 @@ class FormRequestService
             $formRequest = FormRequest::create([
                 'form_id' => $requestData['id'],
                 'branche_id' => $requestData['branche_id'],
+                'specialization_id' => $requestData['specialization_id'],
+                'category' => $requestData['category'],
+                'case_type' => $requestData['case_type'],
                 'user_id' => Auth::id(),
                 'status' => StatusEnum::PENDING,
                 'form_type' => $requestData['type'],
@@ -130,9 +129,17 @@ class FormRequestService
         return DB::transaction(function () use ($requestData, $id) {
 
             $formRequest = FormRequest::findOrFail($id);
-            $formRequest->form_request_number = $requestData['case_number'] ?? $formRequest->form_request_number;
-            $formRequest->name = $requestData['case_name'] ?? $formRequest->name;
-            $formRequest->save();
+            $updatedData = [
+                'branche_id' => $requestData['branche_id'],
+                'specialization_id' => $requestData['specialization_id'],
+                'category' => $requestData['category'],
+                'case_type' => $requestData['case_type'],
+                'form_type' => $requestData['type'],
+                'case_date' => $requestData['case_date'],
+                'form_request_number' =>  $requestData['case_number'] ?? $formRequest->form_request_number,
+                'name' => $requestData['case_name'] ?? $formRequest->name
+            ];
+            $formRequest->update($updatedData);
 
             // save related tables if get case_id
             if ($requestData->case_id) {
@@ -286,30 +293,23 @@ class FormRequestService
     {
         try {
             DB::beginTransaction();
-            $validatedData = $request->validated();
-            // $validatedData['status'] = FormRequestStatus::PROCESSING;
-            $courtFromRequest = $request->court;
-            $latestCourtFromDatabase = FormRequestInformation::where('form_request_id', $request->form_request_id)
-                ->latest()
-                ->value('court');
 
-            if ($latestCourtFromDatabase !== null && $courtFromRequest !== $latestCourtFromDatabase) {
-                return responseFail('You cannot add the same court');
-            }
+            $validatedData = $request->all();
 
             $formRequestInfo = FormRequestInformation::create($validatedData);
-            // $formRequestInfo->form_request->status = FormRequestStatus::PROCESSING;
-            $formRequestInfo->form_request->save();
 
-            $calendarData = [
-                'form_request_id' => $formRequestInfo->form_request_id,
-                'calendarable_id' => $formRequestInfo->form_request_id,
-                'calendarable_type' => FormRequest::class,
-                'details' => $request->details ? $request->details : 'تم اضافه اجراء جديد',
-                'user_id' => auth()->id(),
-                'date' => $request->date,
-            ];
-            $calendar = saveCalendarFromRequest($calendarData);
+            if ($request->date) {
+                $calendarData = [
+                    'form_request_id' => $formRequestInfo->form_request_id,
+                    'calendarable_id' => $formRequestInfo->form_request_id,
+                    'calendarable_type' => FormRequest::class,
+                    'details' => $request->details ? $request->details : 'تم اضافه اجراء جديد',
+                    'user_id' => auth()->id(),
+                    'date' => $request->date,
+                ];
+
+                saveCalendarFromRequest($calendarData);
+            }
 
             saveFormRequestAction(
                 form_request_id: $formRequestInfo->form_request_id,
@@ -322,6 +322,7 @@ class FormRequestService
 
             return responseSuccess($formRequestInfo, 'Form Request Information and Sessions have been successfully created.');
         } catch (\Exception $e) {
+
             DB::rollBack();
             return responseFail($e->getMessage());
         }

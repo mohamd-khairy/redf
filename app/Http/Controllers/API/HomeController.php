@@ -73,7 +73,7 @@ class HomeController extends Controller
     {
         $courtTypes = Court::pluck('name')->toArray();
         $branches = Branch::pluck('name')->toArray();
-        $specialization = Specialization::pluck('name')->toArray();
+        $specialization = Specialization::get();
 
         $court_type = [];
         $case_type = [];

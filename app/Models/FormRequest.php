@@ -26,8 +26,13 @@ class FormRequest extends Model
         'name',
         'branche_id',
         'form_type',
-        'case_date'
+        'case_date',
+        'case_type',
+        'category',
+        'specialization_id'
     ];
+
+    protected $appends = ['sub_status'];
 
     protected $with = ['user', 'lastFormRequestInformation'];
 
@@ -71,6 +76,16 @@ class FormRequest extends Model
         return $this->hasMany(Task::class, 'form_request_id');
     }
 
+    public function branche()
+    {
+        return $this->belongsTo(Branch::class, 'branche_id');
+    }
+
+    public function specialization()
+    {
+        return $this->belongsTo(Specialization::class, 'specialization_id');
+    }
+
     public function formRequestInformation()
     {
         return $this->hasOne(FormRequestInformation::class);
@@ -101,8 +116,8 @@ class FormRequest extends Model
         return $this->belongsTo(Branch::class, 'branche_id');
     }
 
-    // public function getStatusAttribute($value)
-    // {
-    //     return $value ? StatusEnum::$value() : $value;
-    // }
+    public function getSubStatusAttribute()
+    {
+        return $this->formRequestInformations->where('sessionDate', '>=', now())->count() > 0 ? 'بإنتظار الجلسه' : null;
+    }
 }
