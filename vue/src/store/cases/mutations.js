@@ -51,6 +51,9 @@ const mutations = {
   SET_specializations(state, value) {
     state.specializations = value;
   },
+  SET_CLAIMANT(state, value) {
+    state.claimant = value;
+  },
 };
 
 export default mutations;

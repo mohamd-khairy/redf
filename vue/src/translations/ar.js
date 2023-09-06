@@ -516,7 +516,7 @@ export default {
     specialization:"الدائرة (الاختصاص)",
     judgment_for: "الحكم ل",
     receiptDate: "تاريخ استلام الحكم",
-    judgementDate: "تاريخ الحكم",
+    judgmentDate: "تاريخ الحكم",
     casePlace: "مكان الجلسة",
   },
 

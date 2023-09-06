@@ -493,10 +493,9 @@ const actions = {
         form_request_id,
       },
     });
-    console.log(response);
-    return;
-    commit("SET_CORTS", court_types);
-    commit("SET_CASE_TYPES", case_types);
+    const claimant = response?.data?.data || [];
+
+    commit("SET_CLAIMANT", claimant);
   },
   async getCasePreview({ commit }, id) {
     const response = await axios.get(`action-preview/${id}`);
