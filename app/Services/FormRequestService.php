@@ -163,7 +163,7 @@ class FormRequestService
             $this->processFormPages($requestData, $formRequest);
 
             saveFormRequestAction(
-                form_request_id: $requestData->id,
+                form_request_id: $formRequest->id,
                 formable_id: $formRequest->id,
                 formable_type: FormRequest::class,
                 msg: ' تم تحديث   ' . $formRequest->name
@@ -219,6 +219,7 @@ class FormRequestService
                 'form_page_item_fill.page_item',
                 'lastFormRequestInformation',
                 'branch',
+                'specialization',
                 'request'
             );
 
