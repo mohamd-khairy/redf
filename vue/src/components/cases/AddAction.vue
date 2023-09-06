@@ -568,6 +568,7 @@ export default {
         sessionDate: this.caseAction.sessionDate,
         session_place: this.caseAction.branch_id,
         date_of_receipt: this.caseAction.receipt_date,
+        user_id: this.caseAction.judgment_for,
       };
       this.isLoading = true;
       const result = await this.saveFormInformation(data);
