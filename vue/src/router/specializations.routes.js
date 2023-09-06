@@ -19,7 +19,7 @@ export default [
         /* webpackChunkName: "specializations-list" */ "@/pages/specializations/index.vue"
       ),
     meta: {
-      title: "",
+      title: "الدوائر",
     },
   },
   {
@@ -28,7 +28,7 @@ export default [
     meta: {
       auth: true,
       permissions: "update-role",
-      title: "",
+      title: "الدوائر",
     },
     component: () =>
       import(
@@ -41,7 +41,7 @@ export default [
     meta: {
       auth: true,
       permissions: "create-role",
-      title: "",
+      title: "الدوائر",
     },
     component: () =>
       import(
@@ -54,7 +54,7 @@ export default [
     meta: {
       auth: true,
       permissions: "read-role",
-      title: "",
+      title: "الدوائر",
     },
     component: () =>
       import(

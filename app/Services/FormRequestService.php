@@ -16,6 +16,7 @@ use App\Models\FormAssignRequest;
 use Illuminate\Pipeline\Pipeline;
 use Illuminate\Support\Facades\DB;
 use App\Enums\FormAssignRequestType;
+use App\Enums\FormRequestStatus;
 use App\Enums\StatusEnum;
 use App\Http\Requests\PageRequest;
 use Illuminate\Support\Facades\Auth;
@@ -298,6 +299,11 @@ class FormRequestService
             $validatedData = $request->all();
 
             $formRequestInfo = FormRequestInformation::create($validatedData);
+
+            if ($request->status) {
+                $status = $request->status;
+                $formRequestInfo->form_request->update(['status' => CaseTypeEnum::$status()]);
+            }
 
             if ($request->date) {
                 $calendarData = [

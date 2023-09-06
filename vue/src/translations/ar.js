@@ -157,7 +157,7 @@ export default {
     checkout: "الدفع",
   },
   menu: {
-    specializations:"الدوائر",
+    specializations: "الدوائر",
     search: "بحث (اضغط على 'ctrl + /' للتركيز)",
     dashboard: "الرئيسية",
     departments: "الإدارات",
@@ -249,6 +249,7 @@ export default {
     cases_child: "مراجعة القضايا",
     editCase: "تعديل البيانات",
     request_review: "مراجعة الطلبات",
+    specialization: "الدوائر"
   },
   breadcrumbs: {
     pipesList: "قائمة النماذج",
