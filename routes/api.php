@@ -20,6 +20,7 @@ use App\Http\Controllers\Api\FormSessionController;
 use App\Http\Controllers\API\NotificationController;
 use App\Http\Controllers\Api\OrganizationController;
 use App\Http\Controllers\API\VerificationController;
+use App\Http\Controllers\Api\SpecializationController;
 use App\Http\Controllers\Api\FormRequestSideController;
 use App\Http\Controllers\API\RelatedFormRequestController;
 
@@ -97,6 +98,11 @@ Route::group(['prefix' => 'v1'], function () {
     Route::group(['middleware' => 'auth:sanctum'], function () {
         Route::get('branches/actions', [BranchController::class, 'actions']);
         Route::apiResource('branches', BranchController::class);
+    });
+
+       /*********************SpecialiszeController***************** */
+    Route::group(['middleware' => 'auth:sanctum'], function () {
+         Route::apiResource('specializations', SpecializationController::class);
     });
 
     /*********************OrganizationController***************** */

@@ -35,7 +35,6 @@ class InformationRequest extends FormRequest
             'sessionDate' => 'nullable|date',
             'session_place' => 'nullable',
             'date_of_receipt' => 'nullable|date',
-
         ];
     }
 }
