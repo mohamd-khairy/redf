@@ -602,6 +602,8 @@ export default {
     ResponseToCustomerFeedback: "Response to Customer Feedback",
   },
   general: {
+    name: "Name",
+    number: "Number",
     edit: "Edit",
     count: "Count",
     notice: "Notice",
@@ -698,6 +700,7 @@ export default {
     pending: "Pending",
     processing: "Processing",
     active: "Active",
+    notactive: "Not Active",
     assigner: "Assigner",
   },
   reports: {

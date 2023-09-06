@@ -136,7 +136,6 @@ export default {
       this.loading = true;
       this.getForms(id)
         .then(() => {
-          console.log(this.forms);
           this.loading = false;
         })
         .catch(() => {

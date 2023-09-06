@@ -168,15 +168,4 @@ Route::group(['prefix' => 'v1'], function () {
         Route::post('form-request-side', [FormRequestController::class, 'storeFormRequestSide']);
         Route::post('form-request-information', [FormRequestController::class, 'formRequestInformation']);
     });
-
-
-    /*********************FormRequestController***************** */
-    Route::group(['middleware' => 'auth:sanctum'], function () {
-        Route::post('store-related-case-form-fill', [RelatedFormRequestController::class, 'storeRelatedFormFill']);
-        Route::put('update-related-case-form-fill/{id}', [RelatedFormRequestController::class, 'updateRelatedFormFill']);
-        Route::get('get-related-form-Requests', [RelatedFormRequestController::class, 'getRelatedFormRequest']);
-    });
-
-
-
 });

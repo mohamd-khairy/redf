@@ -117,22 +117,13 @@
           <!-- <div>{{ item.form_request_number ?? "---" }}</div> -->
         </template>
 
-        <template v-slot:item.user="{ item }">
-          <div>{{ item.user.name ?? "---" }}</div>
+        <template v-slot:item.caseName="{ item }">
+          <div>{{ item?.request?.formable?.name ?? "---" }}</div>
         </template>
 
         <template v-slot:item.assigner="{ item }">
           <div>
             {{ item.form_assigned_requests[0]?.user.name ?? "---" }}
-          </div>
-        </template>
-        <template v-slot:item.court="{ item }">
-          <div>
-            {{
-              item?.last_form_request_information?.court
-                ? $t(`general.${item.last_form_request_information?.court}`)
-                : "---"
-            }}
           </div>
         </template>
 
@@ -155,21 +146,21 @@
         <template v-slot:item.action="{ item }">
           <div class="actions">
             <!-- add action button -->
-            <v-tooltip top>
-              <template v-slot:activator="{ on, attrs }">
-                <v-btn
-                  color="primary"
-                  icon
-                  elevation="0"
-                  v-bind="attrs"
-                  v-on="on"
-                  @click="openActionDialog(item)"
-                >
-                  <v-icon>mdi-plus-circle-outline</v-icon>
-                </v-btn>
-              </template>
-              <span>{{ $t("cases.add_action") }}</span>
-            </v-tooltip>
+<!--            <v-tooltip top>-->
+<!--              <template v-slot:activator="{ on, attrs }">-->
+<!--                <v-btn-->
+<!--                  color="primary"-->
+<!--                  icon-->
+<!--                  elevation="0"-->
+<!--                  v-bind="attrs"-->
+<!--                  v-on="on"-->
+<!--                  @click="openActionDialog(item)"-->
+<!--                >-->
+<!--                  <v-icon>mdi-plus-circle-outline</v-icon>-->
+<!--                </v-btn>-->
+<!--              </template>-->
+<!--              <span>{{ $t("cases.add_action") }}</span>-->
+<!--            </v-tooltip>-->
 
             <!-- view case timeline button -->
             <v-tooltip top>
@@ -391,7 +382,7 @@ export default {
       const headers = [
         { text: this.$t("tables.number"), value: "form_request_number" },
         { text: this.$t("tables.name"), value: "name" },
-        { text: this.$t("tables.user"), value: "user" },
+        { text: this.$t("tables.caseName"), value: "caseName" },
         { text: this.$t("tables.assigner"), value: "assigner" },
 
         { text: this.$t("tables.status"), value: "status" },
@@ -403,9 +394,6 @@ export default {
           value: "action",
         },
       ];
-      if (+this.currentPageId === 1) {
-        headers.splice(4, 0, { text: this.$t("tables.court"), value: "court" });
-      }
       return headers;
     },
   },

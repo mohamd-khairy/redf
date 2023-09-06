@@ -212,7 +212,10 @@ const actions = {
       return false;
     }
   },
-  async savePages({ state }, { caseName, caseNumber, case_id, branch_id, caseDate, type }) {
+  async savePages(
+    { state },
+    { caseName, caseNumber, case_id, branch_id, caseDate, type }
+  ) {
     try {
       const customFormData = {
         id: state.selectedForm.id,
@@ -267,13 +270,77 @@ const actions = {
       return false;
     }
   },
-  async updatePages({ state }, { caseName, caseNumber, formId, branch_id, caseDate, type }) {
+  async updatePages(
+    { state },
+    { caseName, caseNumber, formId, branch_id, caseDate, type }
+  ) {
     try {
       const customFormData = {
         id: state.selectedForm.id,
 
         name: state.selectedForm.name,
         pages: state.pagesValues.map((page) => ({
+          id: page.id,
+          title: page.title,
+          items: page.items
+            .filter((input) => input.value)
+            .map((input) => {
+              return {
+                form_page_item_id: input.id,
+                value: input.value,
+                type: input.type,
+              };
+            }),
+        })),
+      };
+
+      const bodyFormData = new FormData();
+
+      for (const key in customFormData) {
+        let value = customFormData[key];
+        bodyFormData.set(key, JSON.stringify(value));
+        bodyFormData.set("_method", "PUT");
+      }
+      if (caseName) {
+        bodyFormData.set("case_name", caseName);
+      }
+      if (caseNumber) {
+        bodyFormData.set("case_number", caseNumber);
+      }
+      if (caseDate) {
+        bodyFormData.set("case_date", caseDate);
+      }
+      if (branch_id) {
+        bodyFormData.set("branche_id", branch_id);
+      }
+      if (type) {
+        bodyFormData.set("type", type);
+      }
+      const response = await axios.post(
+        `update-form-fill/${formId}`,
+        bodyFormData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+      return true;
+    } catch (error) {
+      console.error("Error saving form data:", error);
+      return false;
+    }
+  },
+  async updateBackPages(
+    { state },
+    { caseName, caseNumber, formId, branch_id, caseDate, type }
+  ) {
+    try {
+      const customFormData = {
+        id: state.selectedForm.id,
+
+        name: state.selectedForm.name,
+        pages: state.pages.map((page) => ({
           id: page.id,
           title: page.title,
           items: page.items
@@ -352,11 +419,15 @@ const actions = {
         bodyFormData.set(key, JSON.stringify(value));
       }
       bodyFormData.set("case_id", case_id);
-      const result = await axios.post(`store-related-case-form-fill`, bodyFormData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
+      const result = await axios.post(
+        `store-related-case-form-fill`,
+        bodyFormData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
       return result;
     } catch (error) {
       console.error("Error saving form data:", error);

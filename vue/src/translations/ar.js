@@ -556,6 +556,7 @@ export default {
     drone8: "طائرة 8",
   },
   tables: {
+    caseName: "اسم القضية",
     case_date: "تاريخ القضية",
     branch: "الفرع",
     number: "الرقم",
@@ -654,6 +655,8 @@ export default {
     ResponseToCustomerFeedback: "الرد على ملاحظات العملاء",
   },
   general: {
+    name:"الاسم",
+    number:"الرقم",
     edit: "تعديل",
     count: "الاجمالى",
     title: "العنوان",
@@ -758,6 +761,7 @@ export default {
     closed: "تم اكمال الطلب",
     assigned: "لدي الموظف المختص",
     active: "نشط",
+    notactive:"غير نشط",
     assigner: "مكلفة من",
     no_action_yet: "لم يتم اتخاذ اي اجراء في القضية حتي الان",
     getting_data: "جاري جلب البيانات",
@@ -780,6 +784,7 @@ export default {
     new_beneficiary_added: "تم اضافة مستفيد جديد",
     consultation: "استشارة",
     belongsTo: "تنتمي الي",
+    downloadWord: "تحميل ملف Word",
   },
   reports: {
     buildReport: "انشاء تقرير",

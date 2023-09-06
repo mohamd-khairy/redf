@@ -23,60 +23,6 @@
       </v-stepper-header>
 
       <v-stepper-items>
-        <!-- <v-stepper-content step="1">
-          <div class="mt-2">
-            <v-text-field
-              class="mb-2"
-              v-model="caseName"
-              :label="$t('cases.name')"
-              outlined
-              :required="true"
-              :error-messages="stepOneValidation(caseName)"
-              dense
-              :rules="[requiredRule]"
-            ></v-text-field>
-            <v-text-field
-              outlined
-              type="number"
-              class="mb-2"
-              v-model="caseNumber"
-              @keydown="handleInput"
-              :label="$t('cases.number')"
-              :required="true"
-              :rules="[requiredRule]"
-              :error-messages="stepOneValidation(caseNumber)"
-              dense
-            ></v-text-field>
-
-            <div class="d-flex">
-              <v-select
-                :items="formRequests"
-                :label="$t('cases.belongToCase')"
-                :item-text="(item) => item.name"
-                :item-value="(item) => item.id"
-                hide-details
-                dense
-                outlined
-                v-model="caseId"
-                clearable
-              >
-              </v-select>
-              <v-spacer></v-spacer>
-              <v-btn
-                v-if="caseId"
-                color="primary"
-                outlined
-                @click="openCaseInfoDialog()"
-                >{{ $t("cases.view_info") }}</v-btn
-              >
-            </div>
-          </div>
-          <v-card-actions class="px-2 mt-2">
-            <v-btn color="primary" @click="saveCaseInfo">
-              {{ $t("general.continue") }}
-            </v-btn>
-          </v-card-actions>
-        </v-stepper-content> -->
         <v-stepper-content step="1">
           <div class="mt-2" v-if="!initialLoading">
             <div class="mt-2">
@@ -126,6 +72,7 @@
                 :caseNumber="caseNumber"
                 :show-errors="showErrors"
               ></appeal-form>
+              <!-- <second-form></second-form> -->
             </v-card-text>
           </div>
           <v-card-actions>
@@ -138,7 +85,12 @@
           </v-card-actions>
         </v-stepper-content>
         <v-stepper-content step="3">
-          <div class="d-flex flex-column flex-sm-row">
+          <AppealFormPreview
+            v-if="caseClaimant && caseNumber"
+            :claimant="caseClaimant"
+            :caseNumber="caseNumber"
+          ></AppealFormPreview>
+          <!-- <div class="d-flex flex-column flex-sm-row">
             <div class="flex-grow-1 pt-2 pa-sm-2">
               <v-row dense>
                 <v-col cols="6">
@@ -244,10 +196,10 @@
                 </v-col>
               </v-row>
             </div>
-          </div>
+          </div> -->
           <v-card-actions>
-            <v-btn @click="storeFormInformation" color="primary">
-              {{ $t("general.save") }}
+            <v-btn @click="exportHTML" color="primary">
+              {{ $t("general.downloadWord") }}
             </v-btn>
 
             <v-btn color="grey" @click="stepBack" class="ms-2">
@@ -271,14 +223,22 @@
 <script>
 import { mapActions, mapState } from "vuex";
 import AppealForm from "./AppealForm.vue";
+import secondForm from "./secondForm.vue";
 import AddUserDialog from "../../components/cases/AddUserDialog";
 import CaseInfoDialog from "../../components/cases/CaseInfoDialog.vue";
 import { makeToast } from "@/helpers";
 import axios from "@/plugins/axios";
+import AppealFormPreview from "./AppealFormPreview.vue";
 
 export default {
   name: "Create",
-  components: { AddUserDialog, CaseInfoDialog, AppealForm },
+  components: {
+    AddUserDialog,
+    CaseInfoDialog,
+    AppealForm,
+    secondForm,
+    AppealFormPreview,
+  },
   data() {
     return {
       e1: 1,
@@ -434,7 +394,7 @@ export default {
       "getCourts",
       "getFormRequests",
       "savePages",
-      "updatePages",
+      "updateBackPages",
     ]),
     openCaseInfoDialog(id) {
       this.caseInfoDialog = true;
@@ -644,7 +604,7 @@ export default {
             case_id: this.caseId,
           });
         } else {
-          result = await this.updatePages({
+          result = await this.updateBackPages({
             caseName: null,
             caseNumber: null,
             caseDate: null,
@@ -672,49 +632,49 @@ export default {
         console.log("some fields is required");
       }
     },
-    async updatePages({ state }, { formId }) {
-      try {
-        const customFormData = {
-          id: state.selectedForm.id,
+    // async updatePages({ state }, { formId }) {
+    //   try {
+    //     const customFormData = {
+    //       id: state.selectedForm.id,
 
-          name: state.selectedForm.name,
-          pages: state.pagesValues.map((page) => ({
-            id: page.id,
-            title: page.title,
-            items: page.items
-              .filter((input) => input.value)
-              .map((input) => {
-                return {
-                  form_page_item_id: input.id,
-                  value: input.value,
-                  type: input.type,
-                };
-              }),
-          })),
-        };
+    //       name: state.selectedForm.name,
+    //       pages: state.pagesValues.map((page) => ({
+    //         id: page.id,
+    //         title: page.title,
+    //         items: page.items
+    //           .filter((input) => input.value)
+    //           .map((input) => {
+    //             return {
+    //               form_page_item_id: input.id,
+    //               value: input.value,
+    //               type: input.type,
+    //             };
+    //           }),
+    //       })),
+    //     };
 
-        const bodyFormData = new FormData();
+    //     const bodyFormData = new FormData();
 
-        for (const key in customFormData) {
-          let value = customFormData[key];
-          bodyFormData.set(key, JSON.stringify(value));
-          bodyFormData.set("_method", "PUT");
-        }
-        const response = await axios.post(
-          `update-form-fill/${formId}`,
-          bodyFormData,
-          {
-            headers: {
-              "Content-Type": "multipart/form-data",
-            },
-          }
-        );
-        return true;
-      } catch (error) {
-        console.error("Error saving form data:", error);
-        return false;
-      }
-    },
+    //     for (const key in customFormData) {
+    //       let value = customFormData[key];
+    //       bodyFormData.set(key, JSON.stringify(value));
+    //       bodyFormData.set("_method", "PUT");
+    //     }
+    //     const response = await axios.post(
+    //       `update-form-fill/${formId}`,
+    //       bodyFormData,
+    //       {
+    //         headers: {
+    //           "Content-Type": "multipart/form-data",
+    //         },
+    //       }
+    //     );
+    //     return true;
+    //   } catch (error) {
+    //     console.error("Error saving form data:", error);
+    //     return false;
+    //   }
+    // },
 
     async storeRequestSide() {
       this.isLoading = true;
@@ -764,6 +724,26 @@ export default {
       //   this.isSubmitingForm = false;
       //   console.log("some fields is required");
       // }
+    },
+    exportHTML() {
+      var header =
+        "<html dir='rtl' xmlns:o='urn:schemas-microsoft-com:office:office' " +
+        "xmlns:w='urn:schemas-microsoft-com:office:word' " +
+        "xmlns='http://www.w3.org/TR/REC-html40'>" +
+        "<head><meta charset='utf-8'><title>Export HTML to Word Document with JavaScript</title></head><body>";
+      var footer = "</body></html>";
+      var sourceHTML =
+        header + document.getElementById("source-html").innerHTML + footer;
+
+      var source =
+        "data:application/vnd.ms-word;charset=utf-8," +
+        encodeURIComponent(sourceHTML);
+      var fileDownload = document.createElement("a");
+      document.body.appendChild(fileDownload);
+      fileDownload.href = source;
+      fileDownload.download = "document.doc";
+      fileDownload.click();
+      document.body.removeChild(fileDownload);
     },
   },
 };

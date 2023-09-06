@@ -56,9 +56,10 @@ class TaskController extends Controller
      */
     public function store(TaskRequest $request)
     {
-
         try {
+
             $validatedData = $request->validated();
+
             unset($validatedData['file']);
             // Parse the due_date
             $validatedData['due_date'] = Carbon::createFromFormat('d-m-Y', $validatedData['due_date'])
@@ -83,13 +84,13 @@ class TaskController extends Controller
                 $fileRecord->save();
             }
 
-            $actionData = [
-                'form_request_id' => $request->form_request_id,
-                'formable_id' => $request->form_request_id,
-                'formable_type' => FormRequest::class,
-                'msg' =>  'تم اسناد المهمه الي قضيه جديده',
-            ];
-            saveFormRequestAction($actionData);
+            saveFormRequestAction(
+                form_request_id: $request->form_request_id,
+                formable_id: $request->form_request_id,
+                formable_type: FormRequest::class,
+                msg: 'تم اسناد المهمه الي قضيه جديده'
+            );
+
             return responseSuccess($task, 'Task has been successfully created');
         } catch (Throwable $e) {
             return responseFail($e->getMessage());

@@ -3,7 +3,7 @@
     <v-row class="mb-1" dense>
       <v-col cols="12" sm="3">
         <h6 class="mt-1 mb-0 c-h6">
-          {{ $t("general.case") }}
+          {{ $t("general.name") }}
         </h6>
       </v-col>
       <v-col cols="12" sm="9">
@@ -20,7 +20,7 @@
     <v-row class="mb-1" dense>
       <v-col cols="12" sm="3">
         <h6 class="mt-1 mb-0 c-h6">
-          {{ $t("general.caseNumber") }}
+          {{ $t("general.number") }}
         </h6>
       </v-col>
       <v-col cols="12" sm="9">
