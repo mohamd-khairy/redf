@@ -38,15 +38,17 @@ class FormService
         // Delete old form pages and their items
         $form->pages()->each(function ($page) {
             $page->items()->delete();
-            $page->delete();
+            // $page->delete();
         });
         // Create new form pages with new elements
         $pagesData = $request->input('pages');
         foreach ($pagesData as $pageData) {
 
-            $page = new FormPage(['title' => $pageData['title']['title'], 'editable' =>  $pageData['title']['editing'] == false ? 0 : 1]);
-            $form->pages()->save($page);
+            // $page = new FormPage(['title' => $pageData['title']['title'], 'editable' =>  $pageData['title']['editing'] == false ? 0 : 1]);
+            // $form->pages()->save($page);
 
+            $page = FormPage::updateOrCreate(['title' => $pageData['title']['title'], 'editable' =>  $pageData['title']['editing'] == false ? 0 : 1]);
+            
             if (isset($pageData['items']) && is_array($pageData['items'])) {
                 foreach ($pageData['items'] as $itemData) {
                     if (!isset($itemData['removed']) || !$itemData['removed']) {
@@ -68,4 +70,3 @@ class FormService
         return $form;
     }
  }
-?>

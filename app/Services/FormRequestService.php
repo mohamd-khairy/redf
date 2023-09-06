@@ -239,7 +239,7 @@ class FormRequestService
                         'form_user_id' => $formUserId,
                         'type' => FormAssignRequestType::EMPLOYEE,
                     ]);
-                    FormRequest::where('id', $formRequestId)->update(['status' => 'assigned']);
+                    FormRequest::where('id', $formRequestId)->update(['status' => StatusEnum::ASSIGNED]);
 
                     saveFormRequestAction(
                         form_request_id: $formRequestId,
