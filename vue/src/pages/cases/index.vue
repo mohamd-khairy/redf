@@ -113,6 +113,9 @@
         <template v-slot:item.branch="{ item }">
           <div>{{ item?.branch?.name ?? "---" }}</div>
         </template>
+        <template v-slot:item.specialization="{ item }">
+          <div>{{ item?.specialization?.name ?? "---" }}</div>
+        </template>
         <template v-slot:item.form_request_number="{ item }">
           <div class="font-weight-bold">
             <copy-label :text="item.form_request_number + ''" />
@@ -398,6 +401,7 @@ export default {
         { text: this.$t("tables.number"), value: "form_request_number" },
         { text: this.$t("tables.name"), value: "name" },
         { text: this.$t("tables.branch"), value: "branch" },
+        { text: this.$t("tables.specialization"), value: "specialization" },
         { text: this.$t("tables.user"), value: "user" },
         { text: this.$t("tables.assigner"), value: "assigner" },
         { text: this.$t("tables.status"), value: "status" },
