@@ -18,28 +18,133 @@
         <v-stepper-content step="1">
           <div v-if="!initialLoading">
             <div class="mt-2">
-              <v-text-field
-                outlined
-                v-model="caseName"
-                :label="$t('cases.caseName')"
-                :required="true"
-                :error-messages="stepOneValidation(caseName)"
-                :rules="[requiredRule]"
-                dense
-              ></v-text-field>
-              <v-text-field
-                outlined
-                type="number"
-                @keydown="handleInput"
-                v-model="caseNumber"
-                :label="$t('cases.caseNumber')"
-                :required="true"
-                :rules="[requiredRule]"
-                :error-messages="stepOneValidation(caseNumber)"
-                dense
-              ></v-text-field>
+              <div class="d-flex flex-column flex-sm-row">
+                <div class="flex-grow-1 pt-2 pa-sm-2">
+                  <v-row dense>
+                    <v-col cols="12">
+                      <v-text-field
+                        outlined
+                        type="number"
+                        class="mb-2"
+                        v-model="caseNumber"
+                        @keydown="handleInput"
+                        :label="$t('cases.caseNumber')"
+                        :required="true"
+                        :rules="[requiredRule]"
+                        :error-messages="stepOneValidation(caseNumber)"
+                        dense
+                      ></v-text-field>
+                    </v-col>
+                    <v-col cols="12">
+                      <v-text-field
+                        class="mb-2"
+                        v-model="caseName"
+                        :label="$t('cases.caseName')"
+                        outlined
+                        :required="true"
+                        :error-messages="stepOneValidation(caseName)"
+                        dense
+                        :rules="[requiredRule]"
+                      ></v-text-field>
+                    </v-col>
+                    <v-col cols="12">
+                      <v-dialog
+                        ref="caseDateDialog"
+                        v-model="caseDateDialog"
+                        :return-value.sync="caseDate"
+                        persistent
+                        width="290px"
+                      >
+                        <template v-slot:activator="{ on, attrs }">
+                          <v-text-field
+                            v-model="caseDate"
+                            :label="$t('cases.caseDate')"
+                            prepend-icon="mdi-calendar"
+                            readonly
+                            v-bind="attrs"
+                            v-on="on"
+                            dense
+                            required="true"
+                            :rules="[rules.required]"
+                            :error-messages="stepOneValidation(caseDate)"
+                            outlined
+                          ></v-text-field>
+                        </template>
+                        <v-date-picker v-model="caseDate" scrollable>
+                          <v-spacer></v-spacer>
+                          <v-btn text color="primary" @click="modal = false">
+                            Cancel
+                          </v-btn>
+                          <v-btn
+                            text
+                            color="primary"
+                            @click="$refs.caseDateDialog.save(caseDate)"
+                          >
+                            OK
+                          </v-btn>
+                        </v-date-picker>
+                      </v-dialog>
+                    </v-col>
+                    <v-col cols="12">
+                      <v-text-field
+                        class="mb-2"
+                        v-model="classification"
+                        :label="$t('cases.classification')"
+                        outlined
+                        dense
+                      ></v-text-field>
+                    </v-col>
+                    <v-col cols="12">
+                      <v-select
+                        :items="caseModels"
+                        :label="$t('cases.caseModels')"
+                        item-text="name"
+                        item-value="value"
+                        dense
+                        outlined
+                        v-model="caseModel"
+                        required="true"
+                        :rules="[rules.required]"
+                        :error-messages="stepOneValidation(caseModel)"
+                      >
+                      </v-select>
+                    </v-col>
+                    <v-col cols="12">
+                      <v-select
+                        :items="specializations"
+                        :label="$t('cases.specialization')"
+                        item-text="name"
+                        item-value="id"
+                        dense
+                        outlined
+                        v-model="specialization_id"
+                        required="true"
+                        :rules="[rules.required]"
+                        :error-messages="stepOneValidation(specialization_id)"
+                      >
+                      </v-select>
+                    </v-col>
+                    <v-col cols="12">
+                      <v-select
+                        :items="branches?.data || []"
+                        :label="$t('branches.branch')"
+                        item-text="name"
+                        item-value="id"
+                        dense
+                        outlined
+                        v-model="branch_id"
+                        required="true"
+                        :rules="[rules.required]"
+                        :error-messages="stepOneValidation(branch_id)"
+                      >
+                      </v-select>
+                    </v-col>
+                  </v-row>
+                </div>
+              </div>
+
             </div>
-            <v-tabs v-model="activeTab">
+            <v-tabs v-model="activeTab" v-if="pagesValues && pagesValues[0]?.items.length > 0">
               <v-tab v-for="(tab, index) in pagesValues" :key="index">{{
                 tab.title
               }}</v-tab>
@@ -612,12 +717,32 @@ export default {
     return {
       e1: 1,
       selectedTitle: "",
+      caseDateDialog: false,
       dateDialog: false,
       sessionDialog: false,
       sessionDate: false,
       formData: null,
       caseNumber: "",
       caseName: "",
+      caseDate: "",
+      caseModel: "",
+      branch_id: "",
+      specialization_id: "",
+      classification: "",
+      caseModels:[
+        {
+          name:this.$t("cases.from_redf"),
+          value:"from_redf"
+        },
+        {
+          name:this.$t("cases.against_redf"),
+          value:"against_redf"
+        },
+        {
+          name:this.$t("cases.entry"),
+          value:"entry"
+        }
+      ],
       initialLoading: false,
       isLoading: false,
       isSubmitingForm: false,
@@ -675,18 +800,20 @@ export default {
     this.init();
     this.fetchUsers();
     this.fetchDepartments();
+    this.getCourts();
+    this.getBranches({});
 
     this.$root.$on("userCreated", () => {
       this.fetchUsers();
     });
   },
   watch: {
-    e1(val) {
-      if (val === 3) {
-        this.getCourts();
-        this.getBranches({});
-      }
-    },
+    // e1(val) {
+    //   if (val === 3) {
+    //     this.getCourts();
+    //     this.getBranches({});
+    //   }
+    // },
   },
   computed: {
     ...mapState("cases", [
@@ -694,6 +821,7 @@ export default {
       "selectedForm",
       "courts",
       "caseTypes",
+      'specializations'
     ]),
     ...mapState("app", ["navTemplates"]),
     ...mapState("departments", ["departments"]),
@@ -838,7 +966,12 @@ export default {
           this.lastAction = data?.lastFormRequestInformation || null;
           this.caseName = data.name;
           this.caseNumber = data.form_request_number;
-          this.formRequestId = this.formData.id;
+          this.caseDate = data.case_date
+          this.caseModel = data.case_type
+          this.branch_id = data.branche_id
+          this.specialization_id = data.specialization_id
+          this.classification = data.category
+          this.formRequestId = data.formData.id;
           if (this.formData.form_request_side) {
             this.sidesInfo.claimant_id =
               this.formData?.form_request_side?.claimant_id;
@@ -961,14 +1094,24 @@ export default {
       const { formType: currentFormId } = this.$route.params;
       this.isSubmitingForm = true;
       if (
-        (await this.validateFormData()) ||
-        !this.caseName ||
-        !this.caseAction
+        (await this.validateFormData()) &&
+        this.caseName &&
+        this.caseNumber &&
+        this.caseDate &&
+        this.branch_id &&
+        this.specialization_id &&
+        this.caseModel
       ) {
         const saveResult = await this.updatePages({
           caseName: this.caseName,
           caseNumber: this.caseNumber,
           formId: id,
+          caseDate: this.caseDate,
+          branch_id: this.branch_id,
+          type: 'case',
+          case_type: this.caseModel,
+          specialization_id: this.specialization_id,
+          category: this.classification,
         });
         if (saveResult) {
           this.showErrors = false;
