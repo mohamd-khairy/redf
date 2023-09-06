@@ -123,37 +123,36 @@ class FormRequestController extends Controller
             return responseFail($th->getMessage());
         }
     }
-    public function retrieveClaimant(Request $request){
+    public function retrieveClaimant(Request $request)
+    {
 
 
         $formRequestSide = DB::table('form_request_sides')
-        ->select('claimant_id', 'defendant_id')
-        ->where('form_request_id', $request->form_request_id)
-        ->first();
+            ->select('claimant_id', 'defendant_id')
+            ->where('form_request_id', $request->form_request_id)
+            ->first();
 
-         if (!$formRequestSide) {
+        if (!$formRequestSide) {
             return responseFail('FormRequestSide not found');
-         }
+        }
 
         $claimant = User::find($formRequestSide->claimant_id);
         $defendant = User::find($formRequestSide->defendant_id);
 
         if (!$claimant || !$defendant) {
             return responseFail('Claimant or defendant not found');
-
-         }
+        }
 
         $response = [
-            'claimant' => [
+            [
                 'id' => $claimant->id,
                 'name' => $claimant->name,
             ],
-            'defendant' => [
+            [
                 'id' => $defendant->id,
                 'name' => $defendant->name,
             ],
         ];
         return responseSuccess($response, 'Retrieve Claimant And Defendant');
-
-     }
+    }
 }
