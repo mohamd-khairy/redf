@@ -620,6 +620,7 @@ export default {
     assigned_to: "مكلفة الي",
     added_date: "تاريخ الاضافة",
     specialization: "الدائره (الاختصاص)",
+    sub_status: "الحالة الفرعية"
     // causer_type: "",
   },
   texts: {

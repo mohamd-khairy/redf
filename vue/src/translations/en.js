@@ -557,6 +557,8 @@ export default {
     subject_id: "Subject ID",
     template: "Template",
     causer_id: "Causer ID",
+    specialization: "Specialization",
+    sub_status: "Sub Status"
   },
   texts: {
     editor: "Editor",

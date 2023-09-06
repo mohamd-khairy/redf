@@ -32,6 +32,8 @@ class FormRequest extends Model
         'specialization_id'
     ];
 
+    protected $appends = ['sub_status'];
+
     protected $with = ['user', 'lastFormRequestInformation'];
 
     public function getActivitylogOptions(): LogOptions
@@ -114,8 +116,8 @@ class FormRequest extends Model
         return $this->belongsTo(Branch::class, 'branche_id');
     }
 
-    // public function getStatusAttribute($value)
-    // {
-    //     return $value ? StatusEnum::$value() : $value;
-    // }
+    public function getSubStatusAttribute()
+    {
+        return $this->formRequestInformations->where('sessionDate', '>=', now())->count() > 0 ? 'بإنتظار الجلسه' : null;
+    }
 }
