@@ -287,7 +287,7 @@ class FormRequestService
 
             $formRequestInfo = FormRequestInformation::create($validatedData);
 
-            if ($request->has('date')) {
+            if ($request->date) {
                 $calendarData = [
                     'form_request_id' => $formRequestInfo->form_request_id,
                     'calendarable_id' => $formRequestInfo->form_request_id,
