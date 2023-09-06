@@ -18,7 +18,7 @@ return new class extends Migration
         Schema::table('form_request_information', function (Blueprint $table) {
             $table->date('date_of_receipt')->nullable();
             $table->string('session_place')->nullable();
-            $table->unsignedBigInteger('user_id');
+            $table->unsignedBigInteger('user_id')->nullable();
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
     }

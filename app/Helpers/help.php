@@ -212,14 +212,14 @@ if (!function_exists('saveFormRequestAction')) {
     }
 }
 
-if (!function_exists('sendMsgFormat')) {
-    function sendMsgFormat($user_id,$msg,$title=null)
-    {
-        $data = [
-            'title' =>  $title,
-            'msg' =>  $msg,
-            ];
-        $user = User::find($user_id);
-        return  $user->notify(new UserNotify($data));
-    }
-}
+// if (!function_exists('sendMsgFormat')) {
+//     function sendMsgFormat($user_id,$msg,$title=null)
+//     {
+//         $data = [
+//             'title' =>  $title,
+//             'msg' =>  $msg,
+//             ];
+//         $user = User::find($user_id);
+//         return  $user->notify(new UserNotify($data));
+//     }
+// }
