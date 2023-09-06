@@ -214,7 +214,17 @@ const actions = {
   },
   async savePages(
     { state },
-    { caseName, caseNumber, case_id, branch_id, caseDate, type, case_type, specialization_id, category }
+    {
+      caseName,
+      caseNumber,
+      case_id,
+      branch_id,
+      caseDate,
+      type,
+      case_type,
+      specialization_id,
+      category,
+    }
   ) {
     try {
       const customFormData = {
@@ -281,7 +291,17 @@ const actions = {
   },
   async updatePages(
     { state },
-    { caseName, caseNumber, formId, branch_id, caseDate, type, case_type, specialization_id, category }
+    {
+      caseName,
+      caseNumber,
+      formId,
+      branch_id,
+      caseDate,
+      type,
+      case_type,
+      specialization_id,
+      category,
+    }
   ) {
     try {
       const customFormData = {
@@ -497,11 +517,13 @@ const actions = {
   },
   async getCourts({ commit }) {
     const response = await axios.get(`lookup`);
-    console.log(response);
+
     const { court_types } = response?.data.data;
     const { case_types } = response?.data.data;
     const { specialization } = response?.data.data;
+    const { branches } = response?.data.data;
     commit("SET_CORTS", court_types);
+    commit("SET_BRANCHES", branches);
     commit("SET_CASE_TYPES", case_types);
     commit("SET_specializations", specialization);
   },
