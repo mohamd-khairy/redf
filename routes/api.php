@@ -100,7 +100,7 @@ Route::group(['prefix' => 'v1'], function () {
         Route::apiResource('branches', BranchController::class);
     });
 
-       /*********************SpecialiszeController***************** */
+    /*********************SpecialiszeController***************** */
     Route::group(['middleware' => 'auth:sanctum'], function () {
          Route::apiResource('specializations', SpecializationController::class);
     });
