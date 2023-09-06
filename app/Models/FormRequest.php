@@ -26,7 +26,10 @@ class FormRequest extends Model
         'name',
         'branche_id',
         'form_type',
-        'case_date'
+        'case_date',
+        'case_type',
+        'category',
+        'specialization_id'
     ];
 
     protected $with = ['user', 'lastFormRequestInformation'];
