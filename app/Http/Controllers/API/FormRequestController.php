@@ -128,16 +128,15 @@ class FormRequestController extends Controller
     {
         $formRequestSide = FormRequestSide::select('claimant_id', 'defendant_id')->where('form_request_id', $request->form_request_id)->first();
 
-        if (!$formRequestSide) {
-            return responseFail('FormRequestSide not found');
+        if ($formRequestSide) {
+
+            $users = User::select('id', 'name')->whereIn('id', [$formRequestSide->claimant_id, $formRequestSide->defendant_id])->get();
+
+            if ($users) {
+                return responseSuccess($users, 'Retrieve Claimant And Defendant');
+            }
         }
 
-        $users = User::select('id', 'name')->whereIn('id', [$formRequestSide->claimant_id, $formRequestSide->defendant_id])->get();
-
-        if (!$users) {
-            return responseFail('Claimant or defendant not found');
-        }
-
-        return responseSuccess($users, 'Retrieve Claimant And Defendant');
+        return responseSuccess([], 'Retrieve Claimant And Defendant');
     }
 }
