@@ -92,21 +92,21 @@ class FormSeeder extends Seeder
         ]);
 
         //
-        FormPageItem::create([
-            'label' => ' المحكمة (الاختصاص)',
-            'type' => 'select',
-            'enabled' => 1,
-            'required' => 1,
-            'website_view' => 1,
-            'notes' => '',
-            'comment' => '',
-            'width' => 'col-12',
-            'input_type' => 'text',
-            'height' => '',
-            'length' => '20',
-            'childList' => $courts,
-            'form_page_id' => $form_page1->id
-        ]);
+        // FormPageItem::create([
+        //     'label' => ' المحكمة (الاختصاص)',
+        //     'type' => 'select',
+        //     'enabled' => 1,
+        //     'required' => 1,
+        //     'website_view' => 1,
+        //     'notes' => '',
+        //     'comment' => '',
+        //     'width' => 'col-12',
+        //     'input_type' => 'text',
+        //     'height' => '',
+        //     'length' => '20',
+        //     'childList' => $courts,
+        //     'form_page_id' => $form_page1->id
+        // ]);
         // FormPageItem::create([
         //     'label' => 'اسم الطالب',
         //     'type' => 'text',
@@ -197,21 +197,21 @@ class FormSeeder extends Seeder
         //     'childList' => json_encode([]),
         //     'form_page_id' => $form_page1->id
         // ]);
-        FormPageItem::create([
-            'label' => 'الملفات المرفقة تدعم الطلب ',
-            'type' => 'file',
-            'enabled' => 1,
-            'required' => 1,
-            'website_view' => 1,
-            'notes' => '',
-            'comment' => '',
-            'width' => 'col-12',
-            'input_type' => 'text',
-            'height' => '',
-            'length' => '',
-            'childList' => json_encode([]),
-            'form_page_id' => $form_page1->id
-        ]);
+        // FormPageItem::create([
+        //     'label' => 'الملفات المرفقة تدعم الطلب ',
+        //     'type' => 'file',
+        //     'enabled' => 1,
+        //     'required' => 1,
+        //     'website_view' => 1,
+        //     'notes' => '',
+        //     'comment' => '',
+        //     'width' => 'col-12',
+        //     'input_type' => 'text',
+        //     'height' => '',
+        //     'length' => '',
+        //     'childList' => json_encode([]),
+        //     'form_page_id' => $form_page1->id
+        // ]);
         // FormPageItem::create([
         //     'label' => 'موعد الجلسة إن وجدت ',
         //     'type' => 'text',
@@ -227,36 +227,36 @@ class FormSeeder extends Seeder
         //     'childList' => json_encode([]),
         //     'form_page_id' => $form_page1->id
         // ]);
-        FormPageItem::create([
-            'label' => 'التقاضي والمرافعة السرية',
-            'type' => 'select',
-            'enabled' => 1,
-            'required' => 1,
-            'website_view' => 1,
-            'notes' => '',
-            'comment' => '',
-            'width' => 'col-12',
-            'input_type' => 'text',
-            'height' => '',
-            'length' => '20',
-            'childList' => $data,
-            'form_page_id' => $form_page1->id
-        ]);
-        FormPageItem::create([
-            'label' => 'ملاحظات ',
-            'type' => 'textarea',
-            'enabled' => 1,
-            'required' => 0,
-            'website_view' => 1,
-            'notes' => '',
-            'comment' => '',
-            'width' => 'col-12',
-            'input_type' => 'text',
-            'height' => '',
-            'length' => '1000',
-            'childList' => json_encode([]),
-            'form_page_id' => $form_page1->id
-        ]);
+        // FormPageItem::create([
+        //     'label' => 'التقاضي والمرافعة السرية',
+        //     'type' => 'select',
+        //     'enabled' => 1,
+        //     'required' => 1,
+        //     'website_view' => 1,
+        //     'notes' => '',
+        //     'comment' => '',
+        //     'width' => 'col-12',
+        //     'input_type' => 'text',
+        //     'height' => '',
+        //     'length' => '20',
+        //     'childList' => $data,
+        //     'form_page_id' => $form_page1->id
+        // ]);
+        // FormPageItem::create([
+        //     'label' => 'ملاحظات ',
+        //     'type' => 'textarea',
+        //     'enabled' => 1,
+        //     'required' => 0,
+        //     'website_view' => 1,
+        //     'notes' => '',
+        //     'comment' => '',
+        //     'width' => 'col-12',
+        //     'input_type' => 'text',
+        //     'height' => '',
+        //     'length' => '1000',
+        //     'childList' => json_encode([]),
+        //     'form_page_id' => $form_page1->id
+        // ]);
 
         //        
         // FormPageItem::create([
