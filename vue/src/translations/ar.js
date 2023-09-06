@@ -508,6 +508,10 @@ export default {
     add_action: "اضافة اجراء",
     delete: "حذف القضية",
     view_info: "عرض معلومات القضية",
+    judgment_for: "الحكم ل",
+    receiptDate: "تاريخ استلام الحكم",
+    judgementDate: "تاريخ الحكم",
+    casePlace: "مكان الجلسة",
   },
 
   departments: {
@@ -655,8 +659,8 @@ export default {
     ResponseToCustomerFeedback: "الرد على ملاحظات العملاء",
   },
   general: {
-    name:"الاسم",
-    number:"الرقم",
+    name: "الاسم",
+    number: "الرقم",
     edit: "تعديل",
     count: "الاجمالى",
     title: "العنوان",
@@ -761,7 +765,7 @@ export default {
     closed: "تم اكمال الطلب",
     assigned: "لدي الموظف المختص",
     active: "نشط",
-    notactive:"غير نشط",
+    notactive: "غير نشط",
     assigner: "مكلفة من",
     no_action_yet: "لم يتم اتخاذ اي اجراء في القضية حتي الان",
     getting_data: "جاري جلب البيانات",
