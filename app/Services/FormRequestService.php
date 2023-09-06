@@ -33,6 +33,9 @@ class FormRequestService
             $formRequest = FormRequest::create([
                 'form_id' => $requestData['id'],
                 'branche_id' => $requestData['branche_id'],
+                'specialization_id' => $requestData['specialization_id'],
+                'category' => $requestData['category'],
+                'case_type' => $requestData['case_type'],
                 'user_id' => Auth::id(),
                 'status' => StatusEnum::PENDING,
                 'form_type' => $requestData['type'],
@@ -126,9 +129,17 @@ class FormRequestService
         return DB::transaction(function () use ($requestData, $id) {
 
             $formRequest = FormRequest::findOrFail($id);
-            $formRequest->form_request_number = $requestData['case_number'] ?? $formRequest->form_request_number;
-            $formRequest->name = $requestData['case_name'] ?? $formRequest->name;
-            $formRequest->save();
+            $updatedData = [
+                'branche_id' => $requestData['branche_id'],
+                'specialization_id' => $requestData['specialization_id'],
+                'category' => $requestData['category'],
+                'case_type' => $requestData['case_type'],
+                'form_type' => $requestData['type'],
+                'case_date' => $requestData['case_date'],
+                'form_request_number' =>  $requestData['case_number'] ?? $formRequest->form_request_number,
+                'name' => $requestData['case_name'] ?? $formRequest->name
+            ];
+            $formRequest->update($updatedData);
 
             // save related tables if get case_id
             if ($requestData->case_id) {
