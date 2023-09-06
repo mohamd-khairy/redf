@@ -2,25 +2,29 @@
 
 namespace App\Services;
 
-use Illuminate\Support\Collection;
+use App\Models\User;
 use Illuminate\Support\Str;
-use Spatie\Permission\Models\Permission;
+use Illuminate\Support\Collection;
 use Spatie\Permission\Models\Role;
+use Spatie\Permission\Models\Permission;
 
 class RolesService
 {
     /**
      *  Define basic operations to be used for each model permissions.
      */
-    public const BASIC_ROLES = ['admin','manager','tasks','consultant','reports','settings','employee'];
+    public const BASIC_ROLES = ['admin','manager','tasks','cases_manager','litigation','consultant','reports','settings','employee','data_entry'];
     public const BASIC_Arabic_Name  = [
         'admin' => 'مدير',
         'manager' => 'مدير عام',
         'tasks' => 'المهام',
+        'cases_manager' => 'مدير اداره القضايا',
+        'litigation' => 'مدير قسم التقاضي',
         'consultant' => 'مستشار',
         'reports' => 'التقارير',
         'settings' => 'الإعدادات',
         'employee' => 'موظف',
+        'data_entry' => 'مدخل البيانات',
     ];
     /**
      *  Define basic operations to be used for each model permissions.
@@ -37,6 +41,25 @@ class RolesService
      */
     public const ADDITIONAL_MODEL_OPERATIONS = [];
 
+    /**
+     * Create users for each role.
+     *
+     * @param array $roles
+     */
+    public static function CreateUsersForRoles(array $roles)
+    {
+        foreach ($roles as $roleName => $arabicName) {
+            // Create a user for each role
+            $user = User::create([
+                'name' => $arabicName,
+                'email' => $roleName . '@example.com',
+                'password' => bcrypt('password'),
+            ]);
+
+            // Assign the role to the user
+            $user->assignRole($roleName);
+        }
+    }
     public static function GetModels(...$exceptions): Collection
     {
         return collect(scandir(app_path('Models')))->filter(function ($file_or_directory) {
@@ -75,13 +98,15 @@ class RolesService
 
             // Retrieve the Arabic display name based on the role name
 
-            $arabicDisplayName = self::BASIC_Arabic_Name[$item] ?? $englishDisplayName;
+            $arabicDisplayName = self::BASIC_Arabic_Name[$item] ?? self::BASIC_ROLES[$item];
 
             $roleModel = Role::create(['name' => $item, 'display_name' => $arabicDisplayName]);
 
             $models = is_null($models) ? self::GetModels() : $models;
-
+            $roleName = $roleModel->pluck('name')->toArray();
+            // dd($models , $roleModel->pluck('name')->toArray());
             self::AssignModelPermissionsToRole($roleModel, $models);
+
         });
     }
 

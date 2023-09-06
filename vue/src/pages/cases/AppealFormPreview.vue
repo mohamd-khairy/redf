@@ -99,7 +99,6 @@
 
 <script>
 import { mapState } from "vuex";
-import mammoth from "mammoth";
 
 export default {
   props: {

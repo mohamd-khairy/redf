@@ -13,7 +13,11 @@ use App\Enums\CaseTypeEnum;
 use App\Enums\CourtTypeEnum;
 use App\Models\Organization;
 use Illuminate\Http\Request;
+use PhpOffice\PhpWord\PhpWord;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Response;
+use Symfony\Component\DomCrawler\Crawler;
 
 class HomeController extends Controller
 {
@@ -88,4 +92,5 @@ class HomeController extends Controller
             'case_types' => $case_type,
         ]);
      }
+
 }

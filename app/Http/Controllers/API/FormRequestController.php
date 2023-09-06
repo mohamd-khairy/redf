@@ -4,16 +4,17 @@ namespace App\Http\Controllers\API;
 
 use Throwable;
 use App\Models\Form;
+use App\Models\User;
 use App\Models\FormRequest;
 use Illuminate\Http\Request;
 use App\Http\Requests\FormAssign;
 use App\Http\Requests\PageRequest;
+use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use App\Services\FormRequestService;
 use App\Http\Requests\FormFillRequest;
 use App\Http\Requests\InformationRequest;
 use App\Http\Resources\FormRequestResource;
-use Illuminate\Support\Facades\DB;
 
 class FormRequestController extends Controller
 {
@@ -71,7 +72,7 @@ class FormRequestController extends Controller
         try {
             $formfill = FormRequest::with('form.pages.items', 'user', 'form_page_item_fill', 'formRequestInformations', 'formRequestSide', 'lastFormRequestInformation', 'request')
                 ->find($id);
-            // dd($form)
+
             return responseSuccess(new FormRequestResource($formfill), 'Form requests retrieved successfully');
         } catch (\Throwable $th) {
             return responseFail($th->getMessage());
@@ -122,4 +123,37 @@ class FormRequestController extends Controller
             return responseFail($th->getMessage());
         }
     }
+    public function retrieveClaimant(Request $request){
+
+
+        $formRequestSide = DB::table('form_request_sides')
+        ->select('claimant_id', 'defendant_id')
+        ->where('form_request_id', $request->form_request_id)
+        ->first();
+
+         if (!$formRequestSide) {
+            return responseFail('FormRequestSide not found');
+         }
+
+        $claimant = User::find($formRequestSide->claimant_id);
+        $defendant = User::find($formRequestSide->defendant_id);
+
+        if (!$claimant || !$defendant) {
+            return responseFail('Claimant or defendant not found');
+
+         }
+
+        $response = [
+            'claimant' => [
+                'id' => $claimant->id,
+                'name' => $claimant->name,
+            ],
+            'defendant' => [
+                'id' => $defendant->id,
+                'name' => $defendant->name,
+            ],
+        ];
+        return responseSuccess($response, 'Retrieve Claimant And Defendant');
+
+     }
 }

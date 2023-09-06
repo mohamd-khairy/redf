@@ -11,7 +11,7 @@ class FormRequestInformation extends Model
 {
     use HasFactory , SoftDeletes;
 
-    protected $fillable = ['form_request_id', 'amount','sessionDate', 'percentage', 'status', 'details', 'court', 'date'];
+    protected $fillable = ['form_request_id', 'user_id','date_of_receipt','session_place','amount','sessionDate', 'percentage', 'status', 'details', 'court', 'date'];
 
     protected $casts = [
         'sessionDate' => 'datetime',
