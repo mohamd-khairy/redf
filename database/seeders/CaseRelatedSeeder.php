@@ -139,6 +139,49 @@ class CaseRelatedSeeder extends Seeder
             'form_id' => $form6->id
         ]);
 
+
+        foreach ([
+            $form_page1->id,
+            $form_page2->id,
+            $form_page3->id,
+            $form_page4->id,
+            $form_page5->id,
+            $form_page6->id,
+        ] as  $form_page_id) {
+
+
+            FormPageItem::create([
+                'label' => 'اسم الملف',
+                'type' => 'textarea',
+                'enabled' => 1,
+                'required' => 0,
+                'website_view' => 1,
+                'notes' => '',
+                'comment' => '',
+                'width' => 'col-12',
+                'input_type' => 'text',
+                'height' => '',
+                'length' => '500',
+                'childList' => json_encode([]),
+                'form_page_id' => $form_page_id
+            ]);
+
+            FormPageItem::create([
+                'label' => 'ملف مرفق',
+                'type' => 'file',
+                'enabled' => 1,
+                'required' => 0,
+                'website_view' => 1,
+                'notes' => '',
+                'comment' => '',
+                'width' => 'col-12',
+                'input_type' => 'text',
+                'height' => '',
+                'childList' => json_encode([]),
+                'form_page_id' => $form_page_id
+            ]);
+        }
+
         // // first model
         // FormPageItem::create([
         //     'label' => 'فرع المحكمة الادارية',

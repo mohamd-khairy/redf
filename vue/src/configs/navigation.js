@@ -86,6 +86,14 @@ export default {
       permission: "read-role",
       items: [],
     },
+    {
+      icon: "mdi-animation",
+      text: "specializations",
+      key: "menu.specializations",
+      link: "/specializations",
+      permission: "read-role",
+      items: [],
+    },
     // {
     //   icon: "mdi-gavel",
     //   text: "cases",
