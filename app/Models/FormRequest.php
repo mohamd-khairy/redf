@@ -76,12 +76,12 @@ class FormRequest extends Model
 
     public function branche()
     {
-        return $this->hasMany(Branch::class, 'branche_id');
+        return $this->belongsTo(Branch::class, 'branche_id');
     }
 
     public function specialization()
     {
-        return $this->hasMany(Specialization::class, 'specialization_id');
+        return $this->belongsTo(Specialization::class, 'specialization_id');
     }
 
     public function formRequestInformation()
