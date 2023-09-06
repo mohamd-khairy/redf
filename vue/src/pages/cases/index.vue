@@ -129,7 +129,7 @@
             {{ item.form_assigned_requests[0]?.user.name ?? "---" }}
           </div>
         </template>
-        <template v-slot:item.court="{ item }">
+        <!-- <template v-slot:item.court="{ item }">
           <div>
             {{
               item?.last_form_request_information?.court
@@ -137,7 +137,7 @@
                 : "---"
             }}
           </div>
-        </template>
+        </template> -->
 
         <template v-slot:item.status="{ item }">
           <v-chip
@@ -411,7 +411,7 @@ export default {
         },
       ];
       if (+this.currentPageId === 1) {
-        headers.splice(4, 0, { text: this.$t("tables.court"), value: "court" });
+        // headers.splice(4, 0, { text: this.$t("tables.court"), value: "court" });
       }
       return headers;
     },

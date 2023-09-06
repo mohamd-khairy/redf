@@ -19,7 +19,6 @@ class CaseRelatedSeeder extends Seeder
      */
     public function run()
     {
-
         Branch::firstOrCreate([
             'name' => 'الرياض'
         ]);
