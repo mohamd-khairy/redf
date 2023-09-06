@@ -78,13 +78,14 @@
                             label
                             text-color="white"
                           >
-                            {{
+                            <!-- {{
                               lastAction?.status
                                 ? $t(
                                     `general.${lastAction?.status?.toLowerCase()}`
                                   )
                                 : ""
-                            }}
+                            }} -->
+                            {{ lastAction?.status }}
                           </v-chip>
                         </v-col>
                       </v-row>
@@ -282,10 +283,8 @@
               </v-col>
               <v-col cols="12" md="6" v-if="sessionDate">
                 <v-select
-                  :items="branches?.data || []"
+                  :items="branches || []"
                   :label="$t('cases.casePlace')"
-                  item-text="name"
-                  item-value="id"
                   dense
                   outlined
                   v-model="caseAction.branch_id"
@@ -521,7 +520,7 @@ export default {
 
   created() {
     this.getCourts();
-    this.getBranches({});
+    // this.getBranches({});
     this.retrieveClaimant({ form_request_id: this.formRequestId });
   },
   watch: {
@@ -533,8 +532,7 @@ export default {
     },
   },
   computed: {
-    ...mapState("cases", ["courts", "caseTypes", "claimant"]),
-    ...mapState("branches", ["branches"]),
+    ...mapState("cases", ["courts", "caseTypes", "claimant", "branches"]),
   },
   methods: {
     ...mapActions("cases", [
