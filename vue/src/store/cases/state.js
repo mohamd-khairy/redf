@@ -13,6 +13,7 @@ const state = {
   pages: [],
   courts: [],
   caseTypes: [],
+  specializations: [],
   pagesValues: [],
   selectedForm: {
     name: "",

@@ -490,7 +490,7 @@ export default {
     addAction: "اضافة اجراء",
     name: "الاسم",
     number: "الرقم",
-    caseName: "اسم القضية",
+    caseName: "موضوع القضية",
     caseNumber: "رقم القضية",
     caseDate: "تاريخ القضية",
     adviceName: "اسم الاستشارة",
@@ -508,6 +508,12 @@ export default {
     add_action: "اضافة اجراء",
     delete: "حذف القضية",
     view_info: "عرض معلومات القضية",
+    classification: "التصنيف",
+    caseModels: "أنواع القضية",
+    from_redf:"من الصندوق",
+    against_redf:"ضد الصندوق",
+    entry:"مُدخل",
+    specialization:"الدائرة",
   },
 
   departments: {
