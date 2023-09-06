@@ -138,6 +138,9 @@ Route::group(['prefix' => 'v1'], function () {
     /*********************CourtController***************** */
     Route::group(['middleware' => 'auth:sanctum'], function () {
         Route::get('/lookup', [HomeController::class, 'lookup']);
+        /************ convert txt to word ******************* */
+        // Route::post('/convert-txt-to-doc', [HomeController::class, 'convertTxtToDoc']);
+
     });
 
 
