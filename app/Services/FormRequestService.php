@@ -23,6 +23,7 @@ use App\Http\Requests\PageRequest;
 use Illuminate\Support\Facades\Auth;
 use App\Models\FormRequestInformation;
 use App\Models\Status;
+use App\Models\User;
 use Illuminate\Support\Facades\Storage;
 
 class FormRequestService
@@ -54,11 +55,22 @@ class FormRequestService
                 ]);
 
                 if ($requestData['type'] == 'related_case') {
-                    $formRequest->update(['status' => StatusEnum::notactive]);
+                    $formRequest->update(['status' => StatusEnum::WAIT]);
                     $relatedCase = $this->updateStatus($requestData['id']); //form_id
                     if (isset($formRequest->request->formable)) {
                         $formRequest->request->formable->update(['status' => $relatedCase->value]);
                     }
+
+                    $assignNew = FormAssignRequest::create([
+                        'form_request_id' => $formRequest->id,
+                        'user_id' => Auth::id(),
+                        'date' => date('Y-m-d'),
+                        'assigner_id' => User::whereHas('role', function ($q) {
+                            $q->where('id', 2);
+                        })->first()->id,
+                        'status' => 'active',
+                        'type' => FormAssignRequestType::EMPLOYEE,
+                    ]);
                 }
 
                 /*********** add action ********* */
@@ -232,16 +244,16 @@ class FormRequestService
                         ->where('status', 'active')
                         ->where('status', '!=', 'deleted')
                         ->update(['status' => 'deleted']);
-                    $formUserId = Form::where('id', $formRequestId)->value('user_id');
+
                     $assignNew = FormAssignRequest::create([
                         'form_request_id' => $formRequestId,
                         'user_id' => $requestData['user_id'],
                         'date' => $formattedDate,
                         'assigner_id' => auth()->id(),
                         'status' => 'active',
-                        'form_user_id' => $formUserId,
                         'type' => FormAssignRequestType::EMPLOYEE,
                     ]);
+
                     FormRequest::where('id', $formRequestId)->update(['status' => StatusEnum::ASSIGNED]);
 
                     saveFormRequestAction(

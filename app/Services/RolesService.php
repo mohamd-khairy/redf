@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Enums\UserTypeEnum;
 use App\Models\User;
 use Illuminate\Support\Str;
 use Illuminate\Support\Collection;
@@ -13,18 +14,19 @@ class RolesService
     /**
      *  Define basic operations to be used for each model permissions.
      */
-    public const BASIC_ROLES = ['admin', 'manager', 'tasks', 'cases_manager', 'litigation', 'consultant', 'reports', 'settings', 'employee', 'data_entry'];
+    public const BASIC_ROLES = ['admin', 'manager', 'tasks', 'cases_manager', 'litigation', 'consultant', 'reports', 'settings', 'employee', 'data_entry', 'system'];
     public const BASIC_Arabic_Name  = [
-        'admin' => 'مدير',
-        'manager' => 'مدير عام',
-        'tasks' => 'المهام',
+        'admin' => 'مدير النظام',
+        'manager' => 'مدير عام الادارة',
+        'tasks' => 'مسئول المهام',
         'cases_manager' => 'مدير اداره القضايا',
         'litigation' => 'مدير قسم التقاضي',
-        'consultant' => 'مستشار',
-        'reports' => 'التقارير',
-        'settings' => 'الإعدادات',
+        'consultant' => 'مستشار الادارة',
+        'reports' => 'مسئول التقارير',
+        'settings' => 'مسئول الاعدادات',
         'employee' => 'موظف',
         'data_entry' => 'مدخل البيانات',
+        'system' => 'صندوق التنمية العقارية',
     ];
     /**
      *  Define basic operations to be used for each model permissions.
@@ -46,14 +48,16 @@ class RolesService
      *
      * @param array $roles
      */
-    public static function CreateUsersForRoles(array $roles)
+    public static function CreateUsersForRoles()
     {
-        foreach ($roles as $roleName => $arabicName) {
+        foreach (self::BASIC_Arabic_Name as $roleName => $arabicName) {
             // Create a user for each role
             $user = User::create([
                 'name' => $arabicName,
                 'email' => $roleName . '@wakeb.com',
-                'password' => bcrypt('password'),
+                'password' => bcrypt(123456),
+                'type' => UserTypeEnum::EMPLOYEE,
+                'email_verified_at' => now()
             ]);
 
             // Assign the role to the user
