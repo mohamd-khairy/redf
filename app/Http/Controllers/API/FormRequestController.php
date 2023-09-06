@@ -15,6 +15,7 @@ use App\Services\FormRequestService;
 use App\Http\Requests\FormFillRequest;
 use App\Http\Requests\InformationRequest;
 use App\Http\Resources\FormRequestResource;
+use App\Models\FormRequestSide;
 
 class FormRequestController extends Controller
 {
@@ -125,34 +126,18 @@ class FormRequestController extends Controller
     }
     public function retrieveClaimant(Request $request)
     {
-
-
-        $formRequestSide = DB::table('form_request_sides')
-            ->select('claimant_id', 'defendant_id')
-            ->where('form_request_id', $request->form_request_id)
-            ->first();
+        $formRequestSide = FormRequestSide::select('claimant_id', 'defendant_id')->where('form_request_id', $request->form_request_id)->first();
 
         if (!$formRequestSide) {
             return responseFail('FormRequestSide not found');
         }
 
-        $claimant = User::find($formRequestSide->claimant_id);
-        $defendant = User::find($formRequestSide->defendant_id);
+        $users = User::select('id', 'name')->whereIn('id', [$formRequestSide->claimant_id, $formRequestSide->defendant_id])->get();
 
-        if (!$claimant || !$defendant) {
+        if (!$users) {
             return responseFail('Claimant or defendant not found');
         }
 
-        $response = [
-            [
-                'id' => $claimant->id,
-                'name' => $claimant->name,
-            ],
-            [
-                'id' => $defendant->id,
-                'name' => $defendant->name,
-            ],
-        ];
-        return responseSuccess($response, 'Retrieve Claimant And Defendant');
+        return responseSuccess($users, 'Retrieve Claimant And Defendant');
     }
 }
