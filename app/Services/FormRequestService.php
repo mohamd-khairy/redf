@@ -53,7 +53,6 @@ class FormRequestService
 
                 // if type related_case
                 $relatedCase = $this->updateStatus($requestData);
-
                 $formRequest->request->formable->update(['status'=>$relatedCase->value]);
                 $actionData = [
                     'form_request_id' => $requestData->case_id,
@@ -67,6 +66,9 @@ class FormRequestService
 
             return $formRequest;
         });
+
+        sendMsgFormat(Auth::id() , $formRequest->form->name . ' تم اضافه ' ,'اضافه قضيه');
+
     }
 
     public function updateStatus($requestData){

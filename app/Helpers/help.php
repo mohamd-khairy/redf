@@ -5,6 +5,7 @@ use App\Models\Setting;
 use App\Models\Calendar;
 use Illuminate\Support\Str;
 use App\Models\FormRequestAction;
+use App\Notifications\UserNotify;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Storage;
@@ -200,5 +201,17 @@ if (!function_exists('saveFormRequestAction')) {
 
         ])->validate();
         return FormRequestAction::create($validatedData);
+    }
+}
+
+if (!function_exists('sendMsgFormat')) {
+    function sendMsgFormat($user_id,$msg,$title=null)
+    {
+        $data = [
+            'title' =>  $title,
+            'msg' =>  $msg,
+            ];
+        $user = User::find($user_id);
+        return  $user->notify(new UserNotify($data));
     }
 }

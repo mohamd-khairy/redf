@@ -138,6 +138,9 @@ Route::group(['prefix' => 'v1'], function () {
     /*********************CourtController***************** */
     Route::group(['middleware' => 'auth:sanctum'], function () {
         Route::get('/lookup', [HomeController::class, 'lookup']);
+        /************ convert txt to word ******************* */
+        // Route::post('/convert-txt-to-doc', [HomeController::class, 'convertTxtToDoc']);
+
     });
 
 
@@ -173,4 +176,7 @@ Route::group(['prefix' => 'v1'], function () {
         Route::put('update-related-case-form-fill/{id}', [RelatedFormRequestController::class, 'updateRelatedFormFill']);
         Route::get('get-related-form-Requests', [RelatedFormRequestController::class, 'getRelatedFormRequest']);
     });
+
+
+
 });
