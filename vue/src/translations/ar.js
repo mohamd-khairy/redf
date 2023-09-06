@@ -603,7 +603,7 @@ export default {
     description: "الوصف",
     templates: "النماذج",
     user: "المستفيد",
-    assigner: "المكلف",
+    assigner: "المستشار",
     organization: "المنظمة",
     department: "القسم",
     priority: "الاولوية",
