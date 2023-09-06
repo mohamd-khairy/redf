@@ -33,8 +33,8 @@
               <!--              <v-divider></v-divider>-->
               <v-list-item @click="deleteAllCases()">
                 <v-list-item-title>{{
-                    $t("general.delete")
-                  }}</v-list-item-title>
+                  $t("general.delete")
+                }}</v-list-item-title>
               </v-list-item>
             </v-list>
           </v-menu>
@@ -52,32 +52,32 @@
             @keyup.enter="search(searchQuery)"
           ></v-text-field>
 
-<!--          <v-tooltip top>-->
-<!--            <template v-slot:activator="{ on, attrs }">-->
-<!--              <v-btn-->
-<!--                color="primary"-->
-<!--                class="mx-2"-->
-<!--                elevation="0"-->
-<!--                v-bind="attrs"-->
-<!--                v-on="on"-->
-<!--                :to="caseUrl"-->
-<!--                :disabled="currentPageId > 3"-->
-<!--                v-can="'create-user'"-->
-<!--              >-->
-<!--                <v-icon> mdi-plus </v-icon>-->
-<!--              </v-btn>-->
-<!--            </template>-->
-<!--            <span>{{ plusButtonTitle }}</span>-->
-<!--          </v-tooltip>-->
-<!--          <v-btn-->
-<!--            color="primary"-->
-<!--            class="me-1"-->
-<!--            elevation="0"-->
-<!--            :to="formTypesUrl"-->
-<!--            v-can="'create-user'"-->
-<!--          >-->
-<!--            {{ buttonName }}-->
-<!--          </v-btn>-->
+          <!--          <v-tooltip top>-->
+          <!--            <template v-slot:activator="{ on, attrs }">-->
+          <!--              <v-btn-->
+          <!--                color="primary"-->
+          <!--                class="mx-2"-->
+          <!--                elevation="0"-->
+          <!--                v-bind="attrs"-->
+          <!--                v-on="on"-->
+          <!--                :to="caseUrl"-->
+          <!--                :disabled="currentPageId > 3"-->
+          <!--                v-can="'create-user'"-->
+          <!--              >-->
+          <!--                <v-icon> mdi-plus </v-icon>-->
+          <!--              </v-btn>-->
+          <!--            </template>-->
+          <!--            <span>{{ plusButtonTitle }}</span>-->
+          <!--          </v-tooltip>-->
+          <!--          <v-btn-->
+          <!--            color="primary"-->
+          <!--            class="me-1"-->
+          <!--            elevation="0"-->
+          <!--            :to="formTypesUrl"-->
+          <!--            v-can="'create-user'"-->
+          <!--          >-->
+          <!--            {{ buttonName }}-->
+          <!--          </v-btn>-->
           <v-btn
             :loading="isLoading"
             icon
@@ -133,9 +133,10 @@
             :color="getStatusColor(item?.status?.toLowerCase())"
             text-color="white"
           >
-            {{
+            <!-- {{
               item?.status ? $t(`general.${item.status.toLowerCase()}`) : "---"
-            }}
+            }} -->
+            {{ item.status }}
           </v-chip>
         </template>
 
@@ -146,21 +147,21 @@
         <template v-slot:item.action="{ item }">
           <div class="actions">
             <!-- add action button -->
-<!--            <v-tooltip top>-->
-<!--              <template v-slot:activator="{ on, attrs }">-->
-<!--                <v-btn-->
-<!--                  color="primary"-->
-<!--                  icon-->
-<!--                  elevation="0"-->
-<!--                  v-bind="attrs"-->
-<!--                  v-on="on"-->
-<!--                  @click="openActionDialog(item)"-->
-<!--                >-->
-<!--                  <v-icon>mdi-plus-circle-outline</v-icon>-->
-<!--                </v-btn>-->
-<!--              </template>-->
-<!--              <span>{{ $t("cases.add_action") }}</span>-->
-<!--            </v-tooltip>-->
+            <!--            <v-tooltip top>-->
+            <!--              <template v-slot:activator="{ on, attrs }">-->
+            <!--                <v-btn-->
+            <!--                  color="primary"-->
+            <!--                  icon-->
+            <!--                  elevation="0"-->
+            <!--                  v-bind="attrs"-->
+            <!--                  v-on="on"-->
+            <!--                  @click="openActionDialog(item)"-->
+            <!--                >-->
+            <!--                  <v-icon>mdi-plus-circle-outline</v-icon>-->
+            <!--                </v-btn>-->
+            <!--              </template>-->
+            <!--              <span>{{ $t("cases.add_action") }}</span>-->
+            <!--            </v-tooltip>-->
 
             <!-- view case timeline button -->
             <v-tooltip top>
@@ -314,7 +315,7 @@ import AddAction from "../../components/cases/AddAction.vue";
 import AddDynamicAction from "@/components/cases/AddDynamicAction";
 
 export default {
-  name:'RequestReview',
+  name: "RequestReview",
   components: {
     CasePreviewDialog,
     CaseInfoDialog,
@@ -442,7 +443,7 @@ export default {
       let { id } = this.$route.params;
       let data = {
         template_id: id,
-        form_type:'related_case',
+        form_type: "related_case",
         search: this.searchQuery,
         pageSize: itemsPerPage,
         pageNumber: page,
