@@ -18,21 +18,8 @@ class UserRolePermissionSeeder extends Seeder
     {
         RolesService::CreateRole();
 
-        $rolesToCreateUsersFor = [
-            'admin' => 'مدير',
-            'manager' => 'مدير عام',
-            'tasks' => 'المهام',
-            'cases_manager' => 'مدير اداره القضايا',
-            'litigation' => 'مدير قسم التقاضي',
-            'consultant' => 'مستشار',
-            'reports' => 'التقارير',
-            'settings' => 'الإعدادات',
-            'employee' => 'موظف',
-            'data_entry' => 'مدخل البيانات',
-        ];
-
         // Call the CreateUsersForRoles method to create users for these roles
-        RolesService::CreateUsersForRoles($rolesToCreateUsersFor);
+        RolesService::CreateUsersForRoles();
 
         $root = User::firstOrCreate([
             'name' => 'Root',
@@ -42,13 +29,13 @@ class UserRolePermissionSeeder extends Seeder
             'email_verified_at' => now()
         ]);
 
-        $admin = User::firstOrCreate([
-            'name' => 'Admin',
-            'email' => 'admin@wakeb.com',
-            'password' => bcrypt(123456),
-            'type' => UserTypeEnum::EMPLOYEE,
-            'email_verified_at' => now()
-        ]);
+        // $admin = User::firstOrCreate([
+        //     'name' => 'Admin',
+        //     'email' => 'admin@wakeb.com',
+        //     'password' => bcrypt(123456),
+        //     'type' => UserTypeEnum::EMPLOYEE,
+        //     'email_verified_at' => now()
+        // ]);
 
         // User::firstOrCreate([
         //     'name' => 'صندوق التنمية العقارية',
@@ -60,6 +47,6 @@ class UserRolePermissionSeeder extends Seeder
         // ])->assignRole('manager');
 
         $root->syncRoles(['admin']);
-        $admin->assignRole('admin');
+        // $admin->assignRole('admin');
     }
 }
