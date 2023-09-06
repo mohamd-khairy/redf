@@ -13,7 +13,7 @@ class RolesService
     /**
      *  Define basic operations to be used for each model permissions.
      */
-    public const BASIC_ROLES = ['admin','manager','tasks','cases_manager','litigation','consultant','reports','settings','employee','data_entry'];
+    public const BASIC_ROLES = ['admin', 'manager', 'tasks', 'cases_manager', 'litigation', 'consultant', 'reports', 'settings', 'employee', 'data_entry'];
     public const BASIC_Arabic_Name  = [
         'admin' => 'مدير',
         'manager' => 'مدير عام',
@@ -52,7 +52,7 @@ class RolesService
             // Create a user for each role
             $user = User::create([
                 'name' => $arabicName,
-                'email' => $roleName . '@example.com',
+                'email' => $roleName . '@wakeb.com',
                 'password' => bcrypt('password'),
             ]);
 
@@ -60,6 +60,7 @@ class RolesService
             $user->assignRole($roleName);
         }
     }
+
     public static function GetModels(...$exceptions): Collection
     {
         return collect(scandir(app_path('Models')))->filter(function ($file_or_directory) {
@@ -106,7 +107,6 @@ class RolesService
             $roleName = $roleModel->pluck('name')->toArray();
             // dd($models , $roleModel->pluck('name')->toArray());
             self::AssignModelPermissionsToRole($roleModel, $models);
-
         });
     }
 
