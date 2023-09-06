@@ -482,8 +482,10 @@ const actions = {
     console.log(response);
     const { court_types } = response?.data.data;
     const { case_types } = response?.data.data;
+    const { specialization } = response?.data.data;
     commit("SET_CORTS", court_types);
     commit("SET_CASE_TYPES", case_types);
+    commit("SET_specializations", specialization);
   },
   async retrieveClaimant({ commit }, { form_request_id }) {
     const response = await axios.get(`retrieve-claimant`, {

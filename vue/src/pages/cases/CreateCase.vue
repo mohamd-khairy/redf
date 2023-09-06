@@ -25,19 +25,7 @@
             <div class="d-flex flex-column flex-sm-row">
               <div class="flex-grow-1 pt-2 pa-sm-2">
                 <v-row dense>
-                  <v-col cols="6">
-                    <v-text-field
-                      class="mb-2"
-                      v-model="caseName"
-                      :label="$t('cases.caseName')"
-                      outlined
-                      :required="true"
-                      :error-messages="stepOneValidation(caseName)"
-                      dense
-                      :rules="[requiredRule]"
-                    ></v-text-field>
-                  </v-col>
-                  <v-col cols="6">
+                  <v-col cols="12">
                     <v-text-field
                       outlined
                       type="number"
@@ -51,19 +39,19 @@
                       dense
                     ></v-text-field>
                   </v-col>
-                  <v-col cols="6">
-                    <v-select
-                      :items="branches?.data || []"
-                      :label="$t('branches.branch')"
-                      item-text="name"
-                      item-value="id"
-                      dense
+                  <v-col cols="12">
+                    <v-text-field
+                      class="mb-2"
+                      v-model="caseName"
+                      :label="$t('cases.caseName')"
                       outlined
-                      v-model="branch_id"
-                    >
-                    </v-select>
+                      :required="true"
+                      :error-messages="stepOneValidation(caseName)"
+                      dense
+                      :rules="[requiredRule]"
+                    ></v-text-field>
                   </v-col>
-                  <v-col cols="6">
+                  <v-col cols="12">
                     <v-dialog
                       ref="caseDateDialog"
                       v-model="caseDateDialog"
@@ -74,7 +62,7 @@
                       <template v-slot:activator="{ on, attrs }">
                         <v-text-field
                           v-model="caseDate"
-                          :label="$t('tables.date')"
+                          :label="$t('cases.caseDate')"
                           prepend-icon="mdi-calendar"
                           readonly
                           v-bind="attrs"
@@ -101,10 +89,55 @@
                       </v-date-picker>
                     </v-dialog>
                   </v-col>
+                  <v-col cols="12">
+                    <v-text-field
+                      class="mb-2"
+                      v-model="classification"
+                      :label="$t('cases.classification')"
+                      outlined
+                      dense
+                    ></v-text-field>
+                  </v-col>
+                  <v-col cols="12">
+                    <v-select
+                      :items="caseModels"
+                      :label="$t('cases.caseModels')"
+                      item-text="name"
+                      item-value="value"
+                      dense
+                      outlined
+                      v-model="caseModel"
+                    >
+                    </v-select>
+                  </v-col>
+                  <v-col cols="12">
+                    <v-select
+                      :items="specializations"
+                      :label="$t('cases.specialization')"
+                      item-text="title"
+                      item-value="value"
+                      dense
+                      outlined
+                      v-model="specialization_id"
+                    >
+                    </v-select>
+                  </v-col>
+                  <v-col cols="12">
+                    <v-select
+                      :items="branches?.data || []"
+                      :label="$t('branches.branch')"
+                      item-text="name"
+                      item-value="id"
+                      dense
+                      outlined
+                      v-model="branch_id"
+                    >
+                    </v-select>
+                  </v-col>
                 </v-row>
               </div>
             </div>
-            <v-tabs v-model="activeTab">
+            <v-tabs v-model="activeTab" v-if="pages && pages[0]?.items.length > 0">
               <v-tab v-for="(tab, index) in pages" :key="index">{{
                 tab.title
               }}</v-tab>
@@ -470,7 +503,24 @@ export default {
       caseNumber: "",
       caseName: "",
       caseDate: "",
+      caseModel: "",
       branch_id: "",
+      specialization_id: "",
+      classification: "",
+      caseModels:[
+        {
+          name:this.$t("cases.from_redf"),
+          value:"from_redf"
+        },
+        {
+          name:this.$t("cases.against_redf"),
+          value:"against_redf"
+        },
+        {
+          name:this.$t("cases.entry"),
+          value:"entry"
+        }
+      ],
       initialLoading: false,
       isLoading: false,
       isSubmitingForm: false,
@@ -531,20 +581,21 @@ export default {
     this.fetchUsers();
     this.fetchDepartments();
     this.getBranches({});
+    this.getCourts();
 
     this.$root.$on("userCreated", () => {
       this.fetchUsers();
     });
   },
   watch: {
-    e1(val) {
-      if (val === 3) {
-        this.getCourts();
-      }
-    },
+    // e1(val) {
+      // if (val === 1 || val === 3) {
+
+      // }
+    // },
   },
   computed: {
-    ...mapState("cases", ["pages", "selectedForm", "courts", "caseTypes"]),
+    ...mapState("cases", ["pages", "selectedForm", "courts", "caseTypes","specializations"]),
     ...mapState("auth", ["user"]),
     ...mapState("app", ["navTemplates"]),
     ...mapState("departments", ["departments"]),
