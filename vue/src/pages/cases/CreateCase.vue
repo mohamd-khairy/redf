@@ -62,7 +62,7 @@
                       <template v-slot:activator="{ on, attrs }">
                         <v-text-field
                           v-model="caseDate"
-                          :label="$t('tables.date')"
+                          :label="$t('cases.caseDate')"
                           prepend-icon="mdi-calendar"
                           readonly
                           v-bind="attrs"
