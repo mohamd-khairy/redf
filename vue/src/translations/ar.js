@@ -157,6 +157,7 @@ export default {
     checkout: "الدفع",
   },
   menu: {
+    specializations:"الدوائر",
     search: "بحث (اضغط على 'ctrl + /' للتركيز)",
     dashboard: "الرئيسية",
     departments: "الإدارات",
@@ -909,5 +910,24 @@ export default {
     branchCreated: "تم انشاء فرع جديد",
     branchUpdated: "تم تحديث بيانات الفرع",
     branchNameReq: "اسم الفرع مطلوب",
+  },
+
+  specializations: {
+    specializations: "الدوائر",
+    specialization: "الدائرة",
+    specializationsList: "قائمة الدوائر",
+    specializationsManagement: "ادارة الدوائر",
+    createSpecialization: "انشاء دائرة ",
+    SpecializationName: "اسم الدائره",
+    createSpecialization: "انشاء دائره",
+    confirmDeleteSpecialization: "هل انت متأكد من حذف هذه الدائره ؟",
+    confirmDeleteSelectedSpecialization: "هل انت متأكد من حذف الدوائر المحددة ؟",
+    editSpecialization: "تحديث بيانات الدائرة",
+    status: "الحالة",
+    priority: "الاولوية",
+    types: "النوع",
+    specializationCreated: "تم انشاء دائرة جديد",
+    specializationUpdated: "تم تحديث بيانات الدائرة",
+    specializationNameReq: "اسم الدائرة مطلوب",
   },
 };

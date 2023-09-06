@@ -156,6 +156,7 @@ export default {
     checkout: "Checkout",
   },
   menu: {
+    specializations:"Specializations",
     search: 'Search (press "ctrl + /" to focus)',
     dashboard: "Dashboard",
     departments: "Departments",
