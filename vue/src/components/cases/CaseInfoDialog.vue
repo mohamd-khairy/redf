@@ -68,7 +68,7 @@
           </v-col>
         </v-row>
 
-        <div v-for="(tab, tabIndex) in pageTabs" :key="tabIndex">
+        <div v-for="(tab, tabIndex) in pageTabs" :key="tabIndex" v-if="pageTabs && pageTabs[0]?.items?.length > 0">
           <div class="form-title-bg mb-1">
             <h5 class="mb-0">
               {{ tab.title }}
@@ -140,6 +140,40 @@
               </div>
               <div class="input-value">
                 {{ formRequestSide?.defendant?.name ?? '' }}
+              </div>
+            </v-col>
+            <v-col cols="3" class="input-cont mb-2">
+              <div class="input-label">
+                {{ $t(`cases.department`) }}
+              </div>
+              <div class="input-value">
+                {{ formRequestSide?.department?.name ?? '' }}
+              </div>
+            </v-col>
+          </v-row>
+          <v-row dense class="mb-3">
+            <v-col cols="3" class="input-cont mb-2" v-if="caseType === 'entry'">
+              <div class="input-label">
+                {{ $t(`cases.civil`) }}
+              </div>
+              <div class="input-value">
+                {{ formRequestSide?.claimant?.user_information?.civil_number ?? '' }}
+              </div>
+            </v-col>
+            <v-col cols="3" class="input-cont mb-2" v-if="caseType === 'entry'">
+              <div class="input-label">
+                {{ $t(`cases.civil`) }}
+              </div>
+              <div class="input-value">
+                {{ formRequestSide?.defendant?.user_information?.civil_number ?? '' }}
+              </div>
+            </v-col>
+            <v-col cols="3" class="input-cont mb-2" v-if="caseType !== 'entry'">
+              <div class="input-label">
+                {{ $t(`cases.civil`) }}
+              </div>
+              <div class="input-value">
+                {{ caseType=== 'from_redf' ? formRequestSide?.defendant?.user_information?.civil_number : formRequestSide?.claimant?.user_information?.civil_number }}
               </div>
             </v-col>
           </v-row>
@@ -274,6 +308,7 @@ export default {
       caseNumber: null,
       caseName: null,
       caseBranch: null,
+      caseType: null,
       formRequestInformation: [],
       formRequestSide: {},
       pageTabs: [],
@@ -353,7 +388,7 @@ export default {
         this.loading = true;
 
         const response = await this.$axios.get(`get-form-Requests/${id}`);
-        
+
         const {
           form,
           form_request_number,
@@ -362,6 +397,7 @@ export default {
           form_page_item_fill,
           form_request_side,
           case_date,
+          case_type,
           category,
           branche
         } = response?.data?.data;
@@ -370,6 +406,7 @@ export default {
         this.caseDate = case_date;
         this.caseCategory = category;
         this.caseBranch = branche;
+        this.caseType = case_type;
 
         const propertiesToRemove = [
           "updated_at",

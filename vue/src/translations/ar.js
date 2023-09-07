@@ -249,7 +249,7 @@ export default {
     cases_child: "مراجعة القضايا",
     editCase: "تعديل البيانات",
     request_review: "مراجعة الطلبات",
-    specialization: "الدوائر",
+    specialization: "الدوائر"
   },
   breadcrumbs: {
     pipesList: "قائمة النماذج",
@@ -520,6 +520,7 @@ export default {
     receiptDate: "تاريخ استلام الحكم",
     judgmentDate: "تاريخ الحكم",
     casePlace: "مكان الجلسة",
+    department: "القسم",
     selectCase: "اختيار القضية",
   },
 
@@ -623,7 +624,7 @@ export default {
     assigned_to: "مكلفة الي",
     added_date: "تاريخ الاضافة",
     specialization: "الدائره (الاختصاص)",
-    sub_status: "الحالة الفرعية",
+    sub_status: "الحالة الفرعية"
     // causer_type: "",
   },
   texts: {
@@ -925,8 +926,7 @@ export default {
     SpecializationName: "اسم الدائره",
     createSpecialization: "انشاء دائره",
     confirmDeleteSpecialization: "هل انت متأكد من حذف هذه الدائره ؟",
-    confirmDeleteSelectedSpecialization:
-      "هل انت متأكد من حذف الدوائر المحددة ؟",
+    confirmDeleteSelectedSpecialization: "هل انت متأكد من حذف الدوائر المحددة ؟",
     editSpecialization: "تحديث بيانات الدائرة",
     status: "الحالة",
     priority: "الاولوية",
