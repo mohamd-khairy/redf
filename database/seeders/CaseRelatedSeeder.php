@@ -19,42 +19,6 @@ class CaseRelatedSeeder extends Seeder
      */
     public function run()
     {
-        Branch::firstOrCreate([
-            'name' => 'الرياض'
-        ]);
-
-        Branch::firstOrCreate([
-            'name' => 'جدة'
-        ]);
-        Branch::firstOrCreate([
-            'name' => 'المنطقة الشرقية'
-        ]);
-
-        $branches = Branch::pluck('name')->map(function ($item) {
-            return ['text' => $item];
-        });
-
-        $courts = json_encode([
-            [
-                'text' => 'الجزائية',
-            ],
-            [
-                'text' => 'الحقوقية',
-            ],
-            [
-                'text' => 'الأحوال الشخصية',
-            ],
-            [
-                'text' => 'التجارية',
-            ],
-            [
-                'text' => 'العمالية',
-            ],
-            [
-                'text' => 'الإدارية',
-            ],
-        ]);
-
         $form1 = Form::firstOrCreate([
             'id' => FormEnum::RESUME_CASE_FORM,
             'name' => 'طلب استئناف',

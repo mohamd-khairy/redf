@@ -32,26 +32,6 @@ class FormSeeder extends Seeder
             ],
         ]);
 
-        $courts = json_encode([
-            [
-                'text' => 'الجزائية',
-            ],
-            [
-                'text' => 'الحقوقية',
-            ],
-            [
-                'text' => 'الأحوال الشخصية',
-            ],
-            [
-                'text' => 'التجارية',
-            ],
-            [
-                'text' => 'العمالية',
-            ],
-            [
-                'text' => 'الإدارية',
-            ],
-        ]);
         //template
         $form1 = Form::firstOrCreate([
             'id' => FormEnum::CASE,
