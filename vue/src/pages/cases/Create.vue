@@ -3,7 +3,7 @@
     <v-stepper v-model="e1">
       <v-stepper-header>
         <v-stepper-step :complete="e1 > 1" step="1">
-          {{ $t("general.info") + " " + selectedTitle }}
+          {{ $t("cases.selectCase") }}
         </v-stepper-step>
         <!-- <v-divider></v-divider>
         <v-stepper-step :complete="e1 > 2" step="2">
@@ -13,7 +13,7 @@
         <v-divider></v-divider>
 
         <v-stepper-step :complete="e1 > 2" step="2">
-          {{ $t("cases.preview") }}
+          {{ $t("general.info") + " " + selectedTitle }}
         </v-stepper-step>
         <v-divider></v-divider>
 
@@ -66,12 +66,102 @@
         <v-stepper-content step="2">
           <div class="mt-2" v-if="!initialLoading">
             <v-card-text>
-              <appeal-form
-                v-if="caseClaimant && caseNumber"
-                :claimant="caseClaimant"
-                :caseNumber="caseNumber"
-                :show-errors="showErrors"
-              ></appeal-form>
+              <div class="mt-2" v-if="!initialLoading">
+                <v-tabs
+                  v-model="activeTab"
+                  v-if="pages && pages[0]?.items.length > 0"
+                >
+                  <v-tab v-for="(tab, index) in pages" :key="index">{{
+                    tab.title
+                  }}</v-tab>
+                </v-tabs>
+                <v-tabs-items v-model="activeTab">
+                  <v-tab-item v-for="(tab, tabIndex) in pages" :key="tabIndex">
+                    <v-form>
+                      <v-container>
+                        <v-row dense>
+                          <v-col
+                            v-for="(input, inputIndex) in tab.items"
+                            :key="inputIndex"
+                            :cols="inputWidth(input.width)"
+                          >
+                            <template v-if="input.type === 'text'">
+                              <v-text-field
+                                outlined
+                                v-model="input.value"
+                                :label="getInputLabel(input)"
+                                :rules="input.required ? [requiredRule] : []"
+                                :required="input.required"
+                                :error-messages="errorMessage(input)"
+                                dense
+                              ></v-text-field>
+                            </template>
+                            <template v-else-if="input.type === 'textarea'">
+                              <v-textarea
+                                outlined
+                                dense
+                                v-model="input.value"
+                                :label="getInputLabel(input)"
+                                :required="input.required"
+                                :rules="input.required ? [requiredRule] : []"
+                                :error-messages="errorMessage(input)"
+                              ></v-textarea>
+                            </template>
+                            <template v-else-if="input.type === 'file'">
+                              <v-file-input
+                                outlined
+                                dense
+                                counter
+                                show-size
+                                :label="getInputLabel(input)"
+                                @change="
+                                  (file) => handleFileUpload(file, input)
+                                "
+                                :required="input.required"
+                                :rules="input.required ? [requiredRule] : []"
+                                :error-messages="errorMessage(input)"
+                              >
+                              </v-file-input>
+                            </template>
+                            <template v-else-if="input.type === 'select'">
+                              <v-select
+                                v-model="input.value"
+                                :items="input.childList"
+                                item-text="text"
+                                :label="getInputLabel(input)"
+                                :required="input.required"
+                                :rules="input.required ? [requiredRule] : []"
+                                :error-messages="errorMessage(input)"
+                                outlined
+                                dense
+                              ></v-select>
+                            </template>
+                            <template v-else-if="input.type === 'radio'">
+                              <v-radio-group
+                                v-model="input.selectedOption"
+                                :label="getInputLabel(input)"
+                                :required="input.required"
+                                :rules="input.required ? [requiredRule] : []"
+                                :error-messages="errorMessage(input)"
+                              >
+                                <v-radio
+                                  v-for="(
+                                    option, optionIndex
+                                  ) in input.childList"
+                                  :key="optionIndex"
+                                  :label="option.text"
+                                  :value="option.text"
+                                ></v-radio>
+                              </v-radio-group>
+                            </template>
+                          </v-col>
+                        </v-row>
+                      </v-container>
+                    </v-form>
+                  </v-tab-item>
+                </v-tabs-items>
+              </div>
+
               <!-- <second-form></second-form> -->
             </v-card-text>
           </div>
@@ -85,11 +175,7 @@
           </v-card-actions>
         </v-stepper-content>
         <v-stepper-content step="3">
-          <AppealFormPreview
-            v-if="caseClaimant && caseNumber"
-            :claimant="caseClaimant"
-            :caseNumber="caseNumber"
-          ></AppealFormPreview>
+          <iframe :src="docUrl" width="100%" height="500"></iframe>
           <!-- <div class="d-flex flex-column flex-sm-row">
             <div class="flex-grow-1 pt-2 pa-sm-2">
               <v-row dense>
@@ -198,8 +284,17 @@
             </div>
           </div> -->
           <v-card-actions>
-            <v-btn @click="exportHTML" color="primary">
+            <!-- <v-btn  color="primary">
               {{ $t("general.downloadWord") }}
+            </v-btn> -->
+            <v-btn color="primary">
+              {{ $t("general.acceptRequest") }}
+            </v-btn>
+            <v-btn color="primary">
+              {{ $t("general.returnRequest") }}
+            </v-btn>
+            <v-btn color="primary">
+              {{ $t("general.refuseRequest") }}
             </v-btn>
 
             <v-btn color="grey" @click="stepBack" class="ms-2">
@@ -242,6 +337,7 @@ export default {
   data() {
     return {
       e1: 1,
+      docUrl: "",
       selectedTitle: "",
       caseClaimant: null,
       dateDialog: false,
@@ -320,7 +416,9 @@ export default {
   watch: {
     e1(val) {
       if (val === 3) {
-        this.getCourts();
+        this.getPagesValues(this.formRequestId).then((data) => {
+          this.docUrl = data.form_page_item_fill[1].value;
+        });
       }
     },
   },
@@ -395,6 +493,7 @@ export default {
       "getFormRequests",
       "savePages",
       "updateBackPages",
+      "getPagesValues",
     ]),
     openCaseInfoDialog(id) {
       this.caseInfoDialog = true;
@@ -744,6 +843,33 @@ export default {
       fileDownload.download = "document.doc";
       fileDownload.click();
       document.body.removeChild(fileDownload);
+    },
+    exportFile() {
+      this.$axios
+        .get(this.docUrl)
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+          }
+          return response.blob();
+        })
+        .then((blob) => {
+          // Create a temporary link element
+          const a = document.createElement("a");
+          a.href = window.URL.createObjectURL(blob);
+          a.download = "yourfile.ext"; // Specify the file name here
+          document.body.appendChild(a);
+          a.style.display = "none";
+
+          // Trigger the download
+          a.click();
+
+          // Clean up the temporary link element
+          document.body.removeChild(a);
+        })
+        .catch((error) => {
+          console.error("Error downloading file:", error);
+        });
     },
   },
 };
