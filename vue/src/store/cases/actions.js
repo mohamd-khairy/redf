@@ -522,10 +522,12 @@ const actions = {
     const { case_types } = response?.data.data;
     const { specialization } = response?.data.data;
     const { branches } = response?.data.data;
+    const { organizations } = response?.data.data;
     commit("SET_CORTS", court_types);
     commit("SET_BRANCHES", branches);
     commit("SET_CASE_TYPES", case_types);
     commit("SET_specializations", specialization);
+    commit("SET_organizations", organizations);
   },
   async retrieveClaimant({ commit }, { form_request_id }) {
     const response = await axios.get(`retrieve-claimant`, {

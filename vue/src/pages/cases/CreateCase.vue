@@ -90,13 +90,19 @@
                     </v-dialog>
                   </v-col>
                   <v-col cols="12">
-                    <v-text-field
-                      class="mb-2"
-                      v-model="classification"
+                    <v-select
+                      :items="organizations"
                       :label="$t('cases.classification')"
-                      outlined
+                      item-text="name"
+                      item-value="id"
                       dense
-                    ></v-text-field>
+                      outlined
+                      v-model="organization_id"
+                      required="true"
+                      :rules="[rules.required]"
+                      :error-messages="stepOneValidation(organization_id)"
+                    >
+                    </v-select>
                   </v-col>
                   <v-col cols="12">
                     <v-select
@@ -537,7 +543,7 @@ export default {
       caseModel: "",
       branch_id: "",
       specialization_id: "",
-      classification: "",
+      organization_id: "",
       caseModels:[
         {
           name:this.$t("cases.from_redf"),
@@ -648,7 +654,7 @@ export default {
     }
   },
   computed: {
-    ...mapState("cases", ["pages", "selectedForm", "courts", "caseTypes","specializations"]),
+    ...mapState("cases", ["pages", "selectedForm", "courts", "caseTypes","specializations","organizations"]),
     ...mapState("auth", ["user"]),
     ...mapState("app", ["navTemplates"]),
     ...mapState("departments", ["departments"]),
@@ -909,6 +915,7 @@ export default {
         this.caseDate &&
         this.branch_id &&
         this.specialization_id &&
+        this.organization_id &&
         this.caseModel
       ) {
         let result = null;
@@ -921,7 +928,7 @@ export default {
             type: 'case',
             case_type: this.caseModel,
             specialization_id: this.specialization_id,
-            category: this.classification,
+            organization_id: this.organization_id,
           });
         } else {
           result = await this.updatePages({
