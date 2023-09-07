@@ -522,6 +522,8 @@ export default {
     casePlace: "مكان الجلسة",
     department: "القسم",
     selectCase: "اختيار القضية",
+    add_court: "اضافة حكم",
+    another: "اخرى",
   },
 
   departments: {

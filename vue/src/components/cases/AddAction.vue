@@ -238,15 +238,26 @@
                 </v-expansion-panels>
               </v-col>
             </v-row>
-            <v-row dense>
-              <v-col cols="12">
-                <v-checkbox
-                  class="d-inline-flex"
-                  v-model="sessionDate"
+            <v-row dense class="mb-2">
+              <v-radio-group v-model="radioAction" row>
+                <v-radio
+                  class="radio-check"
+                  value="1"
                   :label="$t('cases.add_session')"
-                ></v-checkbox>
-              </v-col>
-              <v-col cols="12" md="6" v-if="sessionDate">
+                ></v-radio>
+                <v-radio
+                  class="radio-check"
+                  value="2"
+                  :label="$t('cases.add_court')"
+                ></v-radio>
+                <v-radio
+                  value="3"
+                  :label="$t('cases.another')"
+                ></v-radio>
+              </v-radio-group>
+            </v-row>
+            <v-row v-if="radioAction == 1">
+              <v-col cols="12" md="12">
                 <v-dialog
                   ref="sessionDialog"
                   v-model="sessionDialog"
@@ -281,7 +292,7 @@
                   </v-date-picker>
                 </v-dialog>
               </v-col>
-              <v-col cols="12" md="6" v-if="sessionDate">
+              <v-col cols="12" md="12">
                 <v-select
                   :items="branches || []"
                   :label="$t('cases.casePlace')"
@@ -291,7 +302,8 @@
                 >
                 </v-select>
               </v-col>
-
+            </v-row>
+            <v-row v-if="radioAction == 2">
               <v-col cols="6">
                 <v-select
                   clearable
@@ -389,19 +401,6 @@
                   </v-date-picker>
                 </v-dialog>
               </v-col>
-
-              <!-- <v-col cols="12">
-                <v-select
-                  :items="courts"
-                  :label="$t('tables.court')"
-                  dense
-                  outlined
-                  item-text="title"
-                  item-value="value"
-                  v-model="caseAction.court_name"
-                >
-                </v-select>
-              </v-col> -->
               <v-col cols="12" v-if="caseAction.status">
                 <v-textarea
                   :label="caseActionDetailsLabel"
@@ -411,7 +410,10 @@
                   outlined
                 ></v-textarea>
               </v-col>
-              <v-col cols="6">
+            </v-row>
+
+            <v-row v-if="radioAction == 3">
+              <v-col cols="12">
                 <v-text-field
                   type="number"
                   @keydown="handleInput"
@@ -425,7 +427,7 @@
                   </template>
                 </v-text-field>
               </v-col>
-              <v-col cols="6">
+              <v-col cols="12">
                 <v-text-field
                   type="number"
                   @keydown="handleInput"
@@ -486,6 +488,7 @@ export default {
       dateDialog: false,
       sessionDialog: false,
       sessionDate: false,
+      radioAction: '1',
       caseAction: {
         form_request_id: this.formRequestId,
         amount: "",
@@ -589,6 +592,9 @@ export default {
 };
 </script>
 <style>
+.radio-check {
+  margin-left: 15%;
+}
 .theme--light.v-input.custom-disabled-input {
   color: rgba(0, 0, 0, 0.87) !important;
   pointer-events: auto !important;

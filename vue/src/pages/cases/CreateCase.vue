@@ -630,27 +630,7 @@ export default {
   },
   watch: {
     'caseModel'(){
-      if(this.caseModel === 'from_redf') {
-        this.defendantUsers = this.users.filter((user) => user.type === 'user')
-        this.claimantUsers = this.users.filter(
-          (user) => user.roles.find(
-            (role) => role.name === 'system'
-          )
-        )
-      }
-      else if(this.caseModel === 'against_redf')
-      {
-        this.defendantUsers = this.users.filter(
-          (user) => user.roles.find(
-            (role) => role.name === 'system'
-          )
-        )
-        this.claimantUsers = this.users.filter((user) => user.type === 'user')
-      }
-      else{
-        this.defendantUsers = this.users.filter((user) => user.type === 'user')
-        this.claimantUsers = this.users.filter((user) => user.type === 'user')
-      }
+      this.filterUsers()
     }
   },
   computed: {
@@ -715,6 +695,30 @@ export default {
       "getCourts",
       "updatePages",
     ]),
+    filterUsers()
+    {
+      if(this.caseModel === 'from_redf') {
+        this.defendantUsers = this.users.filter((user) => user.type === 'user')
+        this.claimantUsers = this.users.filter(
+          (user) => user.roles.find(
+            (role) => role.name === 'system'
+          )
+        )
+      }
+      else if(this.caseModel === 'against_redf')
+      {
+        this.defendantUsers = this.users.filter(
+          (user) => user.roles.find(
+            (role) => role.name === 'system'
+          )
+        )
+        this.claimantUsers = this.users.filter((user) => user.type === 'user')
+      }
+      else{
+        this.defendantUsers = this.users.filter((user) => user.type === 'user')
+        this.claimantUsers = this.users.filter((user) => user.type === 'user')
+      }
+    },
     changeDefendantUsers() {
       if (this.sidesInfo.claimant_id) {
         const claimantUser = this.users.find(
@@ -813,8 +817,7 @@ export default {
         .then((response) => {
           this.isLoading = false;
           this.users = response.data.data.users;
-          // this.claimantUsers = response.data.data.users
-          // this.defendantUsers = response.data.data.users
+          this.filterUsers()
         })
         .catch(() => {
           this.isLoading = false;
