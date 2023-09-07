@@ -28,14 +28,14 @@ class FormRequest extends Model
         'form_type',
         'case_date',
         'case_type',
-        'category',
         'specialization_id',
+        'organization_id',
         'status_request'
     ];
 
-    protected $appends = ['sub_status'];
+    protected $appends = ['sub_status', 'category'];
 
-    protected $with = ['user', 'lastFormRequestInformation'];
+    protected $with = ['user', 'lastFormRequestInformation', 'formRequestSide', 'branche'];
 
     public function getActivitylogOptions(): LogOptions
     {
@@ -117,8 +117,18 @@ class FormRequest extends Model
         return $this->belongsTo(Branch::class, 'branche_id');
     }
 
+    public function organization()
+    {
+        return $this->belongsTo(Organization::class, 'organization_id');
+    }
+
     public function getSubStatusAttribute()
     {
         return $this->formRequestInformations->where('sessionDate', '>=', now())->count() > 0 ? 'بإنتظار الجلسه' : null;
+    }
+
+    public function getCategoryAttribute()
+    {
+        return $this->organization ? $this->organization->name : null;
     }
 }

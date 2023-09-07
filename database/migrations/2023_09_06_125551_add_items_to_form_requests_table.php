@@ -14,7 +14,6 @@ return new class extends Migration
     public function up()
     {
         Schema::table('form_requests', function (Blueprint $table) {
-            $table->string('category')->nullable();
             $table->string('case_type')->nullable();
             $table->unsignedBigInteger('specialization_id')->nullable();
             $table->foreign('specialization_id')->references('id')->on('specializations')->onDelete('cascade');

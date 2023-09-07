@@ -35,7 +35,7 @@ class FormRequestService
                 'form_id' => $requestData['id'],
                 'branche_id' => $requestData['branche_id'],
                 'specialization_id' => $requestData['specialization_id'],
-                'category' => $requestData['category'],
+                'organization_id' => $requestData['organization_id'],
                 'case_type' => $requestData['case_type'],
                 'user_id' => Auth::id(),
                 'status' => StatusEnum::PENDING,
@@ -133,7 +133,7 @@ class FormRequestService
             $updatedData = [
                 'branche_id' => $requestData['branche_id'],
                 'specialization_id' => $requestData['specialization_id'],
-                'category' => $requestData['category'],
+                'organization_id' => $requestData['organization_id'],
                 'case_type' => $requestData['case_type'],
                 'form_type' => $requestData['type'],
                 'case_date' => $requestData['case_date'],

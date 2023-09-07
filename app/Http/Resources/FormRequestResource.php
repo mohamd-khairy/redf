@@ -21,7 +21,7 @@ class FormRequestResource extends JsonResource
             'note' => $this->note,
             'form_id' => $this->form_id,
             'user_id' => $this->user_id,
-            'category' => $this->category,
+            'category' => $this->category ?? null,
             'case_type' => $this->case_type,
             'name' => $this->name,
             'form' => new FormResource($this->form),
@@ -37,7 +37,9 @@ class FormRequestResource extends JsonResource
             'form_type' => $this->form_type,
             'case_date' => $this->case_date,
             'specialization_id' => $this->specialization_id,
-            'specialization' => $this->specialization
+            'specialization' => $this->specialization,
+            'organization_id' => $this->organization_id,
+            'organization' => $this->organization,
         ];
     }
 }
