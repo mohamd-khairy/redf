@@ -958,6 +958,7 @@ export default {
         form_request_id: this.formRequestId,
         claimant_id: this.sidesInfo.claimant_id,
         defendant_id: this.sidesInfo.defendant_id,
+        department_id: this.sidesInfo.department_id,
       };
 
       // if (await this.validateFormData()) {
