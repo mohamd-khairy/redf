@@ -38,7 +38,7 @@ class UserController extends Controller
 
     public function index(PageRequest $request)
     {
-        $query = User::with(['roles', 'permissions'])->whereHas('roles', function ($q) {
+        $query = User::with(['roles', 'permissions', 'department'])->whereHas('roles', function ($q) {
             $q->where('name', '!=', 'root')->where('name', '!=', 'admin');
         })->where('id', '!=', auth()->id());
 

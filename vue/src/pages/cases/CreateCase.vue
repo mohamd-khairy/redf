@@ -63,7 +63,7 @@
                         <v-text-field
                           v-model="caseDate"
                           :label="$t('cases.caseDate')"
-                          prepend-icon="mdi-calendar"
+                          append-icon="mdi-calendar"
                           readonly
                           v-bind="attrs"
                           v-on="on"
@@ -76,7 +76,7 @@
                       </template>
                       <v-date-picker v-model="caseDate" scrollable>
                         <v-spacer></v-spacer>
-                        <v-btn text color="primary" @click="modal = false">
+                        <v-btn text color="primary" @click="caseDateDialog = false">
                           Cancel
                         </v-btn>
                         <v-btn
@@ -146,7 +146,7 @@
                 </v-row>
               </div>
             </div>
-            <v-tabs v-model="activeTab" v-if="pages && pages[0]?.items.length > 0">
+            <v-tabs v-model="activeTab" v-if="pages && pages[0]?.items?.length > 0">
               <v-tab v-for="(tab, index) in pages" :key="index">{{
                 tab.title
               }}</v-tab>
@@ -267,8 +267,19 @@
                     :error-messages="stepOneValidation(sidesInfo.claimant_id)"
                     clearable
                     @click:clear="clearClaimantSelect"
+                    @change="changeDefendantUsers"
                   >
                   </v-select>
+                </v-col>
+                <v-col cols="12" v-if="caseModel === 'entry'">
+                  <v-text-field
+                    type="number"
+                    v-model="sidesInfo.claimant_civil"
+                    :label="$t('cases.civil')"
+                    disabled
+                    dense
+                    outlined
+                  ></v-text-field>
                 </v-col>
                 <v-col cols="12">
                   <v-select
@@ -283,8 +294,19 @@
                     :error-messages="stepOneValidation(sidesInfo.defendant_id)"
                     clearable
                     @click:clear="clearDefendantSelect"
+                    @change="changeClaimantUsers"
                   >
                   </v-select>
+                </v-col>
+                <v-col cols="12" v-if="caseModel === 'entry'">
+                  <v-text-field
+                    type="number"
+                    v-model="sidesInfo.defendant_civil"
+                    :label="$t('cases.civil')"
+                    disabled
+                    dense
+                    outlined
+                  ></v-text-field>
                 </v-col>
                 <v-col cols="12">
                   <v-select
@@ -292,14 +314,14 @@
                     :label="$t('tables.department')"
                     :item-text="(item) => item.name"
                     :item-value="(item) => item.id"
-                    disabled
+                    :disabled="caseModel !== 'entry'"
                     dense
                     outlined
                     v-model="sidesInfo.department_id"
                   >
                   </v-select>
                 </v-col>
-                <v-col cols="12">
+                <v-col cols="12" v-if="caseModel !== 'entry'">
                   <v-text-field
                     type="number"
                     v-model="sidesInfo.civil"
@@ -552,6 +574,8 @@ export default {
         defendant_id: "",
         civil: "",
         department_id: "",
+        claimant_civil:"",
+        defendant_civil:""
       },
       caseAction: {
         amount: "",
@@ -582,6 +606,8 @@ export default {
         { key: "confirmed", value: 1 },
         { key: "pending", value: 2 },
       ],
+      defendantUsers: [],
+      claimantUsers: [],
     };
   },
 
@@ -597,11 +623,29 @@ export default {
     });
   },
   watch: {
-    // e1(val) {
-      // if (val === 1 || val === 3) {
-
-      // }
-    // },
+    'caseModel'(){
+      if(this.caseModel === 'from_redf') {
+        this.defendantUsers = this.users.filter((user) => user.type === 'user')
+        this.claimantUsers = this.users.filter(
+          (user) => user.roles.find(
+            (role) => role.name === 'system'
+          )
+        )
+      }
+      else if(this.caseModel === 'against_redf')
+      {
+        this.defendantUsers = this.users.filter(
+          (user) => user.roles.find(
+            (role) => role.name === 'system'
+          )
+        )
+        this.claimantUsers = this.users.filter((user) => user.type === 'user')
+      }
+      else{
+        this.defendantUsers = this.users.filter((user) => user.type === 'user')
+        this.claimantUsers = this.users.filter((user) => user.type === 'user')
+      }
+    }
   },
   computed: {
     ...mapState("cases", ["pages", "selectedForm", "courts", "caseTypes","specializations"]),
@@ -610,48 +654,45 @@ export default {
     ...mapState("departments", ["departments"]),
     ...mapState("branches", ["branches"]),
 
-    defendantUsers() {
-      // return this.sidesInfo.claimant_id
-      //   ? this.users.filter((obj) => {
-      //       return obj.id !== this.sidesInfo.claimant_id;
-      //     })
-      //   : this.users;
-      if (this.sidesInfo.claimant_id) {
-        const user = this.users.find(
-          (user) => user.id === this.sidesInfo.claimant_id
-        );
-        const civilNumber = user?.user_information?.civil_number || null;
-        if (civilNumber) {
-          this.sidesInfo.civil = civilNumber;
-
-          return this.users.filter((user) => !user.user_information);
-        }
-        this.sidesInfo.department_id = user.department_id;
-        return this.users.filter((user) => user.user_information);
-      }
-      return this.users;
-    },
-    claimantUsers() {
-      // return this.sidesInfo.defendant_id
-      //   ? this.users.filter((obj) => {
-      //       return obj.id !== this.sidesInfo.defendant_id;
-      //     })
-      //   : this.users;
-      if (this.sidesInfo.defendant_id) {
-        const user = this.users.find(
-          (user) => user.id === this.sidesInfo.defendant_id
-        );
-        const civilNumber = user?.user_information?.civil_number || null;
-        if (civilNumber) {
-          this.sidesInfo.civil = civilNumber;
-          this.claimantType = "civil";
-          return this.users.filter((user) => !user.user_information);
-        }
-        this.sidesInfo.department_id = user.department_id;
-        return this.users.filter((user) => user.user_information);
-      }
-      return this.users;
-    },
+    // defendantUsers() {
+    //   if (this.sidesInfo.claimant_id) {
+    //     const user = this.users.find(
+    //       (user) => user.id === this.sidesInfo.claimant_id
+    //     );
+    //     const civilNumber = user?.user_information?.civil_number || null;
+    //     if (civilNumber) {
+    //       this.sidesInfo.civil = civilNumber;
+    //
+    //       return this.users.filter((user) => !user.user_information);
+    //     }
+    //     this.sidesInfo.department_id = user.department_id;
+    //     return this.users.filter((user) => user.user_information);
+    //   }
+    //   return this.users;
+    // },
+    // claimantUsers() {
+    //   console.log(this.caseModel)
+    //
+    //   if(this.caseModel === 'from_redf')
+    //   {
+    //     return this.users.filter((user) => user.roles.includes('system'))
+    //   }
+    //   return false
+    //   if (this.sidesInfo.defendant_id) {
+    //     const user = this.users.find(
+    //       (user) => user.id === this.sidesInfo.defendant_id
+    //     );
+    //     const civilNumber = user?.user_information?.civil_number || null;
+    //     if (civilNumber) {
+    //       this.sidesInfo.civil = civilNumber;
+    //       this.claimantType = "civil";
+    //       return this.users.filter((user) => !user.user_information);
+    //     }
+    //     this.sidesInfo.department_id = user.department_id;
+    //     return this.users.filter((user) => user.user_information);
+    //   }
+    //   return this.users;
+    // },
   },
   methods: {
     ...mapActions("app", ["setBreadCrumb"]),
@@ -668,6 +709,40 @@ export default {
       "getCourts",
       "updatePages",
     ]),
+    changeDefendantUsers() {
+      if (this.sidesInfo.claimant_id) {
+        const claimantUser = this.users.find(
+          (user) => user.id === this.sidesInfo.claimant_id
+        );
+        if(this.caseModel === 'from_redf'){
+          this.sidesInfo.department_id = claimantUser?.department_id;
+        }
+        else if(this.caseModel === 'against_redf'){
+          this.sidesInfo.civil = claimantUser?.user_information?.civil_number || null;
+        }
+        else if(this.caseModel === 'entry') {
+          this.defendantUsers = this.users.filter((user) => user.id !== claimantUser.id && user.type === 'user');
+          this.sidesInfo.claimant_civil = claimantUser?.user_information?.civil_number || null;
+        }
+      }
+    },
+    changeClaimantUsers() {
+      if (this.sidesInfo.defendant_id) {
+        const defendantUser = this.users.find(
+          (user) => user.id === this.sidesInfo.defendant_id
+        );
+        if(this.caseModel === 'from_redf'){
+          this.sidesInfo.civil = defendantUser?.user_information?.civil_number || null;
+        }
+        else if(this.caseModel === 'against_redf'){
+          this.sidesInfo.department_id = defendantUser?.department_id;
+        }
+        else if(this.caseModel === 'entry') {
+          this.claimantUsers = this.users.filter((user) => user.id !== defendantUser.id && user.type === 'user');
+          this.sidesInfo.defendant_civil = defendantUser?.user_information?.civil_number || null;
+        }
+      }
+    },
     addDate(index) {
       this.caseAction.dates.push({ caseDate: "" });
     },
@@ -883,6 +958,7 @@ export default {
         form_request_id: this.formRequestId,
         claimant_id: this.sidesInfo.claimant_id,
         defendant_id: this.sidesInfo.defendant_id,
+        department_id: this.sidesInfo.department_id,
       };
 
       // if (await this.validateFormData()) {
