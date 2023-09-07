@@ -69,7 +69,7 @@
               <div class="mt-2" v-if="!initialLoading">
                 <v-tabs
                   v-model="activeTab"
-                  v-if="pages && pages[0]?.items.length > 0"
+                  v-if="pages && pages[0]?.items?.length > 0"
                 >
                   <v-tab v-for="(tab, index) in pages" :key="index">{{
                     tab.title

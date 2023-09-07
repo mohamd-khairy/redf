@@ -354,8 +354,27 @@
         <v-stepper-content step="3">
           <div class="d-flex flex-column flex-sm-row">
             <div class="flex-grow-1 pt-2 pa-sm-2">
-              <v-row dense>
-                <v-col cols="6">
+              <v-row dense class="mb-2">
+                <v-radio-group v-model="radioAction" row>
+                  <v-radio
+                    class="radio-check"
+                    value="1"
+                    :label="$t('cases.add_session')"
+                  ></v-radio>
+                  <v-radio
+                    class="radio-check"
+                    value="2"
+                    :label="$t('cases.add_court')"
+                  ></v-radio>
+                  <v-radio
+                    value="3"
+                    :label="$t('cases.another')"
+                  ></v-radio>
+                </v-radio-group>
+              </v-row>
+
+              <v-row dense v-if="radioAction == 3">
+                <v-col cols="12">
                   <v-text-field
                     type="number"
                     @keydown="handleInput"
@@ -369,7 +388,7 @@
                     </template>
                   </v-text-field>
                 </v-col>
-                <v-col cols="6">
+                <v-col cols="12">
                   <v-text-field
                     type="number"
                     @keydown="handleInput"
@@ -383,6 +402,9 @@
                     </template>
                   </v-text-field>
                 </v-col>
+              </v-row>
+
+              <v-row dense v-if="radioAction == 2">
                 <v-col cols="6">
                   <v-select
                     :items="caseTypes"
@@ -398,7 +420,7 @@
                   >
                   </v-select>
                 </v-col>
-                <v-col cols="12" sm="6">
+                <v-col cols="6">
                   <v-dialog
                     ref="dateDialog"
                     v-model="dateDialog"
@@ -436,7 +458,6 @@
                     </v-date-picker>
                   </v-dialog>
                 </v-col>
-
                 <v-col cols="6">
                   <v-select
                     :items="courts"
@@ -458,13 +479,16 @@
                     outlined
                   ></v-textarea>
                 </v-col>
-                <v-col cols="12">
-                  <v-checkbox
-                    v-model="sessionDate"
-                    :label="$t('cases.add_session')"
-                  ></v-checkbox>
-                </v-col>
-                <v-col cols="12" sm="12" v-if="sessionDate">
+
+              </v-row>
+              <v-row dense v-if="radioAction == 1">
+<!--                <v-col cols="12">-->
+<!--                  <v-checkbox-->
+<!--                    v-model="sessionDate"-->
+<!--                    :label="$t('cases.add_session')"-->
+<!--                  ></v-checkbox>-->
+<!--                </v-col>-->
+                <v-col cols="12" sm="12">
                   <v-dialog
                     ref="sessionDialog"
                     v-model="sessionDialog"
@@ -531,6 +555,7 @@ export default {
   components: { AddUserDialog },
   data() {
     return {
+      radioAction: "1",
       e1: 1,
       selectedTitle: "",
       caseDateDialog: false,
@@ -1017,4 +1042,8 @@ export default {
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+.radio-check {
+  margin-left: 15%;
+}
+</style>

@@ -256,7 +256,7 @@
                 ></v-radio>
               </v-radio-group>
             </v-row>
-            <v-row v-if="radioAction == 1">
+            <v-row dense v-if="radioAction == 1">
               <v-col cols="12" md="12">
                 <v-dialog
                   ref="sessionDialog"
@@ -303,7 +303,7 @@
                 </v-select>
               </v-col>
             </v-row>
-            <v-row v-if="radioAction == 2">
+            <v-row dense v-if="radioAction == 2">
               <v-col cols="6">
                 <v-select
                   clearable
@@ -412,7 +412,7 @@
               </v-col>
             </v-row>
 
-            <v-row v-if="radioAction == 3">
+            <v-row dense v-if="radioAction == 3">
               <v-col cols="12">
                 <v-text-field
                   type="number"
