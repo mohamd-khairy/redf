@@ -65,7 +65,7 @@ class FormRequestService
                         'form_request_id' => $formRequest->id,
                         'user_id' => Auth::id(),
                         'date' => date('Y-m-d'),
-                        'assigner_id' => User::whereHas('role', function ($q) {
+                        'assigner_id' => User::whereHas('roles', function ($q) {
                             $q->where('id', 2);
                         })->first()->id,
                         'status' => 'active',
