@@ -30,12 +30,13 @@ class FormRequest extends Model
         'case_type',
         'category',
         'specialization_id',
+        'organization_id',
         'status_request'
     ];
 
     protected $appends = ['sub_status'];
 
-    protected $with = ['user', 'lastFormRequestInformation'];
+    protected $with = ['user', 'lastFormRequestInformation', 'formRequestSide', 'branche'];
 
     public function getActivitylogOptions(): LogOptions
     {
@@ -115,6 +116,11 @@ class FormRequest extends Model
     public function branch()
     {
         return $this->belongsTo(Branch::class, 'branche_id');
+    }
+
+    public function organization()
+    {
+        return $this->belongsTo(Organization::class, 'organization_id');
     }
 
     public function getSubStatusAttribute()
