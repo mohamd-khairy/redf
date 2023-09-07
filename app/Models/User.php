@@ -22,7 +22,7 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public $inPermission = true;
 
-    protected $with = ['roles'];
+    protected $with = ['roles', 'userInformation'];
 
     /**
      * The attributes that are mass assignable.
@@ -30,7 +30,7 @@ class User extends Authenticatable implements MustVerifyEmail
      * @var array<int, string>
      */
     protected $fillable = [
-        'name', 'email', 'phone','password', 'avatar',  'organization_id', 'department_id', 'type', 'website',
+        'name', 'email', 'phone', 'password', 'avatar',  'organization_id', 'department_id', 'type', 'website',
         'last_login', 'guid', 'domain'
     ];
 
@@ -73,7 +73,7 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->hasMany(Calendar::class);
     }
-    
+
     public function userInformation()
     {
         return $this->hasOne(UserInformation::class);

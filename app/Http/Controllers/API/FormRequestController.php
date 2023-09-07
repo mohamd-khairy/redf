@@ -78,7 +78,8 @@ class FormRequestController extends Controller
                 'formRequestInformations',
                 'formRequestSide',
                 'lastFormRequestInformation',
-                'request'
+                'request',
+                'branche'
             )->find($id);
 
             return responseSuccess(new FormRequestResource($formfill), 'Form requests retrieved successfully');

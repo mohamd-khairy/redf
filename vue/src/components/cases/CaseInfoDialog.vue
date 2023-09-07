@@ -1,10 +1,5 @@
 <template>
-  <v-dialog
-    v-model="dialogVisible"
-    fullscreen
-    hide-overlay
-    transition="dialog-bottom-transition"
-  >
+  <v-dialog v-model="dialogVisible" fullscreen hide-overlay transition="dialog-bottom-transition">
     <v-card>
       <v-toolbar dark color="primary">
         <v-toolbar-title>{{ $t("general.casePreview") }}</v-toolbar-title>
@@ -21,12 +16,7 @@
             {{ $t("general.getting_data") }}
           </v-col>
           <v-col cols="12">
-            <v-progress-linear
-              color="primary accent-4"
-              indeterminate
-              rounded
-              height="6"
-            ></v-progress-linear>
+            <v-progress-linear color="primary accent-4" indeterminate rounded height="6"></v-progress-linear>
           </v-col>
         </v-row>
       </v-card-text>
@@ -36,7 +26,7 @@
         </div>
 
         <v-row dense class="mb-3">
-          <v-col cols="3" class="input-cont">
+          <v-col cols="2" class="input-cont">
             <div class="input-label">
               {{ $t("cases.caseName") }}
             </div>
@@ -44,12 +34,36 @@
               {{ caseName }}
             </div>
           </v-col>
-          <v-col cols="3" class="input-cont">
+          <v-col cols="2" class="input-cont">
             <div class="input-label">
               {{ $t("cases.caseNumber") }}
             </div>
             <div class="input-value">
               {{ caseNumber }}
+            </div>
+          </v-col>
+          <v-col cols="2" class="input-cont">
+            <div class="input-label">
+              {{ $t("cases.caseDate") }}
+            </div>
+            <div class="input-value">
+              {{ caseDate }}
+            </div>
+          </v-col>
+          <v-col cols="2" class="input-cont">
+            <div class="input-label">
+              {{ $t("cases.classification") }}
+            </div>
+            <div class="input-value">
+              {{ caseCategory }}
+            </div>
+          </v-col>
+          <v-col cols="2" class="input-cont">
+            <div class="input-label">
+              {{ $t("cases.court") }}
+            </div>
+            <div class="input-value">
+              {{ caseBranch?.name }}
             </div>
           </v-col>
         </v-row>
@@ -61,14 +75,8 @@
             </h5>
           </div>
           <v-row class="mb-3" dense>
-            <v-col
-              v-for="(input, inputIndex) in tab.items"
-              :key="inputIndex"
-              :cols="setCols(input.type)"
-              :order="setOrder(input.type, tab.items)"
-              class="input-cont mb-2"
-              :class="inputType(input?.type || '')"
-            >
+            <v-col v-for="(input, inputIndex) in tab.items" :key="inputIndex" :cols="setCols(input.type)"
+              :order="setOrder(input.type, tab.items)" class="input-cont mb-2" :class="inputType(input?.type || '')">
               <template v-if="input.type !== 'file'">
                 <div class="input-label">
                   {{ getInputLabel(input) }}
@@ -81,54 +89,28 @@
                 <div class="input-label">
                   {{ getInputLabel(input) }}
                 </div>
-                <div
-                  class="d-flex justify-content-between align-items-start"
-                  v-if="input.preview && input.preview === input.value"
-                >
+                <div class="d-flex justify-content-between align-items-start"
+                  v-if="input.preview && input.preview === input.value">
                   <h6 class="input-value mb-0">
                     {{ fileInfo(input.preview).name }}
                   </h6>
-                  <a
-                    :href="input.preview"
-                    target="_blank"
-                    v-if="
-                      fileInfo(input.preview).type === 'png' ||
-                      fileInfo(input.preview).type === 'jpg' ||
-                      fileInfo(input.preview).type === 'jpeg'
-                    "
-                  >
-                    <img
-                      width="80"
-                      height="80"
-                      :src="input.preview"
-                      alt="file preview"
-                    />
+                  <a :href="input.preview" target="_blank" v-if="fileInfo(input.preview).type === 'png' ||
+                    fileInfo(input.preview).type === 'jpg' ||
+                    fileInfo(input.preview).type === 'jpeg'
+                    ">
+                    <img width="80" height="80" :src="input.preview" alt="file preview" />
                   </a>
-                  <a
-                    v-else-if="fileInfo(input.preview).type === 'pdf'"
-                    :href="input.preview"
-                    target="_blank"
-                  >
+                  <a v-else-if="fileInfo(input.preview).type === 'pdf'" :href="input.preview" target="_blank">
                     <v-icon> mdi-file-pdf-box </v-icon>
                   </a>
-                  <a
-                    v-else-if="
-                      fileInfo(input.preview).type === 'doc' ||
-                      fileInfo(input.preview).type === 'docx'
-                    "
-                    :href="input.preview"
-                    target="_blank"
-                  >
+                  <a v-else-if="fileInfo(input.preview).type === 'doc' ||
+                    fileInfo(input.preview).type === 'docx'
+                    " :href="input.preview" target="_blank">
                     <v-icon> mdi-file-word-outline </v-icon>
                   </a>
-                  <a
-                    v-else-if="
-                      fileInfo(input.preview).type === 'xls' ||
-                      fileInfo(input.preview).type === 'xlsx'
-                    "
-                    :href="input.preview"
-                    target="_blank"
-                  >
+                  <a v-else-if="fileInfo(input.preview).type === 'xls' ||
+                    fileInfo(input.preview).type === 'xlsx'
+                    " :href="input.preview" target="_blank">
                     <v-icon> mdi-file-excel </v-icon>
                   </a>
                 </div>
@@ -206,8 +188,8 @@
                 <div class="input-value">
                   {{
                     action.status
-                      ? $t(`general.${action.status.toLowerCase()}`)
-                      : "---"
+                    ? $t(`general.${action.status.toLowerCase()}`)
+                    : "---"
                   }}
                 </div>
               </v-col>
@@ -218,16 +200,12 @@
                 <div class="input-value">
                   {{
                     action.court
-                      ? $t(`general.${action.court.toLowerCase()}`)
-                      : "---"
+                    ? $t(`general.${action.court.toLowerCase()}`)
+                    : "---"
                   }}
                 </div>
               </v-col>
-              <v-col
-                cols="3"
-                class="input-cont mb-2"
-                v-if="action?.sessionDate"
-              >
+              <v-col cols="3" class="input-cont mb-2" v-if="action?.sessionDate">
                 <div class="input-label">
                   {{ $t(`cases.sessionDate`) }}
                 </div>
@@ -295,9 +273,12 @@ export default {
       panelExpanded: true,
       caseNumber: null,
       caseName: null,
+      caseBranch: null,
       formRequestInformation: [],
       formRequestSide: {},
       pageTabs: [],
+      caseDate: null,
+      caseCategory: null,
     };
   },
   watch: {
@@ -370,8 +351,9 @@ export default {
     async getCaseTimeline(id) {
       try {
         this.loading = true;
+
         const response = await this.$axios.get(`get-form-Requests/${id}`);
-        console.log(response?.data?.data);
+        
         const {
           form,
           form_request_number,
@@ -379,10 +361,16 @@ export default {
           form_request_informations,
           form_page_item_fill,
           form_request_side,
+          case_date,
+          category,
+          branche
         } = response?.data?.data;
         this.caseNumber = form_request_number;
         this.caseName = name;
-        console.log(response?.data?.data);
+        this.caseDate = case_date;
+        this.caseCategory = category;
+        this.caseBranch = branche;
+
         const propertiesToRemove = [
           "updated_at",
           "created_at",
@@ -432,12 +420,15 @@ export default {
   color: rgba(0, 0, 0, 0.87) !important;
   pointer-events: auto !important;
 }
+
 .c-h6 {
   font-weight: 600;
 }
+
 .theme--light.v-input--is-disabled.custom-disabled-input input {
   color: rgba(0, 0, 0, 0.87) !important;
 }
+
 .dialog-loading-cont {
   height: calc(100vh - 65px);
   text-align: center;
@@ -446,15 +437,18 @@ export default {
   align-items: center;
   flex-direction: column;
 }
+
 .textarea-bg {
   background-color: #f7f7f7;
   border-radius: 4px;
 }
+
 .form-title {
   border-bottom: 4px solid #0b4d4f;
   margin-bottom: 12px;
   display: inline-block;
 }
+
 .form-title-bg {
   display: inline-block;
   border-radius: 6px;
@@ -468,6 +462,7 @@ export default {
   display: flex;
   gap: 30px;
 }
+
 .input-cont {
   display: flex;
   flex-direction: column;
@@ -476,6 +471,7 @@ export default {
     font-size: 14px;
     margin-bottom: 6px;
   }
+
   .input-value {
     font-size: 16px;
     font-weight: bold;
