@@ -223,7 +223,7 @@ const actions = {
       type,
       case_type,
       specialization_id,
-      category,
+      organization_id,
     }
   ) {
     try {
@@ -275,8 +275,8 @@ const actions = {
       if (specialization_id) {
         bodyFormData.set("specialization_id", specialization_id);
       }
-      if (category) {
-        bodyFormData.set("category", category);
+      if (organization_id) {
+        bodyFormData.set("organization_id", organization_id);
       }
       const result = await axios.post(`store-form-fill`, bodyFormData, {
         headers: {
@@ -300,7 +300,7 @@ const actions = {
       type,
       case_type,
       specialization_id,
-      category,
+      organization_id,
     }
   ) {
     try {
@@ -351,8 +351,8 @@ const actions = {
       if (specialization_id) {
         bodyFormData.set("specialization_id", specialization_id);
       }
-      if (category) {
-        bodyFormData.set("category", category);
+      if (organization_id) {
+        bodyFormData.set("organization_id", organization_id);
       }
       const response = await axios.post(
         `update-form-fill/${formId}`,

@@ -28,13 +28,12 @@ class FormRequest extends Model
         'form_type',
         'case_date',
         'case_type',
-        'category',
         'specialization_id',
         'organization_id',
         'status_request'
     ];
 
-    protected $appends = ['sub_status'];
+    protected $appends = ['sub_status', 'category'];
 
     protected $with = ['user', 'lastFormRequestInformation', 'formRequestSide', 'branche'];
 
@@ -126,5 +125,10 @@ class FormRequest extends Model
     public function getSubStatusAttribute()
     {
         return $this->formRequestInformations->where('sessionDate', '>=', now())->count() > 0 ? 'بإنتظار الجلسه' : null;
+    }
+
+    public function getCategoryAttribute()
+    {
+        return $this->organization ? $this->organization->name : null;
     }
 }
