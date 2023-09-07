@@ -73,7 +73,7 @@
               </v-dialog>
             </v-col>
 
-            <v-col cols="6">
+            <v-col cols="12">
               <v-file-input
                 outlined
                 dense
@@ -87,10 +87,9 @@
               >
               </v-file-input>
             </v-col>
-            <v-col cols="6">
+            <v-col cols="4">
               <div class="d-flex align-items-center">
                 <label class="ms-2" for="">{{ $t("general.belongsTo") }}</label>
-                <v-spacer></v-spacer>
                 <v-checkbox
                   class="me-3 mt-0"
                   v-model="belongsTo"
@@ -105,7 +104,7 @@
                 ></v-checkbox>
               </div>
             </v-col>
-            <v-col cols="6" v-if="belongsTo">
+            <v-col cols="8" v-if="belongsTo">
               <v-autocomplete
                 v-if="belongsTo === 'case'"
                 v-model="form.form_request_id"

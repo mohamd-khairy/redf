@@ -47,7 +47,7 @@ class HomeController extends Controller
 
         array_push($items, [
             'id' => count($items) + 1,
-            'name' => 'المستندات',
+            'name' => 'الوثائق',
             'icon' => 'mdi-scale-balance',
             'requests_count' => Document::count()
         ]);
@@ -61,9 +61,23 @@ class HomeController extends Controller
 
         array_push($items, [
             'id' => count($items) + 1,
-            'name' => 'المنظمات',
+            'name' => 'التصنيفات',
             'icon' => 'mdi-scale-balance',
             'requests_count' => Organization::count()
+        ]);
+
+        array_push($items, [
+            'id' => count($items) + 1,
+            'name' => 'المحاكم',
+            'icon' => 'mdi-scale-balance',
+            'requests_count' => Branch::count()
+        ]);
+
+        array_push($items, [
+            'id' => count($items) + 1,
+            'name' => 'الدوائر',
+            'icon' => 'mdi-scale-balance',
+            'requests_count' => Specialization::count()
         ]);
 
         return responseSuccess($items);
