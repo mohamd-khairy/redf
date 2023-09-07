@@ -286,8 +286,11 @@ class FormRequestService
             'form_request_id' => 'required|exists:form_requests,id',
             'claimant_id' => ['required', 'exists:users,id'],
             'defendant_id' => ['required', 'exists:users,id'],
+            'department_id' => ['nullable', 'exists:departments,id'],
         ]);
+
         $formRequestSide = FormRequestSide::create($validatedData);
+
         return responseSuccess($formRequestSide, 'Form Request Side has been successfully Created');
     }
 
