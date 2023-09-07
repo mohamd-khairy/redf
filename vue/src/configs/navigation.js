@@ -70,30 +70,7 @@ export default {
       link: "/cases/3",
       items: [],
     },
-    {
-      icon: "mdi-list-box",
-      text: "departments",
-      key: "menu.departments",
-      link: "/departments",
-      permission: "read-role",
-      items: [],
-    },
-    {
-      icon: "mdi-animation",
-      text: "branches",
-      key: "menu.branches",
-      link: "/branches",
-      permission: "read-role",
-      items: [],
-    },
-    {
-      icon: "mdi-animation",
-      text: "specializations",
-      key: "menu.specializations",
-      link: "/specializations",
-      permission: "read-role",
-      items: [],
-    },
+
     // {
     //   icon: "mdi-gavel",
     //   text: "cases",
@@ -135,37 +112,13 @@ export default {
       items: [],
     },
     {
-      icon: "mdi-chart-donut",
-      text: "activities",
-      key: "menu.activities",
-      link: "/activities",
+      icon: "mdi-file-document-edit-outline",
+      text: "Organizations",
+      key: "menu.organizations",
+      link: "/organizations",
       permission: "read-role",
-      items: [],
+      items: []
     },
-    // {
-    //   icon: "mdi-history",
-    //   text: "log",
-    //   key: "menu.log",
-    //   link: "/log",
-    //   permission: "read-role",
-    //   items: []
-    // },
-    // {
-    //   icon: "mdi-file-document-edit-outline",
-    //   text: "review_and_audit",
-    //   key: "menu.review_and_audit",
-    //   link: "/review_and_audit",
-    //   permission: "read-role",
-    //   items: []
-    // },
-    // {
-    //   icon: "mdi-file-document-edit-outline",
-    //   text: "Organizations",
-    //   key: "menu.organizations",
-    //   link: "/organizations",
-    //   permission: "read-role",
-    //   items: []
-    // },
     {
       icon: "mdi-form-textbox",
       text: "templates",
@@ -268,6 +221,32 @@ export default {
       key: "menu.settings",
       text: "Settings",
       items: [
+
+        // { key: 'menu.sms', link: '/settings/sms' },
+        {
+          icon: "mdi-list-box",
+          text: "departments",
+          key: "menu.departments",
+          link: "/departments",
+          permission: "read-role",
+          items: [],
+        },
+        {
+          icon: "mdi-animation",
+          text: "branches",
+          key: "menu.branches",
+          link: "/branches",
+          permission: "read-role",
+          items: [],
+        },
+        {
+          icon: "mdi-animation",
+          text: "specializations",
+          key: "menu.specializations",
+          link: "/specializations",
+          permission: "read-role",
+          items: [],
+        },
         {
           key: "menu.general",
           text: "General",
@@ -287,29 +266,18 @@ export default {
           permission: "read-setting",
         },
         {
+          icon: "mdi-chart-donut",
+          text: "activities",
+          key: "menu.activities",
+          link: "/activities",
+          permission: "read-role",
+          items: [],
+        },
+        {
           key: "menu.logs",
           text: "Logs",
           link: "/settings/logs",
           permission: "read-setting",
-        },
-        // { key: 'menu.sms', link: '/settings/sms' },
-        {
-          key: "menu.stations",
-          text: "Station",
-          link: "/settings/stations",
-          permission: "read-location",
-        },
-        {
-          key: "menu.detection_types",
-          text: "Detection Type",
-          link: "/settings/detection-types",
-          permission: "read-type",
-        },
-        {
-          key: "menu.drones",
-          text: "drones",
-          link: "/settings/drones",
-          permission: "read-drone",
         },
       ],
     },

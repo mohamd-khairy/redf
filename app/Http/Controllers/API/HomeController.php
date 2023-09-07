@@ -59,12 +59,12 @@ class HomeController extends Controller
             'requests_count' => Department::count()
         ]);
 
-        // array_push($items, [
-        //     'id' => count($items) + 1,
-        //     'name' => 'المنظمات',
-        //     'icon' => 'mdi-scale-balance',
-        //     'requests_count' => Organization::count()
-        // ]);
+        array_push($items, [
+            'id' => count($items) + 1,
+            'name' => 'المنظمات',
+            'icon' => 'mdi-scale-balance',
+            'requests_count' => Organization::count()
+        ]);
 
         return responseSuccess($items);
     }
