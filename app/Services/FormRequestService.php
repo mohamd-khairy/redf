@@ -35,7 +35,7 @@ class FormRequestService
                 'form_id' => $requestData['id'],
                 'branche_id' => $requestData['branche_id'],
                 'specialization_id' => $requestData['specialization_id'],
-                'organization_id' => $requestData['organization_id'],
+                'organization_id' => $requestData['organization_id'] ?? null,
                 'case_type' => $requestData['case_type'],
                 'user_id' => Auth::id(),
                 'status' => StatusEnum::PENDING,
