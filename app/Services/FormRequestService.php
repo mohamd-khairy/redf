@@ -61,12 +61,12 @@ class FormRequestService
                         $formRequest->request->formable->update(['status' => $relatedCase->value]);
                     }
 
-                    $assignNew = FormAssignRequest::create([
+                    FormAssignRequest::create([
                         'form_request_id' => $formRequest->id,
                         'user_id' => Auth::id(),
                         'date' => date('Y-m-d'),
                         'assigner_id' => User::whereHas('roles', function ($q) {
-                            $q->where('id', 2);
+                            $q->where('id', 2); //مستشار الاداره
                         })->first()->id,
                         'status' => 'active',
                         'type' => FormAssignRequestType::EMPLOYEE,
@@ -300,7 +300,7 @@ class FormRequestService
             DB::beginTransaction();
 
             $validatedData = $request->all();
-
+            
             $formRequestInfo = FormRequestInformation::create($validatedData);
 
             if ($request->status) {

@@ -13,7 +13,7 @@ class FormRequestInformation extends Model
 
     protected $fillable = [
         'form_request_id', 'user_id', 'date_of_receipt', 'session_place', 'amount',
-        'sessionDate', 'percentage', 'status', 'details', 'court', 'date'
+        'sessionDate', 'percentage', 'status', 'details', 'court', 'date', 'type'
     ];
 
     protected $casts = [
