@@ -1080,14 +1080,14 @@ export default {
           if (this.formData.form_request_side) {
             this.sidesInfo.claimant_id = this.formData?.form_request_side?.claimant_id;
             this.sidesInfo.defendant_id = this.formData?.form_request_side?.defendant_id;
-            // this.sidesInfo.department_id = this.formData?.form_request_side?.department_id;
+            this.sidesInfo.department_id = this.formData?.form_request_side?.department_id;
             // this.sidesInfo.civil = this.formData?.form_request_side?.civil;
 
             if(this.caseModel==='from_redf'){
-              this.sidesInfo.department_id = this.formData?.form_request_side?.claimant?.department_id
+              // this.sidesInfo.department_id = this.formData?.form_request_side?.claimant?.department_id
               this.sidesInfo.civil = this.formData?.form_request_side?.defendant?.user_information?.civil_number;
             }else if(this.caseModel==='against_redf'){
-              this.sidesInfo.department_id = this.formData?.form_request_side?.defendant?.department_id
+              // this.sidesInfo.department_id = this.formData?.form_request_side?.defendant?.department_id
               this.sidesInfo.civil = this.formData?.form_request_side?.claimant?.user_information?.civil_number;
             }else if(this.caseModel==='entry'){
               this.sidesInfo.claimant_civil = this.formData?.form_request_side?.claimant?.user_information?.civil_number;
@@ -1249,6 +1249,7 @@ export default {
         form_request_id: this.formRequestId,
         claimant_id: this.sidesInfo.claimant_id,
         defendant_id: this.sidesInfo.defendant_id,
+        department_id: this.sidesInfo.department_id,
       };
 
       // if (await this.validateFormData()) {
