@@ -289,7 +289,7 @@ class FormRequestService
             'department_id' => ['nullable', 'exists:departments,id'],
         ]);
 
-        $formRequestSide = FormRequestSide::create($validatedData);
+        $formRequestSide = FormRequestSide::updateOrCreate($validatedData);
 
         return responseSuccess($formRequestSide, 'Form Request Side has been successfully Created');
     }
