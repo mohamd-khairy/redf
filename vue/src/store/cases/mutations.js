@@ -57,8 +57,8 @@ const mutations = {
   SET_CLAIMANT(state, value) {
     state.claimant = value;
   },
-  SET_BRANCHES(state, value) {
-    state.branches = value;
+  SET_SESSION_PLACES(state, value) {
+    state.sessionPlaces = value;
   },
 };
 

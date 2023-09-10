@@ -373,6 +373,163 @@
                 </v-radio-group>
               </v-row>
 
+              <v-row dense v-if="radioAction === 'session'">
+                <v-col cols="12" sm="12">
+                  <v-dialog
+                    ref="sessionDialog"
+                    v-model="sessionDialog"
+                    :return-value.sync="caseAction.sessionDate"
+                    persistent
+                    width="290px"
+                  >
+                    <template v-slot:activator="{ on, attrs }">
+                      <v-text-field
+                        v-model="caseAction.sessionDate"
+                        :label="$t('cases.sessionDate')"
+                        append-icon="mdi-calendar"
+                        readonly
+                        v-bind="attrs"
+                        v-on="on"
+                        dense
+                        outlined
+                      ></v-text-field>
+                    </template>
+                    <v-date-picker v-model="caseAction.sessionDate" scrollable>
+                      <v-spacer></v-spacer>
+                      <v-btn text color="primary" @click="sessionDialog = false">
+                        Cancel
+                      </v-btn>
+                      <v-btn
+                        text
+                        color="primary"
+                        @click="
+                          $refs.sessionDialog.save(caseAction.sessionDate)
+                        "
+                      >
+                        OK
+                      </v-btn>
+                    </v-date-picker>
+                  </v-dialog>
+                </v-col>
+                <v-col cols="12" md="12">
+                  <v-select
+                    :items="sessionPlaces || []"
+                    :label="$t('cases.casePlace')"
+                    dense
+                    outlined
+                    v-model="caseAction.sessionPlace"
+                  >
+                  </v-select>
+                </v-col>
+              </v-row>
+              <v-row dense v-if="radioAction === 'court'">
+                <v-col cols="6">
+                  <v-select
+                    clearable
+                    :items="caseTypes"
+                    @click:clear="caseAction.status = null"
+                    :label="$t('tables.status')"
+                    item-text="title"
+                    item-value="value"
+                    hide-details
+                    dense
+                    outlined
+                    v-model="caseAction.status"
+                  >
+                  </v-select>
+                </v-col>
+                <v-col cols="12" md="6">
+                  <v-select
+                    :items="claimant"
+                    :label="$t('cases.judgment_for')"
+                    dense
+                    outlined
+                    item-text="name"
+                    item-value="id"
+                    v-model="caseAction.judgment_for"
+                  >
+                  </v-select>
+                </v-col>
+                <v-col cols="6">
+                  <v-dialog
+                    ref="dateDialog"
+                    v-model="dateDialog"
+                    :return-value.sync="caseAction.date"
+                    persistent
+                    width="290px"
+                  >
+                    <template v-slot:activator="{ on, attrs }">
+                      <v-text-field
+                        v-model="caseAction.date"
+                        :label="$t('cases.judgmentDate')"
+                        append-icon="mdi-calendar"
+                        readonly
+                        v-bind="attrs"
+                        v-on="on"
+                        dense
+                        outlined
+                      ></v-text-field>
+                    </template>
+                    <v-date-picker v-model="caseAction.date" scrollable>
+                      <v-spacer></v-spacer>
+                      <v-btn text color="primary" @click="dateDialog = false">
+                        Cancel
+                      </v-btn>
+                      <v-btn
+                        text
+                        color="primary"
+                        @click="$refs.dateDialog.save(caseAction.date)"
+                      >
+                        OK
+                      </v-btn>
+                    </v-date-picker>
+                  </v-dialog>
+                </v-col>
+                <v-col cols="6">
+                  <v-dialog
+                    ref="receiptDialog"
+                    v-model="receiptDialog"
+                    :return-value.sync="caseAction.receiptDate"
+                    persistent
+                    width="290px"
+                  >
+                    <template v-slot:activator="{ on, attrs }">
+                      <v-text-field
+                        v-model="caseAction.receiptDate"
+                        :label="$t('cases.receiptDate')"
+                        append-icon="mdi-calendar"
+                        readonly
+                        v-bind="attrs"
+                        v-on="on"
+                        dense
+                        outlined
+                      ></v-text-field>
+                    </template>
+                    <v-date-picker v-model="caseAction.receiptDate" scrollable>
+                      <v-spacer></v-spacer>
+                      <v-btn text color="primary" @click="receiptDialog = false">
+                        Cancel
+                      </v-btn>
+                      <v-btn
+                        text
+                        color="primary"
+                        @click="$refs.receiptDialog.save(caseAction.receiptDate)"
+                      >
+                        OK
+                      </v-btn>
+                    </v-date-picker>
+                  </v-dialog>
+                </v-col>
+                <v-col cols="12" v-if="caseAction.status">
+                  <v-textarea
+                    :label="caseActionDetailsLabel"
+                    value=""
+                    v-model="caseAction.details"
+                    dense
+                    outlined
+                  ></v-textarea>
+                </v-col>
+              </v-row>
               <v-row dense v-if="radioAction === 'other'">
                 <v-col cols="12">
                   <v-text-field
@@ -380,8 +537,8 @@
                     @keydown="handleInput"
                     v-model="caseAction.amount"
                     :label="$t('cases.amount')"
-                    outlined
                     dense
+                    outlined
                   >
                     <template v-slot:append>
                       <v-icon> mdi-cash </v-icon>
@@ -404,128 +561,6 @@
                 </v-col>
               </v-row>
 
-              <v-row dense v-if="radioAction === 'court'">
-                <v-col cols="6">
-                  <v-select
-                    :items="caseTypes"
-                    item-text="title"
-                    item-value="value"
-                    :label="$t('tables.status')"
-                    dense
-                    outlined
-                    required="true"
-                    :rules="[rules.required]"
-                    :error-messages="stepOneValidation(caseAction.status)"
-                    v-model="caseAction.status"
-                  >
-                  </v-select>
-                </v-col>
-                <v-col cols="6">
-                  <v-dialog
-                    ref="dateDialog"
-                    v-model="dateDialog"
-                    :return-value.sync="caseAction.date"
-                    persistent
-                    width="290px"
-                  >
-                    <template v-slot:activator="{ on, attrs }">
-                      <v-text-field
-                        v-model="caseAction.date"
-                        :label="$t('tables.date')"
-                        prepend-icon="mdi-calendar"
-                        readonly
-                        v-bind="attrs"
-                        v-on="on"
-                        dense
-                        required="true"
-                        :rules="[rules.required]"
-                        :error-messages="stepOneValidation(caseAction.date)"
-                        outlined
-                      ></v-text-field>
-                    </template>
-                    <v-date-picker v-model="caseAction.date" scrollable>
-                      <v-spacer></v-spacer>
-                      <v-btn text color="primary" @click="modal = false">
-                        Cancel
-                      </v-btn>
-                      <v-btn
-                        text
-                        color="primary"
-                        @click="$refs.dateDialog.save(caseAction.date)"
-                      >
-                        OK
-                      </v-btn>
-                    </v-date-picker>
-                  </v-dialog>
-                </v-col>
-                <v-col cols="6">
-                  <v-select
-                    :items="courts"
-                    :label="$t('tables.court')"
-                    item-text="title"
-                    item-value="value"
-                    dense
-                    outlined
-                    v-model="caseAction.court"
-                  >
-                  </v-select>
-                </v-col>
-                <v-col cols="12">
-                  <v-textarea
-                    :label="$t('cases.action')"
-                    value=""
-                    v-model="caseAction.details"
-                    dense
-                    outlined
-                  ></v-textarea>
-                </v-col>
-
-              </v-row>
-              <v-row dense v-if="radioAction === 'session'">
-<!--                <v-col cols="12">-->
-<!--                  <v-checkbox-->
-<!--                    v-model="sessionDate"-->
-<!--                    :label="$t('cases.add_session')"-->
-<!--                  ></v-checkbox>-->
-<!--                </v-col>-->
-                <v-col cols="12" sm="12">
-                  <v-dialog
-                    ref="sessionDialog"
-                    v-model="sessionDialog"
-                    :return-value.sync="caseAction.sessionDate"
-                    persistent
-                    width="290px"
-                  >
-                    <template v-slot:activator="{ on, attrs }">
-                      <v-text-field
-                        v-model="caseAction.sessionDate"
-                        :label="$t('cases.sessionDate')"
-                        prepend-icon="mdi-calendar"
-                        readonly
-                        v-bind="attrs"
-                        v-on="on"
-                        dense
-                        outlined
-                      ></v-text-field>
-                    </template>
-                    <v-date-picker v-model="caseAction.sessionDate" scrollable>
-                      <v-spacer></v-spacer>
-                      <v-btn text color="primary" @click="modal = false">
-                        Cancel
-                      </v-btn>
-                      <v-btn
-                        text
-                        color="primary"
-                        @click="
-                          $refs.sessionDialog.save(caseAction.sessionDate)
-                        "
-                      >
-                        OK
-                      </v-btn>
-                    </v-date-picker>
-                  </v-dialog>
-                </v-col>
-              </v-row>
             </div>
           </div>
           <v-card-actions>
@@ -558,7 +593,9 @@ export default {
       radioAction: "session",
       e1: 1,
       selectedTitle: "",
+      caseActionDetailsLabel: "",
       caseDateDialog: false,
+      receiptDialog: false,
       dateDialog: false,
       sessionDialog: false,
       sessionDate: false,
@@ -616,9 +653,14 @@ export default {
         status: "",
         court: "",
         sessionDate: null,
-        date: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
-          .toISOString()
-          .substr(0, 10),
+        judgment_date: null,
+        judgment_for: null,
+        receiptDate: null,
+        date: null,
+        sessionPlace:'',
+        // date: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
+        //   .toISOString()
+        //   .substr(0, 10),
         dates: [
           {
             caseDate: "",
@@ -631,12 +673,6 @@ export default {
           (value && Boolean(value)) || this.$t("general.fieldRequired"),
       },
       errors: {},
-
-      status: [
-        { key: "error", value: 0 },
-        { key: "confirmed", value: 1 },
-        { key: "pending", value: 2 },
-      ],
       defendantUsers: [],
       claimantUsers: [],
     };
@@ -646,64 +682,34 @@ export default {
     this.init();
     this.fetchUsers();
     this.fetchDepartments();
-    this.getBranches({});
     this.getCourts();
+    this.getBranches({});
 
     this.$root.$on("userCreated", () => {
       this.fetchUsers();
     });
   },
   watch: {
+    "caseAction.status"(newVal) {
+      const selecetdStatus = this.caseTypes.find(
+        (type) => type.value === newVal
+      );
+      this.caseActionDetailsLabel = selecetdStatus.title;
+    },
     'caseModel'(){
       this.filterUsers()
+    },
+    'formRequestId'(){
+      this.retrieveClaimant({ form_request_id: this.formRequestId });
     }
+
   },
   computed: {
-    ...mapState("cases", ["pages", "selectedForm", "courts", "caseTypes","specializations","organizations"]),
+    ...mapState("cases", ["pages", "selectedForm", "courts", "caseTypes","specializations","organizations",'claimant','sessionPlaces']),
     ...mapState("auth", ["user"]),
     ...mapState("app", ["navTemplates"]),
     ...mapState("departments", ["departments"]),
     ...mapState("branches", ["branches"]),
-
-    // defendantUsers() {
-    //   if (this.sidesInfo.claimant_id) {
-    //     const user = this.users.find(
-    //       (user) => user.id === this.sidesInfo.claimant_id
-    //     );
-    //     const civilNumber = user?.user_information?.civil_number || null;
-    //     if (civilNumber) {
-    //       this.sidesInfo.civil = civilNumber;
-    //
-    //       return this.users.filter((user) => !user.user_information);
-    //     }
-    //     this.sidesInfo.department_id = user.department_id;
-    //     return this.users.filter((user) => user.user_information);
-    //   }
-    //   return this.users;
-    // },
-    // claimantUsers() {
-    //   console.log(this.caseModel)
-    //
-    //   if(this.caseModel === 'from_redf')
-    //   {
-    //     return this.users.filter((user) => user.roles.includes('system'))
-    //   }
-    //   return false
-    //   if (this.sidesInfo.defendant_id) {
-    //     const user = this.users.find(
-    //       (user) => user.id === this.sidesInfo.defendant_id
-    //     );
-    //     const civilNumber = user?.user_information?.civil_number || null;
-    //     if (civilNumber) {
-    //       this.sidesInfo.civil = civilNumber;
-    //       this.claimantType = "civil";
-    //       return this.users.filter((user) => !user.user_information);
-    //     }
-    //     this.sidesInfo.department_id = user.department_id;
-    //     return this.users.filter((user) => user.user_information);
-    //   }
-    //   return this.users;
-    // },
   },
   methods: {
     ...mapActions("app", ["setBreadCrumb"]),
@@ -719,6 +725,7 @@ export default {
       "saveFormInformation",
       "getCourts",
       "updatePages",
+      'retrieveClaimant'
     ]),
     filterUsers()
     {
@@ -1019,6 +1026,9 @@ export default {
         date: this.caseAction.date,
         court: this.caseAction.court,
         sessionDate: this.caseAction.sessionDate,
+        session_place: this.caseAction.sessionPlace,
+        date_of_receipt: this.caseAction.receiptDate,
+        user_id: this.caseAction.judgment_for,
         type:this.radioAction
       };
 
