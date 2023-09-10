@@ -528,7 +528,7 @@ const actions = {
     const { branches } = response?.data.data;
     const { organizations } = response?.data.data;
     commit("SET_CORTS", court_types);
-    commit("SET_BRANCHES", branches);
+    commit("SET_SESSION_PLACES", branches);
     commit("SET_CASE_TYPES", case_types);
     commit("SET_specializations", specialization);
     commit("SET_organizations", organizations);
