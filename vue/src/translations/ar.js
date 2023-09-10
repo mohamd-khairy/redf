@@ -249,7 +249,7 @@ export default {
     cases_child: "مراجعة القضايا",
     editCase: "تعديل البيانات",
     request_review: "مراجعة الطلبات",
-    specialization: "الدوائر"
+    specialization: "الدوائر",
   },
   breadcrumbs: {
     pipesList: "قائمة النماذج",
@@ -627,7 +627,7 @@ export default {
     assigned_to: "مكلفة الي",
     added_date: "تاريخ الاضافة",
     specialization: "الدائره (الاختصاص)",
-    sub_status: "الحالة الفرعية"
+    sub_status: "الحالة الفرعية",
     // causer_type: "",
   },
   texts: {
@@ -807,6 +807,10 @@ export default {
     acceptRequest: "قبول الطلب",
     returnRequest: "اعادة الطلب",
     refuseRequest: "رفض الطلب",
+    accept: "تم قبول الطلب",
+    refuse: "تم رفض الطلب",
+    return: "تم اعادة الطلب للمراجعة",
+    wait: "بانتظار الاجراء",
   },
   reports: {
     buildReport: "انشاء تقرير",
@@ -929,7 +933,8 @@ export default {
     SpecializationName: "اسم الدائره",
     createSpecialization: "انشاء دائره",
     confirmDeleteSpecialization: "هل انت متأكد من حذف هذه الدائره ؟",
-    confirmDeleteSelectedSpecialization: "هل انت متأكد من حذف الدوائر المحددة ؟",
+    confirmDeleteSelectedSpecialization:
+      "هل انت متأكد من حذف الدوائر المحددة ؟",
     editSpecialization: "تحديث بيانات الدائرة",
     status: "الحالة",
     priority: "الاولوية",

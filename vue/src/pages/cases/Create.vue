@@ -184,13 +184,13 @@
           <div v-else id="filePreview-container"></div>
 
           <v-card-actions>
-            <v-btn color="primary">
+            <v-btn color="primary" @click="updateCaseStatus('ACCEPT')">
               {{ $t("general.acceptRequest") }}
             </v-btn>
-            <v-btn color="primary">
+            <v-btn color="primary" @click="updateCaseStatus('RETURN')">
               {{ $t("general.returnRequest") }}
             </v-btn>
-            <v-btn color="primary">
+            <v-btn color="primary" @click="updateCaseStatus('REFUSE')">
               {{ $t("general.refuseRequest") }}
             </v-btn>
 
@@ -407,7 +407,15 @@ export default {
       "savePages",
       "updateBackPages",
       "getPagesValues",
+      "changeStatus",
     ]),
+    updateCaseStatus(status) {
+      console.log("status", status);
+      this.changeStatus({
+        status,
+        formId: this.formRequestId,
+      });
+    },
     openCaseInfoDialog(id) {
       this.caseInfoDialog = true;
     },

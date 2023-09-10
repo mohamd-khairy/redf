@@ -239,13 +239,21 @@
             <div v-else id="filePreview-container"></div>
 
             <v-card-actions>
-              <v-btn color="primary">
+              <v-btn
+                color="primary"
+                v-if="caseStatus !== 'ACCEPT'"
+                @click="updateCaseStatus('ACCEPT')"
+              >
                 {{ $t("general.acceptRequest") }}
               </v-btn>
-              <v-btn color="primary">
+              <v-btn color="primary" @click="updateCaseStatus('RETURN')">
                 {{ $t("general.returnRequest") }}
               </v-btn>
-              <v-btn color="primary">
+              <v-btn
+                color="primary"
+                v-if="caseStatus !== 'REFUSE'"
+                @click="updateCaseStatus('REFUSE')"
+              >
                 {{ $t("general.refuseRequest") }}
               </v-btn>
 
@@ -281,6 +289,7 @@ export default {
   data() {
     return {
       caseId: "",
+      caseStatus: "",
       caseInfoDialog: false,
       fileUploaded: null,
       uploadedFileType: "",
@@ -333,6 +342,7 @@ export default {
   watch: {
     e1(val) {
       if (val === 3) {
+        this.getCourts();
         // console.log(this.uploadedFileType);
         if (this.uploadedFileType === "pdf") {
           this.getPagesValues(this.formRequestId).then((data) => {
@@ -372,10 +382,19 @@ export default {
       "saveFormInformation",
       "getCourts",
       "getFormRequests",
+      "changeStatus",
     ]),
     stepOneValidation(value) {
       const msg = this.$t("general.required_input");
       return this.stepOneErrors && !value ? [msg] : [];
+    },
+
+    updateCaseStatus(status) {
+      console.log("status", status);
+      this.changeStatus({
+        status,
+        formId: this.formRequestId,
+      });
     },
     stepBack() {
       if (this.e1 > 1) {
@@ -473,6 +492,8 @@ export default {
         .then((data) => {
           this.setCurrentBread();
           this.formData = data;
+          console.log(this.formData);
+          this.caseStatus = data?.status;
           this.lastAction = data?.lastFormRequestInformation || null;
           this.caseId = data.request?.formable_id;
           const url = data.form_page_item_fill[1].value;

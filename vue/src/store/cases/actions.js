@@ -548,6 +548,12 @@ const actions = {
     const { formRequestActions } = response?.data?.data;
     return formRequestActions;
   },
+  async changeStatus({ commit }, { status, formId }) {
+    const response = await axios.post(`change-status`, {
+      status: status,
+      form_request_id: formId,
+    });
+  },
   async updateFormRequestInfo({ commit }, data) {
     return await axios.put(`update-form-request-information/${data.id}` , data);
   },
