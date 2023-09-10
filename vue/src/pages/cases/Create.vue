@@ -175,7 +175,32 @@
           </v-card-actions>
         </v-stepper-content>
         <v-stepper-content step="3">
-          <iframe :src="docUrl" width="100%" height="500"></iframe>
+          <iframe
+            v-if="uploadedFileType === 'pdf'"
+            :src="docUrl"
+            width="100%"
+            height="500"
+          ></iframe>
+          <div v-else id="filePreview-container"></div>
+
+          <!-- <iframe
+            src="https://view.officeapps.live.com/op/embed.aspx?src=http%3A%2F%2Fieee802%2Eorg%3A80%2Fsecmail%2FdocIZSEwEqHFr%2Edoc"
+            width="100%"
+            height="800px"
+            frameborder="0"
+            >This is an embedded
+            <a target="_blank" href="http://office.com">Microsoft Office</a>
+            document, powered by
+            <a target="_blank" href="http://office.com/webapps">Office Online</a
+            >.</iframe
+          >
+          <iframe :src="docUrl" width="100%" height="800px" frameborder="0"
+            >This is an embedded
+            <a target="_blank" href="http://office.com">Microsoft Office</a>
+            document, powered by
+            <a target="_blank" href="http://office.com/webapps">Office Online</a
+            >.</iframe
+          > -->
           <!-- <div class="d-flex flex-column flex-sm-row">
             <div class="flex-grow-1 pt-2 pa-sm-2">
               <v-row dense>
@@ -324,6 +349,7 @@ import CaseInfoDialog from "../../components/cases/CaseInfoDialog.vue";
 import { makeToast } from "@/helpers";
 import axios from "@/plugins/axios";
 import AppealFormPreview from "./AppealFormPreview.vue";
+import * as docx from "docx-preview";
 
 export default {
   name: "Create",
@@ -336,6 +362,8 @@ export default {
   },
   data() {
     return {
+      fileUploaded: null,
+      uploadedFileType: null,
       e1: 1,
       docUrl: "",
       selectedTitle: "",
@@ -400,6 +428,7 @@ export default {
   },
 
   created() {
+    console.log("window: ", docx);
     this.setBreadCrumb({
       breadcrumbs: this.breadcrumbs,
       pageTitle: this.$t("cases.casesList"),
@@ -416,9 +445,20 @@ export default {
   watch: {
     e1(val) {
       if (val === 3) {
-        this.getPagesValues(this.formRequestId).then((data) => {
-          this.docUrl = data.form_page_item_fill[1].value;
-        });
+        console.log(this.uploadedFileType);
+        if (this.uploadedFileType === "pdf") {
+          this.getPagesValues(this.formRequestId).then((data) => {
+            const url = data.form_page_item_fill[1].value;
+            this.docUrl = url;
+          });
+        } else {
+          docx
+            .renderAsync(
+              this.fileUploaded,
+              document.getElementById("filePreview-container")
+            )
+            .then((x) => console.log("docx: finished"));
+        }
       }
     },
   },
@@ -651,8 +691,11 @@ export default {
     },
     handleFileUpload(file, input) {
       if (file) {
+        console.log(file);
+        this.fileUploaded = file;
         const fileName = file.name.split(".")[0];
         const fileExtension = file.name.split(".")[1];
+        this.uploadedFileType = fileExtension.toLowerCase();
         input["file_name"] = fileName + "." + fileExtension;
         const reader = new FileReader();
         reader.readAsDataURL(file);
