@@ -535,7 +535,7 @@ export default {
     },
   },
   computed: {
-    ...mapState("cases", ["courts", "caseTypes", "claimant", "branches"]),
+    ...mapState("cases", ["courts", "caseTypes", "claimant", "sessionPlaces"]),
   },
   methods: {
     ...mapActions("cases", [
@@ -543,7 +543,6 @@ export default {
       "getCourts",
       "retrieveClaimant",
     ]),
-    ...mapActions("branches", ["getBranches"]),
     closeDialog() {
       this.$emit("close-action-dialog");
     },
