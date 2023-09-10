@@ -154,7 +154,7 @@ class FormRequestController extends Controller
         }
 
         $status = request('status');
-        $response = FormRequest::where('id', $request->form_request_id)->update(['status' => FormRequestStatus::$status(), 'status_request' => $request->status]);
+        $response = FormRequest::where('id', $request->form_request_id)->update(['status' => $status, 'status_request' => $status]);
 
         return responseSuccess($response, 'Status updated successfully');
     }
