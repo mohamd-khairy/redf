@@ -31,6 +31,6 @@ class File extends Model
 
     public function getFileAttribute()
     {
-        return $this->attributes['path'] ? 'storage/' . $this->attributes['path'] : null;
+        return $this->attributes['path'] ? $this->attributes['path'] : null;
     }
 }

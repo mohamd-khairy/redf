@@ -177,6 +177,6 @@ Route::group(['prefix' => 'v1'], function () {
 
         Route::post('change-status', [FormRequestController::class, 'changeStatus']);
         
-        Route::get('get-file/{id}', [FormRequestController::class, 'getFile']);
     });
+    Route::get('get-file/{id}', [FormRequestController::class, 'getFile']);
 });

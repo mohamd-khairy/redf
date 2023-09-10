@@ -22,6 +22,8 @@ use Illuminate\Support\Facades\Validator;
 use App\Http\Resources\FormRequestResource;
 use App\Models\File;
 use Illuminate\Support\Facades\File as FacadesFile;
+use Illuminate\Support\Facades\Response;
+use Illuminate\Support\Facades\Storage;
 
 class FormRequestController extends Controller
 {
@@ -180,6 +182,15 @@ class FormRequestController extends Controller
             return responseFail('there is no file for this id');
         }
 
-        return  file_get_contents($file->file); //FacadesFile::get($file->file);
+        $docContent = Storage::get($file->file);
+        $type       = Storage::mimeType($file->file);
+
+
+        return Response::make($docContent, 200, [
+            'Content-Type'        => $type,
+            'Content-Disposition' => 'inline; filename="' . $file->name . '"',
+        ]);
+
+        // return  file_get_contents($file->file); //FacadesFile::get($file->file);
     }
 }
