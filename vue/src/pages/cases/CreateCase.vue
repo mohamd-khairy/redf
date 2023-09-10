@@ -699,9 +699,11 @@ export default {
     'caseModel'(){
       this.filterUsers()
     },
-    'formRequestId'(){
-      this.retrieveClaimant({ form_request_id: this.formRequestId });
-    }
+    e1(val) {
+    if (val === 3) {
+        this.retrieveClaimant({ form_request_id: this.formRequestId });
+      }
+    },
 
   },
   computed: {
@@ -973,7 +975,7 @@ export default {
             branch_id: this.branch_id,
             formId: this.formRequestId,
             type: 'case'
-          });
+          })
         }
 
         if (result) {
