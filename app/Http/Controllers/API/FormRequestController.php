@@ -180,6 +180,6 @@ class FormRequestController extends Controller
             return responseFail('there is no file for this id');
         }
 
-        return FacadesFile::get($file->file);
+        return  file_get_contents($file->file); //FacadesFile::get($file->file);
     }
 }

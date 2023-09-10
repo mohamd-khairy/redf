@@ -176,7 +176,7 @@ Route::group(['prefix' => 'v1'], function () {
         Route::get('retrieve-claimant', [FormRequestController::class, 'retrieveClaimant']);
 
         Route::post('change-status', [FormRequestController::class, 'changeStatus']);
-        Route::get('get-file/{id}', [FormRequestController::class, 'getFile']);
         
+        Route::get('get-file/{id}', [FormRequestController::class, 'getFile']);
     });
 });

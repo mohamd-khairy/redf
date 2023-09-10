@@ -37,6 +37,11 @@ class FormRequestInformation extends Model
         return $this->belongsTo(User::class, 'user_id');
     }
 
+    public function session_place()
+    {
+        return $this->belongsTo(Branch::class, 'session_place');
+    }
+
     // public function getCourtAttribute($value)
     // {
     //     return $value ? __('enums.' . $value) : null;
