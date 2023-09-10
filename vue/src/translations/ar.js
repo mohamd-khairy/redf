@@ -490,6 +490,7 @@ export default {
     account: "تعديل البيانات الاساسيه",
 
     addAction: "اضافة اجراء",
+    showAction: "عرض الاجراء",
     name: "الاسم",
     number: "الرقم",
     caseName: "موضوع القضية",

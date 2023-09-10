@@ -18,226 +18,226 @@
       <v-card-text style="height: 500px" class="pb-0">
         <div class="d-flex flex-column flex-sm-row">
           <div class="flex-grow-1 pt-2 pa-sm-2">
-            <v-row dense v-if="lastAction" class="mb-2">
-              <v-col cols="12">
-                <v-expansion-panels multiple>
-                  <v-expansion-panel>
-                    <v-expansion-panel-header>
-                      <h5>{{ $t("general.last_action") }}</h5>
-                    </v-expansion-panel-header>
-                    <v-expansion-panel-content>
-                      <v-row class="mb-1" dense v-if="lastAction?.sessionDate">
-                        <v-col cols="12" sm="3">
-                          <h6 class="mt-1 mb-0 c-h6">
-                            {{ $t("cases.sessionDate") }}
-                          </h6>
-                        </v-col>
-                        <v-col cols="12" sm="9">
-                          <v-text-field
-                            dense
-                            class="custom-disabled-input"
-                            :value="lastAction?.sessionDate || ''"
-                            solo
-                            disabled
-                            hide-details
-                          ></v-text-field>
-                        </v-col>
-                      </v-row>
-                      <v-row
-                        class="mb-1"
-                        dense
-                        v-if="lastAction?.session_place"
-                      >
-                        <v-col cols="12" sm="3">
-                          <h6 class="mt-1 mb-0 c-h6">
-                            {{ $t("cases.casePlace") }}
-                          </h6>
-                        </v-col>
-                        <v-col cols="12" sm="9">
-                          <v-text-field
-                            dense
-                            class="custom-disabled-input"
-                            :value="lastAction?.session_place || ''"
-                            solo
-                            disabled
-                            hide-details
-                          ></v-text-field>
-                        </v-col>
-                      </v-row>
-                      <v-row dense v-if="lastAction?.status">
-                        <v-col cols="12" sm="3">
-                          <h6 class="mt-1 mb-0 c-h6">
-                            {{ $t("tables.status") }}
-                          </h6>
-                        </v-col>
-                        <v-col cols="12" sm="9">
-                          <v-chip
-                            :color="
-                              getStatusColor(lastAction?.status?.toLowerCase())
-                            "
-                            label
-                            text-color="white"
-                          >
-                            <!-- {{
-                              lastAction?.status
-                                ? $t(
-                                    `general.${lastAction?.status?.toLowerCase()}`
-                                  )
-                                : ""
-                            }} -->
-                            {{ lastAction?.status }}
-                          </v-chip>
-                        </v-col>
-                      </v-row>
-                      <v-row dense v-if="lastAction?.user">
-                        <v-col cols="12" sm="3">
-                          <h6 class="mt-1 mb-0 c-h6">
-                            {{ $t("cases.judgment_for") }}
-                          </h6>
-                        </v-col>
-                        <v-col cols="12" sm="9">
-                          <v-text-field
-                            dense
-                            class="custom-disabled-input"
-                            :value="lastAction?.user?.name || ''"
-                            solo
-                            disabled
-                            hide-details
-                          ></v-text-field>
-                        </v-col>
-                      </v-row>
-                      <v-row dense v-if="lastAction?.date">
-                        <v-col cols="12" sm="3">
-                          <h6 class="mt-1 mb-0 c-h6">
-                            {{ $t("cases.judgmentDate") }}
-                          </h6>
-                        </v-col>
-                        <v-col cols="12" sm="9">
-                          <v-text-field
-                            dense
-                            class="custom-disabled-input"
-                            :value="lastAction?.date || ''"
-                            solo
-                            disabled
-                            hide-details
-                          ></v-text-field>
-                        </v-col>
-                      </v-row>
-                      <v-row dense v-if="lastAction?.date_of_receipt">
-                        <v-col cols="12" sm="3">
-                          <h6 class="mt-1 mb-0 c-h6">
-                            {{ $t("cases.receiptDate") }}
-                          </h6>
-                        </v-col>
-                        <v-col cols="12" sm="9">
-                          <v-text-field
-                            dense
-                            class="custom-disabled-input"
-                            :value="lastAction?.date_of_receipt || ''"
-                            solo
-                            disabled
-                            hide-details
-                          ></v-text-field>
-                        </v-col>
-                      </v-row>
+<!--            <v-row dense v-if="lastAction" class="mb-2">-->
+<!--              <v-col cols="12">-->
+<!--                <v-expansion-panels multiple>-->
+<!--                  <v-expansion-panel>-->
+<!--                    <v-expansion-panel-header>-->
+<!--                      <h5>{{ $t("general.last_action") }}</h5>-->
+<!--                    </v-expansion-panel-header>-->
+<!--                    <v-expansion-panel-content>-->
+<!--                      <v-row class="mb-1" dense v-if="lastAction?.sessionDate">-->
+<!--                        <v-col cols="12" sm="3">-->
+<!--                          <h6 class="mt-1 mb-0 c-h6">-->
+<!--                            {{ $t("cases.sessionDate") }}-->
+<!--                          </h6>-->
+<!--                        </v-col>-->
+<!--                        <v-col cols="12" sm="9">-->
+<!--                          <v-text-field-->
+<!--                            dense-->
+<!--                            class="custom-disabled-input"-->
+<!--                            :value="lastAction?.sessionDate || ''"-->
+<!--                            solo-->
+<!--                            disabled-->
+<!--                            hide-details-->
+<!--                          ></v-text-field>-->
+<!--                        </v-col>-->
+<!--                      </v-row>-->
+<!--                      <v-row-->
+<!--                        class="mb-1"-->
+<!--                        dense-->
+<!--                        v-if="lastAction?.session_place"-->
+<!--                      >-->
+<!--                        <v-col cols="12" sm="3">-->
+<!--                          <h6 class="mt-1 mb-0 c-h6">-->
+<!--                            {{ $t("cases.casePlace") }}-->
+<!--                          </h6>-->
+<!--                        </v-col>-->
+<!--                        <v-col cols="12" sm="9">-->
+<!--                          <v-text-field-->
+<!--                            dense-->
+<!--                            class="custom-disabled-input"-->
+<!--                            :value="lastAction?.session_place || ''"-->
+<!--                            solo-->
+<!--                            disabled-->
+<!--                            hide-details-->
+<!--                          ></v-text-field>-->
+<!--                        </v-col>-->
+<!--                      </v-row>-->
+<!--                      <v-row dense v-if="lastAction?.status">-->
+<!--                        <v-col cols="12" sm="3">-->
+<!--                          <h6 class="mt-1 mb-0 c-h6">-->
+<!--                            {{ $t("tables.status") }}-->
+<!--                          </h6>-->
+<!--                        </v-col>-->
+<!--                        <v-col cols="12" sm="9">-->
+<!--                          <v-chip-->
+<!--                            :color="-->
+<!--                              getStatusColor(lastAction?.status?.toLowerCase())-->
+<!--                            "-->
+<!--                            label-->
+<!--                            text-color="white"-->
+<!--                          >-->
+<!--                            &lt;!&ndash; {{-->
+<!--                              lastAction?.status-->
+<!--                                ? $t(-->
+<!--                                    `general.${lastAction?.status?.toLowerCase()}`-->
+<!--                                  )-->
+<!--                                : ""-->
+<!--                            }} &ndash;&gt;-->
+<!--                            {{ lastAction?.status }}-->
+<!--                          </v-chip>-->
+<!--                        </v-col>-->
+<!--                      </v-row>-->
+<!--                      <v-row dense v-if="lastAction?.user">-->
+<!--                        <v-col cols="12" sm="3">-->
+<!--                          <h6 class="mt-1 mb-0 c-h6">-->
+<!--                            {{ $t("cases.judgment_for") }}-->
+<!--                          </h6>-->
+<!--                        </v-col>-->
+<!--                        <v-col cols="12" sm="9">-->
+<!--                          <v-text-field-->
+<!--                            dense-->
+<!--                            class="custom-disabled-input"-->
+<!--                            :value="lastAction?.user?.name || ''"-->
+<!--                            solo-->
+<!--                            disabled-->
+<!--                            hide-details-->
+<!--                          ></v-text-field>-->
+<!--                        </v-col>-->
+<!--                      </v-row>-->
+<!--                      <v-row dense v-if="lastAction?.date">-->
+<!--                        <v-col cols="12" sm="3">-->
+<!--                          <h6 class="mt-1 mb-0 c-h6">-->
+<!--                            {{ $t("cases.judgmentDate") }}-->
+<!--                          </h6>-->
+<!--                        </v-col>-->
+<!--                        <v-col cols="12" sm="9">-->
+<!--                          <v-text-field-->
+<!--                            dense-->
+<!--                            class="custom-disabled-input"-->
+<!--                            :value="lastAction?.date || ''"-->
+<!--                            solo-->
+<!--                            disabled-->
+<!--                            hide-details-->
+<!--                          ></v-text-field>-->
+<!--                        </v-col>-->
+<!--                      </v-row>-->
+<!--                      <v-row dense v-if="lastAction?.date_of_receipt">-->
+<!--                        <v-col cols="12" sm="3">-->
+<!--                          <h6 class="mt-1 mb-0 c-h6">-->
+<!--                            {{ $t("cases.receiptDate") }}-->
+<!--                          </h6>-->
+<!--                        </v-col>-->
+<!--                        <v-col cols="12" sm="9">-->
+<!--                          <v-text-field-->
+<!--                            dense-->
+<!--                            class="custom-disabled-input"-->
+<!--                            :value="lastAction?.date_of_receipt || ''"-->
+<!--                            solo-->
+<!--                            disabled-->
+<!--                            hide-details-->
+<!--                          ></v-text-field>-->
+<!--                        </v-col>-->
+<!--                      </v-row>-->
 
-                      <v-row class="mb-1" dense v-if="lastAction?.amount">
-                        <v-col cols="12" sm="3">
-                          <h6 class="mt-1 mb-0 c-h6">
-                            {{ $t("cases.amount") }}
-                          </h6>
-                        </v-col>
-                        <v-col cols="12" sm="9">
-                          <v-text-field
-                            dense
-                            class="custom-disabled-input"
-                            :value="lastAction?.amount || ''"
-                            solo
-                            disabled
-                            hide-details
-                          ></v-text-field>
-                        </v-col>
-                      </v-row>
-                      <v-row class="mb-1" dense v-if="lastAction?.percentage">
-                        <v-col cols="12" sm="3">
-                          <h6 class="mt-1 mb-0 c-h6">
-                            {{ $t("cases.percentageLose") }}
-                          </h6>
-                        </v-col>
-                        <v-col cols="12" sm="9">
-                          <v-text-field
-                            dense
-                            class="custom-disabled-input"
-                            :value="lastAction?.percentage || ''"
-                            solo
-                            disabled
-                            hide-details
-                          ></v-text-field>
-                        </v-col>
-                      </v-row>
-                      <!-- <v-row class="mb-1" v-if="lastAction?.court" dense>
-                        <v-col cols="12" sm="3">
-                          <h6 class="mt-1 mb-0 c-h6">
-                            {{ $t("tables.court") }}
-                          </h6>
-                        </v-col>
-                        <v-col cols="12" sm="9">
-                          <v-text-field
-                            class="custom-disabled-input"
-                            :value="
-                              lastAction?.court
-                                ? $t(`general.${lastAction?.court}`)
-                                : ''
-                            "
-                            item-text="title"
-                            item-value="value"
-                            solo
-                            disabled
-                            hide-details
-                            dense
-                          ></v-text-field>
-                        </v-col>
-                      </v-row>
-                      <v-row class="mb-1" v-if="lastAction?.date" dense>
-                        <v-col cols="12" sm="3">
-                          <h6 class="mt-1 mb-0 c-h6">
-                            {{ $t("tables.date") }}
-                          </h6>
-                        </v-col>
-                        <v-col cols="12" sm="9">
-                          <v-text-field
-                            class="custom-disabled-input"
-                            :value="lastAction?.date || ''"
-                            solo
-                            disabled
-                            hide-details
-                            dense
-                          ></v-text-field>
-                        </v-col>
-                      </v-row> -->
+<!--                      <v-row class="mb-1" dense v-if="lastAction?.amount">-->
+<!--                        <v-col cols="12" sm="3">-->
+<!--                          <h6 class="mt-1 mb-0 c-h6">-->
+<!--                            {{ $t("cases.amount") }}-->
+<!--                          </h6>-->
+<!--                        </v-col>-->
+<!--                        <v-col cols="12" sm="9">-->
+<!--                          <v-text-field-->
+<!--                            dense-->
+<!--                            class="custom-disabled-input"-->
+<!--                            :value="lastAction?.amount || ''"-->
+<!--                            solo-->
+<!--                            disabled-->
+<!--                            hide-details-->
+<!--                          ></v-text-field>-->
+<!--                        </v-col>-->
+<!--                      </v-row>-->
+<!--                      <v-row class="mb-1" dense v-if="lastAction?.percentage">-->
+<!--                        <v-col cols="12" sm="3">-->
+<!--                          <h6 class="mt-1 mb-0 c-h6">-->
+<!--                            {{ $t("cases.percentageLose") }}-->
+<!--                          </h6>-->
+<!--                        </v-col>-->
+<!--                        <v-col cols="12" sm="9">-->
+<!--                          <v-text-field-->
+<!--                            dense-->
+<!--                            class="custom-disabled-input"-->
+<!--                            :value="lastAction?.percentage || ''"-->
+<!--                            solo-->
+<!--                            disabled-->
+<!--                            hide-details-->
+<!--                          ></v-text-field>-->
+<!--                        </v-col>-->
+<!--                      </v-row>-->
+<!--                      &lt;!&ndash; <v-row class="mb-1" v-if="lastAction?.court" dense>-->
+<!--                        <v-col cols="12" sm="3">-->
+<!--                          <h6 class="mt-1 mb-0 c-h6">-->
+<!--                            {{ $t("tables.court") }}-->
+<!--                          </h6>-->
+<!--                        </v-col>-->
+<!--                        <v-col cols="12" sm="9">-->
+<!--                          <v-text-field-->
+<!--                            class="custom-disabled-input"-->
+<!--                            :value="-->
+<!--                              lastAction?.court-->
+<!--                                ? $t(`general.${lastAction?.court}`)-->
+<!--                                : ''-->
+<!--                            "-->
+<!--                            item-text="title"-->
+<!--                            item-value="value"-->
+<!--                            solo-->
+<!--                            disabled-->
+<!--                            hide-details-->
+<!--                            dense-->
+<!--                          ></v-text-field>-->
+<!--                        </v-col>-->
+<!--                      </v-row>-->
+<!--                      <v-row class="mb-1" v-if="lastAction?.date" dense>-->
+<!--                        <v-col cols="12" sm="3">-->
+<!--                          <h6 class="mt-1 mb-0 c-h6">-->
+<!--                            {{ $t("tables.date") }}-->
+<!--                          </h6>-->
+<!--                        </v-col>-->
+<!--                        <v-col cols="12" sm="9">-->
+<!--                          <v-text-field-->
+<!--                            class="custom-disabled-input"-->
+<!--                            :value="lastAction?.date || ''"-->
+<!--                            solo-->
+<!--                            disabled-->
+<!--                            hide-details-->
+<!--                            dense-->
+<!--                          ></v-text-field>-->
+<!--                        </v-col>-->
+<!--                      </v-row> &ndash;&gt;-->
 
-                      <v-row class="mb-1" dense v-if="lastAction?.details">
-                        <v-col cols="12" sm="3">
-                          <h6 class="mt-1 mb-0 c-h6">
-                            {{ $t("cases.action") }}
-                          </h6>
-                        </v-col>
+<!--                      <v-row class="mb-1" dense v-if="lastAction?.details">-->
+<!--                        <v-col cols="12" sm="3">-->
+<!--                          <h6 class="mt-1 mb-0 c-h6">-->
+<!--                            {{ $t("cases.action") }}-->
+<!--                          </h6>-->
+<!--                        </v-col>-->
 
-                        <v-col cols="12" sm="9">
-                          <v-textarea
-                            class="custom-disabled-input"
-                            :value="lastAction?.details || ''"
-                            solo
-                            disabled
-                            hide-details
-                          ></v-textarea>
-                        </v-col>
-                      </v-row>
-                    </v-expansion-panel-content>
-                  </v-expansion-panel>
-                </v-expansion-panels>
-              </v-col>
-            </v-row>
+<!--                        <v-col cols="12" sm="9">-->
+<!--                          <v-textarea-->
+<!--                            class="custom-disabled-input"-->
+<!--                            :value="lastAction?.details || ''"-->
+<!--                            solo-->
+<!--                            disabled-->
+<!--                            hide-details-->
+<!--                          ></v-textarea>-->
+<!--                        </v-col>-->
+<!--                      </v-row>-->
+<!--                    </v-expansion-panel-content>-->
+<!--                  </v-expansion-panel>-->
+<!--                </v-expansion-panels>-->
+<!--              </v-col>-->
+<!--            </v-row>-->
             <v-row dense class="mb-2">
               <v-radio-group v-model="radioAction" row>
                 <v-radio

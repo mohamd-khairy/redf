@@ -104,7 +104,13 @@
         </template> -->
 
         <template v-slot:item.status="{ item }">
-          <v-chip small :color="getStatusColor(item?.status?.toLowerCase())" text-color="white">
+          <v-chip v-if="item.last_form_request_information != null" small :color="getStatusColor(item?.status?.toLowerCase())" text-color="white" @click="openShowActionDialog(item)">
+            <!-- {{
+              item?.status ? $t(`general.${item.status.toLowerCase()}`) : "---"
+            }} -->
+            {{ item?.status ? item.status : "---" }}
+          </v-chip>
+          <v-chip v-else small :color="getStatusColor(item?.status?.toLowerCase())" text-color="white">
             <!-- {{
               item?.status ? $t(`general.${item.status.toLowerCase()}`) : "---"
             }} -->
@@ -194,6 +200,9 @@
         :lastAction="selectedForm.last_form_request_information || null"
         v-else-if="addDynamicActionDialog && currentPageId != 1" @close-action-dialog="closeDynamicActionDialog" />
       <assign @userAssigned="userAssigned" v-model="dialog" :id="formId"></assign>
+      <show-action :dialogVisible="showActionDialog" :formRequestId="formId"
+                   :lastAction="selectedForm.last_form_request_information || null" v-if="showActionDialog"
+                   @close-action-dialog="closeShowActionDialog"></show-action>
     </v-card>
   </div>
 </template>
@@ -208,9 +217,11 @@ import CaseInfoDialog from "../../components/cases/CaseInfoDialog.vue";
 import Assign from "../../components/cases/Assign";
 import AddAction from "../../components/cases/AddAction.vue";
 import AddDynamicAction from "@/components/cases/AddDynamicAction";
+import ShowAction from "@/components/cases/ShowAction";
 
 export default {
   components: {
+    ShowAction,
     CasePreviewDialog,
     CaseInfoDialog,
     Assign,
@@ -249,6 +260,7 @@ export default {
       caseInfoDialog: false,
       addActionDialog: false,
       addDynamicActionDialog: false,
+      showActionDialog: false,
       selectedForm: null,
     };
   },
@@ -385,12 +397,21 @@ export default {
       this.formId = id;
       this.caseInfoDialog = true;
     },
+    openShowActionDialog(item) {
+      this.showActionDialog = true;
+      this.formId = item.id;
+      this.selectedForm = item;
+    },
     closeActionDialog() {
       this.addActionDialog = false;
       this.open();
     },
     closeDynamicActionDialog() {
       this.addDynamicActionDialog = false;
+      this.open();
+    },
+    closeShowActionDialog() {
+      this.showActionDialog = false;
       this.open();
     },
     getStatusColor(status) {
