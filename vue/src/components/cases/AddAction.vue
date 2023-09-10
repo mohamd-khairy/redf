@@ -568,7 +568,7 @@ export default {
         court: this.caseAction.court_name,
         sessionDate: this.caseAction.sessionDate,
         session_place: this.caseAction.branch_id,
-        date_of_receipt: this.caseAction.receipt_date,
+        date_of_receipt: this.caseAction.receiptDate,
         user_id: this.caseAction.judgment_for,
         type:this.radioAction
       };

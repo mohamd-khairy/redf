@@ -609,16 +609,28 @@
               <v-row dense v-if="radioAction === 'court'">
                 <v-col cols="6">
                   <v-select
+                    clearable
                     :items="caseTypes"
+                    @click:clear="caseAction.status = null"
                     :label="$t('tables.status')"
                     item-text="title"
                     item-value="value"
                     hide-details
                     dense
-                    required="true"
-                    :error-messages="stepOneValidation(caseAction.status)"
                     outlined
                     v-model="caseAction.status"
+                  >
+                  </v-select>
+                </v-col>
+                <v-col cols="12" md="6">
+                  <v-select
+                    :items="claimant"
+                    :label="$t('cases.judgment_for')"
+                    dense
+                    outlined
+                    item-text="name"
+                    item-value="id"
+                    v-model="caseAction.judgment_for"
                   >
                   </v-select>
                 </v-col>
@@ -633,20 +645,18 @@
                     <template v-slot:activator="{ on, attrs }">
                       <v-text-field
                         v-model="caseAction.date"
-                        :label="$t('tables.date')"
-                        prepend-icon="mdi-calendar"
+                        :label="$t('cases.judgmentDate')"
+                        append-icon="mdi-calendar"
                         readonly
                         v-bind="attrs"
                         v-on="on"
                         dense
                         outlined
-                        required="true"
-                        :error-messages="stepOneValidation(caseAction.date)"
                       ></v-text-field>
                     </template>
                     <v-date-picker v-model="caseAction.date" scrollable>
                       <v-spacer></v-spacer>
-                      <v-btn text color="primary" @click="modal = false">
+                      <v-btn text color="primary" @click="dateDialog = false">
                         Cancel
                       </v-btn>
                       <v-btn
@@ -660,33 +670,43 @@
                   </v-dialog>
                 </v-col>
                 <v-col cols="6">
-                  <v-select
-                    :items="courts"
-                    item-text="title"
-                    item-value="value"
-                    :label="$t('tables.court')"
-                    hide-details
-                    dense
-                    outlined
-                    v-model="caseAction.court"
+                  <v-dialog
+                    ref="receiptDialog"
+                    v-model="receiptDialog"
+                    :return-value.sync="caseAction.receiptDate"
+                    persistent
+                    width="290px"
                   >
-                  </v-select>
+                    <template v-slot:activator="{ on, attrs }">
+                      <v-text-field
+                        v-model="caseAction.receiptDate"
+                        :label="$t('cases.receiptDate')"
+                        append-icon="mdi-calendar"
+                        readonly
+                        v-bind="attrs"
+                        v-on="on"
+                        dense
+                        outlined
+                      ></v-text-field>
+                    </template>
+                    <v-date-picker v-model="caseAction.receiptDate" scrollable>
+                      <v-spacer></v-spacer>
+                      <v-btn text color="primary" @click="receiptDialog = false">
+                        Cancel
+                      </v-btn>
+                      <v-btn
+                        text
+                        color="primary"
+                        @click="$refs.receiptDialog.save(caseAction.receiptDate)"
+                      >
+                        OK
+                      </v-btn>
+                    </v-date-picker>
+                  </v-dialog>
                 </v-col>
-                <v-col cols="6">
-                  <v-select
-                    :items="branches?.data || []"
-                    :label="$t('branches.branch')"
-                    item-text="name"
-                    item-value="id"
-                    dense
-                    outlined
-                    v-model="caseAction.branch_id"
-                  >
-                  </v-select>
-                </v-col>
-                <v-col cols="12">
+                <v-col cols="12" v-if="caseAction.status">
                   <v-textarea
-                    :label="$t('cases.action')"
+                    :label="caseActionDetailsLabel"
                     value=""
                     v-model="caseAction.details"
                     dense
@@ -696,12 +716,6 @@
               </v-row>
 
               <v-row dense v-if="radioAction === 'session'">
-<!--                <v-col cols="12">-->
-<!--                  <v-checkbox-->
-<!--                    v-model="sessionDate"-->
-<!--                    :label="$t('cases.add_session')"-->
-<!--                  ></v-checkbox>-->
-<!--                </v-col>-->
                 <v-col cols="12" sm="12">
                   <v-dialog
                     ref="sessionDialog"
@@ -714,7 +728,7 @@
                       <v-text-field
                         v-model="caseAction.sessionDate"
                         :label="$t('cases.sessionDate')"
-                        prepend-icon="mdi-calendar"
+                        append-icon="mdi-calendar"
                         readonly
                         v-bind="attrs"
                         v-on="on"
@@ -724,7 +738,7 @@
                     </template>
                     <v-date-picker v-model="caseAction.sessionDate" scrollable>
                       <v-spacer></v-spacer>
-                      <v-btn text color="primary" @click="modal = false">
+                      <v-btn text color="primary" @click="sessionDialog = false">
                         Cancel
                       </v-btn>
                       <v-btn
@@ -738,6 +752,16 @@
                       </v-btn>
                     </v-date-picker>
                   </v-dialog>
+                </v-col>
+                <v-col cols="12" md="12">
+                  <v-select
+                    :items="branches || []"
+                    :label="$t('cases.casePlace')"
+                    dense
+                    outlined
+                    v-model="caseAction.branch_id"
+                  >
+                  </v-select>
                 </v-col>
               </v-row>
             </div>
@@ -771,7 +795,9 @@ export default {
       radioAction: 'session',
       e1: 1,
       selectedTitle: "",
+      caseActionDetailsLabel: "",
       caseDateDialog: false,
+      receiptDialog: false,
       dateDialog: false,
       sessionDialog: false,
       sessionDate: false,
@@ -828,9 +854,13 @@ export default {
         details: "",
         sessionDate: null,
         court: "",
-        date: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
-          .toISOString()
-          .substr(0, 10),
+        judgment_date: null,
+        judgment_for: null,
+        receiptDate: null,
+        date: null,
+        // date: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
+        //   .toISOString()
+        //   .substr(0, 10),
         dates: [
           {
             caseDate: "",
@@ -865,6 +895,12 @@ export default {
     });
   },
   watch: {
+    "caseAction.status"(newVal) {
+      const selecetdStatus = this.caseTypes.find(
+        (type) => type.value === newVal
+      );
+      this.caseActionDetailsLabel = selecetdStatus.title;
+    },
     'caseModel'(){
       if(this.caseModel === 'from_redf') {
         this.defendantUsers = this.users.filter((user) => user.type === 'user')
@@ -896,73 +932,13 @@ export default {
       "courts",
       "caseTypes",
       'specializations',
-      'organizations'
+      'organizations',
+      "claimant"
     ]),
     ...mapState("app", ["navTemplates"]),
     ...mapState("departments", ["departments"]),
     ...mapState("auth", ["user"]),
     ...mapState("branches", ["branches"]),
-    // defendantUsers() {
-    //   if(this.caseModel === 'from_redf' || this.caseModel === 'entry')
-    //   {
-    //     return this.users.filter((user) => user.type === 'user')
-    //   }
-    //   else if(this.caseModel === 'against_redf')
-    //   {
-    //     return this.users.filter(
-    //       (user) => user.roles.find(
-    //         (role) => role.name === 'system'
-    //       )
-    //     )
-    //   }
-    //
-    //
-    //   if (this.sidesInfo.claimant_id) {
-    //     const user = this.users.find(
-    //       (user) => user.id === this.sidesInfo.claimant_id
-    //     );
-    //     const civilNumber = user?.user_information?.civil_number || null;
-    //
-    //     if (civilNumber) {
-    //       this.sidesInfo.civil = civilNumber;
-    //
-    //       return this.users.filter((user) => !user.user_information);
-    //     }
-    //     this.sidesInfo.department_id = user?.department_id;
-    //     return this.users.filter((user) => user.user_information);
-    //   }
-    //   return this.users;
-    // },
-    // claimantUsers() {
-    //   if(this.caseModel === 'from_redf')
-    //   {
-    //     return this.users.filter(
-    //       (user) => user.roles.find(
-    //         (role) => role.name === 'system'
-    //       )
-    //     )
-    //   }
-    //   else if(this.caseModel === 'against_redf' || this.caseModel === 'entry')
-    //   {
-    //     return this.users.filter((user) => user.type === 'user')
-    //   }
-    //
-    //
-    //   if (this.sidesInfo.defendant_id) {
-    //     const user = this.users.find(
-    //       (user) => user.id === this.sidesInfo.defendant_id
-    //     );
-    //     const civilNumber = user?.user_information?.civil_number || null;
-    //     if (civilNumber) {
-    //       this.sidesInfo.civil = civilNumber;
-    //
-    //       return this.users.filter((user) => !user.user_information);
-    //     }
-    //     this.sidesInfo.department_id = user?.department_id;
-    //     return this.users.filter((user) => user.user_information);
-    //   }
-    //   return this.users;
-    // },
   },
   methods: {
     ...mapActions("app", ["setBreadCrumb"]),
@@ -976,6 +952,7 @@ export default {
       "saveRequestSide",
       "saveFormInformation",
       "getCourts",
+      "retrieveClaimant",
     ]),
     changeDefendantUsers() {
       if (this.sidesInfo.claimant_id) {
@@ -1129,39 +1106,41 @@ export default {
           }
 
           //  temp solution
-          if (
-            this.formData.form_request_informations &&
-            this.formData.form_request_informations.length
-          ) {
-            this.formData.form_request_information =
-              this.formData.form_request_informations[
-                this.formData.form_request_informations.length - 1
-              ];
-          }
-          if (this.formData.form_request_information) {
-            this.caseAction.amount =
-              this.formData?.form_request_information?.amount;
-            this.caseAction.court =
-              this.formData?.form_request_information?.court;
-            this.caseAction.date =
-              this.formData?.form_request_information?.date;
-            this.caseAction.percentage =
-              this.formData?.form_request_information?.percentage;
-            this.caseAction.status =
-              this.formData?.form_request_information?.status || null;
-            this.caseAction.details =
-              this.formData?.form_request_information?.details;
-            if (this.formData?.form_request_information?.sessionDate) {
-              this.sessionDate = true;
-              this.caseAction.sessionDate =
-                this.formData.form_request_information.sessionDate.split(
-                  "T"
-                )[0];
-            }
-          }
+          // if (
+          //   this.formData.form_request_informations &&
+          //   this.formData.form_request_informations.length
+          // ) {
+          //   this.formData.form_request_information =
+          //     this.formData.form_request_informations[
+          //       this.formData.form_request_informations.length - 1
+          //     ];
+          // }
+          // if (this.formData.form_request_information) {
+          //   this.caseAction.amount =
+          //     this.formData?.form_request_information?.amount;
+          //   this.caseAction.court =
+          //     this.formData?.form_request_information?.court;
+          //   this.caseAction.date =
+          //     this.formData?.form_request_information?.date;
+          //   this.caseAction.percentage =
+          //     this.formData?.form_request_information?.percentage;
+          //   this.caseAction.status =
+          //     this.formData?.form_request_information?.status || null;
+          //   this.caseAction.details =
+          //     this.formData?.form_request_information?.details;
+          //   if (this.formData?.form_request_information?.sessionDate) {
+          //     this.sessionDate = true;
+          //     this.caseAction.sessionDate =
+          //       this.formData.form_request_information.sessionDate.split(
+          //         "T"
+          //       )[0];
+          //   }
+          //   this.caseAction.branch_id = this.formData?.form_request_information?.session_place
+          // }
         })
         .finally((_) => {
           this.initialLoading = false;
+          this.retrieveClaimant({ form_request_id: this.formRequestId });
         });
     },
     getStatusColor(status) {
@@ -1308,7 +1287,9 @@ export default {
         date: this.caseAction.date,
         court: this.caseAction.court,
         sessionDate: this.caseAction.sessionDate,
-        branch_id: this.caseAction.branch_id,
+        session_place: this.caseAction.branch_id,
+        date_of_receipt: this.caseAction.receiptDate,
+        user_id: this.caseAction.judgment_for,
         type:this.radioAction
       };
 
