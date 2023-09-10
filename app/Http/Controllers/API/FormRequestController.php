@@ -174,8 +174,12 @@ class FormRequestController extends Controller
 
     public function getFile($id)
     {
-        $file = File::where(['fileable_id' => $id])->first();
+        $file = File::where(['fileable_id' => $id, 'fileable_type' => 'App\Models\FormRequest'])->first();
 
-        return  FacadesFile::get($file->file);
+        if (!$file) {
+            return responseFail('there is no file for this id');
+        }
+
+        return FacadesFile::get($file->file);
     }
 }
