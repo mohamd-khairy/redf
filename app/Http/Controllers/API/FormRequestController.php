@@ -53,7 +53,7 @@ class FormRequestController extends Controller
     {
         try {
             $formRequest = $this->formRequestService->updateFormFill($request, $id);
-            return responseSuccess([], 'Form Fill has been successfully updated');
+            return responseSuccess($formRequest, 'Form Fill has been successfully updated');
         } catch (\Throwable $th) {
             return responseFail($th->getMessage());
         }
@@ -149,9 +149,9 @@ class FormRequestController extends Controller
             return responseFail($validator->errors()->first());
         }
 
-        FormRequest::where('id', $request->form_request_id)->update(['status' => $request->status]);
+        $response = FormRequest::where('id', $request->form_request_id)->update(['status' => $request->status]);
 
-        return responseSuccess('Status updated successfully');
+        return responseSuccess($response, 'Status updated successfully');
     }
 
     public function retrieveClaimant(Request $request)
