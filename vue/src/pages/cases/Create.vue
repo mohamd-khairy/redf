@@ -183,135 +183,7 @@
           ></iframe>
           <div v-else id="filePreview-container"></div>
 
-          <!-- <iframe
-            src="https://view.officeapps.live.com/op/embed.aspx?src=http%3A%2F%2Fieee802%2Eorg%3A80%2Fsecmail%2FdocIZSEwEqHFr%2Edoc"
-            width="100%"
-            height="800px"
-            frameborder="0"
-            >This is an embedded
-            <a target="_blank" href="http://office.com">Microsoft Office</a>
-            document, powered by
-            <a target="_blank" href="http://office.com/webapps">Office Online</a
-            >.</iframe
-          >
-          <iframe :src="docUrl" width="100%" height="800px" frameborder="0"
-            >This is an embedded
-            <a target="_blank" href="http://office.com">Microsoft Office</a>
-            document, powered by
-            <a target="_blank" href="http://office.com/webapps">Office Online</a
-            >.</iframe
-          > -->
-          <!-- <div class="d-flex flex-column flex-sm-row">
-            <div class="flex-grow-1 pt-2 pa-sm-2">
-              <v-row dense>
-                <v-col cols="6">
-                  <v-text-field
-                    type="number"
-                    v-model="caseAction.amount"
-                    :label="$t('cases.amount')"
-                    outlined
-                    dense
-                  >
-                    <template v-slot:append>
-                      <v-icon> mdi-cash </v-icon>
-                    </template>
-                  </v-text-field>
-                </v-col>
-                <v-col cols="6">
-                  <v-text-field
-                    type="number"
-                    v-model="caseAction.percentage"
-                    :label="$t('cases.percentageLose')"
-                    dense
-                    outlined
-                  >
-                    <template v-slot:append>
-                      <v-icon> mdi-percent </v-icon>
-                    </template>
-                  </v-text-field>
-                </v-col>
-                <v-col cols="6">
-                  <v-select
-                    :items="caseTypes"
-                    item-text="title"
-                    item-value="value"
-                    :label="$t('tables.status')"
-                    dense
-                    outlined
-                    required="true"
-                    :rules="[rules.required]"
-                    :error-messages="stepOneValidation(caseAction.status)"
-                    v-model="caseAction.status"
-                  >
-                  </v-select>
-                </v-col>
-                <v-col cols="12" sm="6">
-                  <v-dialog
-                    ref="dateDialog"
-                    v-model="dateDialog"
-                    :return-value.sync="caseAction.date"
-                    persistent
-                    width="290px"
-                  >
-                    <template v-slot:activator="{ on, attrs }">
-                      <v-text-field
-                        v-model="caseAction.date"
-                        :label="$t('tables.date')"
-                        prepend-icon="mdi-calendar"
-                        readonly
-                        v-bind="attrs"
-                        v-on="on"
-                        dense
-                        required="true"
-                        :rules="[rules.required]"
-                        :error-messages="stepOneValidation(caseAction.date)"
-                        outlined
-                      ></v-text-field>
-                    </template>
-                    <v-date-picker v-model="caseAction.date" scrollable>
-                      <v-spacer></v-spacer>
-                      <v-btn text color="primary" @click="modal = false">
-                        Cancel
-                      </v-btn>
-                      <v-btn
-                        text
-                        color="primary"
-                        @click="$refs.dateDialog.save(caseAction.date)"
-                      >
-                        OK
-                      </v-btn>
-                    </v-date-picker>
-                  </v-dialog>
-                </v-col>
-
-                <v-col cols="12">
-                  <v-select
-                    :items="courts"
-                    :label="$t('tables.court')"
-                    item-text="title"
-                    item-value="value"
-                    dense
-                    outlined
-                    v-model="caseAction.court"
-                  >
-                  </v-select>
-                </v-col>
-                <v-col cols="12">
-                  <v-textarea
-                    :label="$t('cases.action')"
-                    value=""
-                    v-model="caseAction.details"
-                    dense
-                    outlined
-                  ></v-textarea>
-                </v-col>
-              </v-row>
-            </div>
-          </div> -->
           <v-card-actions>
-            <!-- <v-btn  color="primary">
-              {{ $t("general.downloadWord") }}
-            </v-btn> -->
             <v-btn color="primary">
               {{ $t("general.acceptRequest") }}
             </v-btn>
@@ -452,6 +324,7 @@ export default {
             this.docUrl = url;
           });
         } else {
+          console.log(this.fileUploaded);
           docx
             .renderAsync(
               this.fileUploaded,
@@ -691,7 +564,6 @@ export default {
     },
     handleFileUpload(file, input) {
       if (file) {
-        console.log(file);
         this.fileUploaded = file;
         const fileName = file.name.split(".")[0];
         const fileExtension = file.name.split(".")[1];
