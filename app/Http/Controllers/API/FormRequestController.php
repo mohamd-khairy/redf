@@ -146,14 +146,15 @@ class FormRequestController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'form_request_id' => 'required|exists:form_requests,id',
-            'status' => [new Enum(FormRequestStatus::class)],
+            'status' => ['required'],
         ]);
 
         if ($validator->fails()) {
             return responseFail($validator->errors()->first());
         }
 
-        $response = FormRequest::where('id', $request->form_request_id)->update(['status' => $request->status, 'status_request' => $request->status]);
+        $status = request('status');
+        $response = FormRequest::where('id', $request->form_request_id)->update(['status' => FormRequestStatus::$status(), 'status_request' => $request->status]);
 
         return responseSuccess($response, 'Status updated successfully');
     }
