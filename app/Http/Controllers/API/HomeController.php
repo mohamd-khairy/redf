@@ -11,6 +11,7 @@ use App\Models\Template;
 use App\Models\Department;
 use App\Enums\CaseTypeEnum;
 use App\Enums\CourtTypeEnum;
+use App\Enums\FormRequestStatus;
 use App\Models\Organization;
 use Illuminate\Http\Request;
 use PhpOffice\PhpWord\PhpWord;
@@ -106,12 +107,20 @@ class HomeController extends Controller
                 'value' => $caseTypeValue->name,
             ];
         }
+
+        foreach (FormRequestStatus::cases() as $value) {
+            $request_status[] = [
+                'title' =>  $value->value,
+                'value' => $value->name,
+            ];
+        }
         return responseSuccess([
+            'request_status' => $request_status,
             'court_types' => $court_type,
             'case_types' => $case_type,
             'branches' => $branches,
             'specialization' => $specialization,
-            'organizations' => $organizations
+            'organizations' => $organizations,
         ]);
     }
 }
