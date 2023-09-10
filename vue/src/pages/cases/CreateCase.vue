@@ -358,22 +358,22 @@
                 <v-radio-group v-model="radioAction" row>
                   <v-radio
                     class="radio-check"
-                    value="1"
+                    value="session"
                     :label="$t('cases.add_session')"
                   ></v-radio>
                   <v-radio
                     class="radio-check"
-                    value="2"
+                    value="court"
                     :label="$t('cases.add_court')"
                   ></v-radio>
                   <v-radio
-                    value="3"
+                    value="other"
                     :label="$t('cases.another')"
                   ></v-radio>
                 </v-radio-group>
               </v-row>
 
-              <v-row dense v-if="radioAction == 3">
+              <v-row dense v-if="radioAction === 'other'">
                 <v-col cols="12">
                   <v-text-field
                     type="number"
@@ -404,7 +404,7 @@
                 </v-col>
               </v-row>
 
-              <v-row dense v-if="radioAction == 2">
+              <v-row dense v-if="radioAction === 'court'">
                 <v-col cols="6">
                   <v-select
                     :items="caseTypes"
@@ -481,7 +481,7 @@
                 </v-col>
 
               </v-row>
-              <v-row dense v-if="radioAction == 1">
+              <v-row dense v-if="radioAction === 'session'">
 <!--                <v-col cols="12">-->
 <!--                  <v-checkbox-->
 <!--                    v-model="sessionDate"-->
@@ -555,7 +555,7 @@ export default {
   components: { AddUserDialog },
   data() {
     return {
-      radioAction: "1",
+      radioAction: "session",
       e1: 1,
       selectedTitle: "",
       caseDateDialog: false,
@@ -1019,6 +1019,7 @@ export default {
         date: this.caseAction.date,
         court: this.caseAction.court,
         sessionDate: this.caseAction.sessionDate,
+        type:this.radioAction
       };
 
       // if (await this.validateFormData()) {

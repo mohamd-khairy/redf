@@ -242,21 +242,21 @@
               <v-radio-group v-model="radioAction" row>
                 <v-radio
                   class="radio-check"
-                  value="1"
+                  value="session"
                   :label="$t('cases.add_session')"
                 ></v-radio>
                 <v-radio
                   class="radio-check"
-                  value="2"
+                  value="court"
                   :label="$t('cases.add_court')"
                 ></v-radio>
                 <v-radio
-                  value="3"
+                  value="other"
                   :label="$t('cases.another')"
                 ></v-radio>
               </v-radio-group>
             </v-row>
-            <v-row dense v-if="radioAction == 1">
+            <v-row dense v-if="radioAction === 'session'">
               <v-col cols="12" md="12">
                 <v-dialog
                   ref="sessionDialog"
@@ -303,7 +303,7 @@
                 </v-select>
               </v-col>
             </v-row>
-            <v-row dense v-if="radioAction == 2">
+            <v-row dense v-if="radioAction === 'court'">
               <v-col cols="6">
                 <v-select
                   clearable
@@ -412,7 +412,7 @@
               </v-col>
             </v-row>
 
-            <v-row dense v-if="radioAction == 3">
+            <v-row dense v-if="radioAction === 'other'">
               <v-col cols="12">
                 <v-text-field
                   type="number"
@@ -488,7 +488,7 @@ export default {
       dateDialog: false,
       sessionDialog: false,
       sessionDate: false,
-      radioAction: '1',
+      radioAction: 'session',
       caseAction: {
         form_request_id: this.formRequestId,
         amount: "",
@@ -570,6 +570,7 @@ export default {
         session_place: this.caseAction.branch_id,
         date_of_receipt: this.caseAction.receipt_date,
         user_id: this.caseAction.judgment_for,
+        type:this.radioAction
       };
       this.isLoading = true;
       const result = await this.saveFormInformation(data);
