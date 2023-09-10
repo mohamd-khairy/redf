@@ -35,6 +35,7 @@ class FormRequestController extends Controller
         // $this->middleware('permission:delete-form', ['only' => ['destroy', 'delete_all']]);
         $this->formRequestService = $formRequestService;
     }
+
     public function storeFormFill(FormFillRequest $request)
     {
         try {
@@ -137,22 +138,22 @@ class FormRequestController extends Controller
         }
     }
 
-     public function changeStatus(Request $request){
-
+    public function changeStatus(Request $request)
+    {
         $validator = Validator::make($request->all(), [
             'form_request_id' => 'required|exists:form_requests,id',
-             'status' => [new Enum(FormRequestStatus::class)],
+            'status' => [new Enum(FormRequestStatus::class)],
         ]);
 
         if ($validator->fails()) {
             return responseFail($validator->errors()->first());
         }
-        $updateStatus = FormRequest::where('id', $request->form_request_id)
-        ->update(['status' => $request->status]);
+
+        FormRequest::where('id', $request->form_request_id)->update(['status' => $request->status]);
 
         return responseSuccess('Status updated successfully');
+    }
 
-     }
     public function retrieveClaimant(Request $request)
     {
         $formRequestSide = FormRequestSide::select('claimant_id', 'defendant_id')->where('form_request_id', $request->form_request_id)->first();
