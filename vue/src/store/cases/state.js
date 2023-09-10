@@ -1,7 +1,7 @@
 const state = {
   forms: [],
   formRequests: [],
-
+  branches: [],
   cards: [],
   eventTypes: [],
   statuses: [],
@@ -13,7 +13,10 @@ const state = {
   pages: [],
   courts: [],
   caseTypes: [],
+  specializations: [],
+  organizations: [],
   pagesValues: [],
+  claimant: [],
   selectedForm: {
     name: "",
     id: null,

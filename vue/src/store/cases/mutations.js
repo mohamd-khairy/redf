@@ -48,6 +48,18 @@ const mutations = {
   SET_CASE_TYPES(state, value) {
     state.caseTypes = value;
   },
+  SET_specializations(state, value) {
+    state.specializations = value;
+  },
+  SET_organizations(state, value) {
+    state.organizations = value;
+  },
+  SET_CLAIMANT(state, value) {
+    state.claimant = value;
+  },
+  SET_BRANCHES(state, value) {
+    state.branches = value;
+  },
 };
 
 export default mutations;

@@ -2,8 +2,12 @@
 
 namespace App\Enums;
 
+use ArchTech\Enums\InvokableCases;
+
 enum CaseTypeEnum: string
 {
+    use InvokableCases;
+
     case FIRST_RULE = 'صدر الحكم الإبتدائي';
     case SECOND_RULE = 'صدر حكم الإستئناف';
     case THIRD_RULE = 'صدر الحكم النهائي';

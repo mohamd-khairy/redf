@@ -25,19 +25,7 @@
             <div class="d-flex flex-column flex-sm-row">
               <div class="flex-grow-1 pt-2 pa-sm-2">
                 <v-row dense>
-                  <v-col cols="6">
-                    <v-text-field
-                      class="mb-2"
-                      v-model="caseName"
-                      :label="$t('cases.caseName')"
-                      outlined
-                      :required="true"
-                      :error-messages="stepOneValidation(caseName)"
-                      dense
-                      :rules="[requiredRule]"
-                    ></v-text-field>
-                  </v-col>
-                  <v-col cols="6">
+                  <v-col cols="12">
                     <v-text-field
                       outlined
                       type="number"
@@ -51,19 +39,19 @@
                       dense
                     ></v-text-field>
                   </v-col>
-                  <v-col cols="6">
-                    <v-select
-                      :items="branches?.data || []"
-                      :label="$t('branches.branch')"
-                      item-text="name"
-                      item-value="id"
-                      dense
+                  <v-col cols="12">
+                    <v-text-field
+                      class="mb-2"
+                      v-model="caseName"
+                      :label="$t('cases.caseName')"
                       outlined
-                      v-model="branch_id"
-                    >
-                    </v-select>
+                      :required="true"
+                      :error-messages="stepOneValidation(caseName)"
+                      dense
+                      :rules="[requiredRule]"
+                    ></v-text-field>
                   </v-col>
-                  <v-col cols="6">
+                  <v-col cols="12">
                     <v-dialog
                       ref="caseDateDialog"
                       v-model="caseDateDialog"
@@ -74,8 +62,8 @@
                       <template v-slot:activator="{ on, attrs }">
                         <v-text-field
                           v-model="caseDate"
-                          :label="$t('tables.date')"
-                          prepend-icon="mdi-calendar"
+                          :label="$t('cases.caseDate')"
+                          append-icon="mdi-calendar"
                           readonly
                           v-bind="attrs"
                           v-on="on"
@@ -88,7 +76,7 @@
                       </template>
                       <v-date-picker v-model="caseDate" scrollable>
                         <v-spacer></v-spacer>
-                        <v-btn text color="primary" @click="modal = false">
+                        <v-btn text color="primary" @click="caseDateDialog = false">
                           Cancel
                         </v-btn>
                         <v-btn
@@ -101,10 +89,70 @@
                       </v-date-picker>
                     </v-dialog>
                   </v-col>
+                  <v-col cols="12">
+                    <v-select
+                      :items="organizations"
+                      :label="$t('cases.classification')"
+                      item-text="name"
+                      item-value="id"
+                      dense
+                      outlined
+                      v-model="organization_id"
+                      required="true"
+                      :rules="[rules.required]"
+                      :error-messages="stepOneValidation(organization_id)"
+                    >
+                    </v-select>
+                  </v-col>
+                  <v-col cols="12">
+                    <v-select
+                      :items="caseModels"
+                      :label="$t('cases.caseModels')"
+                      item-text="name"
+                      item-value="value"
+                      dense
+                      outlined
+                      v-model="caseModel"
+                      required="true"
+                      :rules="[rules.required]"
+                      :error-messages="stepOneValidation(caseModel)"
+                    >
+                    </v-select>
+                  </v-col>
+                  <v-col cols="12">
+                    <v-select
+                      :items="specializations"
+                      :label="$t('cases.specialization')"
+                      item-text="name"
+                      item-value="id"
+                      dense
+                      outlined
+                      v-model="specialization_id"
+                      required="true"
+                      :rules="[rules.required]"
+                      :error-messages="stepOneValidation(specialization_id)"
+                    >
+                    </v-select>
+                  </v-col>
+                  <v-col cols="12">
+                    <v-select
+                      :items="branches?.data || []"
+                      :label="$t('branches.branch')"
+                      item-text="name"
+                      item-value="id"
+                      dense
+                      outlined
+                      v-model="branch_id"
+                      required="true"
+                      :rules="[rules.required]"
+                      :error-messages="stepOneValidation(branch_id)"
+                    >
+                    </v-select>
+                  </v-col>
                 </v-row>
               </div>
             </div>
-            <v-tabs v-model="activeTab">
+            <v-tabs v-model="activeTab" v-if="pages && pages[0]?.items?.length > 0">
               <v-tab v-for="(tab, index) in pages" :key="index">{{
                 tab.title
               }}</v-tab>
@@ -225,8 +273,19 @@
                     :error-messages="stepOneValidation(sidesInfo.claimant_id)"
                     clearable
                     @click:clear="clearClaimantSelect"
+                    @change="changeDefendantUsers"
                   >
                   </v-select>
+                </v-col>
+                <v-col cols="12" v-if="caseModel === 'entry'">
+                  <v-text-field
+                    type="number"
+                    v-model="sidesInfo.claimant_civil"
+                    :label="$t('cases.civil')"
+                    disabled
+                    dense
+                    outlined
+                  ></v-text-field>
                 </v-col>
                 <v-col cols="12">
                   <v-select
@@ -241,8 +300,19 @@
                     :error-messages="stepOneValidation(sidesInfo.defendant_id)"
                     clearable
                     @click:clear="clearDefendantSelect"
+                    @change="changeClaimantUsers"
                   >
                   </v-select>
+                </v-col>
+                <v-col cols="12" v-if="caseModel === 'entry'">
+                  <v-text-field
+                    type="number"
+                    v-model="sidesInfo.defendant_civil"
+                    :label="$t('cases.civil')"
+                    disabled
+                    dense
+                    outlined
+                  ></v-text-field>
                 </v-col>
                 <v-col cols="12">
                   <v-select
@@ -250,14 +320,14 @@
                     :label="$t('tables.department')"
                     :item-text="(item) => item.name"
                     :item-value="(item) => item.id"
-                    disabled
+                    :disabled="caseModel !== 'entry'"
                     dense
                     outlined
                     v-model="sidesInfo.department_id"
                   >
                   </v-select>
                 </v-col>
-                <v-col cols="12">
+                <v-col cols="12" v-if="caseModel !== 'entry'">
                   <v-text-field
                     type="number"
                     v-model="sidesInfo.civil"
@@ -284,8 +354,27 @@
         <v-stepper-content step="3">
           <div class="d-flex flex-column flex-sm-row">
             <div class="flex-grow-1 pt-2 pa-sm-2">
-              <v-row dense>
-                <v-col cols="6">
+              <v-row dense class="mb-2">
+                <v-radio-group v-model="radioAction" row>
+                  <v-radio
+                    class="radio-check"
+                    value="1"
+                    :label="$t('cases.add_session')"
+                  ></v-radio>
+                  <v-radio
+                    class="radio-check"
+                    value="2"
+                    :label="$t('cases.add_court')"
+                  ></v-radio>
+                  <v-radio
+                    value="3"
+                    :label="$t('cases.another')"
+                  ></v-radio>
+                </v-radio-group>
+              </v-row>
+
+              <v-row dense v-if="radioAction == 3">
+                <v-col cols="12">
                   <v-text-field
                     type="number"
                     @keydown="handleInput"
@@ -299,7 +388,7 @@
                     </template>
                   </v-text-field>
                 </v-col>
-                <v-col cols="6">
+                <v-col cols="12">
                   <v-text-field
                     type="number"
                     @keydown="handleInput"
@@ -313,6 +402,9 @@
                     </template>
                   </v-text-field>
                 </v-col>
+              </v-row>
+
+              <v-row dense v-if="radioAction == 2">
                 <v-col cols="6">
                   <v-select
                     :items="caseTypes"
@@ -328,7 +420,7 @@
                   >
                   </v-select>
                 </v-col>
-                <v-col cols="12" sm="6">
+                <v-col cols="6">
                   <v-dialog
                     ref="dateDialog"
                     v-model="dateDialog"
@@ -366,7 +458,6 @@
                     </v-date-picker>
                   </v-dialog>
                 </v-col>
-
                 <v-col cols="6">
                   <v-select
                     :items="courts"
@@ -388,13 +479,16 @@
                     outlined
                   ></v-textarea>
                 </v-col>
-                <v-col cols="12">
-                  <v-checkbox
-                    v-model="sessionDate"
-                    :label="$t('cases.add_session')"
-                  ></v-checkbox>
-                </v-col>
-                <v-col cols="12" sm="12" v-if="sessionDate">
+
+              </v-row>
+              <v-row dense v-if="radioAction == 1">
+<!--                <v-col cols="12">-->
+<!--                  <v-checkbox-->
+<!--                    v-model="sessionDate"-->
+<!--                    :label="$t('cases.add_session')"-->
+<!--                  ></v-checkbox>-->
+<!--                </v-col>-->
+                <v-col cols="12" sm="12">
                   <v-dialog
                     ref="sessionDialog"
                     v-model="sessionDialog"
@@ -461,6 +555,7 @@ export default {
   components: { AddUserDialog },
   data() {
     return {
+      radioAction: "1",
       e1: 1,
       selectedTitle: "",
       caseDateDialog: false,
@@ -470,7 +565,24 @@ export default {
       caseNumber: "",
       caseName: "",
       caseDate: "",
+      caseModel: "",
       branch_id: "",
+      specialization_id: "",
+      organization_id: "",
+      caseModels:[
+        {
+          name:this.$t("cases.from_redf"),
+          value:"from_redf"
+        },
+        {
+          name:this.$t("cases.against_redf"),
+          value:"against_redf"
+        },
+        {
+          name:this.$t("cases.entry"),
+          value:"entry"
+        }
+      ],
       initialLoading: false,
       isLoading: false,
       isSubmitingForm: false,
@@ -493,6 +605,8 @@ export default {
         defendant_id: "",
         civil: "",
         department_id: "",
+        claimant_civil:"",
+        defendant_civil:""
       },
       caseAction: {
         amount: "",
@@ -523,6 +637,8 @@ export default {
         { key: "confirmed", value: 1 },
         { key: "pending", value: 2 },
       ],
+      defendantUsers: [],
+      claimantUsers: [],
     };
   },
 
@@ -531,67 +647,63 @@ export default {
     this.fetchUsers();
     this.fetchDepartments();
     this.getBranches({});
+    this.getCourts();
 
     this.$root.$on("userCreated", () => {
       this.fetchUsers();
     });
   },
   watch: {
-    e1(val) {
-      if (val === 3) {
-        this.getCourts();
-      }
-    },
+    'caseModel'(){
+      this.filterUsers()
+    }
   },
   computed: {
-    ...mapState("cases", ["pages", "selectedForm", "courts", "caseTypes"]),
+    ...mapState("cases", ["pages", "selectedForm", "courts", "caseTypes","specializations","organizations"]),
     ...mapState("auth", ["user"]),
     ...mapState("app", ["navTemplates"]),
     ...mapState("departments", ["departments"]),
     ...mapState("branches", ["branches"]),
 
-    defendantUsers() {
-      // return this.sidesInfo.claimant_id
-      //   ? this.users.filter((obj) => {
-      //       return obj.id !== this.sidesInfo.claimant_id;
-      //     })
-      //   : this.users;
-      if (this.sidesInfo.claimant_id) {
-        const user = this.users.find(
-          (user) => user.id === this.sidesInfo.claimant_id
-        );
-        const civilNumber = user?.user_information?.civil_number || null;
-        if (civilNumber) {
-          this.sidesInfo.civil = civilNumber;
-
-          return this.users.filter((user) => !user.user_information);
-        }
-        this.sidesInfo.department_id = user.department_id;
-        return this.users.filter((user) => user.user_information);
-      }
-      return this.users;
-    },
-    claimantUsers() {
-      // return this.sidesInfo.defendant_id
-      //   ? this.users.filter((obj) => {
-      //       return obj.id !== this.sidesInfo.defendant_id;
-      //     })
-      //   : this.users;
-      if (this.sidesInfo.defendant_id) {
-        const user = this.users.find(
-          (user) => user.id === this.sidesInfo.defendant_id
-        );
-        const civilNumber = user?.user_information?.civil_number || null;
-        if (civilNumber) {
-          this.sidesInfo.civil = civilNumber;
-          this.claimantType = "civil";
-          return this.users.filter((user) => !user.user_information);
-        }
-        this.sidesInfo.department_id = user.department_id;
-        return this.users.filter((user) => user.user_information);
-      }
-      return this.users;
-    },
+    // defendantUsers() {
+    //   if (this.sidesInfo.claimant_id) {
+    //     const user = this.users.find(
+    //       (user) => user.id === this.sidesInfo.claimant_id
+    //     );
+    //     const civilNumber = user?.user_information?.civil_number || null;
+    //     if (civilNumber) {
+    //       this.sidesInfo.civil = civilNumber;
+    //
+    //       return this.users.filter((user) => !user.user_information);
+    //     }
+    //     this.sidesInfo.department_id = user.department_id;
+    //     return this.users.filter((user) => user.user_information);
+    //   }
+    //   return this.users;
+    // },
+    // claimantUsers() {
+    //   console.log(this.caseModel)
+    //
+    //   if(this.caseModel === 'from_redf')
+    //   {
+    //     return this.users.filter((user) => user.roles.includes('system'))
+    //   }
+    //   return false
+    //   if (this.sidesInfo.defendant_id) {
+    //     const user = this.users.find(
+    //       (user) => user.id === this.sidesInfo.defendant_id
+    //     );
+    //     const civilNumber = user?.user_information?.civil_number || null;
+    //     if (civilNumber) {
+    //       this.sidesInfo.civil = civilNumber;
+    //       this.claimantType = "civil";
+    //       return this.users.filter((user) => !user.user_information);
+    //     }
+    //     this.sidesInfo.department_id = user.department_id;
+    //     return this.users.filter((user) => user.user_information);
+    //   }
+    //   return this.users;
+    // },
   },
   methods: {
     ...mapActions("app", ["setBreadCrumb"]),
@@ -608,6 +720,64 @@ export default {
       "getCourts",
       "updatePages",
     ]),
+    filterUsers()
+    {
+      if(this.caseModel === 'from_redf') {
+        this.defendantUsers = this.users.filter((user) => user.type === 'user')
+        this.claimantUsers = this.users.filter(
+          (user) => user.roles.find(
+            (role) => role.name === 'system'
+          )
+        )
+      }
+      else if(this.caseModel === 'against_redf')
+      {
+        this.defendantUsers = this.users.filter(
+          (user) => user.roles.find(
+            (role) => role.name === 'system'
+          )
+        )
+        this.claimantUsers = this.users.filter((user) => user.type === 'user')
+      }
+      else{
+        this.defendantUsers = this.users.filter((user) => user.type === 'user')
+        this.claimantUsers = this.users.filter((user) => user.type === 'user')
+      }
+    },
+    changeDefendantUsers() {
+      if (this.sidesInfo.claimant_id) {
+        const claimantUser = this.users.find(
+          (user) => user.id === this.sidesInfo.claimant_id
+        );
+        if(this.caseModel === 'from_redf'){
+          this.sidesInfo.department_id = claimantUser?.department_id;
+        }
+        else if(this.caseModel === 'against_redf'){
+          this.sidesInfo.civil = claimantUser?.user_information?.civil_number || null;
+        }
+        else if(this.caseModel === 'entry') {
+          this.defendantUsers = this.users.filter((user) => user.id !== claimantUser.id && user.type === 'user');
+          this.sidesInfo.claimant_civil = claimantUser?.user_information?.civil_number || null;
+        }
+      }
+    },
+    changeClaimantUsers() {
+      if (this.sidesInfo.defendant_id) {
+        const defendantUser = this.users.find(
+          (user) => user.id === this.sidesInfo.defendant_id
+        );
+        if(this.caseModel === 'from_redf'){
+          this.sidesInfo.civil = defendantUser?.user_information?.civil_number || null;
+        }
+        else if(this.caseModel === 'against_redf'){
+          this.sidesInfo.department_id = defendantUser?.department_id;
+        }
+        else if(this.caseModel === 'entry') {
+          this.claimantUsers = this.users.filter((user) => user.id !== defendantUser.id && user.type === 'user');
+          this.sidesInfo.defendant_civil = defendantUser?.user_information?.civil_number || null;
+        }
+      }
+    },
     addDate(index) {
       this.caseAction.dates.push({ caseDate: "" });
     },
@@ -672,8 +842,7 @@ export default {
         .then((response) => {
           this.isLoading = false;
           this.users = response.data.data.users;
-          // this.claimantUsers = response.data.data.users
-          // this.defendantUsers = response.data.data.users
+          this.filterUsers()
         })
         .catch(() => {
           this.isLoading = false;
@@ -771,7 +940,11 @@ export default {
         (await this.validateFormData()) &&
         this.caseName &&
         this.caseNumber &&
-        this.caseDate
+        this.caseDate &&
+        this.branch_id &&
+        this.specialization_id &&
+        this.organization_id &&
+        this.caseModel
       ) {
         let result = null;
         if (!this.formRequestId) {
@@ -780,7 +953,10 @@ export default {
             caseNumber: this.caseNumber,
             caseDate: this.caseDate,
             branch_id: this.branch_id,
-            type: 'case'
+            type: 'case',
+            case_type: this.caseModel,
+            specialization_id: this.specialization_id,
+            organization_id: this.organization_id,
           });
         } else {
           result = await this.updatePages({
@@ -817,6 +993,7 @@ export default {
         form_request_id: this.formRequestId,
         claimant_id: this.sidesInfo.claimant_id,
         defendant_id: this.sidesInfo.defendant_id,
+        department_id: this.sidesInfo.department_id,
       };
 
       // if (await this.validateFormData()) {
@@ -865,4 +1042,8 @@ export default {
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+.radio-check {
+  margin-left: 15%;
+}
+</style>

@@ -9,9 +9,10 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 class FormRequestSide extends Model
 {
     use HasFactory, SoftDeletes;
-    protected $fillable = ['claimant_id', 'defendant_id', 'form_request_id']; // Define other fillable attributes
 
-    public $with = ['claimant', 'defendant'];
+    protected $fillable = ['claimant_id', 'defendant_id', 'form_request_id', 'department_id']; // Define other fillable attributes
+
+    public $with = ['claimant', 'defendant', 'department'];
 
     public function formRequest()
     {
@@ -26,5 +27,10 @@ class FormRequestSide extends Model
     public function defendant()
     {
         return $this->belongsTo(User::class, 'defendant_id');
+    }
+
+    public function department()
+    {
+        return $this->belongsTo(Department::class, 'department_id');
     }
 }

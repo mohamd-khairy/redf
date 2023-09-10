@@ -15,6 +15,8 @@ use App\Models\Organization;
 use Illuminate\Http\Request;
 use PhpOffice\PhpWord\PhpWord;
 use App\Http\Controllers\Controller;
+use App\Models\Branch;
+use App\Models\Specialization;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Response;
 use Symfony\Component\DomCrawler\Crawler;
@@ -45,7 +47,7 @@ class HomeController extends Controller
 
         array_push($items, [
             'id' => count($items) + 1,
-            'name' => 'المستندات',
+            'name' => 'الوثائق',
             'icon' => 'mdi-scale-balance',
             'requests_count' => Document::count()
         ]);
@@ -59,9 +61,23 @@ class HomeController extends Controller
 
         array_push($items, [
             'id' => count($items) + 1,
-            'name' => 'المنظمات',
+            'name' => 'التصنيفات',
             'icon' => 'mdi-scale-balance',
             'requests_count' => Organization::count()
+        ]);
+
+        array_push($items, [
+            'id' => count($items) + 1,
+            'name' => 'المحاكم',
+            'icon' => 'mdi-scale-balance',
+            'requests_count' => Branch::count()
+        ]);
+
+        array_push($items, [
+            'id' => count($items) + 1,
+            'name' => 'الدوائر',
+            'icon' => 'mdi-scale-balance',
+            'requests_count' => Specialization::count()
         ]);
 
         return responseSuccess($items);
@@ -70,27 +86,32 @@ class HomeController extends Controller
     public function lookup()
     {
         $courtTypes = Court::pluck('name')->toArray();
+        $branches = Branch::pluck('name')->toArray();
+        $specialization = Specialization::get();
+        $organizations = Organization::get();
 
         $court_type = [];
         $case_type = [];
 
-         foreach ($courtTypes as $key => $courtType) {
+        foreach ($courtTypes as $key => $courtType) {
             $court_type[] = [
-                'title' => __('enums.'.$courtType),
+                'title' => __('enums.' . $courtType),
                 'value' => $courtType,
             ];
         }
 
         foreach (CaseTypeEnum::cases() as $caseTypeValue) {
             $case_type[] = [
-                'title' =>  __('enums.'.$caseTypeValue->name),
+                'title' =>  __('enums.' . $caseTypeValue->name),
                 'value' => $caseTypeValue->name,
             ];
         }
         return responseSuccess([
             'court_types' => $court_type,
             'case_types' => $case_type,
+            'branches' => $branches,
+            'specialization' => $specialization,
+            'organizations' => $organizations
         ]);
-     }
-
+    }
 }

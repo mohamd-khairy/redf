@@ -26,10 +26,16 @@ class FormRequest extends Model
         'name',
         'branche_id',
         'form_type',
-        'case_date'
+        'case_date',
+        'case_type',
+        'specialization_id',
+        'organization_id',
+        'status_request'
     ];
 
-    protected $with = ['user', 'lastFormRequestInformation'];
+    protected $appends = ['sub_status', 'category'];
+
+    protected $with = ['user', 'lastFormRequestInformation', 'formRequestSide', 'branche'];
 
     public function getActivitylogOptions(): LogOptions
     {
@@ -71,6 +77,16 @@ class FormRequest extends Model
         return $this->hasMany(Task::class, 'form_request_id');
     }
 
+    public function branche()
+    {
+        return $this->belongsTo(Branch::class, 'branche_id');
+    }
+
+    public function specialization()
+    {
+        return $this->belongsTo(Specialization::class, 'specialization_id');
+    }
+
     public function formRequestInformation()
     {
         return $this->hasOne(FormRequestInformation::class);
@@ -101,8 +117,18 @@ class FormRequest extends Model
         return $this->belongsTo(Branch::class, 'branche_id');
     }
 
-    // public function getStatusAttribute($value)
-    // {
-    //     return $value ? StatusEnum::$value() : $value;
-    // }
+    public function organization()
+    {
+        return $this->belongsTo(Organization::class, 'organization_id');
+    }
+
+    public function getSubStatusAttribute()
+    {
+        return $this->formRequestInformations->where('sessionDate', '>=', now())->count() > 0 ? 'بإنتظار الجلسه' : null;
+    }
+
+    public function getCategoryAttribute()
+    {
+        return $this->organization ? $this->organization->name : null;
+    }
 }

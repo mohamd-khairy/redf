@@ -10,6 +10,7 @@ use Illuminate\Pipeline\Pipeline;
 use App\Http\Requests\PageRequest;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\SpecializeRequest;
+use Throwable;
 
 class SpecializationController extends Controller
 {
@@ -24,7 +25,7 @@ class SpecializationController extends Controller
             SortFilters::class,
         ])->thenReturn();
 
-        $data = $data->paginate(request('pageSize', 15));
+        $data = request('pageSize') == -1 ?  $data->get() : $data->paginate(request('pageSize', 15));
 
         return responseSuccess(['specializations' => $data]);
     }
@@ -70,11 +71,11 @@ class SpecializationController extends Controller
 
         $request->validate([
             'name' => 'nullable|string|max:255',
-         ]);
+        ]);
 
         $specialization->update($request->all());
 
-        return responseSuccess($branch, 'Specialization has been successfully Updated');
+        return responseSuccess($specialization, 'Specialization has been successfully Updated');
     }
 
     /**

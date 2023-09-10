@@ -214,7 +214,17 @@ const actions = {
   },
   async savePages(
     { state },
-    { caseName, caseNumber, case_id, branch_id, caseDate, type }
+    {
+      caseName,
+      caseNumber,
+      case_id,
+      branch_id,
+      caseDate,
+      type,
+      case_type,
+      specialization_id,
+      organization_id,
+    }
   ) {
     try {
       const customFormData = {
@@ -259,6 +269,15 @@ const actions = {
       if (type) {
         bodyFormData.set("type", type);
       }
+      if (case_type) {
+        bodyFormData.set("case_type", case_type);
+      }
+      if (specialization_id) {
+        bodyFormData.set("specialization_id", specialization_id);
+      }
+      if (organization_id) {
+        bodyFormData.set("organization_id", organization_id);
+      }
       const result = await axios.post(`store-form-fill`, bodyFormData, {
         headers: {
           "Content-Type": "multipart/form-data",
@@ -272,7 +291,17 @@ const actions = {
   },
   async updatePages(
     { state },
-    { caseName, caseNumber, formId, branch_id, caseDate, type }
+    {
+      caseName,
+      caseNumber,
+      formId,
+      branch_id,
+      caseDate,
+      type,
+      case_type,
+      specialization_id,
+      organization_id,
+    }
   ) {
     try {
       const customFormData = {
@@ -315,6 +344,15 @@ const actions = {
       }
       if (type) {
         bodyFormData.set("type", type);
+      }
+      if (case_type) {
+        bodyFormData.set("case_type", case_type);
+      }
+      if (specialization_id) {
+        bodyFormData.set("specialization_id", specialization_id);
+      }
+      if (organization_id) {
+        bodyFormData.set("organization_id", organization_id);
       }
       const response = await axios.post(
         `update-form-fill/${formId}`,
@@ -479,11 +517,27 @@ const actions = {
   },
   async getCourts({ commit }) {
     const response = await axios.get(`lookup`);
-    console.log(response);
+
     const { court_types } = response?.data.data;
     const { case_types } = response?.data.data;
+    const { specialization } = response?.data.data;
+    const { branches } = response?.data.data;
+    const { organizations } = response?.data.data;
     commit("SET_CORTS", court_types);
+    commit("SET_BRANCHES", branches);
     commit("SET_CASE_TYPES", case_types);
+    commit("SET_specializations", specialization);
+    commit("SET_organizations", organizations);
+  },
+  async retrieveClaimant({ commit }, { form_request_id }) {
+    const response = await axios.get(`retrieve-claimant`, {
+      params: {
+        form_request_id,
+      },
+    });
+    const claimant = response?.data?.data || [];
+
+    commit("SET_CLAIMANT", claimant);
   },
   async getCasePreview({ commit }, id) {
     const response = await axios.get(`action-preview/${id}`);

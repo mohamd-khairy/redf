@@ -15,6 +15,7 @@ use App\Services\FormRequestService;
 use App\Http\Requests\FormFillRequest;
 use App\Http\Requests\InformationRequest;
 use App\Http\Resources\FormRequestResource;
+use App\Models\FormRequestSide;
 
 class FormRequestController extends Controller
 {
@@ -70,8 +71,16 @@ class FormRequestController extends Controller
     public function getFormRequestfill($id)
     {
         try {
-            $formfill = FormRequest::with('form.pages.items', 'user', 'form_page_item_fill', 'formRequestInformations', 'formRequestSide', 'lastFormRequestInformation', 'request')
-                ->find($id);
+            $formfill = FormRequest::with(
+                'form.pages.items',
+                'user',
+                'form_page_item_fill',
+                'formRequestInformations',
+                'formRequestSide',
+                'lastFormRequestInformation',
+                'request',
+                'branche'
+            )->find($id);
 
             return responseSuccess(new FormRequestResource($formfill), 'Form requests retrieved successfully');
         } catch (\Throwable $th) {
@@ -123,7 +132,7 @@ class FormRequestController extends Controller
             return responseFail($th->getMessage());
         }
     }
-    public function retrieveClaimant(Request $request){
+    public function retrieveClaimant2(Request $request){
         $formRequestSide = DB::table('form_request_sides')
         ->select('claimant_id', 'defendant_id')
         ->where('form_request_id', $request->form_request_id)
@@ -160,4 +169,19 @@ class FormRequestController extends Controller
 
         return responseSuccess($response, 'Status updated successfully');
      }
+    public function retrieveClaimant(Request $request)
+    {
+        $formRequestSide = FormRequestSide::select('claimant_id', 'defendant_id')->where('form_request_id', $request->form_request_id)->first();
+
+        if ($formRequestSide) {
+
+            $users = User::select('id', 'name')->whereIn('id', [$formRequestSide->claimant_id, $formRequestSide->defendant_id])->get();
+
+            if ($users) {
+                return responseSuccess($users, 'Retrieve Claimant And Defendant');
+            }
+        }
+
+        return responseSuccess([], 'Retrieve Claimant And Defendant');
+    }
 }

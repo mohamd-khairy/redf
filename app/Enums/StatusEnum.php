@@ -10,10 +10,10 @@ enum StatusEnum: string
 
     case active = 'active';
     case notactive = 'notactive';
-    case WAIT = 'بانتظار الاجراء';
+    case WAIT = 'بإنتظار الاجراء';
 
-    case PENDING = 'بانتظار احالتها للموظف المختص';
-    case WAIT_SECOND_RULE = 'بانتظار حكم الإستئناف';
-    case WAIT_THIRD_RULE = 'بانتظار الحكم النهائي';
-    case ASSIGNED = 'بانتظار الحكم الإبتدائي';
+    case PENDING = 'بإنتظار احالتها للموظف المختص';
+    case WAIT_SECOND_RULE = 'بإنتظار حكم الإستئناف';
+    case WAIT_THIRD_RULE = 'بإنتظار الحكم النهائي';
+    case ASSIGNED = 'بإنتظار الحكم الإبتدائي';
 }

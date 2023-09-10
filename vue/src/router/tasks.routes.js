@@ -17,7 +17,7 @@ export default [
     component: () =>
       import(/* webpackChunkName: "tasks-list" */ "@/pages/tasks/index.vue"),
     meta: {
-      title: "",
+      title: "المهام",
     },
   },
   {
@@ -26,7 +26,7 @@ export default [
     meta: {
       auth: true,
       permissions: "update-role",
-      title: "",
+      title: "المهام",
     },
     component: () =>
       import(/* webpackChunkName: "tasks-edit" */ "@/pages/tasks/edit.vue"),
@@ -37,7 +37,7 @@ export default [
     meta: {
       auth: true,
       permissions: "create-role",
-      title: "",
+      title: "المهام",
     },
     component: () =>
       import(/* webpackChunkName: "tasks-create" */ "@/pages/tasks/create.vue"),
@@ -48,7 +48,7 @@ export default [
     meta: {
       auth: true,
       permissions: "read-role",
-      title: "",
+      title: "المهام",
     },
     component: () =>
       import(/* webpackChunkName: "tasks-view" */ "@/pages/tasks/show.vue"),
