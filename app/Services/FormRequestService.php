@@ -89,12 +89,16 @@ class FormRequestService
                 msg: ' تم اضافه ' . $formRequest->name
             );
 
+            /*********** add Notifications ********* */
+            sendMsgFormat(Auth::id() , $formRequest->form->name . ' تم اضافه ' ,'اضافه قضيه');
+
             $this->processFormPages($requestData, $formRequest);
 
+
             return $formRequest;
+
         });
 
-        // sendMsgFormat(Auth::id() , $formRequest->form->name . ' تم اضافه ' ,'اضافه قضيه');
 
     }
 
