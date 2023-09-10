@@ -123,7 +123,7 @@
                           ></v-text-field>
                         </v-col>
                       </v-row>
-                      <v-row dense>
+                      <v-row dense v-if="lastAction?.type === 'court'">
                         <v-col cols="12" sm="3">
                           <h6 class="mt-1 mb-0 c-h6">
                             {{ $t("cases.receiptDate") }}
