@@ -548,6 +548,9 @@ const actions = {
     const { formRequestActions } = response?.data?.data;
     return formRequestActions;
   },
+  async updateFormRequestInfo({ commit }, data) {
+    return await axios.put(`update-form-request-information/${data.id}` , data);
+  },
 };
 
 export default actions;

@@ -20,9 +20,9 @@
           <div class="flex-grow-1 pt-2 pa-sm-2">
             <v-row dense v-if="lastAction" class="mb-2">
               <v-col cols="12">
-                <v-expansion-panels multiple v-model="panel">
+                <v-expansion-panels multiple v-model="panel" readonly>
                   <v-expansion-panel v-model="panel">
-                    <v-expansion-panel-header>
+                    <v-expansion-panel-header hide-actions>
                       <h5>{{ $t("general.last_action") }}</h5>
                     </v-expansion-panel-header>
                     <v-expansion-panel-content>
@@ -123,14 +123,52 @@
                           ></v-text-field>
                         </v-col>
                       </v-row>
-                      <v-row dense v-if="lastAction?.date_of_receipt">
+                      <v-row dense>
                         <v-col cols="12" sm="3">
                           <h6 class="mt-1 mb-0 c-h6">
                             {{ $t("cases.receiptDate") }}
                           </h6>
                         </v-col>
                         <v-col cols="12" sm="9">
+
+                          <v-dialog
+                            v-if="lastAction?.type === 'court' && !lastAction?.date_of_receipt"
+                            ref="receiptDialog"
+                            v-model="receiptDialog"
+                            :return-value.sync="receiptDate"
+                            persistent
+                            width="290px"
+                          >
+                            <template v-slot:activator="{ on, attrs }">
+                              <v-text-field
+                                v-model="receiptDate"
+                                :label="$t('cases.receiptDate')"
+                                append-icon="mdi-calendar"
+                                readonly
+                                v-bind="attrs"
+                                v-on="on"
+                                dense
+                                solo
+                              ></v-text-field>
+                            </template>
+                            <v-date-picker v-model="receiptDate" scrollable>
+                              <v-spacer></v-spacer>
+                              <v-btn text color="primary" @click="receiptDialog = false">
+                                Cancel
+                              </v-btn>
+                              <v-btn
+                                text
+                                color="primary"
+                                @click="$refs.receiptDialog.save(receiptDate)"
+                              >
+                                OK
+                              </v-btn>
+                            </v-date-picker>
+                          </v-dialog>
+
+
                           <v-text-field
+                            v-else
                             dense
                             class="custom-disabled-input"
                             :value="lastAction?.date_of_receipt || ''"
@@ -241,6 +279,20 @@
           </div>
         </div>
       </v-card-text>
+      <v-card-actions class="pb-2" v-if="lastAction?.type === 'court' && !lastAction?.date_of_receipt">
+        <v-spacer></v-spacer>
+        <v-btn
+          @click="storeFormAction"
+          color="primary"
+          :disabled="isLoading"
+          :loading="isLoading"
+        >
+          {{ $t("general.save") }}
+        </v-btn>
+        <v-btn class="ms-2" @click="closeDialog" color="grey">
+          {{ $t("general.cancel") }}
+        </v-btn>
+      </v-card-actions>
     </v-card>
   </v-dialog>
 </template>
@@ -263,6 +315,8 @@ export default {
     return {
       loading: false,
       isLoading: false,
+      receiptDialog: false,
+      receiptDate: null,
       panel: [0],
       caseAction: {
         form_request_id: this.formRequestId,
@@ -287,7 +341,7 @@ export default {
   },
 
   created() {
-    this.getCourts();
+    // this.getCourts();
   },
   watch: {
   },
@@ -295,7 +349,7 @@ export default {
     ...mapState("cases", ["courts", "caseTypes", "claimant"]),
   },
   methods: {
-    ...mapActions("cases", ["getCourts"]),
+    ...mapActions("cases", ["getCourts",'updateFormRequestInfo']),
     closeDialog() {
       this.$emit("close-action-dialog");
     },
@@ -312,6 +366,21 @@ export default {
       };
 
       return colors[status] || "primary";
+    },
+    async storeFormAction() {
+      this.isLoading = true;
+
+      let data = {
+        id: this.lastAction.id,
+        date_of_receipt: this.receiptDate,
+      };
+      this.isLoading = true;
+      const result = await this.updateFormRequestInfo(data);
+      if (result) {
+        makeToast("success", "تم اضافة تاريخ استلام الحكم");
+        this.closeDialog();
+      }
+      this.isLoading = false;
     },
   },
 };
