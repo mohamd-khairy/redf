@@ -527,6 +527,7 @@ const actions = {
     const { specialization } = response?.data.data;
     const { branches } = response?.data.data;
     const { organizations } = response?.data.data;
+    commit("SET_CORTS", court_types);
     commit("SET_SESSION_PLACES", branches);
     commit("SET_CASE_TYPES", case_types);
     commit("SET_specializations", specialization);
@@ -552,6 +553,9 @@ const actions = {
       status: status,
       form_request_id: formId,
     });
+  },
+  async updateFormRequestInfo({ commit }, data) {
+    return await axios.put(`update-form-request-information/${data.id}` , data);
   },
 };
 
