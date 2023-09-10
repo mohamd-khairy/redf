@@ -527,7 +527,6 @@ const actions = {
     const { specialization } = response?.data.data;
     const { branches } = response?.data.data;
     const { organizations } = response?.data.data;
-    commit("SET_CORTS", court_types);
     commit("SET_SESSION_PLACES", branches);
     commit("SET_CASE_TYPES", case_types);
     commit("SET_specializations", specialization);
@@ -547,6 +546,12 @@ const actions = {
     const response = await axios.get(`action-preview/${id}`);
     const { formRequestActions } = response?.data?.data;
     return formRequestActions;
+  },
+  async changeStatus({ commit }, { status, formId }) {
+    const response = await axios.post(`change-status`, {
+      status: status,
+      form_request_id: formId,
+    });
   },
 };
 
