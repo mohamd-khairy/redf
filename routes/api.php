@@ -172,7 +172,10 @@ Route::group(['prefix' => 'v1'], function () {
 
         Route::post('assign-request', [FormRequestController::class, 'assignRequest']);
         Route::post('form-request-side', [FormRequestController::class, 'storeFormRequestSide']);
+
         Route::post('form-request-information', [FormRequestController::class, 'formRequestInformation']);
+        Route::put('update-form-request-information/{id}', [FormRequestController::class, 'updateFormRequestInformation']);
+        
         Route::get('retrieve-claimant', [FormRequestController::class, 'retrieveClaimant']);
 
         Route::post('change-status', [FormRequestController::class, 'changeStatus']);
