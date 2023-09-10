@@ -20,6 +20,8 @@ use App\Http\Requests\FormFillRequest;
 use App\Http\Requests\InformationRequest;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Resources\FormRequestResource;
+use App\Models\File;
+use Illuminate\Support\Facades\File as FacadesFile;
 
 class FormRequestController extends Controller
 {
@@ -28,7 +30,7 @@ class FormRequestController extends Controller
 
     public function __construct(FormRequestService $formRequestService)
     {
-        $this->middleware(['auth']);
+        // $this->middleware(['auth']);
         // $this->middleware('permission:list-form|edit-form|create-form|delete-form', ['only' => ['index', 'store']]);
         // $this->middleware('permission:create-form', ['only' => ['store']]);
         // $this->middleware('permission:edit-form', ['only' => ['edit', 'update']]);
@@ -168,5 +170,16 @@ class FormRequestController extends Controller
         }
 
         return responseSuccess([], 'Retrieve Claimant And Defendant');
+    }
+
+    public function getFile($id)
+    {
+        $file = File::where(['fileable_id' => $id, 'fileable_type' => 'App\Models\FormRequest'])->first();
+
+        if (!$file) {
+            return responseFail('there is no file for this id');
+        }
+
+        return  file_get_contents($file->file); //FacadesFile::get($file->file);
     }
 }

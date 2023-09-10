@@ -90,16 +90,13 @@ class FormRequestService
             );
 
             /*********** add Notifications ********* */
-            sendMsgFormat(Auth::id() , $formRequest->form->name . ' تم اضافه ' ,'اضافه قضيه');
+            sendMsgFormat(Auth::id(), $formRequest->form->name . ' تم اضافه ', 'اضافه قضيه');
 
             $this->processFormPages($requestData, $formRequest);
 
 
             return $formRequest;
-
         });
-
-
     }
 
     public function updateStatus($formId)
@@ -149,10 +146,13 @@ class FormRequestService
             // save related tables if get case_id
             if ($requestData->case_id) {
                 // Update Formable record
-                Formable::updateOrCreate(['form_request_id' => $formRequest->id], [
-                    'formable_id' => $requestData->case_id,
-                    'formable_type' => FormRequest::class,
-                ]);
+                Formable::updateOrCreate(
+                    ['form_request_id' => $formRequest->id],
+                    [
+                        'formable_id' => $requestData->case_id,
+                        'formable_type' => FormRequest::class,
+                    ]
+                );
 
                 saveFormRequestAction(
                     form_request_id: $requestData->case_id,
