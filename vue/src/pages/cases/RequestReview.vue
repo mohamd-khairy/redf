@@ -121,11 +121,11 @@
           <div>{{ item?.request?.formable?.name ?? "---" }}</div>
         </template>
 
-        <template v-slot:item.assigner="{ item }">
+        <!-- <template v-slot:item.assigner="{ item }">
           <div>
             {{ item.form_assigned_requests[0]?.user.name ?? "---" }}
           </div>
-        </template>
+        </template> -->
 
         <template v-slot:item.status="{ item }">
           <v-chip
@@ -366,7 +366,7 @@ export default {
         { text: this.$t("tables.number"), value: "form_request_number" },
         { text: this.$t("tables.name"), value: "name" },
         { text: this.$t("tables.caseName"), value: "caseName" },
-        { text: this.$t("tables.assigner"), value: "assigner" },
+        // { text: this.$t("tables.assigner"), value: "assigner" },
         { text: this.$t("tables.status"), value: "status" },
         { text: this.$t("tables.created"), value: "created_at" },
         {

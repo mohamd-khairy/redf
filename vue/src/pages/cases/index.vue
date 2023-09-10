@@ -104,7 +104,8 @@
         </template> -->
 
         <template v-slot:item.status="{ item }">
-          <v-chip v-if="item.last_form_request_information != null" small :color="getStatusColor(item?.status?.toLowerCase())" text-color="white" @click="openShowActionDialog(item)">
+          <v-chip v-if="item.last_form_request_information != null" small
+            :color="getStatusColor(item?.status?.toLowerCase())" text-color="white" @click="openShowActionDialog(item)">
             <!-- {{
               item?.status ? $t(`general.${item.status.toLowerCase()}`) : "---"
             }} -->
@@ -118,11 +119,11 @@
           </v-chip>
         </template>
 
-        <template v-slot:item.sub_status="{ item }">
+        <!-- <template v-slot:item.sub_status="{ item }">
           <v-chip small :color="getStatusColor(item?.status?.toLowerCase())" text-color="white">
             {{ item?.sub_status ? item.sub_status : "---" }}
           </v-chip>
-        </template>
+        </template> -->
 
         <template v-slot:item.case_date="{ item }">
           <div>{{ item.case_date | formatDate("ll") }}</div>
@@ -143,39 +144,39 @@
             <v-list dense>
               <v-list-item @click="openActionDialog(item)">
                 <v-list-item-title>
-                    <v-icon>mdi-plus-circle-outline</v-icon>
-                    <span class="action-span">{{$t("cases.add_action")}}</span>
-                  </v-list-item-title>
+                  <v-icon>mdi-plus-circle-outline</v-icon>
+                  <span class="action-span">{{ $t("cases.add_action") }}</span>
+                </v-list-item-title>
               </v-list-item>
               <v-list-item @click="openCasePreviewDialog(item.id)">
                 <v-list-item-title>
-                    <v-icon>mdi-timeline-text-outline</v-icon>
-                    <span class="action-span">{{$t("cases.view_timeline")}}</span>
-                  </v-list-item-title>
+                  <v-icon>mdi-timeline-text-outline</v-icon>
+                  <span class="action-span">{{ $t("cases.view_timeline") }}</span>
+                </v-list-item-title>
               </v-list-item>
               <v-list-item @click="openCaseInfoDialog(item.id)">
                 <v-list-item-title>
-                    <v-icon>mdi-eye-outline</v-icon>
-                    <span class="action-span">{{ $t("cases.view_info") }}</span>
-                  </v-list-item-title>
+                  <v-icon>mdi-eye-outline</v-icon>
+                  <span class="action-span">{{ $t("cases.view_info") }}</span>
+                </v-list-item-title>
               </v-list-item>
               <v-list-item @click="openAssignDialog(item.id)">
                 <v-list-item-title>
-                    <v-icon>mdi-at</v-icon>
-                    <span class="action-span">{{ $t("cases.assign_user") }}</span>
-                  </v-list-item-title>
+                  <v-icon>mdi-at</v-icon>
+                  <span class="action-span">{{ $t("cases.assign_user") }}</span>
+                </v-list-item-title>
               </v-list-item>
               <v-list-item :to="`/cases/${currentPageId}/edit/${item.id}`">
                 <v-list-item-title>
-                    <v-icon>mdi-open-in-new</v-icon>
-                    <span class="action-span">{{ $t("cases.editCase") }}</span>
-                  </v-list-item-title>
+                  <v-icon>mdi-open-in-new</v-icon>
+                  <span class="action-span">{{ $t("cases.editCase") }}</span>
+                </v-list-item-title>
               </v-list-item>
               <v-list-item @click.prevent="deleteItem(item.id)" v-can="'delete-user'">
                 <v-list-item-title>
-                    <v-icon>mdi-close</v-icon>
-                    <span class="action-span">{{ $t("cases.delete") }}</span>
-                  </v-list-item-title>
+                  <v-icon>mdi-close</v-icon>
+                  <span class="action-span">{{ $t("cases.delete") }}</span>
+                </v-list-item-title>
               </v-list-item>
             </v-list>
           </v-menu>
@@ -201,8 +202,8 @@
         v-else-if="addDynamicActionDialog && currentPageId != 1" @close-action-dialog="closeDynamicActionDialog" />
       <assign @userAssigned="userAssigned" v-model="dialog" :id="formId"></assign>
       <show-action :dialogVisible="showActionDialog" :formRequestId="formId"
-                   :lastAction="selectedForm.last_form_request_information || null" v-if="showActionDialog"
-                   @close-action-dialog="closeShowActionDialog"></show-action>
+        :lastAction="selectedForm.last_form_request_information || null" v-if="showActionDialog"
+        @close-action-dialog="closeShowActionDialog"></show-action>
     </v-card>
   </div>
 </template>
@@ -294,7 +295,7 @@ export default {
         { text: this.$t("tables.user"), value: "user" },
         { text: this.$t("tables.assigner"), value: "assigner" },
         { text: this.$t("tables.status"), value: "status" },
-        { text: this.$t("tables.sub_status"), value: "sub_status" },
+        // { text: this.$t("tables.sub_status"), value: "sub_status" },
         { text: this.$t("tables.case_date"), value: "case_date" },
         // { text: this.$t("tables.created"), value: "created_at" },
         {
@@ -478,6 +479,7 @@ export default {
 .action-span {
   margin-right: 5px;
 }
+
 .slide-fade-enter-active {
   transition: all 0.3s ease;
 }
