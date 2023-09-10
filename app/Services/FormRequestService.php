@@ -306,9 +306,10 @@ class FormRequestService
 
             $formRequestInfo = FormRequestInformation::create($validatedData);
 
-            if ($request->status) {
-                $status = $request->status;
-                $formRequestInfo->form_request->update(['status' => CaseTypeEnum::$status()]);
+            $rstatus = $request->status;
+            $status = $request->type == 'session' ? StatusEnum::WAIT_SESSION : ($rstatus ? CaseTypeEnum::$rstatus() : null);
+            if ($status) {
+                $formRequestInfo->form_request->update(['status' => $status]);
             }
 
             if ($request->date) {
@@ -316,7 +317,7 @@ class FormRequestService
                     'form_request_id' => $formRequestInfo->form_request_id,
                     'calendarable_id' => $formRequestInfo->form_request_id,
                     'calendarable_type' => FormRequest::class,
-                    'details' => $request->details ? $request->details : 'تم اضافه اجراء جديد',
+                    'details' => $request->type == 'session' ? 'تم اضافة جلسة جديده' : ($request->details ? $request->details : 'تم اضافه اجراء جديد'),
                     'user_id' => auth()->id(),
                     'date' => $request->date,
                 ];
@@ -328,7 +329,7 @@ class FormRequestService
                 form_request_id: $formRequestInfo->form_request_id,
                 formable_id: $formRequestInfo->id,
                 formable_type: FormRequestInformation::class,
-                msg: $request->details ? $request->details : 'تم اضافه اجراء جديد',
+                msg: $request->type == 'session' ? 'تم اضافة جلسة جديده' : ($request->details ? $request->details : 'تم اضافه اجراء جديد'),
             );
 
             DB::commit();
