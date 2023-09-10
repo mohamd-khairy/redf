@@ -182,15 +182,8 @@ class FormRequestController extends Controller
             return responseFail('there is no file for this id');
         }
 
-        $docContent = Storage::get($file->file);
-        $type       = Storage::mimeType($file->file);
+        $b64image = base64_encode(file_get_contents($file->file));
 
-
-        return Response::make($docContent, 200, [
-            'Content-Type'        => $type,
-            'Content-Disposition' => 'inline; filename="' . $file->name . '"',
-        ]);
-
-        // return  file_get_contents($file->file); //FacadesFile::get($file->file);
+        return responseSuccess($b64image);
     }
 }
