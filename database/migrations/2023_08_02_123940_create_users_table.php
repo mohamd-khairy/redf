@@ -21,7 +21,6 @@ return new class extends Migration
             $table->string('phone')->nullable()->unique();
             $table->string('email')->unique();
             $table->string('password');
-            $table->foreignId('organization_id')->nullable()->constrained();
             $table->foreignId('department_id')->nullable()->constrained();
             $table->string('guid')->unique()->nullable();
             $table->string('domain')->nullable();

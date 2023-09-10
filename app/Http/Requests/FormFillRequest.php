@@ -48,7 +48,7 @@ class FormFillRequest extends FormRequest
             $data['case_date'] = 'required|date';
             $data['branche_id'] = 'required';
             $data['specialization_id'] = 'required';
-            $data['category'] = 'nullable';
+            $data['organization_id'] = 'required';
             $data['case_type'] = 'required';
         }
 

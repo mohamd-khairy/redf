@@ -161,7 +161,7 @@ export default {
     search: "بحث (اضغط على 'ctrl + /' للتركيز)",
     dashboard: "الرئيسية",
     departments: "الإدارات",
-    organizations: "المنظمات",
+    organizations: "التصنيفات",
     logout: "تسجيل خروج",
     login: "تسجيل الدخول",
     signup: "تسجيل حساب جديد",
@@ -249,7 +249,7 @@ export default {
     cases_child: "مراجعة القضايا",
     editCase: "تعديل البيانات",
     request_review: "مراجعة الطلبات",
-    specialization: "الدوائر",
+    specialization: "الدوائر"
   },
   breadcrumbs: {
     pipesList: "قائمة النماذج",
@@ -520,7 +520,10 @@ export default {
     receiptDate: "تاريخ استلام الحكم",
     judgmentDate: "تاريخ الحكم",
     casePlace: "مكان الجلسة",
+    department: "القسم",
     selectCase: "اختيار القضية",
+    add_court: "اضافة حكم",
+    another: "اخرى",
   },
 
   departments: {
@@ -623,7 +626,7 @@ export default {
     assigned_to: "مكلفة الي",
     added_date: "تاريخ الاضافة",
     specialization: "الدائره (الاختصاص)",
-    sub_status: "الحالة الفرعية",
+    sub_status: "الحالة الفرعية"
     // causer_type: "",
   },
   texts: {
@@ -853,15 +856,15 @@ export default {
     welcome: "مرحبا",
   },
   organizations: {
-    organizationsList: "قائمة المنظمات",
-    organizationsManagement: "ادارة المنظمات",
-    createOrganizer: "انشاء منظمة ",
-    orgName: "اسم المنظمة",
-    orgDesc: "وصف المنظمة",
-    createOrg: "انشاء منظمة",
-    confirmDeleteOrg: "هل انت متأكد من حذف هذه المنظمة ؟",
-    confirmDeleteSelectedOrg: "هل انت متأكد من حذف المنظمات المحددة ؟",
-    editOrg: "تحديث منظمة",
+    organizationsList: "قائمة التصنيفات",
+    organizationsManagement: "ادارة التصنيفات",
+    createOrganizer: "انشاء تصنيف ",
+    orgName: "اسم التصنيف",
+    orgDesc: "وصف التصنيف",
+    createOrg: "انشاء تصنيف",
+    confirmDeleteOrg: "هل انت متأكد من حذف هذا التصنيف ؟",
+    confirmDeleteSelectedOrg: "هل انت متأكد من حذف التصنيفات المحددة ؟",
+    editOrg: "تحديث تصنيف",
   },
   documents: {
     documentsList: "قائمة الوثائق",
@@ -925,8 +928,7 @@ export default {
     SpecializationName: "اسم الدائره",
     createSpecialization: "انشاء دائره",
     confirmDeleteSpecialization: "هل انت متأكد من حذف هذه الدائره ؟",
-    confirmDeleteSelectedSpecialization:
-      "هل انت متأكد من حذف الدوائر المحددة ؟",
+    confirmDeleteSelectedSpecialization: "هل انت متأكد من حذف الدوائر المحددة ؟",
     editSpecialization: "تحديث بيانات الدائرة",
     status: "الحالة",
     priority: "الاولوية",

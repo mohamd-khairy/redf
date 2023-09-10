@@ -11,6 +11,7 @@ use App\Models\Template;
 use App\Models\Department;
 use App\Enums\CaseTypeEnum;
 use App\Enums\CourtTypeEnum;
+use App\Enums\FormRequestStatus;
 use App\Models\Organization;
 use Illuminate\Http\Request;
 use PhpOffice\PhpWord\PhpWord;
@@ -47,7 +48,7 @@ class HomeController extends Controller
 
         array_push($items, [
             'id' => count($items) + 1,
-            'name' => 'المستندات',
+            'name' => 'الوثائق',
             'icon' => 'mdi-scale-balance',
             'requests_count' => Document::count()
         ]);
@@ -59,12 +60,26 @@ class HomeController extends Controller
             'requests_count' => Department::count()
         ]);
 
-        // array_push($items, [
-        //     'id' => count($items) + 1,
-        //     'name' => 'المنظمات',
-        //     'icon' => 'mdi-scale-balance',
-        //     'requests_count' => Organization::count()
-        // ]);
+        array_push($items, [
+            'id' => count($items) + 1,
+            'name' => 'التصنيفات',
+            'icon' => 'mdi-scale-balance',
+            'requests_count' => Organization::count()
+        ]);
+
+        array_push($items, [
+            'id' => count($items) + 1,
+            'name' => 'المحاكم',
+            'icon' => 'mdi-scale-balance',
+            'requests_count' => Branch::count()
+        ]);
+
+        array_push($items, [
+            'id' => count($items) + 1,
+            'name' => 'الدوائر',
+            'icon' => 'mdi-scale-balance',
+            'requests_count' => Specialization::count()
+        ]);
 
         return responseSuccess($items);
     }
@@ -74,6 +89,7 @@ class HomeController extends Controller
         $courtTypes = Court::pluck('name')->toArray();
         $branches = Branch::pluck('name')->toArray();
         $specialization = Specialization::get();
+        $organizations = Organization::get();
 
         $court_type = [];
         $case_type = [];
@@ -91,11 +107,20 @@ class HomeController extends Controller
                 'value' => $caseTypeValue->name,
             ];
         }
+
+        foreach (FormRequestStatus::cases() as $value) {
+            $request_status[] = [
+                'title' =>  $value->value,
+                'value' => $value->name,
+            ];
+        }
         return responseSuccess([
+            'request_status' => $request_status,
             'court_types' => $court_type,
             'case_types' => $case_type,
             'branches' => $branches,
             'specialization' => $specialization,
+            'organizations' => $organizations,
         ]);
     }
 }

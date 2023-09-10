@@ -35,7 +35,7 @@ class FormRequestService
                 'form_id' => $requestData['id'],
                 'branche_id' => $requestData['branche_id'],
                 'specialization_id' => $requestData['specialization_id'],
-                'category' => $requestData['category'],
+                'organization_id' => $requestData['organization_id'] ?? null,
                 'case_type' => $requestData['case_type'],
                 'user_id' => Auth::id(),
                 'status' => StatusEnum::PENDING,
@@ -89,12 +89,16 @@ class FormRequestService
                 msg: ' تم اضافه ' . $formRequest->name
             );
 
+            /*********** add Notifications ********* */
+            sendMsgFormat(Auth::id() , $formRequest->form->name . ' تم اضافه ' ,'اضافه قضيه');
+
             $this->processFormPages($requestData, $formRequest);
 
+
             return $formRequest;
+
         });
 
-        // sendMsgFormat(Auth::id() , $formRequest->form->name . ' تم اضافه ' ,'اضافه قضيه');
 
     }
 
@@ -133,7 +137,7 @@ class FormRequestService
             $updatedData = [
                 'branche_id' => $requestData['branche_id'],
                 'specialization_id' => $requestData['specialization_id'],
-                'category' => $requestData['category'],
+                'organization_id' => $requestData['organization_id'],
                 'case_type' => $requestData['case_type'],
                 'form_type' => $requestData['type'],
                 'case_date' => $requestData['case_date'],
@@ -145,9 +149,8 @@ class FormRequestService
             // save related tables if get case_id
             if ($requestData->case_id) {
                 // Update Formable record
-                Formable::updateOrCreate([
+                Formable::updateOrCreate(['form_request_id' => $formRequest->id], [
                     'formable_id' => $requestData->case_id,
-                    'form_request_id' => $formRequest->id,
                     'formable_type' => FormRequest::class,
                 ]);
 

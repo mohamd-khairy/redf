@@ -65,6 +65,17 @@ export default [
       import(/* webpackChunkName: "pipes-list" */ "@/pages/cases/EditDynamic"),
   },
   {
+    path: "/cases/:formType/request-review/edit/:id",
+    name: "request-review-edit",
+    meta: {
+      title: "menu.editCase",
+      auth: true,
+      // permissions: 'read-event'
+    },
+    component: () =>
+      import(/* webpackChunkName: "pipes-list" */ "@/pages/cases/Edit"),
+  },
+  {
     path: "/flights/show",
     name: "flights-show",
     meta: {

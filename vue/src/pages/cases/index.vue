@@ -124,80 +124,55 @@
         <!-- <template v-slot:item.created_at="{ item }">
           <div>{{ item.created_at | formatDate("ll") }}</div>
         </template> -->
-
         <template v-slot:item.action="{ item }">
-          <div class="actions">
-            <!-- add action button -->
-            <v-tooltip top>
-              <template v-slot:activator="{ on, attrs }">
-                <v-btn color="primary" icon elevation="0" v-bind="attrs" v-on="on" @click="openActionDialog(item)">
-                  <v-icon>mdi-plus-circle-outline</v-icon>
+          <v-menu offset-y left>
+            <template v-slot:activator="{ on }">
+              <transition name="slide-fade" mode="out-in">
+                <v-btn color="primary" v-on="on">
+                  {{ $t("cases.actions") }}
+                  <v-icon right>mdi-menu-down</v-icon>
                 </v-btn>
-              </template>
-              <span>{{ $t("cases.add_action") }}</span>
-            </v-tooltip>
-
-            <!-- view case timeline button -->
-            <v-tooltip top>
-              <template v-slot:activator="{ on, attrs }">
-                <v-btn color="primary" icon elevation="0" v-bind="attrs" v-on="on"
-                  @click="openCasePreviewDialog(item.id)">
-                  <v-icon>mdi-timeline-text-outline</v-icon>
-                </v-btn>
-              </template>
-              <span>{{ $t("cases.view_timeline") }}</span>
-            </v-tooltip>
-            <!-- view case info button -->
-            <v-tooltip top>
-              <template v-slot:activator="{ on, attrs }">
-                <v-btn color="primary" icon elevation="0" v-bind="attrs" v-on="on" @click="openCaseInfoDialog(item.id)">
-                  <v-icon>mdi-eye-outline</v-icon>
-                </v-btn>
-              </template>
-              <span>{{ $t("cases.view_info") }}</span>
-            </v-tooltip>
-
-            <!-- assign user button -->
-            <v-tooltip top>
-              <template v-slot:activator="{ on, attrs }">
-                <v-btn color="primary" icon elevation="0" v-bind="attrs" v-on="on" @click="openAssignDialog(item.id)">
-                  <v-icon>mdi-at</v-icon>
-                </v-btn>
-              </template>
-              <span>{{ $t("cases.assign_user") }}</span>
-            </v-tooltip>
-
-            <!-- edit case button -->
-            <v-tooltip top>
-              <template v-slot:activator="{ on, attrs }">
-                <v-btn color="primary" icon elevation="0" v-bind="attrs" v-on="on"
-                  :to="`/cases/${currentPageId}/edit/${item.id}`" v-can="'update-user'">
-                  <v-icon>mdi-open-in-new</v-icon>
-                </v-btn>
-              </template>
-              <span>{{ $t("cases.editCase") }}</span>
-            </v-tooltip>
-
-            <!-- delete case button -->
-            <v-tooltip top>
-              <template v-slot:activator="{ on, attrs }">
-                <v-btn color="error" icon elevation="0" v-bind="attrs" v-on="on" @click.prevent="deleteItem(item.id)"
-                  v-can="'delete-user'">
-                  <v-icon>mdi-close</v-icon>
-                </v-btn>
-              </template>
-              <span>{{ $t("cases.delete") }}</span>
-            </v-tooltip>
-
-            <!-- <v-btn
-              color="error"
-              icon
-              @click.prevent="deleteItem(item.id)"
-              v-can="'delete-user'"
-            >
-              <v-icon>mdi-close</v-icon>
-            </v-btn> -->
-          </div>
+              </transition>
+            </template>
+            <v-list dense>
+              <v-list-item @click="openActionDialog(item)">
+                <v-list-item-title>
+                    <v-icon>mdi-plus-circle-outline</v-icon>
+                    <span class="action-span">{{$t("cases.add_action")}}</span>
+                  </v-list-item-title>
+              </v-list-item>
+              <v-list-item @click="openCasePreviewDialog(item.id)">
+                <v-list-item-title>
+                    <v-icon>mdi-timeline-text-outline</v-icon>
+                    <span class="action-span">{{$t("cases.view_timeline")}}</span>
+                  </v-list-item-title>
+              </v-list-item>
+              <v-list-item @click="openCaseInfoDialog(item.id)">
+                <v-list-item-title>
+                    <v-icon>mdi-eye-outline</v-icon>
+                    <span class="action-span">{{ $t("cases.view_info") }}</span>
+                  </v-list-item-title>
+              </v-list-item>
+              <v-list-item @click="openAssignDialog(item.id)">
+                <v-list-item-title>
+                    <v-icon>mdi-at</v-icon>
+                    <span class="action-span">{{ $t("cases.assign_user") }}</span>
+                  </v-list-item-title>
+              </v-list-item>
+              <v-list-item :to="`/cases/${currentPageId}/edit/${item.id}`">
+                <v-list-item-title>
+                    <v-icon>mdi-open-in-new</v-icon>
+                    <span class="action-span">{{ $t("cases.editCase") }}</span>
+                  </v-list-item-title>
+              </v-list-item>
+              <v-list-item @click.prevent="deleteItem(item.id)" v-can="'delete-user'">
+                <v-list-item-title>
+                    <v-icon>mdi-close</v-icon>
+                    <span class="action-span">{{ $t("cases.delete") }}</span>
+                  </v-list-item-title>
+              </v-list-item>
+            </v-list>
+          </v-menu>
         </template>
         <template v-slot:no-data>
           <div class="text-center my-2 primary--text" color="primary">
@@ -479,6 +454,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.action-span {
+  margin-right: 5px;
+}
 .slide-fade-enter-active {
   transition: all 0.3s ease;
 }

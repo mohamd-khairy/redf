@@ -223,7 +223,7 @@ const actions = {
       type,
       case_type,
       specialization_id,
-      category,
+      organization_id,
     }
   ) {
     try {
@@ -275,8 +275,8 @@ const actions = {
       if (specialization_id) {
         bodyFormData.set("specialization_id", specialization_id);
       }
-      if (category) {
-        bodyFormData.set("category", category);
+      if (organization_id) {
+        bodyFormData.set("organization_id", organization_id);
       }
       const result = await axios.post(`store-form-fill`, bodyFormData, {
         headers: {
@@ -294,13 +294,14 @@ const actions = {
     {
       caseName,
       caseNumber,
+      case_id,
       formId,
       branch_id,
       caseDate,
       type,
       case_type,
       specialization_id,
-      category,
+      organization_id,
     }
   ) {
     try {
@@ -339,6 +340,9 @@ const actions = {
       if (caseDate) {
         bodyFormData.set("case_date", caseDate);
       }
+      if (case_id) {
+        bodyFormData.set("case_id", case_id);
+      }
       if (branch_id) {
         bodyFormData.set("branche_id", branch_id);
       }
@@ -351,8 +355,8 @@ const actions = {
       if (specialization_id) {
         bodyFormData.set("specialization_id", specialization_id);
       }
-      if (category) {
-        bodyFormData.set("category", category);
+      if (organization_id) {
+        bodyFormData.set("organization_id", organization_id);
       }
       const response = await axios.post(
         `update-form-fill/${formId}`,
@@ -522,10 +526,12 @@ const actions = {
     const { case_types } = response?.data.data;
     const { specialization } = response?.data.data;
     const { branches } = response?.data.data;
+    const { organizations } = response?.data.data;
     commit("SET_CORTS", court_types);
     commit("SET_BRANCHES", branches);
     commit("SET_CASE_TYPES", case_types);
     commit("SET_specializations", specialization);
+    commit("SET_organizations", organizations);
   },
   async retrieveClaimant({ commit }, { form_request_id }) {
     const response = await axios.get(`retrieve-claimant`, {

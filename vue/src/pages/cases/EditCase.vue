@@ -86,13 +86,19 @@
                       </v-dialog>
                     </v-col>
                     <v-col cols="12">
-                      <v-text-field
-                        class="mb-2"
-                        v-model="classification"
+                      <v-select
+                        :items="organizations"
                         :label="$t('cases.classification')"
-                        outlined
+                        item-text="name"
+                        item-value="id"
                         dense
-                      ></v-text-field>
+                        outlined
+                        v-model="organization_id"
+                        required="true"
+                        :rules="[rules.required]"
+                        :error-messages="stepOneValidation(organization_id)"
+                      >
+                      </v-select>
                     </v-col>
                     <v-col cols="12">
                       <v-select
@@ -549,8 +555,28 @@
                   </v-expansion-panels>
                 </v-col>
               </v-row>
-              <v-row dense>
-                <v-col cols="6">
+
+              <v-row dense class="mb-2">
+                <v-radio-group v-model="radioAction" row>
+                  <v-radio
+                    class="radio-check"
+                    value="1"
+                    :label="$t('cases.add_session')"
+                  ></v-radio>
+                  <v-radio
+                    class="radio-check"
+                    value="2"
+                    :label="$t('cases.add_court')"
+                  ></v-radio>
+                  <v-radio
+                    value="3"
+                    :label="$t('cases.another')"
+                  ></v-radio>
+                </v-radio-group>
+              </v-row>
+
+              <v-row dense v-if="radioAction == 3">
+                <v-col cols="12">
                   <v-text-field
                     type="number"
                     @keydown="handleInput"
@@ -564,7 +590,7 @@
                     </template>
                   </v-text-field>
                 </v-col>
-                <v-col cols="6">
+                <v-col cols="12">
                   <v-text-field
                     type="number"
                     @keydown="handleInput"
@@ -578,6 +604,9 @@
                     </template>
                   </v-text-field>
                 </v-col>
+              </v-row>
+
+              <v-row dense v-if="radioAction == 2">
                 <v-col cols="6">
                   <v-select
                     :items="caseTypes"
@@ -593,7 +622,7 @@
                   >
                   </v-select>
                 </v-col>
-                <v-col cols="12" sm="6">
+                <v-col cols="6">
                   <v-dialog
                     ref="dateDialog"
                     v-model="dateDialog"
@@ -630,7 +659,6 @@
                     </v-date-picker>
                   </v-dialog>
                 </v-col>
-
                 <v-col cols="6">
                   <v-select
                     :items="courts"
@@ -665,13 +693,16 @@
                     outlined
                   ></v-textarea>
                 </v-col>
-                <v-col cols="12">
-                  <v-checkbox
-                    v-model="sessionDate"
-                    :label="$t('cases.add_session')"
-                  ></v-checkbox>
-                </v-col>
-                <v-col cols="12" sm="12" v-if="sessionDate">
+              </v-row>
+
+              <v-row dense v-if="radioAction == 1">
+<!--                <v-col cols="12">-->
+<!--                  <v-checkbox-->
+<!--                    v-model="sessionDate"-->
+<!--                    :label="$t('cases.add_session')"-->
+<!--                  ></v-checkbox>-->
+<!--                </v-col>-->
+                <v-col cols="12" sm="12">
                   <v-dialog
                     ref="sessionDialog"
                     v-model="sessionDialog"
@@ -737,6 +768,7 @@ export default {
 
   data() {
     return {
+      radioAction: '1',
       e1: 1,
       selectedTitle: "",
       caseDateDialog: false,
@@ -750,7 +782,7 @@ export default {
       caseModel: "",
       branch_id: "",
       specialization_id: "",
-      classification: "",
+      organization_id: "",
       caseModels:[
         {
           name:this.$t("cases.from_redf"),
@@ -863,7 +895,8 @@ export default {
       "selectedForm",
       "courts",
       "caseTypes",
-      'specializations'
+      'specializations',
+      'organizations'
     ]),
     ...mapState("app", ["navTemplates"]),
     ...mapState("departments", ["departments"]),
@@ -1075,7 +1108,7 @@ export default {
           this.caseModel = data.case_type
           this.branch_id = data.branche_id
           this.specialization_id = data.specialization_id
-          this.classification = data.category
+          this.organization_id = data.organization_id
           this.formRequestId = this.formData.id;
           if (this.formData.form_request_side) {
             this.sidesInfo.claimant_id = this.formData?.form_request_side?.claimant_id;
@@ -1213,6 +1246,7 @@ export default {
         this.caseDate &&
         this.branch_id &&
         this.specialization_id &&
+        this.organization_id &&
         this.caseModel
       ) {
         const saveResult = await this.updatePages({
@@ -1224,7 +1258,7 @@ export default {
           type: 'case',
           case_type: this.caseModel,
           specialization_id: this.specialization_id,
-          category: this.classification,
+          organization_id: this.organization_id,
         });
         if (saveResult) {
           this.showErrors = false;
@@ -1294,4 +1328,8 @@ export default {
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+.radio-check {
+  margin-left: 15%;
+}
+</style>

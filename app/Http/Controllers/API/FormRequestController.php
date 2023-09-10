@@ -7,15 +7,19 @@ use App\Models\Form;
 use App\Models\User;
 use App\Models\FormRequest;
 use Illuminate\Http\Request;
+use App\Rules\StatusEnumRule;
+use App\Models\FormRequestSide;
+use App\Enums\FormRequestStatus;
 use App\Http\Requests\FormAssign;
 use App\Http\Requests\PageRequest;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use App\Services\FormRequestService;
+use Illuminate\Validation\Rules\Enum;
 use App\Http\Requests\FormFillRequest;
 use App\Http\Requests\InformationRequest;
+use Illuminate\Support\Facades\Validator;
 use App\Http\Resources\FormRequestResource;
-use App\Models\FormRequestSide;
 
 class FormRequestController extends Controller
 {
@@ -31,6 +35,7 @@ class FormRequestController extends Controller
         // $this->middleware('permission:delete-form', ['only' => ['destroy', 'delete_all']]);
         $this->formRequestService = $formRequestService;
     }
+
     public function storeFormFill(FormFillRequest $request)
     {
         try {
@@ -48,7 +53,7 @@ class FormRequestController extends Controller
     {
         try {
             $formRequest = $this->formRequestService->updateFormFill($request, $id);
-            return responseSuccess([], 'Form Fill has been successfully updated');
+            return responseSuccess($formRequest, 'Form Fill has been successfully updated');
         } catch (\Throwable $th) {
             return responseFail($th->getMessage());
         }
@@ -132,6 +137,23 @@ class FormRequestController extends Controller
             return responseFail($th->getMessage());
         }
     }
+
+    public function changeStatus(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'form_request_id' => 'required|exists:form_requests,id',
+            'status' => [new Enum(FormRequestStatus::class)],
+        ]);
+
+        if ($validator->fails()) {
+            return responseFail($validator->errors()->first());
+        }
+
+        $response = FormRequest::where('id', $request->form_request_id)->update(['status' => $request->status]);
+
+        return responseSuccess($response, 'Status updated successfully');
+    }
+
     public function retrieveClaimant(Request $request)
     {
         $formRequestSide = FormRequestSide::select('claimant_id', 'defendant_id')->where('form_request_id', $request->form_request_id)->first();

@@ -14,6 +14,7 @@ const state = {
   courts: [],
   caseTypes: [],
   specializations: [],
+  organizations: [],
   pagesValues: [],
   claimant: [],
   selectedForm: {

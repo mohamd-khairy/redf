@@ -90,13 +90,19 @@
                     </v-dialog>
                   </v-col>
                   <v-col cols="12">
-                    <v-text-field
-                      class="mb-2"
-                      v-model="classification"
+                    <v-select
+                      :items="organizations"
                       :label="$t('cases.classification')"
-                      outlined
+                      item-text="name"
+                      item-value="id"
                       dense
-                    ></v-text-field>
+                      outlined
+                      v-model="organization_id"
+                      required="true"
+                      :rules="[rules.required]"
+                      :error-messages="stepOneValidation(organization_id)"
+                    >
+                    </v-select>
                   </v-col>
                   <v-col cols="12">
                     <v-select
@@ -348,8 +354,27 @@
         <v-stepper-content step="3">
           <div class="d-flex flex-column flex-sm-row">
             <div class="flex-grow-1 pt-2 pa-sm-2">
-              <v-row dense>
-                <v-col cols="6">
+              <v-row dense class="mb-2">
+                <v-radio-group v-model="radioAction" row>
+                  <v-radio
+                    class="radio-check"
+                    value="1"
+                    :label="$t('cases.add_session')"
+                  ></v-radio>
+                  <v-radio
+                    class="radio-check"
+                    value="2"
+                    :label="$t('cases.add_court')"
+                  ></v-radio>
+                  <v-radio
+                    value="3"
+                    :label="$t('cases.another')"
+                  ></v-radio>
+                </v-radio-group>
+              </v-row>
+
+              <v-row dense v-if="radioAction == 3">
+                <v-col cols="12">
                   <v-text-field
                     type="number"
                     @keydown="handleInput"
@@ -363,7 +388,7 @@
                     </template>
                   </v-text-field>
                 </v-col>
-                <v-col cols="6">
+                <v-col cols="12">
                   <v-text-field
                     type="number"
                     @keydown="handleInput"
@@ -377,6 +402,9 @@
                     </template>
                   </v-text-field>
                 </v-col>
+              </v-row>
+
+              <v-row dense v-if="radioAction == 2">
                 <v-col cols="6">
                   <v-select
                     :items="caseTypes"
@@ -392,7 +420,7 @@
                   >
                   </v-select>
                 </v-col>
-                <v-col cols="12" sm="6">
+                <v-col cols="6">
                   <v-dialog
                     ref="dateDialog"
                     v-model="dateDialog"
@@ -430,7 +458,6 @@
                     </v-date-picker>
                   </v-dialog>
                 </v-col>
-
                 <v-col cols="6">
                   <v-select
                     :items="courts"
@@ -452,13 +479,16 @@
                     outlined
                   ></v-textarea>
                 </v-col>
-                <v-col cols="12">
-                  <v-checkbox
-                    v-model="sessionDate"
-                    :label="$t('cases.add_session')"
-                  ></v-checkbox>
-                </v-col>
-                <v-col cols="12" sm="12" v-if="sessionDate">
+
+              </v-row>
+              <v-row dense v-if="radioAction == 1">
+<!--                <v-col cols="12">-->
+<!--                  <v-checkbox-->
+<!--                    v-model="sessionDate"-->
+<!--                    :label="$t('cases.add_session')"-->
+<!--                  ></v-checkbox>-->
+<!--                </v-col>-->
+                <v-col cols="12" sm="12">
                   <v-dialog
                     ref="sessionDialog"
                     v-model="sessionDialog"
@@ -525,6 +555,7 @@ export default {
   components: { AddUserDialog },
   data() {
     return {
+      radioAction: "1",
       e1: 1,
       selectedTitle: "",
       caseDateDialog: false,
@@ -537,7 +568,7 @@ export default {
       caseModel: "",
       branch_id: "",
       specialization_id: "",
-      classification: "",
+      organization_id: "",
       caseModels:[
         {
           name:this.$t("cases.from_redf"),
@@ -624,31 +655,11 @@ export default {
   },
   watch: {
     'caseModel'(){
-      if(this.caseModel === 'from_redf') {
-        this.defendantUsers = this.users.filter((user) => user.type === 'user')
-        this.claimantUsers = this.users.filter(
-          (user) => user.roles.find(
-            (role) => role.name === 'system'
-          )
-        )
-      }
-      else if(this.caseModel === 'against_redf')
-      {
-        this.defendantUsers = this.users.filter(
-          (user) => user.roles.find(
-            (role) => role.name === 'system'
-          )
-        )
-        this.claimantUsers = this.users.filter((user) => user.type === 'user')
-      }
-      else{
-        this.defendantUsers = this.users.filter((user) => user.type === 'user')
-        this.claimantUsers = this.users.filter((user) => user.type === 'user')
-      }
+      this.filterUsers()
     }
   },
   computed: {
-    ...mapState("cases", ["pages", "selectedForm", "courts", "caseTypes","specializations"]),
+    ...mapState("cases", ["pages", "selectedForm", "courts", "caseTypes","specializations","organizations"]),
     ...mapState("auth", ["user"]),
     ...mapState("app", ["navTemplates"]),
     ...mapState("departments", ["departments"]),
@@ -709,6 +720,30 @@ export default {
       "getCourts",
       "updatePages",
     ]),
+    filterUsers()
+    {
+      if(this.caseModel === 'from_redf') {
+        this.defendantUsers = this.users.filter((user) => user.type === 'user')
+        this.claimantUsers = this.users.filter(
+          (user) => user.roles.find(
+            (role) => role.name === 'system'
+          )
+        )
+      }
+      else if(this.caseModel === 'against_redf')
+      {
+        this.defendantUsers = this.users.filter(
+          (user) => user.roles.find(
+            (role) => role.name === 'system'
+          )
+        )
+        this.claimantUsers = this.users.filter((user) => user.type === 'user')
+      }
+      else{
+        this.defendantUsers = this.users.filter((user) => user.type === 'user')
+        this.claimantUsers = this.users.filter((user) => user.type === 'user')
+      }
+    },
     changeDefendantUsers() {
       if (this.sidesInfo.claimant_id) {
         const claimantUser = this.users.find(
@@ -807,8 +842,7 @@ export default {
         .then((response) => {
           this.isLoading = false;
           this.users = response.data.data.users;
-          // this.claimantUsers = response.data.data.users
-          // this.defendantUsers = response.data.data.users
+          this.filterUsers()
         })
         .catch(() => {
           this.isLoading = false;
@@ -909,6 +943,7 @@ export default {
         this.caseDate &&
         this.branch_id &&
         this.specialization_id &&
+        this.organization_id &&
         this.caseModel
       ) {
         let result = null;
@@ -921,7 +956,7 @@ export default {
             type: 'case',
             case_type: this.caseModel,
             specialization_id: this.specialization_id,
-            category: this.classification,
+            organization_id: this.organization_id,
           });
         } else {
           result = await this.updatePages({
@@ -1007,4 +1042,8 @@ export default {
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+.radio-check {
+  margin-left: 15%;
+}
+</style>
