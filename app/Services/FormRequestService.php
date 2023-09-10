@@ -292,9 +292,7 @@ class FormRequestService
             'department_id' => ['nullable', 'exists:departments,id'],
         ]);
 
-        $formRequestSide = FormRequestSide::updateOrCreate($request->only('form_request_id'), $validatedData);
-
-        return responseSuccess($formRequestSide, 'Form Request Side has been successfully Created');
+        return  $formRequestSide = FormRequestSide::updateOrCreate($request->only('form_request_id'), $validatedData);
     }
 
     public function formRequestInformation($request)
@@ -334,11 +332,21 @@ class FormRequestService
 
             DB::commit();
 
-            return responseSuccess($formRequestInfo, 'Form Request Information and Sessions have been successfully created.');
+            return $formRequestInfo;
         } catch (\Exception $e) {
 
             DB::rollBack();
             return responseFail($e->getMessage());
+        }
+    }
+
+    public function updateFormRequestInformation($id, $request)
+    {
+        try {
+            $formRequestInfo = FormRequestInformation::find($id);
+            return $formRequestInfo->update($request->all());
+        } catch (\Throwable $th) {
+            //throw $th;
         }
     }
 }

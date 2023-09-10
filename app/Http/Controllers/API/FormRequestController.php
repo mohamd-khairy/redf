@@ -115,12 +115,23 @@ class FormRequestController extends Controller
 
     public function storeFormRequestSide(Request $request)
     {
-        return $this->formRequestService->formRequestSide($request);
+        $formRequestSide = $this->formRequestService->formRequestSide($request);
+
+        return responseSuccess($formRequestSide, 'Form Request Side has been successfully Created');
     }
 
     public function formRequestInformation(InformationRequest $request)
     {
-        return $this->formRequestService->formRequestInformation($request);
+        $response = $this->formRequestService->formRequestInformation($request);
+
+        return responseSuccess($response, 'Form Request Information and Sessions have been successfully created.');
+    }
+
+    public function updateFormRequestInformation($id, InformationRequest $request)
+    {
+        $response = $this->formRequestService->updateFormRequestInformation($id, $request);
+
+        return responseSuccess($response, 'updated successfully');
     }
 
     public function deleteFormRequest($id)
