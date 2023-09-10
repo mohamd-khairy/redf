@@ -32,7 +32,7 @@ class FormRequestController extends Controller
 
     public function __construct(FormRequestService $formRequestService)
     {
-        // $this->middleware(['auth']);
+        $this->middleware(['auth']);
         // $this->middleware('permission:list-form|edit-form|create-form|delete-form', ['only' => ['index', 'store']]);
         // $this->middleware('permission:create-form', ['only' => ['store']]);
         // $this->middleware('permission:edit-form', ['only' => ['edit', 'update']]);
@@ -153,7 +153,7 @@ class FormRequestController extends Controller
             return responseFail($validator->errors()->first());
         }
 
-        $response = FormRequest::where('id', $request->form_request_id)->update(['status' => $request->status]);
+        $response = FormRequest::where('id', $request->form_request_id)->update(['status' => $request->status, 'status_request' => $request->status]);
 
         return responseSuccess($response, 'Status updated successfully');
     }
