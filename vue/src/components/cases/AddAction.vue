@@ -294,11 +294,11 @@
               </v-col>
               <v-col cols="12" md="12">
                 <v-select
-                  :items="branches || []"
+                  :items="sessionPlaces || []"
                   :label="$t('cases.casePlace')"
                   dense
                   outlined
-                  v-model="caseAction.branch_id"
+                  v-model="caseAction.sessionPlace"
                 >
                 </v-select>
               </v-col>
@@ -497,7 +497,7 @@ export default {
         details: "",
         court_name: "",
         status: "",
-        branch_id: null,
+        sessionPlace: null,
         judgment_for: null,
         receiptDate: null,
         date: null,
@@ -523,7 +523,6 @@ export default {
 
   created() {
     this.getCourts();
-    // this.getBranches({});
     this.retrieveClaimant({ form_request_id: this.formRequestId });
   },
   watch: {
@@ -535,7 +534,7 @@ export default {
     },
   },
   computed: {
-    ...mapState("cases", ["courts", "caseTypes", "claimant", "branches"]),
+    ...mapState("cases", ["courts", "caseTypes", "claimant", "sessionPlaces"]),
   },
   methods: {
     ...mapActions("cases", [
@@ -543,7 +542,6 @@ export default {
       "getCourts",
       "retrieveClaimant",
     ]),
-    ...mapActions("branches", ["getBranches"]),
     closeDialog() {
       this.$emit("close-action-dialog");
     },
@@ -567,7 +565,7 @@ export default {
         date: this.caseAction.date,
         court: this.caseAction.court_name,
         sessionDate: this.caseAction.sessionDate,
-        session_place: this.caseAction.branch_id,
+        session_place: this.caseAction.sessionPlace,
         date_of_receipt: this.caseAction.receiptDate,
         user_id: this.caseAction.judgment_for,
         type:this.radioAction
