@@ -294,6 +294,7 @@ const actions = {
     {
       caseName,
       caseNumber,
+      case_id,
       formId,
       branch_id,
       caseDate,
@@ -338,6 +339,9 @@ const actions = {
       }
       if (caseDate) {
         bodyFormData.set("case_date", caseDate);
+      }
+      if (case_id) {
+        bodyFormData.set("case_id", case_id);
       }
       if (branch_id) {
         bodyFormData.set("branche_id", branch_id);

@@ -168,7 +168,7 @@
             <v-tooltip top>
               <template v-slot:activator="{ on, attrs }">
                 <v-btn color="primary" icon elevation="0" v-bind="attrs" v-on="on"
-                  :to="`/cases/${currentPageId}/edit/${item.id}`" v-can="'update-user'">
+                  :to="`/cases/${currentPageId}/request-review/edit/${item.id}`" v-can="'update-user'">
                   <v-icon>mdi-open-in-new</v-icon>
                 </v-btn>
               </template>

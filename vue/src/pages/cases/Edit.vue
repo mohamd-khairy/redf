@@ -1,5 +1,6 @@
 <template>
-  <div v-if="formData">
+  <div class="d-flex flex-column flex-grow-1" style="margin: 50px">
+    <div v-if="formData">
     <v-stepper v-model="e1">
       <v-stepper-header>
         <v-stepper-step :complete="e1 > 1" step="1">
@@ -17,47 +18,44 @@
       </v-stepper-header>
       <v-stepper-items>
         <v-stepper-content step="1">
-          <v-card class="mb-12" v-if="!initialLoading">
-            <v-card-text>
-              <v-text-field
-                outlined
-                v-model="caseName"
-                :label="$t('cases.adviceName')"
-                :required="true"
-                :rules="[requiredRule]"
-                dense
-              ></v-text-field>
-              <v-text-field
-                outlined
-                type="number"
-                v-model="caseNumber"
-                :label="$t('cases.adviceName')"
-                :required="true"
-                :rules="[requiredRule]"
-                dense
-              ></v-text-field>
-              <v-checkbox
-                v-model="caseCheck"
-                :label="$t('cases.belongToCase')"
-              ></v-checkbox>
-              <v-select
-                v-if="caseCheck"
-                :items="formRequests"
-                :label="$t('cases.cases')"
-                :item-text="(item) => item.name"
-                :item-value="(item) => item.id"
-                hide-details
-                dense
-                outlined
-                v-model="case_id"
-                clearable
-              >
-              </v-select>
-            </v-card-text>
-          </v-card>
-          <v-btn color="primary" @click="saveAdviceInfo">
-            {{ $t("general.continue") }}
-          </v-btn>
+          <div class="mt-2" v-if="!initialLoading">
+            <div class="mt-2">
+              <div class="d-flex">
+                <v-select
+                  :items="formRequests"
+                  :label="$t('cases.belongToCase')"
+                  :item-text="(item) => item.name"
+                  :item-value="(item) => item.id"
+                  hide-details
+                  dense
+                  outlined
+                  v-model="caseId"
+                  clearable
+                  :required="true"
+                  :error-messages="stepOneValidation(caseId)"
+                  :rules="[requiredRule]"
+                >
+                </v-select>
+
+                <v-spacer></v-spacer>
+                <v-btn
+                  v-if="caseId"
+                  color="primary"
+                  outlined
+                  @click="openCaseInfoDialog()"
+                >{{ $t("cases.view_info") }}</v-btn
+                >
+              </div>
+            </div>
+          </div>
+          <v-card-actions>
+            <v-btn color="primary" @click="updateCaseInfo">
+              {{ $t("general.continue") }}
+            </v-btn>
+            <!-- <v-btn color="grey" @click="stepBack" class="ms-2">
+              {{ $t("general.back") }}
+            </v-btn> -->
+          </v-card-actions>
         </v-stepper-content>
         <v-stepper-content step="2">
           <v-card v-if="!initialLoading">
@@ -370,18 +368,33 @@
         </v-stepper-content>
       </v-stepper-items>
     </v-stepper>
+
+    <CaseInfoDialog
+      :dialogVisible="caseInfoDialog"
+      :case-id="caseId"
+      v-if="caseInfoDialog"
+      @closeInfoDialog="caseInfoDialog = false"
+    />
+
+  </div>
   </div>
 </template>
 
 <script>
 import { mapActions, mapState } from "vuex";
 import { makeToast } from "@/helpers";
+import CaseInfoDialog from "@/components/cases/CaseInfoDialog";
 
 export default {
   name: "Edit",
-
+  components:{
+    CaseInfoDialog
+  },
   data() {
     return {
+      caseId:"",
+      caseInfoDialog: false,
+
       e1: 1,
       selectedTitle: "",
       dateDialog: false,
@@ -457,6 +470,46 @@ export default {
       "getCourts",
       'getFormRequests'
     ]),
+    stepOneValidation(value) {
+      const msg = this.$t("general.required_input");
+      return this.stepOneErrors && !value ? [msg] : [];
+    },
+    openCaseInfoDialog(id) {
+      this.caseInfoDialog = true;
+    },
+    async updateCaseInfo() {
+      if (!this.caseId) {
+        this.stepOneErrors = true;
+        this.showErrors = true;
+        return;
+      }
+      this.getCaseTimeline(this.caseId);
+      this.showErrors = false;
+      this.stepOneErrors = false;
+      this.e1 = 2;
+    },
+    async getCaseTimeline(id) {
+      try {
+        this.loading = true;
+        const response = await this.$axios.get(`get-form-Requests/${id}`);
+        console.log(response?.data?.data);
+        const { form_request_side, form_request_number, name } =
+          response?.data?.data;
+
+        this.formRequestSide = form_request_side;
+        this.caseName = name;
+        this.caseNumber = form_request_number;
+        console.log(this.caseNumber);
+        this.caseClaimant = {
+          id: form_request_side.claimant.id,
+          name: form_request_side.claimant.name,
+        };
+      } catch (error) {
+        console.log(error);
+      } finally {
+        this.loading = false;
+      }
+    },
     fetchCases(){
       let data = {
         template_id: 1,
@@ -499,13 +552,8 @@ export default {
         .then((data) => {
           this.setCurrentBread();
           this.formData = data;
-          console.log(this.formData)
           this.lastAction = data?.lastFormRequestInformation || null;
-          this.caseName = data.name;
-          this.caseNumber = data.form_request_number;
-          this.case_id = data.request?.formable_id
-          if(this.case_id)
-            this.caseCheck = true
+          this.caseId = data.request?.formable_id
 
           this.formRequestId = this.formData.id;
           if (this.formData.form_request_side) {
@@ -543,7 +591,6 @@ export default {
         pending: "orange",
         accepted: "green",
       };
-
       return colors[status] || "primary";
     },
 
@@ -583,36 +630,17 @@ export default {
         input.value = input.preview;
       }
     },
-    loadFile(filePath, input) {
-      console.log(input);
-
-      fetch("/" + filePath)
-        .then((response) => response.blob())
-        .then((blob) => {
-          const file = new File([blob], "photo.png", { type: "image/png" });
-          this.handleFileUpload(file, input);
-          return file;
-        })
-        .catch((error) => {
-          console.error("Error loading file:", error);
-        });
-    },
-    saveAdviceInfo() {
-      if (!this.caseName || !this.caseNumber) {
-        makeToast("error", "Advice name and number ");
-        return;
-      }
-      this.e1 = 2;
-    },
     async saveForm() {
       const { id } = this.$route.params;
       const { formType: currentFormId } = this.$route.params;
       this.isSubmitingForm = true;
       if (await this.validateFormData()) {
         const saveResult = await this.updatePages({
-          caseName: this.caseName,
-          caseNumber: this.caseNumber,
-          case_id: this.case_id,
+          caseName: null,
+          caseNumber: null,
+          caseDate: null,
+          type: "related_case",
+          case_id: this.caseId,
           formId: id,
         });
         if (saveResult) {

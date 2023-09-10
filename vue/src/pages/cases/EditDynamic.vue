@@ -3,7 +3,7 @@
     <edit-case v-if="id == 1"></edit-case>
     <edit-legal-advice v-else-if="id == 2"></edit-legal-advice>
     <edit-review-and-audit v-else-if="id == 3"></edit-review-and-audit>
-    <edit v-else></edit>
+<!--    <edit v-else></edit>-->
   </div>
 </template>
 
