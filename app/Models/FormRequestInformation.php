@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\CaseTypeEnum;
 use App\Enums\CourtTypeEnum;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -16,11 +17,9 @@ class FormRequestInformation extends Model
         'sessionDate', 'percentage', 'status', 'details', 'court', 'date', 'type'
     ];
 
-    protected $casts = [
-        'sessionDate' => 'datetime',
-    ];
-
     public $with = ['user'];
+
+    public $appends = ['display_status'];
 
     public function scopeLatestRecord($query)
     {
@@ -35,6 +34,18 @@ class FormRequestInformation extends Model
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function getSessionDateAttribute($value)
+    {
+        return $value ? date('Y-m-d', strtotime($value)) : null;
+    }
+
+    public function getDisplayStatusAttribute()
+    {
+        $value = $this->attributes['status'];
+
+        return $value ? CaseTypeEnum::$value() : null;
     }
 
     // public function getCourtAttribute($value)

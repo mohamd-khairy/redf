@@ -222,9 +222,8 @@
                 </div>
                 <div class="input-value">
                   {{
-                    action.status
-                    ? $t(`general.${action.status.toLowerCase()}`)
-                    : "---"
+                    action.display_status
+
                   }}
                 </div>
               </v-col>
@@ -242,12 +241,43 @@
               </v-col>
               <v-col cols="3" class="input-cont mb-2" v-if="action?.sessionDate">
                 <div class="input-label">
-                  {{ $t(`cases.sessionDate`) }}
+                  {{ $t('cases.sessionDate') }}
                 </div>
                 <div class="input-value">
                   {{ action?.sessionDate || "---" }}
                 </div>
               </v-col>
+              <v-col cols="3" class="input-cont mb-2" v-if="action?.session_place">
+                <div class="input-label">
+                  {{ $t(`cases.casePlace`) }}
+                </div>
+                <div class="input-value">
+                  {{ action?.session_place || "---" }}
+                </div>
+              </v-col>
+
+
+              <v-col cols="3" class="input-cont mb-2" v-if="action?.user_id">
+                <div class="input-label">
+                  {{ $t(`cases.judgment_for`) }}
+                </div>
+                <div class="input-value">
+                  {{ action?.user.name || "---" }}
+                </div>
+              </v-col>
+              <v-col cols="3" class="input-cont mb-2" v-if="action?.date_of_receipt">
+                <div class="input-label">
+                  {{ $t(`cases.receiptDate`) }}
+                </div>
+                <div class="input-value">
+                  {{ action?.date_of_receipt || "---" }}
+                </div>
+              </v-col>
+
+
+
+
+
               <v-col cols="12" class="input-cont textarea-bg mb-2" v-if="action.details">
                 <div class="input-label">
                   {{ $t(`cases.details`) }}
