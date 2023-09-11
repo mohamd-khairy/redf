@@ -525,6 +525,7 @@ export default {
     selectCase: "اختيار القضية",
     add_court: "اضافة حكم",
     another: "اخرى",
+    formTypes: "نماذج القضايا",
   },
 
   departments: {

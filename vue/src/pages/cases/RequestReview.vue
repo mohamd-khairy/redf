@@ -133,9 +133,7 @@
             :color="getStatusColor(item?.status?.toLowerCase())"
             text-color="white"
           >
-            {{
-              item?.status ? item.display_status : "---"
-            }}
+            {{ item?.status ? item.display_status : "---" }}
             <!-- {{ item.status ? $t(`general.${item.status} `) : "" }} -->
           </v-chip>
         </template>
@@ -355,7 +353,9 @@ export default {
       this.setCurrentBread();
     },
     currentPageId() {
-      this.setCurrentBread();
+      if (this.navTemplates.length) {
+        this.setCurrentBread();
+      }
     },
   },
   computed: {
@@ -406,7 +406,7 @@ export default {
           href: "#",
         });
         this.breadcrumbs.push({
-          text: this.$t("breadcrumbs.list") + " " + currentPage.title,
+          text: this.$t("menu.request_review"),
         });
       }
       this.setBreadCrumb({
