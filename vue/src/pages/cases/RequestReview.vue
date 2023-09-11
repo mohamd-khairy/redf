@@ -118,7 +118,7 @@
         </template>
 
         <template v-slot:item.caseName="{ item }">
-          <div>{{ item?.request?.formable?.name ?? "---" }}</div>
+          <div>{{ item?.case?.item?.name ?? "---" }}</div>
         </template>
 
         <!-- <template v-slot:item.assigner="{ item }">
