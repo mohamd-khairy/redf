@@ -78,13 +78,7 @@
                             label
                             text-color="white"
                           >
-                            <!-- {{
-                              lastAction?.status
-                                ? $t(
-                                    `general.${lastAction?.status?.toLowerCase()}`
-                                  )
-                                : ""
-                            }} -->
+
                             {{ lastAction?.status }}
                           </v-chip>
                         </v-col>
@@ -213,47 +207,6 @@
                           ></v-text-field>
                         </v-col>
                       </v-row>
-                      <!-- <v-row class="mb-1" v-if="lastAction?.court" dense>
-                        <v-col cols="12" sm="3">
-                          <h6 class="mt-1 mb-0 c-h6">
-                            {{ $t("tables.court") }}
-                          </h6>
-                        </v-col>
-                        <v-col cols="12" sm="9">
-                          <v-text-field
-                            class="custom-disabled-input"
-                            :value="
-                              lastAction?.court
-                                ? $t(`general.${lastAction?.court}`)
-                                : ''
-                            "
-                            item-text="title"
-                            item-value="value"
-                            solo
-                            disabled
-                            hide-details
-                            dense
-                          ></v-text-field>
-                        </v-col>
-                      </v-row>
-                      <v-row class="mb-1" v-if="lastAction?.date" dense>
-                        <v-col cols="12" sm="3">
-                          <h6 class="mt-1 mb-0 c-h6">
-                            {{ $t("tables.date") }}
-                          </h6>
-                        </v-col>
-                        <v-col cols="12" sm="9">
-                          <v-text-field
-                            class="custom-disabled-input"
-                            :value="lastAction?.date || ''"
-                            solo
-                            disabled
-                            hide-details
-                            dense
-                          ></v-text-field>
-                        </v-col>
-                      </v-row> -->
-
                       <v-row class="mb-1" dense v-if="lastAction?.details">
                         <v-col cols="12" sm="3">
                           <h6 class="mt-1 mb-0 c-h6">

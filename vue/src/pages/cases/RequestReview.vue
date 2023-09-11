@@ -211,7 +211,7 @@
                   :to="`/cases/${currentPageId}/request-review/edit/${item.id}`"
                   v-can="'update-user'"
                 >
-                  <v-icon>mdi-open-in-new</v-icon>
+                  <v-icon>mdi-pencil-outline</v-icon>
                 </v-btn>
               </template>
               <span>{{ $t("cases.editCase") }}</span>
