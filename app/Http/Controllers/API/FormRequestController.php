@@ -138,13 +138,15 @@ class FormRequestController extends Controller
     {
         try {
             return DB::transaction(function () use ($id) {
-                $formRequest = FormRequest::findOrFail($id);
+                $formRequest = FormRequest::with('requests')->findOrFail($id);
                 // Delete related records
+                $formRequest->formRequestActions()->delete();
                 $formRequest->formRequestInformations()->delete();
                 $formRequest->formRequestSide()->delete();
                 $formRequest->tasks()->delete();
                 $formRequest->form_page_item_fill()->delete();
-                $formRequest->requests()->formable->delete();
+                FormRequest::whereIn('id', $formRequest->requests()->pluck('formable_id'))->delete();
+                $formRequest->requests()->delete();
                 // Delete the FormRequest itself
                 $formRequest->delete();
                 return responseSuccess('Form Request Deleted Successfully');

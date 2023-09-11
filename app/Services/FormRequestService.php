@@ -49,8 +49,8 @@ class FormRequestService
 
                 // Create a new Formable record
                 Formable::create([
-                    'formable_id' => $requestData->case_id,
-                    'form_request_id' => $formRequest->id,
+                    'formable_id' => $formRequest->id,
+                    'form_request_id' => $requestData->case_id,
                     'formable_type' => FormRequest::class,
                 ]);
 
@@ -147,9 +147,9 @@ class FormRequestService
             if ($requestData->case_id) {
                 // Update Formable record
                 Formable::updateOrCreate(
-                    ['form_request_id' => $formRequest->id],
+                    ['form_request_id' => $requestData->case_id],
                     [
-                        'formable_id' => $requestData->case_id,
+                        'formable_id' => $formRequest->id,
                         'formable_type' => FormRequest::class,
                     ]
                 );
@@ -224,7 +224,8 @@ class FormRequestService
                 'lastFormRequestInformation',
                 'branch',
                 'specialization',
-                'request'
+                'request',
+                'case'
             );
 
             if ($request->has('template_id')) {
@@ -272,7 +273,7 @@ class FormRequestService
                         form_request_id: $formRequestId,
                         formable_id: $assignNew->id,
                         formable_type: FormAssignRequest::class,
-                        msg: 'تم اسناد الطلب ل موظف جديد',
+                        msg: 'تم اسناد الطلب ل موظف ',
                     );
                 }
                 return ['assignNew' => $assignNew];

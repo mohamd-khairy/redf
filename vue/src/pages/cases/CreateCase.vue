@@ -140,7 +140,7 @@
                   </v-col>
                   <v-col cols="12">
                     <v-select
-                      :items="branches?.data || []"
+                      :items="branches || []"
                       :label="$t('branches.branch')"
                       item-text="name"
                       item-value="id"
@@ -696,7 +696,7 @@ export default {
     this.fetchUsers();
     this.fetchDepartments();
     this.getCourts();
-    this.getBranches({});
+    this.fetchBranches();
 
     this.$root.$on("userCreated", () => {
       this.fetchUsers();
@@ -880,6 +880,19 @@ export default {
         pageSize: -1,
       };
       this.getDepartments(data)
+        .then((response) => {
+          this.isLoading = false;
+        })
+        .catch(() => {
+          this.isLoading = false;
+        });
+    },
+    fetchBranches() {
+      this.isLoading = true;
+      let data = {
+        pageSize: -1,
+      };
+      this.getBranches(data)
         .then((response) => {
           this.isLoading = false;
         })
