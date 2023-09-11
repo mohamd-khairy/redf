@@ -115,7 +115,7 @@
             <!-- {{
               item?.status ? $t(`general.${item.status.toLowerCase()}`) : "---"
             }} -->
-            {{ item?.status ? item.status(item.last_form_request_information) : "---" }}
+            {{ item?.status ? item.status : "---" }}
           </v-chip>
         </template>
 

@@ -69,6 +69,11 @@ class FormRequest extends Model
         return $this->hasOne(Formable::class, 'form_request_id')->with('formable');
     }
 
+    public function requests()
+    {
+        return $this->hasMany(Formable::class, 'form_request_id')->with('formable');
+    }
+
     public function formRequestActions()
     {
         return $this->morphMany(FormRequestAction::class, 'formable');

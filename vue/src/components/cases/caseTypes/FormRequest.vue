@@ -65,7 +65,7 @@
       </v-col>
       <v-col cols="12" sm="9">
         <v-chip :color="getStatusColor(action?.formable?.status)" label text-color="white">
-          {{ action?.formable?.status }}
+          {{ action?.formable?.display_status }}
         </v-chip>
       </v-col>
     </v-row>
