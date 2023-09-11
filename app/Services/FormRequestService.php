@@ -272,7 +272,7 @@ class FormRequestService
                         form_request_id: $formRequestId,
                         formable_id: $assignNew->id,
                         formable_type: FormAssignRequest::class,
-                        msg: 'تم اسناد الطلب ل موظف جديد',
+                        msg: 'تم اسناد الطلب ل موظف ',
                     );
                 }
                 return ['assignNew' => $assignNew];
