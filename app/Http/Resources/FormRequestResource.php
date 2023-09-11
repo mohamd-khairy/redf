@@ -30,7 +30,7 @@ class FormRequestResource extends JsonResource
             'user' => $this->user,
             'form_request_side' => $this->formRequestSide,
             'lastFormRequestInformation' => $this->lastFormRequestInformation,
-            'request' => $this->request,
+            'request' => $this->case,
             'form_request_number' => $this->form_request_number,
             'branche_id' => $this->branche_id,
             'branche' => $this->branche,
@@ -40,6 +40,7 @@ class FormRequestResource extends JsonResource
             'specialization' => $this->specialization,
             'organization_id' => $this->organization_id,
             'organization' => $this->organization,
+            'case' => $this->case,
         ];
     }
 }
