@@ -140,6 +140,7 @@ class FormRequestController extends Controller
             return DB::transaction(function () use ($id) {
                 $formRequest = FormRequest::with('requests')->findOrFail($id);
                 // Delete related records
+                $formRequest->calenders()->delete();
                 $formRequest->formRequestActions()->delete();
                 $formRequest->formRequestInformations()->delete();
                 $formRequest->formRequestSide()->delete();

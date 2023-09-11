@@ -84,6 +84,16 @@ class FormRequest extends Model
         return $this->morphMany(FormRequestAction::class, 'formable');
     }
 
+    public function calenders()
+    {
+        return $this->hasMany(Calendar::class, 'form_request_id');
+    }
+
+    public function actions()
+    {
+        return $this->hasMany(FormRequestAction::class, 'form_request_id');
+    }
+
     public function tasks()
     {
         return $this->hasMany(Task::class, 'form_request_id');
