@@ -49,7 +49,7 @@ class FormSessionController extends Controller
             $actionData = [
                 'formable_id'=>$formSession->id,
                 'formable_type'=>FormSession::class,
-                'msg'=>'تم اضافه جلسه جديده',
+                'msg'=>'تم اضافه جلسه ',
             ];
             $calendar = saveFormRequestAction($actionData);
             return responseSuccess($formSession, 'FormSession has been successfully created');

@@ -88,7 +88,7 @@ class TaskController extends Controller
                 form_request_id: $request->form_request_id,
                 formable_id: $request->form_request_id,
                 formable_type: FormRequest::class,
-                msg: 'تم اسناد المهمه الي قضيه جديده'
+                msg: 'تم اسناد المهمه الي قضيه '
             );
 
             return responseSuccess($task, 'Task has been successfully created');
