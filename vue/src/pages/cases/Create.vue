@@ -54,7 +54,7 @@
               </div>
             </div>
           </div>
-          <v-card-actions>
+          <v-card-actions class="mt-2">
             <v-btn color="primary" @click="saveCaseInfo">
               {{ $t("general.continue") }}
             </v-btn>
@@ -113,6 +113,7 @@
                                 dense
                                 counter
                                 show-size
+                                accept=".doc, .docx"
                                 :label="getInputLabel(input)"
                                 @change="
                                   (file) => handleFileUpload(file, input)
@@ -183,7 +184,7 @@
           ></iframe>
           <div v-else id="filePreview-container"></div>
 
-          <v-card-actions>
+          <v-card-actions class="mt-2">
             <v-btn color="primary" @click="updateCaseStatus('ACCEPT')">
               {{ $t("general.acceptRequest") }}
             </v-btn>
@@ -409,12 +410,14 @@ export default {
       "getPagesValues",
       "changeStatus",
     ]),
-    updateCaseStatus(status) {
-      console.log("status", status);
-      this.changeStatus({
+    async updateCaseStatus(status) {
+      const res = await this.changeStatus({
         status,
         formId: this.formRequestId,
       });
+      if (res) {
+        this.$router.push({ path: `/cases/1/request-review` });
+      }
     },
     openCaseInfoDialog(id) {
       this.caseInfoDialog = true;
@@ -574,7 +577,9 @@ export default {
       if (file) {
         this.fileUploaded = file;
         const fileName = file.name.split(".")[0];
+
         const fileExtension = file.name.split(".")[1];
+
         this.uploadedFileType = fileExtension.toLowerCase();
         input["file_name"] = fileName + "." + fileExtension;
         const reader = new FileReader();
