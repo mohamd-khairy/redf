@@ -1,5 +1,5 @@
 <template>
-  <div class="d-flex flex-column flex-grow-1" style="margin: 50px">
+  <div class="d-flex flex-column flex-grow-1">
     <div v-if="formData">
       <v-stepper v-model="e1">
         <v-stepper-header>
@@ -308,7 +308,7 @@ export default {
       formRequestId: null,
       breadcrumbs: [
         {
-          text: this.$t("menu.requests"),
+          text: this.$t("menu.request_review"),
           disabled: false,
           href: "#",
         },
@@ -456,7 +456,7 @@ export default {
         return nav.id === +currentFormId;
       });
       if (currentPage) {
-        this.breadcrumbs.push({
+        this.breadcrumbs.unshift({
           text: currentPage.title,
           disabled: false,
           href: `/cases/${currentFormId}`,

@@ -71,12 +71,9 @@
       app
       flat
       outlined
-      prominent
-      shrink-on-scroll
       :color="isToolbarDetached ? 'surface' : undefined"
       :light="toolbarTheme === 'light'"
       :dark="toolbarTheme === 'dark'"
-      :height="breadcrumbs.length > 1 ? 40 : 60"
     >
       <v-card
         class="flex-grow-1 d-flex fill-height"
@@ -88,7 +85,7 @@
             <v-app-bar-nav-icon
               @click.stop="drawer = !drawer"
             ></v-app-bar-nav-icon>
-            <v-app-bar-title>{{ pageTitle }}</v-app-bar-title>
+            <!-- <v-app-bar-title>{{ pageTitle }}</v-app-bar-title> -->
 
             <!-- <v-spacer class="d-none d-lg-block"></v-spacer>
 
@@ -105,14 +102,22 @@
           </div>
         </div>
       </v-card>
-      <template v-slot:extension v-if="breadcrumbs.length > 1">
+      <!-- <template v-slot:extension v-if="breadcrumbs.length > 1">
         <v-breadcrumbs :items="breadcrumbs" class="pa-0 py-2"></v-breadcrumbs>
-      </template>
+      </template> -->
     </v-app-bar>
 
     <v-main>
       <v-container class="fill-height" :fluid="!isContentBoxed">
-        <v-layout>
+        <v-layout class="d-flex flex-column flex-grow-1">
+          <div class="p-3 pt-0">
+            <div class="display-1">{{ pageTitle }}</div>
+            <v-breadcrumbs
+              v-if="breadcrumbs.length > 1"
+              :items="breadcrumbs"
+              class="pa-0 py-2"
+            ></v-breadcrumbs>
+          </div>
           <slot></slot>
         </v-layout>
       </v-container>
