@@ -1005,6 +1005,7 @@ export default {
         .then((response) => {
           this.isLoading = false;
           this.users = response.data.data.users;
+          this.filterUsers()
           // this.claimantUsers = response.data.data.users
           // this.defendantUsers = response.data.data.users
         })
