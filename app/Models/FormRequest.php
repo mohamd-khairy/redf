@@ -2,6 +2,9 @@
 
 namespace App\Models;
 
+use App\Enums\CaseTypeEnum;
+use App\Enums\FormRequestStatus;
+use App\Enums\StatusEnum;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
@@ -23,10 +26,18 @@ class FormRequest extends Model
         'user_id',
         'form_request_number',
         'name',
-        'branche_id'
+        'branche_id',
+        'form_type',
+        'case_date',
+        'case_type',
+        'specialization_id',
+        'organization_id',
+        'status_request'
     ];
 
-    protected $with = ['user', 'lastFormRequestInformation'];
+    protected $appends = ['sub_status', 'category', 'display_status'];
+
+    protected $with = ['user', 'lastFormRequestInformation', 'formRequestSide', 'branche'];
 
     public function getActivitylogOptions(): LogOptions
     {
@@ -58,6 +69,11 @@ class FormRequest extends Model
         return $this->hasOne(Formable::class, 'form_request_id')->with('formable');
     }
 
+    public function requests()
+    {
+        return $this->hasMany(Formable::class, 'form_request_id', 'id');
+    }
+
     public function formRequestActions()
     {
         return $this->morphMany(FormRequestAction::class, 'formable');
@@ -66,6 +82,16 @@ class FormRequest extends Model
     public function tasks()
     {
         return $this->hasMany(Task::class, 'form_request_id');
+    }
+
+    public function branche()
+    {
+        return $this->belongsTo(Branch::class, 'branche_id');
+    }
+
+    public function specialization()
+    {
+        return $this->belongsTo(Specialization::class, 'specialization_id');
     }
 
     public function formRequestInformation()
@@ -86,5 +112,35 @@ class FormRequest extends Model
     public function lastFormRequestInformation()
     {
         return $this->hasOne(FormRequestInformation::class)->orderBy('id', 'desc');
+    }
+
+    public function file()
+    {
+        return $this->morphOne(File::class, 'fileable');
+    }
+
+    public function branch()
+    {
+        return $this->belongsTo(Branch::class, 'branche_id');
+    }
+
+    public function organization()
+    {
+        return $this->belongsTo(Organization::class, 'organization_id');
+    }
+
+    public function getSubStatusAttribute()
+    {
+        return $this->formRequestInformations->where('sessionDate', '>=', now())->count() > 0 ? 'بإنتظار الجلسه' : null;
+    }
+
+    public function getDisplayStatusAttribute()
+    {
+        return DisplayStatus($this->attributes['status']);
+    }
+
+    public function getCategoryAttribute()
+    {
+        return $this->organization ? $this->organization->name : null;
     }
 }

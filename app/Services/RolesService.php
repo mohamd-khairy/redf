@@ -2,18 +2,32 @@
 
 namespace App\Services;
 
-use Illuminate\Support\Collection;
+use App\Enums\UserTypeEnum;
+use App\Models\User;
 use Illuminate\Support\Str;
-use Spatie\Permission\Models\Permission;
+use Illuminate\Support\Collection;
 use Spatie\Permission\Models\Role;
+use Spatie\Permission\Models\Permission;
 
 class RolesService
 {
     /**
      *  Define basic operations to be used for each model permissions.
      */
-    public const BASIC_ROLES = ['admin','manager','tasks','consultant','reports','settings','employee'];
-
+    public const BASIC_ROLES = ['admin', 'manager', 'tasks', 'cases_manager', 'litigation', 'consultant', 'reports', 'settings', 'employee', 'data_entry', 'system'];
+    public const BASIC_Arabic_Name  = [
+        'admin' => 'مدير النظام',
+        'manager' => 'مدير عام الادارة',
+        'tasks' => 'مسئول المهام',
+        'cases_manager' => 'مدير اداره القضايا',
+        'litigation' => 'مدير قسم التقاضي',
+        'consultant' => 'مستشار الادارة',
+        'reports' => 'مسئول التقارير',
+        'settings' => 'مسئول الاعدادات',
+        'employee' => 'موظف',
+        'data_entry' => 'مدخل البيانات',
+        'system' => 'صندوق التنمية العقارية',
+    ];
     /**
      *  Define basic operations to be used for each model permissions.
      */
@@ -28,6 +42,28 @@ class RolesService
      *  Define additional operations to be used for specific model permissions.
      */
     public const ADDITIONAL_MODEL_OPERATIONS = [];
+
+    /**
+     * Create users for each role.
+     *
+     * @param array $roles
+     */
+    public static function CreateUsersForRoles()
+    {
+        foreach (self::BASIC_Arabic_Name as $roleName => $arabicName) {
+            // Create a user for each role
+            $user = User::create([
+                'name' => $arabicName,
+                'email' => $roleName . '@wakeb.com',
+                'password' => bcrypt(123456),
+                'type' => UserTypeEnum::EMPLOYEE,
+                'email_verified_at' => now()
+            ]);
+
+            // Assign the role to the user
+            $user->assignRole($roleName);
+        }
+    }
 
     public static function GetModels(...$exceptions): Collection
     {
@@ -62,14 +98,18 @@ class RolesService
     {
         collect(array_filter(array_merge(self::BASIC_ROLES, $role)))->each(function ($item) use ($models) {
 
-            $label = ucwords(str_replace(['-', '_'], ' ', $item));
+            // $label = ucwords(str_replace(['-', '_'], ' ', $item));
+            // $roleModel = Role::create(['name' => $item, 'display_name' => $label]);
 
+            // Retrieve the Arabic display name based on the role name
 
-            $roleModel = Role::create(['name' => $item, 'display_name' => $label]);
+            $arabicDisplayName = self::BASIC_Arabic_Name[$item] ?? self::BASIC_ROLES[$item];
 
+            $roleModel = Role::create(['name' => $item, 'display_name' => $arabicDisplayName]);
 
             $models = is_null($models) ? self::GetModels() : $models;
-
+            $roleName = $roleModel->pluck('name')->toArray();
+            // dd($models , $roleModel->pluck('name')->toArray());
             self::AssignModelPermissionsToRole($roleModel, $models);
         });
     }

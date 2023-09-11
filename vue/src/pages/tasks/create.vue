@@ -37,33 +37,6 @@
                 dense
               ></v-autocomplete>
             </v-col>
-            <v-col cols="6">
-              <v-autocomplete
-                v-model="form.form_request_id"
-                :items="casesNames"
-                item-text="name"
-                item-value="id"
-                :label="$t('tasks.case')"
-                :error-messages="errors['form_id']"
-                outlined
-                dense
-              ></v-autocomplete>
-            </v-col>
-            <v-col cols="6">
-              <v-file-input
-                outlined
-                dense
-                counter
-                show-size
-                :v-model="form.file"
-                :label="$t('tasks.document')"
-                @change="(file) => handleFileUpload(file)"
-                click:clear="handleRemoveFile"
-                :error-messages="errors['document']"
-              >
-              </v-file-input>
-            </v-col>
-
             <v-col cols="12" sm="6" md="6">
               <v-dialog
                 ref="dialog"
@@ -99,6 +72,62 @@
                 </v-date-picker>
               </v-dialog>
             </v-col>
+
+            <v-col cols="12">
+              <v-file-input
+                outlined
+                dense
+                counter
+                show-size
+                :v-model="form.file"
+                :label="$t('tasks.document')"
+                @change="(file) => handleFileUpload(file)"
+                click:clear="handleRemoveFile"
+                :error-messages="errors['document']"
+              >
+              </v-file-input>
+            </v-col>
+            <v-col cols="4">
+              <div class="d-flex align-items-center">
+                <label class="ms-2" for="">{{ $t("general.belongsTo") }}</label>
+                <v-checkbox
+                  class="me-3 mt-0"
+                  v-model="belongsTo"
+                  :label="$t('general.case')"
+                  value="case"
+                ></v-checkbox>
+                <v-checkbox
+                  class="mt-0"
+                  v-model="belongsTo"
+                  :label="$t('general.consultation')"
+                  value="consultation"
+                ></v-checkbox>
+              </div>
+            </v-col>
+            <v-col cols="8" v-if="belongsTo">
+              <v-autocomplete
+                v-if="belongsTo === 'case'"
+                v-model="form.form_request_id"
+                :items="casesNames"
+                item-text="name"
+                item-value="id"
+                :label="$t('tasks.case')"
+                :error-messages="errors['form_id']"
+                outlined
+                dense
+              ></v-autocomplete>
+              <v-autocomplete
+                v-else
+                v-model="form.consultation_id"
+                :items="consultationNames"
+                item-text="name"
+                item-value="id"
+                :label="$t('general.consultation')"
+                :error-messages="errors['consultation_id']"
+                outlined
+                dense
+              ></v-autocomplete>
+            </v-col>
           </v-row>
 
           <div class="d-flex">
@@ -124,6 +153,7 @@ export default {
   components: {},
   data() {
     return {
+      belongsTo: null,
       breadcrumbs: [
         {
           text: this.$t("tasks.tasksManagement"),
@@ -148,6 +178,7 @@ export default {
         name: "",
         type: "",
         form_request_id: "",
+        consultation_id: "",
         user_id: null,
         file: null,
         assigner_id: null,
@@ -161,7 +192,20 @@ export default {
   },
   computed: {
     ...mapState("auth", ["user"]),
-    ...mapState("tasks", ["users", "documents", "casesNames"]),
+    ...mapState("tasks", [
+      "users",
+      "documents",
+      "casesNames",
+      "consultationNames",
+    ]),
+  },
+  watch: {
+    belongsTo(val) {
+      if (!val) {
+        this.form.form_request_id = "";
+        this.form.consultation_id = "";
+      }
+    },
   },
   created() {
     this.setBreadCrumb({
@@ -173,7 +217,12 @@ export default {
 
   methods: {
     ...mapActions("app", ["setBreadCrumb"]),
-    ...mapActions("tasks", ["createTask", "getUsers", "getCasesNames"]),
+    ...mapActions("tasks", [
+      "createTask",
+      "getUsers",
+      "getCasesNames",
+      "getConsultationNames",
+    ]),
     handleRemoveFile() {
       this.form.file = null;
     },
@@ -198,6 +247,7 @@ export default {
     open() {
       this.getUsers();
       this.getCasesNames();
+      this.getConsultationNames();
     },
     formatDate(date) {
       if (!date) return null;

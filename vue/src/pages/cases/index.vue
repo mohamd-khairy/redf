@@ -40,67 +40,28 @@
           </v-menu>
         </v-col>
         <v-col cols="6" class="d-flex text-right align-center">
-          <v-text-field
-            v-model="searchQuery"
-            append-icon="mdi-magnify"
-            class="flex-grow-1 mr-md-2"
-            solo
-            hide-details
-            dense
-            clearable
-            :placeholder="$t('general.search')"
-            @keyup.enter="search(searchQuery)"
-          ></v-text-field>
+          <v-text-field v-model="searchQuery" append-icon="mdi-magnify" class="flex-grow-1 mr-md-2" solo hide-details
+            dense clearable :placeholder="$t('general.search')" @keyup.enter="search(searchQuery)"></v-text-field>
 
           <v-tooltip top>
             <template v-slot:activator="{ on, attrs }">
-              <v-btn
-                color="primary"
-                class="mx-2"
-                elevation="0"
-                v-bind="attrs"
-                v-on="on"
-                :to="caseUrl"
-                :disabled="currentPageId > 3"
-                v-can="'create-user'"
-              >
+              <v-btn color="primary" class="mx-2" elevation="0" v-bind="attrs" v-on="on" :to="caseUrl"
+                :disabled="currentPageId > 3" v-can="'create-user'">
                 <v-icon> mdi-plus </v-icon>
               </v-btn>
             </template>
             <span>{{ plusButtonTitle }}</span>
           </v-tooltip>
-          <v-btn
-            color="primary"
-            class="me-1"
-            elevation="0"
-            :to="formTypesUrl"
-            v-can="'create-user'"
-          >
+          <v-btn color="primary" class="me-1" elevation="0" :to="formTypesUrl" v-can="'create-user'">
             {{ buttonName }}
           </v-btn>
-          <v-btn
-            :loading="isLoading"
-            icon
-            @click.prevent="open()"
-            small
-            class="ml-2"
-          >
+          <v-btn :loading="isLoading" icon @click.prevent="open()" small class="ml-2">
             <v-icon>mdi-refresh</v-icon>
           </v-btn>
         </v-col>
       </v-row>
-      <v-data-table
-        show-select
-        v-model="selected"
-        :headers="headers"
-        :items="items"
-        :options.sync="options"
-        class="flex-grow-1"
-        :loading="isLoading"
-        :page="page"
-        :pageCount="numberOfPages"
-        :server-items-length="total"
-      >
+      <v-data-table show-select v-model="selected" :headers="headers" :items="items" :options.sync="options"
+        class="flex-grow-1" :loading="isLoading" :page="page" :pageCount="numberOfPages" :server-items-length="total">
         <!-- <template v-slot:item.id="{ item }">
           <div class="font-weight-bold">
             # <copy-label :text="item.id + ''" />
@@ -109,6 +70,12 @@
 
         <template v-slot:item.name="{ item }">
           <div>{{ item.name ?? "---" }}</div>
+        </template>
+        <template v-slot:item.branch="{ item }">
+          <div>{{ item?.branch?.name ?? "---" }}</div>
+        </template>
+        <template v-slot:item.specialization="{ item }">
+          <div>{{ item?.specialization?.name ?? "---" }}</div>
         </template>
         <template v-slot:item.form_request_number="{ item }">
           <div class="font-weight-bold">
@@ -126,7 +93,7 @@
             {{ item.form_assigned_requests[0]?.user.name ?? "---" }}
           </div>
         </template>
-        <template v-slot:item.court="{ item }">
+        <!-- <template v-slot:item.court="{ item }">
           <div>
             {{
               item?.last_form_request_information?.court
@@ -134,122 +101,91 @@
                 : "---"
             }}
           </div>
-        </template>
+        </template> -->
 
         <template v-slot:item.status="{ item }">
-          <v-chip
-            small
-            :color="getStatusColor(item?.status?.toLowerCase())"
-            text-color="white"
-          >
-            {{
+          <v-chip v-if="item.last_form_request_information != null" small
+            :color="getStatusColor(item?.status?.toLowerCase())" text-color="white" @click="openShowActionDialog(item)">
+            <!-- {{
               item?.status ? $t(`general.${item.status.toLowerCase()}`) : "---"
-            }}
+            }} -->
+            {{ item?.status ? item.status + " " + checkRecieveDate(item) : "---" }}
+          </v-chip>
+          <v-chip v-else small :color="getStatusColor(item?.status?.toLowerCase())" text-color="white">
+            <!-- {{
+              item?.status ? $t(`general.${item.status.toLowerCase()}`) : "---"
+            }} -->
+            {{ item?.status ? item.status : "---" }}
           </v-chip>
         </template>
 
-        <template v-slot:item.created_at="{ item }">
-          <div>{{ item.created_at | formatDate("lll") }}</div>
+        <!-- <template v-slot:item.sub_status="{ item }">
+          <v-chip small :color="getStatusColor(item?.status?.toLowerCase())" text-color="white">
+            {{ item?.sub_status ? item.sub_status : "---" }}
+          </v-chip>
+        </template> -->
+
+        <template v-slot:item.case_date="{ item }">
+          <div>{{ item.case_date | formatDate("ll") }}</div>
         </template>
-
+        <!-- <template v-slot:item.created_at="{ item }">
+          <div>{{ item.created_at | formatDate("ll") }}</div>
+        </template> -->
         <template v-slot:item.action="{ item }">
-          <div class="actions">
-            <!-- add action button -->
-            <v-tooltip top>
-              <template v-slot:activator="{ on, attrs }">
-                <v-btn
-                  color="primary"
-                  icon
-                  elevation="0"
-                  v-bind="attrs"
-                  v-on="on"
-                  @click="openActionDialog(item)"
-                >
+          <v-menu offset-y left>
+            <template v-slot:activator="{ on }">
+              <transition name="slide-fade" mode="out-in">
+                <!-- <v-btn color="primary" v-on="on">
+                  {{ $t("cases.actions") }}
+                  <v-icon right>mdi-menu-down</v-icon>
+                </v-btn> -->
+                <v-btn v-on="on" class="ma-2" icon color="primary">
+                  <v-icon>mdi-dots-vertical</v-icon>
+                </v-btn>
+              </transition>
+            </template>
+            <v-list dense>
+              <v-list-item @click="openActionDialog(item)">
+                <v-list-item-title>
                   <v-icon>mdi-plus-circle-outline</v-icon>
-                </v-btn>
-              </template>
-              <span>{{ $t("cases.add_action") }}</span>
-            </v-tooltip>
-
-            <!-- view case timeline button -->
-            <v-tooltip top>
-              <template v-slot:activator="{ on, attrs }">
-                <v-btn
-                  color="primary"
-                  icon
-                  elevation="0"
-                  v-bind="attrs"
-                  v-on="on"
-                  @click="openCasePreviewDialog(item.id)"
-                >
+                  <span class="action-span">{{ $t("cases.add_action") }}</span>
+                </v-list-item-title>
+              </v-list-item>
+              <v-list-item @click="openCasePreviewDialog(item.id)">
+                <v-list-item-title>
                   <v-icon>mdi-timeline-text-outline</v-icon>
-                </v-btn>
-              </template>
-              <span>{{ $t("cases.view_timeline") }}</span>
-            </v-tooltip>
-
-            <!-- assign user button -->
-            <v-tooltip top>
-              <template v-slot:activator="{ on, attrs }">
-                <v-btn
-                  color="primary"
-                  icon
-                  elevation="0"
-                  v-bind="attrs"
-                  v-on="on"
-                  @click="openAssignDialog(item.id)"
-                >
+                  <span class="action-span">{{
+                    $t("cases.view_timeline")
+                  }}</span>
+                </v-list-item-title>
+              </v-list-item>
+              <v-list-item @click="openCaseInfoDialog(item.id)">
+                <v-list-item-title>
+                  <v-icon>mdi-eye-outline</v-icon>
+                  <span class="action-span">{{ $t("cases.view_info") }}</span>
+                </v-list-item-title>
+              </v-list-item>
+              <v-list-item @click="openAssignDialog(item.id)">
+                <v-list-item-title>
                   <v-icon>mdi-at</v-icon>
-                </v-btn>
-              </template>
-              <span>{{ $t("cases.assign_user") }}</span>
-            </v-tooltip>
-
-            <!-- edit case button -->
-            <v-tooltip top>
-              <template v-slot:activator="{ on, attrs }">
-                <v-btn
-                  color="primary"
-                  icon
-                  elevation="0"
-                  v-bind="attrs"
-                  v-on="on"
-                  :to="`/cases/${currentPageId}/edit/${item.id}`"
-                  v-can="'update-user'"
-                >
-                  <v-icon>mdi-open-in-new</v-icon>
-                </v-btn>
-              </template>
-              <span>{{ $t("cases.editCase") }}</span>
-            </v-tooltip>
-
-            <!-- delete case button -->
-            <v-tooltip top>
-              <template v-slot:activator="{ on, attrs }">
-                <v-btn
-                  color="error"
-                  icon
-                  elevation="0"
-                  v-bind="attrs"
-                  v-on="on"
-                  @click.prevent="deleteItem(item.id)"
-                  v-can="'delete-user'"
-                >
+                  <span class="action-span">{{ $t("cases.assign_user") }}</span>
+                </v-list-item-title>
+              </v-list-item>
+              <v-list-item :to="`/cases/${currentPageId}/edit/${item.id}`">
+                <v-list-item-title>
+                  <v-icon>mdi-pencil-outline</v-icon>
+                  <!-- <v-icon>mdi-open-in-new</v-icon> -->
+                  <span class="action-span">{{ $t("cases.editCase") }}</span>
+                </v-list-item-title>
+              </v-list-item>
+              <v-list-item @click.prevent="deleteItem(item.id)" v-can="'delete-user'" class="d-flex">
+                <v-list-item-title>
                   <v-icon>mdi-close</v-icon>
-                </v-btn>
-              </template>
-              <span>{{ $t("cases.delete") }}</span>
-            </v-tooltip>
-
-            <!-- <v-btn
-              color="error"
-              icon
-              @click.prevent="deleteItem(item.id)"
-              v-can="'delete-user'"
-            >
-              <v-icon>mdi-close</v-icon>
-            </v-btn> -->
-          </div>
+                  <span class="action-span">{{ $t("cases.delete") }}</span>
+                </v-list-item-title>
+              </v-list-item>
+            </v-list>
+          </v-menu>
         </template>
         <template v-slot:no-data>
           <div class="text-center my-2 primary--text" color="primary">
@@ -260,31 +196,20 @@
           </div>
         </template>
       </v-data-table>
-      <CasePreviewDialog
-        :dialogVisible="casePrevDialog"
-        :case-id="formId"
-        v-if="casePrevDialog"
-        @closePrevDialog="casePrevDialog = false"
-      />
-      <AddAction
-        :dialogVisible="addActionDialog"
-        :formRequestId="formId"
+      <CasePreviewDialog :dialogVisible="casePrevDialog" :case-id="formId" v-if="casePrevDialog"
+        @closePrevDialog="casePrevDialog = false" />
+      <CaseInfoDialog :dialogVisible="caseInfoDialog" :case-id="formId" v-if="caseInfoDialog"
+        @closeInfoDialog="caseInfoDialog = false" />
+      <AddAction :dialogVisible="addActionDialog" :formRequestId="formId"
+        :lastAction="selectedForm.last_form_request_information || null" v-if="addActionDialog && currentPageId == 1"
+        @close-action-dialog="closeActionDialog" />
+      <AddDynamicAction :dialogVisible="addDynamicActionDialog" :formRequestId="formId"
         :lastAction="selectedForm.last_form_request_information || null"
-        v-if="addActionDialog && currentPageId==1"
-        @close-action-dialog="closeActionDialog"
-      />
-      <AddDynamicAction
-        :dialogVisible="addDynamicActionDialog"
-        :formRequestId="formId"
-        :lastAction="selectedForm.last_form_request_information || null"
-        v-else-if="addDynamicActionDialog && currentPageId!=1"
-        @close-action-dialog="closeDynamicActionDialog"
-      />
-      <assign
-        @userAssigned="userAssigned"
-        v-model="dialog"
-        :id="formId"
-      ></assign>
+        v-else-if="addDynamicActionDialog && currentPageId != 1" @close-action-dialog="closeDynamicActionDialog" />
+      <assign @userAssigned="userAssigned" v-model="dialog" :id="formId"></assign>
+      <show-action :dialogVisible="showActionDialog" :formRequestId="formId"
+        :lastAction="selectedForm.last_form_request_information || null" v-if="showActionDialog"
+        @close-action-dialog="closeShowActionDialog"></show-action>
     </v-card>
   </div>
 </template>
@@ -295,18 +220,22 @@ import { mapActions, mapState } from "vuex";
 import { ask, makeToast } from "@/helpers";
 import emptyDataSvg from "@/assets/images/illustrations/empty-data.svg";
 import CasePreviewDialog from "../../components/cases/CasePreviewDialog.vue";
+import CaseInfoDialog from "../../components/cases/CaseInfoDialog.vue";
 import Assign from "../../components/cases/Assign";
 import AddAction from "../../components/cases/AddAction.vue";
 import AddDynamicAction from "@/components/cases/AddDynamicAction";
+import ShowAction from "@/components/cases/ShowAction";
 
 export default {
   components: {
+    ShowAction,
     CasePreviewDialog,
+    CaseInfoDialog,
     Assign,
     CopyLabel,
     emptyDataSvg,
     AddAction,
-    AddDynamicAction
+    AddDynamicAction,
   },
   data() {
     return {
@@ -317,27 +246,17 @@ export default {
       options: {},
       isLoading: false,
       breadcrumbs: [
-        {
-          text: this.$t("menu.requests"),
-          disabled: false,
-          href: "#",
-        },
+        // {
+        //   text: this.$t("menu.requests"),
+        //   disabled: false,
+        //   href: "#",
+        // },
       ],
 
       searchQuery: "",
       selected: [],
       items: [],
-      headers: [
-        // { text: this.$t("tables.id"), value: "id" },
-        { text: this.$t("tables.number"), value: "form_request_number" },
-        { text: this.$t("tables.name"), value: "name" },
-        { text: this.$t("tables.user"), value: "user" },
-        { text: this.$t("tables.assigner"), value: "assigner" },
-        { text: this.$t("tables.court"), value: "court" },
-        { text: this.$t("tables.status"), value: "status" },
-        { text: this.$t("tables.created"), value: "created_at" },
-        { text: "", sortable: false, align: "right", value: "action" },
-      ],
+
       formTypesUrl: "",
       caseUrl: "",
       buttonName: "",
@@ -345,13 +264,15 @@ export default {
       formId: 0,
       dialog: false,
       casePrevDialog: false,
+      caseInfoDialog: false,
       addActionDialog: false,
       addDynamicActionDialog: false,
+      showActionDialog: false,
       selectedForm: null,
     };
   },
   watch: {
-    selected(val) {},
+    selected(val) { },
     options: {
       handler() {
         this.open();
@@ -371,9 +292,34 @@ export default {
   computed: {
     ...mapState("cases", ["formRequests"]),
     ...mapState("app", ["navTemplates"]),
+    headers() {
+      const headers = [
+        { text: this.$t("tables.number"), value: "form_request_number" },
+        { text: this.$t("tables.name"), value: "name" },
+        { text: this.$t("tables.branch"), value: "branch" },
+        { text: this.$t("tables.specialization"), value: "specialization" },
+        { text: this.$t("tables.user"), value: "user" },
+        { text: this.$t("tables.assigner"), value: "assigner" },
+        { text: this.$t("tables.status"), value: "status" },
+        // { text: this.$t("tables.sub_status"), value: "sub_status" },
+        { text: this.$t("tables.case_date"), value: "case_date" },
+        // { text: this.$t("tables.created"), value: "created_at" },
+        {
+          text: this.$t("tables.actions"),
+          sortable: false,
+          align: "left",
+          value: "action",
+        },
+      ];
+      if (+this.currentPageId === 1) {
+        // headers.splice(4, 0, { text: this.$t("tables.court"), value: "court" });
+      }
+      return headers;
+    },
   },
   created() {
     let { id } = this.$route.params;
+
     this.currentPageId = id;
     this.formTypesUrl = `/cases/${id}/form-types`;
     this.caseUrl = `/cases/${id}/create/${id}`;
@@ -384,7 +330,15 @@ export default {
   methods: {
     ...mapActions("cases", ["getFormRequests", "deleteForm", "deleteAll"]),
     ...mapActions("app", ["setBreadCrumb"]),
-    search() {},
+    search() { },
+    checkRecieveDate(item) {
+      let last = item?.last_form_request_information;
+      console.log(item);
+      if (last?.type == 'court' && last?.date_of_receipt) {
+        return '( تم الاستلام )'
+      }
+      return '';
+    },
     setCurrentBread() {
       const currentPage = this.navTemplates.find((nav) => {
         return nav.id === +this.currentPageId;
@@ -397,10 +351,13 @@ export default {
           disabled: false,
           href: "#",
         });
+        this.breadcrumbs.push({
+          text: this.$t("breadcrumbs.list") + " " + currentPage.title,
+        });
       }
       this.setBreadCrumb({
         breadcrumbs: this.breadcrumbs,
-        pageTitle: this.$t("cases.casesList"),
+        pageTitle: currentPage.title,
       });
     },
     userAssigned() {
@@ -413,6 +370,7 @@ export default {
       let { id } = this.$route.params;
       let data = {
         template_id: id,
+        form_type: "case",
         search: this.searchQuery,
         pageSize: itemsPerPage,
         pageNumber: page,
@@ -441,10 +399,8 @@ export default {
       this.formId = id;
     },
     openActionDialog(item) {
-      if(this.currentPageId == 1)
-        this.addActionDialog = true;
-      else
-        this.addDynamicActionDialog = true
+      if (this.currentPageId == 1) this.addActionDialog = true;
+      else this.addDynamicActionDialog = true;
       this.formId = item.id;
       this.selectedForm = item;
     },
@@ -452,12 +408,25 @@ export default {
       this.formId = id;
       this.casePrevDialog = true;
     },
+    openCaseInfoDialog(id) {
+      this.formId = id;
+      this.caseInfoDialog = true;
+    },
+    openShowActionDialog(item) {
+      this.showActionDialog = true;
+      this.formId = item.id;
+      this.selectedForm = item;
+    },
     closeActionDialog() {
       this.addActionDialog = false;
       this.open();
     },
     closeDynamicActionDialog() {
       this.addDynamicActionDialog = false;
+      this.open();
+    },
+    closeShowActionDialog() {
+      this.showActionDialog = false;
       this.open();
     },
     getStatusColor(status) {
@@ -521,12 +490,18 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.action-span {
+  margin-right: 5px;
+}
+
 .slide-fade-enter-active {
   transition: all 0.3s ease;
 }
+
 .slide-fade-leave-active {
   transition: all 0.3s cubic-bezier(1, 0.5, 0.8, 1);
 }
+
 .slide-fade-enter,
 .slide-fade-leave-to {
   transform: translateX(10px);

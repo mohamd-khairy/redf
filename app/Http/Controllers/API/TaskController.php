@@ -56,9 +56,10 @@ class TaskController extends Controller
      */
     public function store(TaskRequest $request)
     {
-
         try {
+
             $validatedData = $request->validated();
+
             unset($validatedData['file']);
             // Parse the due_date
             $validatedData['due_date'] = Carbon::createFromFormat('d-m-Y', $validatedData['due_date'])
@@ -74,18 +75,22 @@ class TaskController extends Controller
                 $fileRecord = new File([
                     'name' => $filename,
                     'path' => $filePath,
+                    'user_id' => auth()->id(),
+                    'start_date' => now(),
+                    'type' => 'task',
+                    'priority' => 'high'
                 ]);
                 $fileRecord->fileable()->associate($task); // Associate the file with the task
                 $fileRecord->save();
             }
 
-            $actionData = [
-                'form_request_id' => $request->form_request_id,
-                'formable_id' => $request->form_request_id,
-                'formable_type' => FormRequest::class,
-                 'msg' =>  'تم اسناد المهمه الي قضيه جديده',
-            ];
-            saveFormRequestAction($actionData);
+            saveFormRequestAction(
+                form_request_id: $request->form_request_id,
+                formable_id: $request->form_request_id,
+                formable_type: FormRequest::class,
+                msg: 'تم اسناد المهمه الي قضيه جديده'
+            );
+
             return responseSuccess($task, 'Task has been successfully created');
         } catch (Throwable $e) {
             return responseFail($e->getMessage());
@@ -135,6 +140,10 @@ class TaskController extends Controller
             $fileRecord = new File([
                 'name' => $filename,
                 'path' => $filePath,
+                'user_id' => auth()->id(),
+                'start_date' => now(),
+                'type' => 'task',
+                'priority' => 'high'
             ]);
 
             // Associate the new file with the updated task

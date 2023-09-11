@@ -22,31 +22,137 @@
       <v-stepper-items>
         <v-stepper-content step="1">
           <div class="mt-2" v-if="!initialLoading">
-            <div class="mt-2">
-              <v-text-field
-                class="mb-2"
-                v-model="caseName"
-                :label="$t('cases.caseName')"
-                outlined
-                :required="true"
-                :error-messages="stepOneValidation(caseName)"
-                dense
-                :rules="[requiredRule]"
-              ></v-text-field>
-              <v-text-field
-                outlined
-                type="number"
-                class="mb-2"
-                v-model="caseNumber"
-                @keydown="handleInput"
-                :label="$t('cases.caseNumber')"
-                :required="true"
-                :rules="[requiredRule]"
-                :error-messages="stepOneValidation(caseNumber)"
-                dense
-              ></v-text-field>
+            <div class="d-flex flex-column flex-sm-row">
+              <div class="flex-grow-1 pt-2 pa-sm-2">
+                <v-row dense>
+                  <v-col cols="12">
+                    <v-text-field
+                      outlined
+                      type="number"
+                      class="mb-2"
+                      v-model="caseNumber"
+                      @keydown="handleInput"
+                      :label="$t('cases.caseNumber')"
+                      :required="true"
+                      :rules="[requiredRule]"
+                      :error-messages="stepOneValidation(caseNumber)"
+                      dense
+                    ></v-text-field>
+                  </v-col>
+                  <v-col cols="12">
+                    <v-text-field
+                      class="mb-2"
+                      v-model="caseName"
+                      :label="$t('cases.caseName')"
+                      outlined
+                      :required="true"
+                      :error-messages="stepOneValidation(caseName)"
+                      dense
+                      :rules="[requiredRule]"
+                    ></v-text-field>
+                  </v-col>
+                  <v-col cols="12">
+                    <v-dialog
+                      ref="caseDateDialog"
+                      v-model="caseDateDialog"
+                      :return-value.sync="caseDate"
+                      persistent
+                      width="290px"
+                    >
+                      <template v-slot:activator="{ on, attrs }">
+                        <v-text-field
+                          v-model="caseDate"
+                          :label="$t('cases.caseDate')"
+                          append-icon="mdi-calendar"
+                          readonly
+                          v-bind="attrs"
+                          v-on="on"
+                          dense
+                          required="true"
+                          :rules="[rules.required]"
+                          :error-messages="stepOneValidation(caseDate)"
+                          outlined
+                        ></v-text-field>
+                      </template>
+                      <v-date-picker v-model="caseDate" scrollable>
+                        <v-spacer></v-spacer>
+                        <v-btn text color="primary" @click="caseDateDialog = false">
+                          Cancel
+                        </v-btn>
+                        <v-btn
+                          text
+                          color="primary"
+                          @click="$refs.caseDateDialog.save(caseDate)"
+                        >
+                          OK
+                        </v-btn>
+                      </v-date-picker>
+                    </v-dialog>
+                  </v-col>
+                  <v-col cols="12">
+                    <v-select
+                      :items="organizations"
+                      :label="$t('cases.classification')"
+                      item-text="name"
+                      item-value="id"
+                      dense
+                      outlined
+                      v-model="organization_id"
+                      required="true"
+                      :rules="[rules.required]"
+                      :error-messages="stepOneValidation(organization_id)"
+                    >
+                    </v-select>
+                  </v-col>
+                  <v-col cols="12">
+                    <v-select
+                      :items="caseModels"
+                      :label="$t('cases.caseModels')"
+                      item-text="name"
+                      item-value="value"
+                      dense
+                      outlined
+                      v-model="caseModel"
+                      required="true"
+                      :rules="[rules.required]"
+                      :error-messages="stepOneValidation(caseModel)"
+                    >
+                    </v-select>
+                  </v-col>
+                  <v-col cols="12">
+                    <v-select
+                      :items="specializations"
+                      :label="$t('cases.specialization')"
+                      item-text="name"
+                      item-value="id"
+                      dense
+                      outlined
+                      v-model="specialization_id"
+                      required="true"
+                      :rules="[rules.required]"
+                      :error-messages="stepOneValidation(specialization_id)"
+                    >
+                    </v-select>
+                  </v-col>
+                  <v-col cols="12">
+                    <v-select
+                      :items="branches || []"
+                      :label="$t('branches.branch')"
+                      item-text="name"
+                      item-value="id"
+                      dense
+                      outlined
+                      v-model="branch_id"
+                      required="true"
+                      :rules="[rules.required]"
+                      :error-messages="stepOneValidation(branch_id)"
+                    >
+                    </v-select>
+                  </v-col>
+                </v-row>
+              </div>
             </div>
-            <v-tabs v-model="activeTab">
+            <v-tabs v-model="activeTab" v-if="pages && pages[0]?.items?.length > 0">
               <v-tab v-for="(tab, index) in pages" :key="index">{{
                 tab.title
               }}</v-tab>
@@ -167,8 +273,19 @@
                     :error-messages="stepOneValidation(sidesInfo.claimant_id)"
                     clearable
                     @click:clear="clearClaimantSelect"
+                    @change="changeDefendantUsers"
                   >
                   </v-select>
+                </v-col>
+                <v-col cols="12" v-if="caseModel === 'entry'">
+                  <v-text-field
+                    type="number"
+                    v-model="sidesInfo.claimant_civil"
+                    :label="$t('cases.civil')"
+                    disabled
+                    dense
+                    outlined
+                  ></v-text-field>
                 </v-col>
                 <v-col cols="12">
                   <v-select
@@ -183,8 +300,19 @@
                     :error-messages="stepOneValidation(sidesInfo.defendant_id)"
                     clearable
                     @click:clear="clearDefendantSelect"
+                    @change="changeClaimantUsers"
                   >
                   </v-select>
+                </v-col>
+                <v-col cols="12" v-if="caseModel === 'entry'">
+                  <v-text-field
+                    type="number"
+                    v-model="sidesInfo.defendant_civil"
+                    :label="$t('cases.civil')"
+                    disabled
+                    dense
+                    outlined
+                  ></v-text-field>
                 </v-col>
                 <v-col cols="12">
                   <v-select
@@ -192,14 +320,14 @@
                     :label="$t('tables.department')"
                     :item-text="(item) => item.name"
                     :item-value="(item) => item.id"
-                    disabled
+                    :disabled="caseModel !== 'entry'"
                     dense
                     outlined
                     v-model="sidesInfo.department_id"
                   >
                   </v-select>
                 </v-col>
-                <v-col cols="12">
+                <v-col cols="12" v-if="caseModel !== 'entry'">
                   <v-text-field
                     type="number"
                     v-model="sidesInfo.civil"
@@ -226,117 +354,27 @@
         <v-stepper-content step="3">
           <div class="d-flex flex-column flex-sm-row">
             <div class="flex-grow-1 pt-2 pa-sm-2">
-              <v-row dense>
-                <v-col cols="6">
-                  <v-text-field
-                    type="number"
-                    @keydown="handleInput"
-                    v-model="caseAction.amount"
-                    :label="$t('cases.amount')"
-                    outlined
-                    dense
-                  >
-                    <template v-slot:append>
-                      <v-icon> mdi-cash </v-icon>
-                    </template>
-                  </v-text-field>
-                </v-col>
-                <v-col cols="6">
-                  <v-text-field
-                    type="number"
-                    @keydown="handleInput"
-                    v-model="caseAction.percentage"
-                    :label="$t('cases.percentageLose')"
-                    dense
-                    outlined
-                  >
-                    <template v-slot:append>
-                      <v-icon> mdi-percent </v-icon>
-                    </template>
-                  </v-text-field>
-                </v-col>
-                <v-col cols="6">
-                  <v-select
-                    :items="caseTypes"
-                    item-text="title"
-                    item-value="value"
-                    :label="$t('tables.status')"
-                    dense
-                    outlined
-                    required="true"
-                    :rules="[rules.required]"
-                    :error-messages="stepOneValidation(caseAction.status)"
-                    v-model="caseAction.status"
-                  >
-                  </v-select>
-                </v-col>
-                <v-col cols="12" sm="6">
-                  <v-dialog
-                    ref="dateDialog"
-                    v-model="dateDialog"
-                    :return-value.sync="caseAction.date"
-                    persistent
-                    width="290px"
-                  >
-                    <template v-slot:activator="{ on, attrs }">
-                      <v-text-field
-                        v-model="caseAction.date"
-                        :label="$t('tables.date')"
-                        prepend-icon="mdi-calendar"
-                        readonly
-                        v-bind="attrs"
-                        v-on="on"
-                        dense
-                        required="true"
-                        :rules="[rules.required]"
-                        :error-messages="stepOneValidation(caseAction.date)"
-                        outlined
-                      ></v-text-field>
-                    </template>
-                    <v-date-picker v-model="caseAction.date" scrollable>
-                      <v-spacer></v-spacer>
-                      <v-btn text color="primary" @click="modal = false">
-                        Cancel
-                      </v-btn>
-                      <v-btn
-                        text
-                        color="primary"
-                        @click="$refs.dateDialog.save(caseAction.date)"
-                      >
-                        OK
-                      </v-btn>
-                    </v-date-picker>
-                  </v-dialog>
-                </v-col>
-
-                <v-col cols="12">
-                  <v-select
-                    :items="courts"
-                    :label="$t('tables.court')"
-                    item-text="title"
-                    item-value="value"
-                    dense
-                    outlined
-                    v-model="caseAction.court"
-                  >
-                  </v-select>
-                </v-col>
-                <v-col cols="12">
-                  <v-textarea
-                    :label="$t('cases.action')"
-                    value=""
-                    v-model="caseAction.details"
-                    dense
-                    outlined
-                  ></v-textarea>
-                </v-col>
-                <v-col cols="12">
-                  <v-checkbox
-                    v-model="sessionDate"
+              <v-row dense class="mb-2">
+                <v-radio-group v-model="radioAction" row>
+                  <v-radio
+                    class="radio-check"
+                    value="session"
                     :label="$t('cases.add_session')"
-                  ></v-checkbox>
-                </v-col>
-                <v-col cols="12" sm="12" v-if="sessionDate">
+                  ></v-radio>
+                  <v-radio
+                    class="radio-check"
+                    value="court"
+                    :label="$t('cases.add_court')"
+                  ></v-radio>
+                  <v-radio
+                    value="other"
+                    :label="$t('cases.another')"
+                  ></v-radio>
+                </v-radio-group>
+              </v-row>
+
+              <v-row dense v-if="radioAction === 'session'">
+                <v-col cols="12" sm="12">
                   <v-dialog
                     ref="sessionDialog"
                     v-model="sessionDialog"
@@ -348,7 +386,7 @@
                       <v-text-field
                         v-model="caseAction.sessionDate"
                         :label="$t('cases.sessionDate')"
-                        prepend-icon="mdi-calendar"
+                        append-icon="mdi-calendar"
                         readonly
                         v-bind="attrs"
                         v-on="on"
@@ -358,7 +396,7 @@
                     </template>
                     <v-date-picker v-model="caseAction.sessionDate" scrollable>
                       <v-spacer></v-spacer>
-                      <v-btn text color="primary" @click="modal = false">
+                      <v-btn text color="primary" @click="sessionDialog = false">
                         Cancel
                       </v-btn>
                       <v-btn
@@ -373,7 +411,156 @@
                     </v-date-picker>
                   </v-dialog>
                 </v-col>
+                <v-col cols="12" md="12">
+                  <v-select
+                    :items="sessionPlaces || []"
+                    :label="$t('cases.casePlace')"
+                    dense
+                    outlined
+                    v-model="caseAction.sessionPlace"
+                  >
+                  </v-select>
+                </v-col>
               </v-row>
+              <v-row dense v-if="radioAction === 'court'">
+                <v-col cols="6">
+                  <v-select
+                    clearable
+                    :items="caseTypes"
+                    @click:clear="caseAction.status = null"
+                    :label="$t('tables.status')"
+                    item-text="title"
+                    item-value="value"
+                    hide-details
+                    dense
+                    outlined
+                    v-model="caseAction.status"
+                  >
+                  </v-select>
+                </v-col>
+                <v-col cols="12" md="6">
+                  <v-select
+                    :items="claimant"
+                    :label="$t('cases.judgment_for')"
+                    dense
+                    outlined
+                    item-text="name"
+                    item-value="id"
+                    v-model="caseAction.judgment_for"
+                  >
+                  </v-select>
+                </v-col>
+                <v-col cols="6">
+                  <v-dialog
+                    ref="dateDialog"
+                    v-model="dateDialog"
+                    :return-value.sync="caseAction.date"
+                    persistent
+                    width="290px"
+                  >
+                    <template v-slot:activator="{ on, attrs }">
+                      <v-text-field
+                        v-model="caseAction.date"
+                        :label="$t('cases.judgmentDate')"
+                        append-icon="mdi-calendar"
+                        readonly
+                        v-bind="attrs"
+                        v-on="on"
+                        dense
+                        outlined
+                      ></v-text-field>
+                    </template>
+                    <v-date-picker v-model="caseAction.date" scrollable>
+                      <v-spacer></v-spacer>
+                      <v-btn text color="primary" @click="dateDialog = false">
+                        Cancel
+                      </v-btn>
+                      <v-btn
+                        text
+                        color="primary"
+                        @click="$refs.dateDialog.save(caseAction.date)"
+                      >
+                        OK
+                      </v-btn>
+                    </v-date-picker>
+                  </v-dialog>
+                </v-col>
+                <v-col cols="6">
+                  <v-dialog
+                    ref="receiptDialog"
+                    v-model="receiptDialog"
+                    :return-value.sync="caseAction.receiptDate"
+                    persistent
+                    width="290px"
+                  >
+                    <template v-slot:activator="{ on, attrs }">
+                      <v-text-field
+                        v-model="caseAction.receiptDate"
+                        :label="$t('cases.receiptDate')"
+                        append-icon="mdi-calendar"
+                        readonly
+                        v-bind="attrs"
+                        v-on="on"
+                        dense
+                        outlined
+                      ></v-text-field>
+                    </template>
+                    <v-date-picker v-model="caseAction.receiptDate" scrollable>
+                      <v-spacer></v-spacer>
+                      <v-btn text color="primary" @click="receiptDialog = false">
+                        Cancel
+                      </v-btn>
+                      <v-btn
+                        text
+                        color="primary"
+                        @click="$refs.receiptDialog.save(caseAction.receiptDate)"
+                      >
+                        OK
+                      </v-btn>
+                    </v-date-picker>
+                  </v-dialog>
+                </v-col>
+                <v-col cols="12" v-if="caseAction.status">
+                  <v-textarea
+                    :label="caseActionDetailsLabel"
+                    value=""
+                    v-model="caseAction.details"
+                    dense
+                    outlined
+                  ></v-textarea>
+                </v-col>
+              </v-row>
+              <v-row dense v-if="radioAction === 'other'">
+                <v-col cols="12">
+                  <v-text-field
+                    type="number"
+                    @keydown="handleInput"
+                    v-model="caseAction.amount"
+                    :label="$t('cases.amount')"
+                    dense
+                    outlined
+                  >
+                    <template v-slot:append>
+                      <v-icon> mdi-cash </v-icon>
+                    </template>
+                  </v-text-field>
+                </v-col>
+                <v-col cols="12">
+                  <v-text-field
+                    type="number"
+                    @keydown="handleInput"
+                    v-model="caseAction.percentage"
+                    :label="$t('cases.percentageLose')"
+                    dense
+                    outlined
+                  >
+                    <template v-slot:append>
+                      <v-icon> mdi-percent </v-icon>
+                    </template>
+                  </v-text-field>
+                </v-col>
+              </v-row>
+
             </div>
           </div>
           <v-card-actions>
@@ -403,13 +590,36 @@ export default {
   components: { AddUserDialog },
   data() {
     return {
+      radioAction: "session",
       e1: 1,
       selectedTitle: "",
+      caseActionDetailsLabel: "",
+      caseDateDialog: false,
+      receiptDialog: false,
       dateDialog: false,
       sessionDialog: false,
       sessionDate: false,
       caseNumber: "",
       caseName: "",
+      caseDate: "",
+      caseModel: "",
+      branch_id: "",
+      specialization_id: "",
+      organization_id: "",
+      caseModels:[
+        {
+          name:this.$t("cases.from_redf"),
+          value:"from_redf"
+        },
+        {
+          name:this.$t("cases.against_redf"),
+          value:"against_redf"
+        },
+        {
+          name:this.$t("cases.entry"),
+          value:"entry"
+        }
+      ],
       initialLoading: false,
       isLoading: false,
       isSubmitingForm: false,
@@ -432,6 +642,8 @@ export default {
         defendant_id: "",
         civil: "",
         department_id: "",
+        claimant_civil:"",
+        defendant_civil:""
       },
       caseAction: {
         amount: "",
@@ -441,9 +653,14 @@ export default {
         status: "",
         court: "",
         sessionDate: null,
-        date: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
-          .toISOString()
-          .substr(0, 10),
+        judgment_date: null,
+        judgment_for: null,
+        receiptDate: null,
+        date: null,
+        sessionPlace:'',
+        // date: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
+        //   .toISOString()
+        //   .substr(0, 10),
         dates: [
           {
             caseDate: "",
@@ -456,88 +673,51 @@ export default {
           (value && Boolean(value)) || this.$t("general.fieldRequired"),
       },
       errors: {},
-
-      status: [
-        { key: "error", value: 0 },
-        { key: "confirmed", value: 1 },
-        { key: "pending", value: 2 },
-      ],
+      defendantUsers: [],
+      claimantUsers: [],
     };
   },
 
   created() {
-    // this.setBreadCrumb({
-    //   breadcrumbs: this.breadcrumbs,
-    //   pageTitle: this.$t("cases.casesList"),
-    // });
     this.init();
     this.fetchUsers();
     this.fetchDepartments();
+    this.getCourts();
+    this.fetchBranches();
 
     this.$root.$on("userCreated", () => {
       this.fetchUsers();
     });
   },
   watch: {
+    "caseAction.status"(newVal) {
+      const selecetdStatus = this.caseTypes.find(
+        (type) => type.value === newVal
+      );
+      this.caseActionDetailsLabel = selecetdStatus.title;
+    },
+    'caseModel'(){
+      this.filterUsers()
+    },
     e1(val) {
-      if (val === 3) {
-        this.getCourts();
+    if (val === 3) {
+        this.retrieveClaimant({ form_request_id: this.formRequestId });
       }
     },
+
   },
   computed: {
-    ...mapState("cases", ["pages", "selectedForm", "courts", "caseTypes"]),
+    ...mapState("cases", ["pages", "selectedForm", "courts", "caseTypes","specializations","organizations",'claimant','sessionPlaces']),
     ...mapState("auth", ["user"]),
     ...mapState("app", ["navTemplates"]),
     ...mapState("departments", ["departments"]),
-
-    defendantUsers() {
-      // return this.sidesInfo.claimant_id
-      //   ? this.users.filter((obj) => {
-      //       return obj.id !== this.sidesInfo.claimant_id;
-      //     })
-      //   : this.users;
-      if (this.sidesInfo.claimant_id) {
-        const user = this.users.find(
-          (user) => user.id === this.sidesInfo.claimant_id
-        );
-        const civilNumber = user?.user_information?.civil_number || null;
-        if (civilNumber) {
-          this.sidesInfo.civil = civilNumber;
-
-          return this.users.filter((user) => !user.user_information);
-        }
-        this.sidesInfo.department_id = user.department_id;
-        return this.users.filter((user) => user.user_information);
-      }
-      return this.users;
-    },
-    claimantUsers() {
-      // return this.sidesInfo.defendant_id
-      //   ? this.users.filter((obj) => {
-      //       return obj.id !== this.sidesInfo.defendant_id;
-      //     })
-      //   : this.users;
-      if (this.sidesInfo.defendant_id) {
-        const user = this.users.find(
-          (user) => user.id === this.sidesInfo.defendant_id
-        );
-        const civilNumber = user?.user_information?.civil_number || null;
-        if (civilNumber) {
-          this.sidesInfo.civil = civilNumber;
-          this.claimantType = "civil";
-          return this.users.filter((user) => !user.user_information);
-        }
-        this.sidesInfo.department_id = user.department_id;
-        return this.users.filter((user) => user.user_information);
-      }
-      return this.users;
-    },
+    ...mapState("branches", ["branches"]),
   },
   methods: {
     ...mapActions("app", ["setBreadCrumb"]),
     ...mapActions("users", ["getUserType"]),
     ...mapActions("departments", ["getDepartments"]),
+    ...mapActions("branches", ["getBranches"]),
     ...mapActions("cases", [
       "getPages",
       "validateFormData",
@@ -547,7 +727,66 @@ export default {
       "saveFormInformation",
       "getCourts",
       "updatePages",
+      'retrieveClaimant'
     ]),
+    filterUsers()
+    {
+      if(this.caseModel === 'from_redf') {
+        this.defendantUsers = this.users.filter((user) => user.type === 'user')
+        this.claimantUsers = this.users.filter(
+          (user) => user.roles.find(
+            (role) => role.name === 'system'
+          )
+        )
+      }
+      else if(this.caseModel === 'against_redf')
+      {
+        this.defendantUsers = this.users.filter(
+          (user) => user.roles.find(
+            (role) => role.name === 'system'
+          )
+        )
+        this.claimantUsers = this.users.filter((user) => user.type === 'user')
+      }
+      else{
+        this.defendantUsers = this.users.filter((user) => user.type === 'user')
+        this.claimantUsers = this.users.filter((user) => user.type === 'user')
+      }
+    },
+    changeDefendantUsers() {
+      if (this.sidesInfo.claimant_id) {
+        const claimantUser = this.users.find(
+          (user) => user.id === this.sidesInfo.claimant_id
+        );
+        if(this.caseModel === 'from_redf'){
+          this.sidesInfo.department_id = claimantUser?.department_id;
+        }
+        else if(this.caseModel === 'against_redf'){
+          this.sidesInfo.civil = claimantUser?.user_information?.civil_number || null;
+        }
+        else if(this.caseModel === 'entry') {
+          this.defendantUsers = this.users.filter((user) => user.id !== claimantUser.id && user.type === 'user');
+          this.sidesInfo.claimant_civil = claimantUser?.user_information?.civil_number || null;
+        }
+      }
+    },
+    changeClaimantUsers() {
+      if (this.sidesInfo.defendant_id) {
+        const defendantUser = this.users.find(
+          (user) => user.id === this.sidesInfo.defendant_id
+        );
+        if(this.caseModel === 'from_redf'){
+          this.sidesInfo.civil = defendantUser?.user_information?.civil_number || null;
+        }
+        else if(this.caseModel === 'against_redf'){
+          this.sidesInfo.department_id = defendantUser?.department_id;
+        }
+        else if(this.caseModel === 'entry') {
+          this.claimantUsers = this.users.filter((user) => user.id !== defendantUser.id && user.type === 'user');
+          this.sidesInfo.defendant_civil = defendantUser?.user_information?.civil_number || null;
+        }
+      }
+    },
     addDate(index) {
       this.caseAction.dates.push({ caseDate: "" });
     },
@@ -612,8 +851,7 @@ export default {
         .then((response) => {
           this.isLoading = false;
           this.users = response.data.data.users;
-          // this.claimantUsers = response.data.data.users
-          // this.defendantUsers = response.data.data.users
+          this.filterUsers()
         })
         .catch(() => {
           this.isLoading = false;
@@ -625,6 +863,19 @@ export default {
         pageSize: -1,
       };
       this.getDepartments(data)
+        .then((response) => {
+          this.isLoading = false;
+        })
+        .catch(() => {
+          this.isLoading = false;
+        });
+    },
+    fetchBranches() {
+      this.isLoading = true;
+      let data = {
+        pageSize: -1,
+      };
+      this.getBranches(data)
         .then((response) => {
           this.isLoading = false;
         })
@@ -698,7 +949,7 @@ export default {
       return this.stepOneErrors && !value ? [msg] : [];
     },
     saveCaseInfo() {
-      if (!this.caseName || !this.caseNumber) {
+      if (!this.caseName || !this.caseNumber || !this.caseDate) {
         this.stepOneErrors = true;
         return;
       }
@@ -708,22 +959,36 @@ export default {
     async saveForm() {
       this.isSubmitingForm = true;
       if (
-        (await this.validateFormData()) ||
-        !this.caseName ||
-        !this.caseNumber
+        (await this.validateFormData()) &&
+        this.caseName &&
+        this.caseNumber &&
+        this.caseDate &&
+        this.branch_id &&
+        this.specialization_id &&
+        this.organization_id &&
+        this.caseModel
       ) {
         let result = null;
         if (!this.formRequestId) {
           result = await this.savePages({
             caseName: this.caseName,
             caseNumber: this.caseNumber,
+            caseDate: this.caseDate,
+            branch_id: this.branch_id,
+            type: 'case',
+            case_type: this.caseModel,
+            specialization_id: this.specialization_id,
+            organization_id: this.organization_id,
           });
         } else {
           result = await this.updatePages({
             caseName: this.caseName,
             caseNumber: this.caseNumber,
+            caseDate: this.caseDate,
+            branch_id: this.branch_id,
             formId: this.formRequestId,
-          });
+            type: 'case'
+          })
         }
 
         if (result) {
@@ -750,6 +1015,7 @@ export default {
         form_request_id: this.formRequestId,
         claimant_id: this.sidesInfo.claimant_id,
         defendant_id: this.sidesInfo.defendant_id,
+        department_id: this.sidesInfo.department_id,
       };
 
       // if (await this.validateFormData()) {
@@ -775,6 +1041,10 @@ export default {
         date: this.caseAction.date,
         court: this.caseAction.court,
         sessionDate: this.caseAction.sessionDate,
+        session_place: this.caseAction.sessionPlace,
+        date_of_receipt: this.caseAction.receiptDate,
+        user_id: this.caseAction.judgment_for,
+        type:this.radioAction
       };
 
       // if (await this.validateFormData()) {
@@ -798,4 +1068,8 @@ export default {
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+.radio-check {
+  margin-left: 15%;
+}
+</style>

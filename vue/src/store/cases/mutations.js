@@ -5,6 +5,9 @@ const mutations = {
   SET_formRequests(state, value) {
     state.formRequests = value;
   },
+  SET_CASES(state, value) {
+    state.cases = value;
+  },
 
   SET_CARDS(state, value) {
     state.cards = value;
@@ -47,6 +50,18 @@ const mutations = {
   },
   SET_CASE_TYPES(state, value) {
     state.caseTypes = value;
+  },
+  SET_specializations(state, value) {
+    state.specializations = value;
+  },
+  SET_organizations(state, value) {
+    state.organizations = value;
+  },
+  SET_CLAIMANT(state, value) {
+    state.claimant = value;
+  },
+  SET_SESSION_PLACES(state, value) {
+    state.sessionPlaces = value;
   },
 };
 

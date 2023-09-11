@@ -10,22 +10,22 @@ use Modules\Report\Database\Seeders\ReportDatabaseSeeder;
 
 class DatabaseSeeder extends Seeder
 {
-    /**
-     * Seed the application's database.
-     *
-     * @return void
-     */
-    public function run()
-    {
-
-        $this->call(StatusesTableSeeder::class);
-
-        $this->call(CourtSeeder::class);
-        $this->call(DepartmentSeeder::class);
-        $this->call(UserRolePermissionSeeder::class);
-        $this->call(SettingSeeder::class);
-        $this->call(TemplateSeeder::class);
-        $this->call(FormSeeder::class);
-        $this->call(ReportDatabaseSeeder::class);
-     }
+        /**
+         * Seed the application's database.
+         *
+         * @return void
+         */
+        public function run()
+        {
+                $this->call(SpecializationsTableSeeder::class);
+                $this->call(StatusesTableSeeder::class);
+                $this->call(CourtSeeder::class);
+                $this->call(DepartmentSeeder::class);
+                $this->call(UserRolePermissionSeeder::class);
+                $this->call(SettingSeeder::class);
+                $this->call(TemplateSeeder::class);
+                $this->call(FormSeeder::class);
+                $this->call(ReportDatabaseSeeder::class);
+                $this->call(CaseRelatedSeeder::class);
+        }
 }

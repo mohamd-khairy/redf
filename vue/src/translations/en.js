@@ -156,6 +156,7 @@ export default {
     checkout: "Checkout",
   },
   menu: {
+    specializations:"Specializations",
     search: 'Search (press "ctrl + /" to focus)',
     dashboard: "Dashboard",
     departments: "Departments",
@@ -487,7 +488,7 @@ export default {
     percentageLose: "Percentage Lose Case",
     action: "Action",
     courtDate: "Court Date",
-    adviceActions:"Advice Actions",
+    adviceActions: "Advice Actions",
 
 
     createCase: "Create case",
@@ -507,6 +508,8 @@ export default {
     drone4: "Drone 4",
   },
   tables: {
+    case_date: "Case Date",
+    branch: "Branch",
     name: "name",
     display_name: "display name",
     file: "file",
@@ -555,6 +558,8 @@ export default {
     subject_id: "Subject ID",
     template: "Template",
     causer_id: "Causer ID",
+    specialization: "Specialization",
+    sub_status: "Sub Status"
   },
   texts: {
     editor: "Editor",
@@ -600,6 +605,8 @@ export default {
     ResponseToCustomerFeedback: "Response to Customer Feedback",
   },
   general: {
+    name: "Name",
+    number: "Number",
     edit: "Edit",
     count: "Count",
     notice: "Notice",
@@ -696,6 +703,7 @@ export default {
     pending: "Pending",
     processing: "Processing",
     active: "Active",
+    notactive: "Not Active",
     assigner: "Assigner",
   },
   reports: {

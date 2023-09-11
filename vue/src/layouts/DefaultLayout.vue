@@ -187,7 +187,7 @@ export default {
     ...mapState("app", {
       websiteLogo: (state) => {
         if (!state.websiteLoginIcon) {
-          return "/images/logo.svg";
+          return "/images/logo.png";
         }
         return state.websiteLoginIcon;
       },

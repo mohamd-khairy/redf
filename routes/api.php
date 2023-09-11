@@ -20,7 +20,9 @@ use App\Http\Controllers\Api\FormSessionController;
 use App\Http\Controllers\API\NotificationController;
 use App\Http\Controllers\Api\OrganizationController;
 use App\Http\Controllers\API\VerificationController;
+use App\Http\Controllers\Api\SpecializationController;
 use App\Http\Controllers\Api\FormRequestSideController;
+use App\Http\Controllers\API\RelatedFormRequestController;
 
 Route::group(['prefix' => 'v1'], function () {
 
@@ -98,6 +100,11 @@ Route::group(['prefix' => 'v1'], function () {
         Route::apiResource('branches', BranchController::class);
     });
 
+    /*********************SpecialiszeController***************** */
+    Route::group(['middleware' => 'auth:sanctum'], function () {
+        Route::apiResource('specializations', SpecializationController::class);
+    });
+
     /*********************OrganizationController***************** */
     Route::group(['middleware' => 'auth:sanctum'], function () {
         Route::get('organizations/actions', [OrganizationController::class, 'actions']);
@@ -137,6 +144,9 @@ Route::group(['prefix' => 'v1'], function () {
     /*********************CourtController***************** */
     Route::group(['middleware' => 'auth:sanctum'], function () {
         Route::get('/lookup', [HomeController::class, 'lookup']);
+        /************ convert txt to word ******************* */
+        // Route::post('/convert-txt-to-doc', [HomeController::class, 'convertTxtToDoc']);
+
     });
 
 
@@ -157,12 +167,19 @@ Route::group(['prefix' => 'v1'], function () {
         Route::post('store-form-fill', [FormRequestController::class, 'storeFormFill']);
         Route::put('update-form-fill/{id}', [FormRequestController::class, 'updateFormFill']);
         Route::get('get-form-Requests', [FormRequestController::class, 'getFormRequest']);
-        Route::get('get-form-Requests/{id}', [FormRequestController::class, 'getFormRequestfill']);
+        Route::get('get-form-Requests/{i}', [FormRequestController::class, 'getFormRequestfill']);
         Route::delete('delete-form-Requests/{id}', [FormRequestController::class, 'deleteFormRequest']);
 
         Route::post('assign-request', [FormRequestController::class, 'assignRequest']);
-         Route::get('all-forms', [FormsController::class, 'allForm']);
-        Route::post('form-request-side', [FormRequestController::class , 'storeFormRequestSide']);
-        Route::post('form-request-information', [FormRequestController::class , 'formRequestInformation']);
-      });
+        Route::post('form-request-side', [FormRequestController::class, 'storeFormRequestSide']);
+
+        Route::post('form-request-information', [FormRequestController::class, 'formRequestInformation']);
+        Route::put('update-form-request-information/{id}', [FormRequestController::class, 'updateFormRequestInformation']);
+        
+        Route::get('retrieve-claimant', [FormRequestController::class, 'retrieveClaimant']);
+
+        Route::post('change-status', [FormRequestController::class, 'changeStatus']);
+
+        Route::get('get-file/{id}', [FormRequestController::class, 'getFile']);
+    });
 });

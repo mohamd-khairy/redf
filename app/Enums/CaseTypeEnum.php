@@ -2,12 +2,21 @@
 
 namespace App\Enums;
 
+use ArchTech\Enums\InvokableCases;
+
 enum CaseTypeEnum: string
 {
-    case PENDING = 'بانتظار الاجراء';
-    case ASSIGNED = 'لدي الموظف المختص';
-    case PROCESSING = 'تحت المعالجه';
-    case CLOSED = 'تم اكمال الطلب';
+    use InvokableCases;
+
+    case FIRST_RULE = 'صدر الحكم الإبتدائي';
+    case SECOND_RULE = 'صدر حكم الإستئناف';
+    case THIRD_RULE = 'صدر الحكم النهائي';
+
+
+    // case WAIT_FIRST_RULE = 'بانتظار الحكم الإبتدائي';
+    // case WAIT_SECOND_RULE = 'بانتظار حكم الإستئناف';
+    // case WAIT_THIRD_RULE = 'بانتظار الحكم النهائي';
+    // case ASSIGNED = 'لدي الموظف المختص';
 
     // public static function getTranslatedKey(string $caseType): string
     // {

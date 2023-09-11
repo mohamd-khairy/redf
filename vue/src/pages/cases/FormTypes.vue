@@ -1,5 +1,5 @@
 <template>
-  <div class="d-flex flex-column flex-grow-1">
+  <v-container class="">
     <!-- <div class="d-flex align-center pb-3">
       <div class="d-flex flex-column ">
         <div class="d-flex align-baseline">
@@ -11,7 +11,24 @@
     </div> -->
 
     <v-row>
-      <v-col v-if="!forms.length" cols="12">
+      <v-col v-if="loading">
+        <v-card-text v-if="loading" class="dialog-loading-cont">
+          <v-row align-content="center" justify="center">
+            <v-col class="text-subtitle-1 text-center" cols="12">
+              {{ $t("general.getting_data") }}
+            </v-col>
+            <v-col cols="12">
+              <v-progress-linear
+                color="primary accent-4"
+                indeterminate
+                rounded
+                height="6"
+              ></v-progress-linear>
+            </v-col>
+          </v-row>
+        </v-card-text>
+      </v-col>
+      <v-col v-else-if="!forms.length && !loading" cols="12">
         <div class="text-center mt-7 primary--text" color="primary">
           <emptyDataSvg></emptyDataSvg>
           <div class="dt-no_data">
@@ -50,7 +67,7 @@
         </v-hover>
       </v-col>
     </v-row>
-  </div>
+  </v-container>
 </template>
 
 <script>
@@ -64,6 +81,7 @@ export default {
   },
   data() {
     return {
+      loading: false,
       breadcrumbs: [
         {
           text: this.$t("menu.requests"),
@@ -85,14 +103,9 @@ export default {
     },
   },
   created() {
-    // this.setBreadCrumb({
-    //   breadcrumbs: this.breadcrumbs,
-    //   pageTitle: this.$t("menu.cases"),
-    // });
-  },
-  mounted() {
     this.open();
   },
+  mounted() {},
   unmounted() {},
   methods: {
     ...mapActions("cases", ["getForms"]),
@@ -120,48 +133,33 @@ export default {
     },
     open() {
       let { id } = this.$route.params;
-      this.isLoading = true;
+      this.loading = true;
       this.getForms(id)
         .then(() => {
-          console.log(this.forms);
-          this.isLoading = false;
+          this.loading = false;
         })
         .catch(() => {
-          this.isLoading = false;
+          this.loading = false;
         });
     },
     openModels(id) {
       let { id: formTypeId } = this.$route.params;
       this.$router.push(`/cases/${formTypeId}/create/` + id);
     },
-    mouseEnterFunction(e, path) {
-      // console.log("mouseEnterEv");
-      const rel = path.getAttribute("class");
-      const title = path.getAttribute("title");
-
-      document
-        .getElementsByClassName("RegionsNameInMap")
-        .forEach((elm) => (elm.style.display = "block"));
-      document.getElementsByClassName("RegionsNameInMap").innerHTML = title;
-    },
-    mouseLeaveFunction() {
-      document.getElementsByClassName("RegionsNameInMap").forEach((elm) => {
-        elm.innerHTML = "";
-        elm.style.display = "none";
-      });
-    },
-    mouseMoveFunction(event) {
-      this.x = event.clientX; // Get the horizontal coordinate
-      this.y = event.clientY; // Get the vertical coordinate
-
-      document.getElementsByClassName("RegionsNameInMap").forEach((element) => {
-        element.style.left = this.x + 10 + "px";
-        element.style.top = this.y + 10 + "px";
-      });
-    },
   },
 };
 </script>
+
+<style>
+.dialog-loading-cont {
+  height: calc(100vh - 135px);
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+</style>
 
 <style lang="scss" scoped>
 .animated-card {

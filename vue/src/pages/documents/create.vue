@@ -66,7 +66,11 @@
                     v-on="on"
                   ></v-text-field>
                 </template>
-                <v-date-picker :format="dateFormat" v-model="form.start_date" scrollable>
+                <v-date-picker
+                  :format="dateFormat"
+                  v-model="form.start_date"
+                  scrollable
+                >
                   <v-spacer></v-spacer>
                   <v-btn text color="primary" @click="startDateModal = false">
                     {{ $t("general.cancel") }}
@@ -102,7 +106,11 @@
                     v-on="on"
                   ></v-text-field>
                 </template>
-                <v-date-picker :format="dateFormat" v-model="form.end_date" scrollable>
+                <v-date-picker
+                  :format="dateFormat"
+                  v-model="form.end_date"
+                  scrollable
+                >
                   <v-spacer></v-spacer>
                   <v-btn text color="primary" @click="endDateModal = false">
                     Cancel
@@ -116,6 +124,62 @@
                   </v-btn>
                 </v-date-picker>
               </v-dialog>
+            </v-col>
+            <v-col cols="6">
+              <v-file-input
+                outlined
+                dense
+                counter
+                show-size
+                :v-model="form.file"
+                :label="$t('tasks.document')"
+                @change="(file) => handleFileUpload(file)"
+                click:clear="handleRemoveFile"
+                :error-messages="errors['file']"
+              >
+              </v-file-input>
+            </v-col>
+            <v-col cols="6">
+              <div class="d-flex align-items-center">
+                <label class="ms-2" for="">{{ $t("general.belongsTo") }}</label>
+                <v-spacer></v-spacer>
+                <v-checkbox
+                  class="me-3 mt-0"
+                  v-model="belongsTo"
+                  :label="$t('general.case')"
+                  value="case"
+                ></v-checkbox>
+                <v-checkbox
+                  class="mt-0"
+                  v-model="belongsTo"
+                  :label="$t('general.consultation')"
+                  value="consultation"
+                ></v-checkbox>
+              </div>
+            </v-col>
+            <v-col cols="6" v-if="belongsTo">
+              <v-autocomplete
+                v-if="belongsTo === 'case'"
+                v-model="form.form_request_id"
+                :items="casesNames"
+                item-text="name"
+                item-value="id"
+                :label="$t('tasks.case')"
+                :error-messages="errors['form_id']"
+                outlined
+                dense
+              ></v-autocomplete>
+              <v-autocomplete
+                v-else
+                v-model="form.form_request_id"
+                :items="consultationNames"
+                item-text="name"
+                item-value="id"
+                :label="$t('general.consultation')"
+                :error-messages="errors['form_request_id']"
+                outlined
+                dense
+              ></v-autocomplete>
             </v-col>
           </v-row>
 
@@ -142,6 +206,7 @@ export default {
   components: {},
   data() {
     return {
+      belongsTo: null,
       breadcrumbs: [
         {
           text: this.$t("documents.documentsManagement"),
@@ -165,8 +230,12 @@ export default {
         priority: "",
         type: "",
         user_id: null,
+        belongs_to: this.belongsTo,
+        form_request_id: "",
+        // consultation_id: "",
         start_date: null,
-        end_date:null,
+        end_date: null,
+        file: null,
         // start_date: new Date(
         //   Date.now() - new Date().getTimezoneOffset() * 60000
         // )
@@ -176,30 +245,54 @@ export default {
         //   .toISOString()
         //   .substr(0, 10),
       },
-      dateFormat: 'dd-MM-yyyy',
-
+      dateFormat: "dd-MM-yyyy",
       startDateModal: false,
       endDateModal: false,
-      status: ["s1", "s2", "s3"],
-      priority: ["p1", "p2"],
-      types: ["t1", "t2", "t3"],
+      status: ["active", "notactive"],
+      priority: ["high", "medium", "low"],
+      types: ["case", "consultation", "task"],
       errors: {},
       isDateInvalid: false,
     };
   },
   computed: {
     ...mapState("auth", ["user"]),
+    ...mapState("tasks", ["casesNames", "consultationNames"]),
+  },
+  watch: {
+    belongsTo(val) {
+      if (!val) {
+        this.form.form_request_id = "";
+        // this.form.consultation_id = "";
+      }
+    },
   },
   created() {
     this.setBreadCrumb({
       breadcrumbs: this.breadcrumbs,
       pageTitle: this.$t("documents.documentsList"),
     });
+    this.open();
   },
 
   methods: {
     ...mapActions("app", ["setBreadCrumb"]),
     ...mapActions("documents", ["createDocument"]),
+    ...mapActions("tasks", ["getCasesNames", "getConsultationNames"]),
+    open() {
+      this.getCasesNames();
+      this.getConsultationNames();
+    },
+    handleRemoveFile() {
+      this.form.file = null;
+    },
+    handleFileUpload(file, input) {
+      if (file) {
+        const fileName = file.name.split(".")[0];
+        const fileExtension = file.name.split(".")[1];
+        this.form.file = file;
+      }
+    },
     validateDates() {
       if (this.startDate && this.endDate) {
         if (this.startDate >= this.endDate) {
@@ -209,21 +302,20 @@ export default {
         }
       }
     },
-    formatDate (date) {
-        if (!date) return null
+    formatDate(date) {
+      if (!date) return null;
 
-        const [year, month, day] = date.split('-')
-        return `${day}-${month}-${year}`
-      },
+      const [year, month, day] = date.split("-");
+      return `${day}-${month}-${year}`;
+    },
     createDoc() {
       this.loading = true;
       this.errors = {};
       this.form.user_id = this.user.id;
-      const modForm = {...this.form}
-      console.log(modForm);
-      modForm.start_date = this.formatDate(this.form.start_date)
-      modForm.end_date = this.formatDate(this.form.end_date)
-      this.createDocument(modForm)
+      this.form.belongs_to = this.belongsTo;
+      this.form.start_date = this.formatDate(this.form.start_date);
+      this.form.end_date = this.formatDate(this.form.end_date);
+      this.createDocument(this.form)
         .then(() => {
           this.loading = false;
           this.$router.push({ name: "documents-list" });
