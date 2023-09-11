@@ -27,6 +27,22 @@ const actions = {
     const formRequests = response?.data.data;
     commit("SET_formRequests", formRequests);
   },
+  async getCases({ commit }, data) {
+    const response = await axios.get(`get-form-Requests`, {
+      params: {
+        template_id: data.template_id,
+        form_type: data.form_type,
+        type: "case",
+        search: data.search,
+        pageSize: data.pageSize,
+        page: data.pageNumber,
+        sortDirection: data.sortDirection,
+        sortCoulmn: data.sortColumn,
+      },
+    });
+    const cases = response?.data.data;
+    commit("SET_CASES", cases);
+  },
   async deleteForm({ commit }, id) {
     return await axios.delete(`delete-form-Requests/${id}`);
   },
@@ -159,7 +175,7 @@ const actions = {
   },
   async getPagesValues({ commit }, formId) {
     const response = await axios.get(`get-form-Requests/${formId}`);
-    console.log("pages", response?.data.data);
+
     let pageTabs = response?.data.data.form.pages;
     const inputValues = response?.data.data.form_page_item_fill;
     const selectedFormName = response?.data.data.form.name;
