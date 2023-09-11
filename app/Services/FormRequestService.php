@@ -310,25 +310,25 @@ class FormRequestService
                 $formRequestInfo->form_request->update(['status' => $status]);
             }
 
-            if ($request->date) {
-                $calendarData = [
-                    'form_request_id' => $formRequestInfo->form_request_id,
-                    'calendarable_id' => $formRequestInfo->form_request_id,
-                    'calendarable_type' => FormRequest::class,
-                    'details' => $request->type == 'session' ? 'تم اضافة جلسة جديده' : ($request->details ? $request->details : 'تم اضافه اجراء جديد'),
-                    'user_id' => auth()->id(),
-                    'date' => $request->date,
-                ];
-
-                saveCalendarFromRequest($calendarData);
-            }
-
             saveFormRequestAction(
                 form_request_id: $formRequestInfo->form_request_id,
                 formable_id: $formRequestInfo->id,
                 formable_type: FormRequestInformation::class,
-                msg: $request->type == 'session' ? 'تم اضافة جلسة جديده' : ($request->details ? $request->details : 'تم اضافه اجراء جديد'),
+                msg: $request->type == 'session' ? 'تم اضافة جلسة ' : ($request->details ? $request->details : 'تم اضافه اجراء '),
             );
+
+            if ($request->date || $request->sessionDate) {
+                $calendarData = [
+                    'form_request_id' => $formRequestInfo->form_request_id,
+                    'calendarable_id' => $formRequestInfo->form_request_id,
+                    'calendarable_type' => FormRequest::class,
+                    'details' => $request->type == 'session' ? 'تم اضافة جلسة' : ($request->details ? $request->details : 'تم اضافه اجراء '),
+                    'user_id' => auth()->id(),
+                    'date' => $request->date ?? $request->sessionDate,
+                ];
+
+                saveCalendarFromRequest($calendarData);
+            }
 
             DB::commit();
 
