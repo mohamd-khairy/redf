@@ -43,9 +43,7 @@ class FormRequestInformation extends Model
 
     public function getDisplayStatusAttribute()
     {
-        $value = $this->attributes['status'];
-
-        return $value ? CaseTypeEnum::$value() : null;
+        return DisplayStatus($this->attributes['status']);
     }
 
     // public function getCourtAttribute($value)

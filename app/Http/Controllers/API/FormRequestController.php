@@ -144,6 +144,7 @@ class FormRequestController extends Controller
                 $formRequest->formRequestSide()->delete();
                 $formRequest->tasks()->delete();
                 $formRequest->form_page_item_fill()->delete();
+                $formRequest->requests()->formable->delete();
                 // Delete the FormRequest itself
                 $formRequest->delete();
                 return responseSuccess('Form Request Deleted Successfully');
