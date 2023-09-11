@@ -88,6 +88,7 @@ class FormRequestController extends Controller
                 'formRequestSide',
                 'lastFormRequestInformation',
                 'request',
+                'case',
                 'branche'
             )->find($id);
 

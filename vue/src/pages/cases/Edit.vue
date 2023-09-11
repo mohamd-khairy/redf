@@ -497,7 +497,7 @@ export default {
 
           this.caseStatus = data?.status;
           this.lastAction = data?.lastFormRequestInformation || null;
-          this.caseId = data.request?.formable_id;
+          this.caseId = data.case?.form_request_id;
           const url = data.form_page_item_fill[1].value;
           this.docUrl = url;
           const pathArray = url.split("/");
