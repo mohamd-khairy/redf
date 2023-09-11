@@ -79,7 +79,7 @@
                             text-color="white"
                           >
 
-                            {{ lastAction?.status }}
+                            {{ lastAction?.display_status }}
                           </v-chip>
                         </v-col>
                       </v-row>

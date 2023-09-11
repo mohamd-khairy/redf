@@ -134,7 +134,7 @@
             text-color="white"
           >
             {{
-              item?.status ? $t(`general.${item.status.toLowerCase()}`) : "---"
+              item?.status ? item.display_status : "---"
             }}
             <!-- {{ item.status ? $t(`general.${item.status} `) : "" }} -->
           </v-chip>

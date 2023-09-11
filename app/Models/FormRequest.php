@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Enums\CaseTypeEnum;
+use App\Enums\FormRequestStatus;
 use App\Enums\StatusEnum;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -33,7 +35,7 @@ class FormRequest extends Model
         'status_request'
     ];
 
-    protected $appends = ['sub_status', 'category'];
+    protected $appends = ['sub_status', 'category', 'display_status'];
 
     protected $with = ['user', 'lastFormRequestInformation', 'formRequestSide', 'branche'];
 
@@ -125,6 +127,11 @@ class FormRequest extends Model
     public function getSubStatusAttribute()
     {
         return $this->formRequestInformations->where('sessionDate', '>=', now())->count() > 0 ? 'بإنتظار الجلسه' : null;
+    }
+
+    public function getDisplayStatusAttribute()
+    {
+        return DisplayStatus($this->attributes['status']);
     }
 
     public function getCategoryAttribute()
