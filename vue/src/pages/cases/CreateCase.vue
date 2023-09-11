@@ -76,7 +76,11 @@
                       </template>
                       <v-date-picker v-model="caseDate" scrollable>
                         <v-spacer></v-spacer>
-                        <v-btn text color="primary" @click="caseDateDialog = false">
+                        <v-btn
+                          text
+                          color="primary"
+                          @click="caseDateDialog = false"
+                        >
                           Cancel
                         </v-btn>
                         <v-btn
@@ -152,7 +156,10 @@
                 </v-row>
               </div>
             </div>
-            <v-tabs v-model="activeTab" v-if="pages && pages[0]?.items?.length > 0">
+            <v-tabs
+              v-model="activeTab"
+              v-if="pages && pages[0]?.items?.length > 0"
+            >
               <v-tab v-for="(tab, index) in pages" :key="index">{{
                 tab.title
               }}</v-tab>
@@ -366,10 +373,7 @@
                     value="court"
                     :label="$t('cases.add_court')"
                   ></v-radio>
-                  <v-radio
-                    value="other"
-                    :label="$t('cases.another')"
-                  ></v-radio>
+                  <v-radio value="other" :label="$t('cases.another')"></v-radio>
                 </v-radio-group>
               </v-row>
 
@@ -396,7 +400,11 @@
                     </template>
                     <v-date-picker v-model="caseAction.sessionDate" scrollable>
                       <v-spacer></v-spacer>
-                      <v-btn text color="primary" @click="sessionDialog = false">
+                      <v-btn
+                        text
+                        color="primary"
+                        @click="sessionDialog = false"
+                      >
                         Cancel
                       </v-btn>
                       <v-btn
@@ -507,13 +515,19 @@
                     </template>
                     <v-date-picker v-model="caseAction.receiptDate" scrollable>
                       <v-spacer></v-spacer>
-                      <v-btn text color="primary" @click="receiptDialog = false">
+                      <v-btn
+                        text
+                        color="primary"
+                        @click="receiptDialog = false"
+                      >
                         Cancel
                       </v-btn>
                       <v-btn
                         text
                         color="primary"
-                        @click="$refs.receiptDialog.save(caseAction.receiptDate)"
+                        @click="
+                          $refs.receiptDialog.save(caseAction.receiptDate)
+                        "
                       >
                         OK
                       </v-btn>
@@ -560,7 +574,6 @@
                   </v-text-field>
                 </v-col>
               </v-row>
-
             </div>
           </div>
           <v-card-actions>
@@ -606,19 +619,19 @@ export default {
       branch_id: "",
       specialization_id: "",
       organization_id: "",
-      caseModels:[
+      caseModels: [
         {
-          name:this.$t("cases.from_redf"),
-          value:"from_redf"
+          name: this.$t("cases.from_redf"),
+          value: "from_redf",
         },
         {
-          name:this.$t("cases.against_redf"),
-          value:"against_redf"
+          name: this.$t("cases.against_redf"),
+          value: "against_redf",
         },
         {
-          name:this.$t("cases.entry"),
-          value:"entry"
-        }
+          name: this.$t("cases.entry"),
+          value: "entry",
+        },
       ],
       initialLoading: false,
       isLoading: false,
@@ -628,7 +641,7 @@ export default {
 
       breadcrumbs: [
         {
-          text: this.$t("menu.requests"),
+          text: this.$t("menu.cases_child"),
           disabled: false,
           href: "#",
         },
@@ -642,8 +655,8 @@ export default {
         defendant_id: "",
         civil: "",
         department_id: "",
-        claimant_civil:"",
-        defendant_civil:""
+        claimant_civil: "",
+        defendant_civil: "",
       },
       caseAction: {
         amount: "",
@@ -657,7 +670,7 @@ export default {
         judgment_for: null,
         receiptDate: null,
         date: null,
-        sessionPlace:'',
+        sessionPlace: "",
         // date: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
         //   .toISOString()
         //   .substr(0, 10),
@@ -696,18 +709,26 @@ export default {
       );
       this.caseActionDetailsLabel = selecetdStatus.title;
     },
-    'caseModel'(){
-      this.filterUsers()
+    caseModel() {
+      this.filterUsers();
     },
     e1(val) {
-    if (val === 3) {
+      if (val === 3) {
         this.retrieveClaimant({ form_request_id: this.formRequestId });
       }
     },
-
   },
   computed: {
-    ...mapState("cases", ["pages", "selectedForm", "courts", "caseTypes","specializations","organizations",'claimant','sessionPlaces']),
+    ...mapState("cases", [
+      "pages",
+      "selectedForm",
+      "courts",
+      "caseTypes",
+      "specializations",
+      "organizations",
+      "claimant",
+      "sessionPlaces",
+    ]),
     ...mapState("auth", ["user"]),
     ...mapState("app", ["navTemplates"]),
     ...mapState("departments", ["departments"]),
@@ -727,30 +748,22 @@ export default {
       "saveFormInformation",
       "getCourts",
       "updatePages",
-      'retrieveClaimant'
+      "retrieveClaimant",
     ]),
-    filterUsers()
-    {
-      if(this.caseModel === 'from_redf') {
-        this.defendantUsers = this.users.filter((user) => user.type === 'user')
-        this.claimantUsers = this.users.filter(
-          (user) => user.roles.find(
-            (role) => role.name === 'system'
-          )
-        )
-      }
-      else if(this.caseModel === 'against_redf')
-      {
-        this.defendantUsers = this.users.filter(
-          (user) => user.roles.find(
-            (role) => role.name === 'system'
-          )
-        )
-        this.claimantUsers = this.users.filter((user) => user.type === 'user')
-      }
-      else{
-        this.defendantUsers = this.users.filter((user) => user.type === 'user')
-        this.claimantUsers = this.users.filter((user) => user.type === 'user')
+    filterUsers() {
+      if (this.caseModel === "from_redf") {
+        this.defendantUsers = this.users.filter((user) => user.type === "user");
+        this.claimantUsers = this.users.filter((user) =>
+          user.roles.find((role) => role.name === "system")
+        );
+      } else if (this.caseModel === "against_redf") {
+        this.defendantUsers = this.users.filter((user) =>
+          user.roles.find((role) => role.name === "system")
+        );
+        this.claimantUsers = this.users.filter((user) => user.type === "user");
+      } else {
+        this.defendantUsers = this.users.filter((user) => user.type === "user");
+        this.claimantUsers = this.users.filter((user) => user.type === "user");
       }
     },
     changeDefendantUsers() {
@@ -758,15 +771,17 @@ export default {
         const claimantUser = this.users.find(
           (user) => user.id === this.sidesInfo.claimant_id
         );
-        if(this.caseModel === 'from_redf'){
+        if (this.caseModel === "from_redf") {
           this.sidesInfo.department_id = claimantUser?.department_id;
-        }
-        else if(this.caseModel === 'against_redf'){
-          this.sidesInfo.civil = claimantUser?.user_information?.civil_number || null;
-        }
-        else if(this.caseModel === 'entry') {
-          this.defendantUsers = this.users.filter((user) => user.id !== claimantUser.id && user.type === 'user');
-          this.sidesInfo.claimant_civil = claimantUser?.user_information?.civil_number || null;
+        } else if (this.caseModel === "against_redf") {
+          this.sidesInfo.civil =
+            claimantUser?.user_information?.civil_number || null;
+        } else if (this.caseModel === "entry") {
+          this.defendantUsers = this.users.filter(
+            (user) => user.id !== claimantUser.id && user.type === "user"
+          );
+          this.sidesInfo.claimant_civil =
+            claimantUser?.user_information?.civil_number || null;
         }
       }
     },
@@ -775,15 +790,17 @@ export default {
         const defendantUser = this.users.find(
           (user) => user.id === this.sidesInfo.defendant_id
         );
-        if(this.caseModel === 'from_redf'){
-          this.sidesInfo.civil = defendantUser?.user_information?.civil_number || null;
-        }
-        else if(this.caseModel === 'against_redf'){
+        if (this.caseModel === "from_redf") {
+          this.sidesInfo.civil =
+            defendantUser?.user_information?.civil_number || null;
+        } else if (this.caseModel === "against_redf") {
           this.sidesInfo.department_id = defendantUser?.department_id;
-        }
-        else if(this.caseModel === 'entry') {
-          this.claimantUsers = this.users.filter((user) => user.id !== defendantUser.id && user.type === 'user');
-          this.sidesInfo.defendant_civil = defendantUser?.user_information?.civil_number || null;
+        } else if (this.caseModel === "entry") {
+          this.claimantUsers = this.users.filter(
+            (user) => user.id !== defendantUser.id && user.type === "user"
+          );
+          this.sidesInfo.defendant_civil =
+            defendantUser?.user_information?.civil_number || null;
         }
       }
     },
@@ -851,7 +868,7 @@ export default {
         .then((response) => {
           this.isLoading = false;
           this.users = response.data.data.users;
-          this.filterUsers()
+          this.filterUsers();
         })
         .catch(() => {
           this.isLoading = false;
@@ -876,7 +893,7 @@ export default {
         return nav.id === +currentFormId;
       });
       if (currentPage) {
-        this.breadcrumbs.push({
+        this.breadcrumbs.unshift({
           text: currentPage.title,
           disabled: false,
           href: `/cases/${currentFormId}`,
@@ -962,7 +979,7 @@ export default {
             caseNumber: this.caseNumber,
             caseDate: this.caseDate,
             branch_id: this.branch_id,
-            type: 'case',
+            type: "case",
             case_type: this.caseModel,
             specialization_id: this.specialization_id,
             organization_id: this.organization_id,
@@ -974,8 +991,8 @@ export default {
             caseDate: this.caseDate,
             branch_id: this.branch_id,
             formId: this.formRequestId,
-            type: 'case'
-          })
+            type: "case",
+          });
         }
 
         if (result) {
@@ -1031,7 +1048,7 @@ export default {
         session_place: this.caseAction.sessionPlace,
         date_of_receipt: this.caseAction.receiptDate,
         user_id: this.caseAction.judgment_for,
-        type:this.radioAction
+        type: this.radioAction,
       };
 
       // if (await this.validateFormData()) {

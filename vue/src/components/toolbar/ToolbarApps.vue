@@ -15,15 +15,19 @@
         @click="navigateTo(app.link)"
       >
         <v-icon color="primary">{{ app.icon }}</v-icon>
-        <div class="font-weight-bold mt-1">{{ app.key ? $t(app.key) : app.text }}</div>
-        <div class="caption">{{ app.subtitleKey ? $t(app.subtitleKey) : app.subtitle }}</div>
+        <div class="font-weight-bold mt-1">
+          {{ app.key ? $t(app.key) : app.text }}
+        </div>
+        <div class="caption">
+          {{ app.subtitleKey ? $t(app.subtitleKey) : app.subtitle }}
+        </div>
       </div>
     </v-card>
   </v-menu>
 </template>
 
 <script>
-import config from '../../configs'
+import config from "../../configs";
 /*
 |---------------------------------------------------------------------
 | Toolbar Apps Component
@@ -35,15 +39,15 @@ import config from '../../configs'
 export default {
   data() {
     return {
-      apps: config.toolbar.apps
-    }
+      apps: config.toolbar.apps,
+    };
   },
   methods: {
     navigateTo(path) {
-      if (this.$route.path !== path) this.$router.push(path)
-    }
-  }
-}
+      if (this.$route.path !== path) this.$router.push(path);
+    },
+  },
+};
 </script>
 
 <style lang="scss" scoped>

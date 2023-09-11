@@ -84,7 +84,12 @@ export default {
       loading: false,
       breadcrumbs: [
         {
-          text: this.$t("menu.requests"),
+          text: this.$t("menu.cases_child"),
+          disabled: false,
+          href: "#",
+        },
+        {
+          text: this.$t("cases.formTypes"),
           disabled: false,
           href: "#",
         },
@@ -104,6 +109,9 @@ export default {
   },
   created() {
     this.open();
+    if (this.navTemplates.length) {
+      this.setCurrentBread();
+    }
   },
   mounted() {},
   unmounted() {},
@@ -119,16 +127,15 @@ export default {
       });
 
       if (currentPage) {
-        this.breadcrumbs.push({
+        this.breadcrumbs.unshift({
           text: currentPage.title,
           disabled: false,
           href: `/cases/${id}`,
         });
-        console.log(this.breadcrumbs);
       }
       this.setBreadCrumb({
         breadcrumbs: this.breadcrumbs,
-        pageTitle: this.$t("cases.casesList"),
+        pageTitle: this.$t("cases.cases"),
       });
     },
     open() {
