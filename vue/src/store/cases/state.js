@@ -3,6 +3,7 @@ const state = {
   formRequests: [],
   sessionPlaces: [],
   cards: [],
+  cases: [],
   eventTypes: [],
   statuses: [],
   locations: [],

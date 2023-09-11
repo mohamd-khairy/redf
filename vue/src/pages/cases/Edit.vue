@@ -22,7 +22,7 @@
               <div class="mt-2">
                 <div class="d-flex">
                   <v-select
-                    :items="formRequests"
+                    :items="cases"
                     :label="$t('cases.belongToCase')"
                     :item-text="(item) => item.name"
                     :item-value="(item) => item.id"
@@ -349,7 +349,6 @@ export default {
           this.getPagesValues(this.formRequestId).then((data) => {
             const url = data.form_page_item_fill[1].value;
             this.docUrl = url;
-            console.log(this.docUrl);
           });
         } else {
           docx
@@ -368,7 +367,7 @@ export default {
       "selectedForm",
       "courts",
       "caseTypes",
-      "formRequests",
+      "cases",
     ]),
     ...mapState("app", ["navTemplates"]),
     ...mapState("auth", ["user"]),
@@ -382,7 +381,7 @@ export default {
       "saveRequestSide",
       "saveFormInformation",
       "getCourts",
-      "getFormRequests",
+      "getCases",
       "changeStatus",
     ]),
     stepOneValidation(value) {
@@ -447,7 +446,7 @@ export default {
         template_id: 1,
         pageSize: -1,
       };
-      this.getFormRequests(data)
+      this.getCases(data)
         .then(() => {})
         .catch(() => {});
     },
@@ -495,7 +494,7 @@ export default {
         .then((data) => {
           this.setCurrentBread();
           this.formData = data;
-          console.log(this.formData);
+
           this.caseStatus = data?.status;
           this.lastAction = data?.lastFormRequestInformation || null;
           this.caseId = data.request?.formable_id;
@@ -534,7 +533,6 @@ export default {
             this.caseAction.details =
               this.formData?.form_request_information?.details;
           }
-          console.log(data);
         })
         .finally((_) => {
           this.initialLoading = false;

@@ -5,6 +5,9 @@ const mutations = {
   SET_formRequests(state, value) {
     state.formRequests = value;
   },
+  SET_CASES(state, value) {
+    state.cases = value;
+  },
 
   SET_CARDS(state, value) {
     state.cards = value;

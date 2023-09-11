@@ -28,10 +28,10 @@
             <div class="mt-2">
               <div class="d-flex">
                 <v-select
-                  :items="formRequests"
+                  :items="cases"
                   :label="$t('cases.belongToCase')"
-                  :item-text="(item) => item.name"
-                  :item-value="(item) => item.id"
+                  item-text="name"
+                  item-value="id"
                   hide-details
                   dense
                   outlined
@@ -301,7 +301,6 @@ export default {
   },
 
   created() {
-    console.log("window: ", docx);
     this.setBreadCrumb({
       breadcrumbs: this.breadcrumbs,
       pageTitle: this.$t("cases.casesList"),
@@ -318,14 +317,12 @@ export default {
   watch: {
     e1(val) {
       if (val === 3) {
-        console.log(this.uploadedFileType);
         if (this.uploadedFileType === "pdf") {
           this.getPagesValues(this.formRequestId).then((data) => {
             const url = data.form_page_item_fill[1].value;
             this.docUrl = url;
           });
         } else {
-          console.log(this.fileUploaded);
           docx
             .renderAsync(
               this.fileUploaded,
@@ -342,7 +339,7 @@ export default {
       "selectedForm",
       "courts",
       "caseTypes",
-      "formRequests",
+      "cases",
     ]),
     ...mapState("auth", ["user"]),
     ...mapState("app", ["navTemplates"]),
@@ -404,7 +401,7 @@ export default {
       "saveRequestSide",
       "saveFormInformation",
       "getCourts",
-      "getFormRequests",
+      "getCases",
       "savePages",
       "updateBackPages",
       "getPagesValues",
@@ -426,14 +423,14 @@ export default {
       try {
         this.loading = true;
         const response = await this.$axios.get(`get-form-Requests/${id}`);
-        console.log(response?.data?.data);
+
         const { form_request_side, form_request_number, name } =
           response?.data?.data;
 
         this.formRequestSide = form_request_side;
         this.caseName = name;
         this.caseNumber = form_request_number;
-        console.log(this.caseNumber);
+
         this.caseClaimant = {
           id: form_request_side.claimant.id,
           name: form_request_side.claimant.name,
@@ -449,7 +446,8 @@ export default {
         template_id: 1,
         pageSize: -1,
       };
-      this.getFormRequests(data)
+
+      this.getCases(data)
         .then(() => {})
         .catch(() => {});
     },
@@ -566,7 +564,6 @@ export default {
       this.initialLoading = true;
       this.getPages(id)
         .then((_) => {
-          console.log(this.pages);
           this.setCurrentBread();
         })
         .finally((_) => {
