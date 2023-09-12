@@ -170,7 +170,7 @@
             }} -->
             {{ item?.status ? item.status : "---" }}
           </v-chip>
-          <v-chip x-small>{{ checkRecieveDate(item) }}</v-chip>
+          <v-chip x-small v-if="checkRecieveDate(item) != ''">{{ checkRecieveDate(item) }}</v-chip>
         </template>
 
         <!-- <template v-slot:item.sub_status="{ item }">
