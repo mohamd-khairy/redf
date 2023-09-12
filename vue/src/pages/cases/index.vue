@@ -57,7 +57,7 @@
         </v-col>
       </v-row>
       <v-data-table show-select v-model="selected" :headers="headers" :items="items" :options.sync="options"
-        class="flex-grow-1 dt-custom-row-cursor" :loading="isLoading" :page="page" :pageCount="numberOfPages"
+        class="flex-grow-1 dt-custom-row-cursor" :loading="isLoading" :page="page" :pageCount="numberOfPages" :show-select="false"
         :server-items-length="total" @click:row="handleRow">
         <!-- <template v-slot:item.id="{ item }">
           <div class="font-weight-bold">
