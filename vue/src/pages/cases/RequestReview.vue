@@ -141,7 +141,7 @@
                   <v-icon>mdi-timeline-text-outline</v-icon>
                 </v-btn>
               </template>
-              <span>{{ $t("cases.view_timeline") }}</span>
+              <span>{{ $t("cases.request_view_timeline") }}</span>
             </v-tooltip>
             <!-- view case info button -->
             <!-- <v-tooltip top>
@@ -182,7 +182,7 @@
                   <v-icon>mdi-close</v-icon>
                 </v-btn>
               </template>
-              <span>{{ $t("cases.delete") }}</span>
+              <span>{{ $t("cases.deleteRequest") }}</span>
             </v-tooltip>
 
             <!-- <v-btn
@@ -299,11 +299,11 @@ export default {
     ...mapState("app", ["navTemplates"]),
     headers() {
       const headers = [
-        { text: this.$t("tables.number"), value: "form_request_number" },
-        { text: this.$t("tables.name"), value: "name" },
+        { text: this.$t("tables.requestNumber"), value: "form_request_number" },
+        { text: this.$t("tables.requestName"), value: "name" },
         { text: this.$t("tables.caseName"), value: "caseName" },
         { text: this.$t("tables.assigner"), value: "assigner" },
-        { text: this.$t("tables.status"), value: "status" },
+        { text: this.$t("tables.requestStatus"), value: "status" },
         { text: this.$t("tables.created"), value: "created_at" },
         {
           text: this.$t("tables.actions"),

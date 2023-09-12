@@ -187,7 +187,7 @@
               <v-list-item @click.prevent="deleteItem(item.id)" v-can="'delete-user'" class="d-flex">
                 <v-list-item-title>
                   <v-icon>mdi-close</v-icon>
-                  <span class="action-span">{{ $t("cases.delete") }}</span>
+                  <span class="action-span">{{ $t("cases.deleteCase") }}</span>
                 </v-list-item-title>
               </v-list-item>
             </v-list>
@@ -302,17 +302,17 @@ export default {
     ...mapState("app", ["navTemplates", "pageTitle"]),
     headers() {
       const headers = [
-        { text: this.$t("tables.number"), value: "form_request_number" },
+        { text: this.$t("tables.caseNumber"), value: "form_request_number" },
         { text: this.$t("cases.caseName"), value: "name" },
         { text: this.$t("tables.branch"), value: "branch", width: 180 },
         { text: this.$t("tables.specialization"), value: "specialization"  },
         {
-          text: this.$t("tables.user"),
+          text: this.$t("tables.users"),
           value: "user",
           width: 250,
         },
         { text: this.$t("tables.assigner"), value: "assigner" },
-        { text: this.$t("tables.status"), value: "status", align: "center" },
+        { text: this.$t("tables.caseStatus"), value: "status", align: "center" },
         // { text: this.$t("tables.sub_status"), value: "sub_status" },
         { text: this.$t("tables.case_date"), value: "case_date" },
         // { text: this.$t("tables.created"), value: "created_at" },

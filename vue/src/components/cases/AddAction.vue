@@ -530,7 +530,7 @@ export default {
       const selecetdStatus = this.caseTypes.find(
         (type) => type.value === newVal
       );
-      this.caseActionDetailsLabel = selecetdStatus.title;
+      this.caseActionDetailsLabel = selecetdStatus.title.substr(selecetdStatus.title.indexOf(" ") + 1);
     },
   },
   computed: {
