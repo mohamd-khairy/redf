@@ -350,7 +350,7 @@ export default {
       }
       this.setBreadCrumb({
         breadcrumbs: this.breadcrumbs,
-        pageTitle: currentPage.title,
+        pageTitle: 'الطلبات',
       });
     },
     userAssigned() {
