@@ -32,7 +32,9 @@ class FormRequest extends Model
         'case_type',
         'specialization_id',
         'organization_id',
-        'status_request'
+        'status_request',
+        'file',
+        'department_id'
     ];
 
     protected $appends = ['sub_status', 'category', 'display_status'];

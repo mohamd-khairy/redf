@@ -42,6 +42,12 @@ class FormRequestService
                 'name' => $requestData['case_name'] ?? ($requestData['name'] . "($number)")
             ]);
 
+            //handle file
+            if ($requestData->has('file')) {
+                $formRequest->file = $this->processFormFile($requestData->file, $formRequest);
+                $formRequest->save();
+            }
+
             // save related tables if get case_id
             if ($requestData->case_id) {
 
@@ -72,6 +78,7 @@ class FormRequestService
                 sendMsgFormat(Auth::id(), $formRequest->name . ' تم اضافه قضية', ' تم إضافة قضية ( ' . $formRequest->name . ' ) ');
             }
 
+            /*********** add action ********* */
             saveFormRequestAction(
                 form_request_id: $formRequest->id,
                 formable_id: $formRequest->id,
@@ -172,6 +179,25 @@ class FormRequestService
         });
     }
 
+    private function processFormFile($file, $formRequest)
+    {
+        $filePath = UploadService::store($file, 'formPages');
+        // Create a new file record
+        $fileRecord = new File([
+            'name' => 'لائحه الدعوي',
+            'path' => $filePath,
+            'user_id' => auth()->id(),
+            'start_date' => now(),
+            'type' => $formRequest->form_type,
+            'priority' => 'high',
+            'status' => 'active',
+        ]);
+        $fileRecord->fileable()->associate($formRequest); // Associate the file with the task
+        $fileRecord->save();
+
+        return $filePath;
+    }
+
     public function getFormRequest(PageRequest $request)
     {
         try {
@@ -229,11 +255,11 @@ class FormRequestService
 
 
                     $request = FormRequest::where('id', $formRequestId)->first();
-                    if ($request->type == 'case') {
+                    if ($request->form_type == 'case') {
                         $request->update(['status' => StatusEnum::ASSIGNED]);
                     }
 
-                    if ($request->type == 'related_case') {
+                    if ($request->form_type == 'related_case') {
                         $request->update(['status' => StatusEnum::WAIT]);
                     }
 
