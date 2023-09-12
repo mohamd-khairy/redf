@@ -611,7 +611,7 @@ export default {
     description: "الوصف",
     templates: "النماذج",
     user: "المستفيد",
-    assigner: "المستشار",
+    assigner: "الموظف المختص",
     organization: "المنظمة",
     department: "القسم",
     priority: "الاولوية",
