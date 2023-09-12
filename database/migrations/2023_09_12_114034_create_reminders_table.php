@@ -15,6 +15,8 @@ return new class extends Migration
     {
         Schema::create('reminders', function (Blueprint $table) {
             $table->id();
+            $table->text('name')->nullable();
+            $table->string('color')->nullable();
             $table->unsignedBigInteger('form_request_id')->nullable();
             $table->unsignedBigInteger('form_request_information_id')->nullable();
             $table->date('start_date')->nullable();

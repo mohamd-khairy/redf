@@ -342,6 +342,8 @@ class FormRequestService
             'form_request_id' => $formRequestInfo->form_request_id,
             'form_request_information_id' => $formRequestInfo->id
         ], [
+            'name' => $formRequestInfo->details ?? '',
+            'color' => 'red',
             'start_date' => date('Y-m-d', strtotime($formRequestInfo->date_of_receipt)),
             'end_date' => date('Y-m-d', strtotime($formRequestInfo->date_of_receipt . "+ 30 day"))
         ]);

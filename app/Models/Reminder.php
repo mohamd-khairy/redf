@@ -11,5 +11,5 @@ class Reminder extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['form_request_id', 'form_request_information_id', 'start_date', 'end_date'];
+    protected $fillable = ['name', 'color', 'form_request_id', 'form_request_information_id', 'start_date', 'end_date'];
 }

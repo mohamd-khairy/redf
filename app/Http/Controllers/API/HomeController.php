@@ -17,6 +17,7 @@ use Illuminate\Http\Request;
 use PhpOffice\PhpWord\PhpWord;
 use App\Http\Controllers\Controller;
 use App\Models\Branch;
+use App\Models\Reminder;
 use App\Models\Specialization;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Response;
@@ -122,5 +123,11 @@ class HomeController extends Controller
             'specialization' => $specialization,
             'organizations' => $organizations,
         ]);
+    }
+
+    public function reminders()
+    {
+        $data = Reminder::get();
+        return responseSuccess($data);
     }
 }
