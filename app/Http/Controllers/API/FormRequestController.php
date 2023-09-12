@@ -18,6 +18,7 @@ use App\Services\FormRequestService;
 use Illuminate\Validation\Rules\Enum;
 use App\Http\Requests\FormFillRequest;
 use App\Http\Requests\InformationRequest;
+use App\Http\Requests\UpdateFormFillRequest;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Resources\FormRequestResource;
 use App\Models\File;
@@ -53,7 +54,7 @@ class FormRequestController extends Controller
         }
     }
 
-    public function updateFormFill(Request $request, $id)
+    public function updateFormFill(UpdateFormFillRequest $request, $id)
     {
         try {
             $formRequest = $this->formRequestService->updateFormFill($request, $id);

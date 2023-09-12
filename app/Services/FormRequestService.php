@@ -21,6 +21,7 @@ use App\Enums\StatusEnum;
 use App\Http\Requests\PageRequest;
 use Illuminate\Support\Facades\Auth;
 use App\Models\FormRequestInformation;
+use App\Models\Reminder;
 use App\Models\User;
 
 class FormRequestService
@@ -146,9 +147,9 @@ class FormRequestService
             // save related tables if get case_id
             if ($requestData->case_id) {
                 // Update Formable record
-                Formable::updateOrCreate(
-                    ['form_request_id' => $requestData->case_id],
+                Formable::create(
                     [
+                        'form_request_id' => $requestData->case_id,
                         'formable_id' => $formRequest->id,
                         'formable_type' => FormRequest::class,
                     ]
@@ -344,7 +345,18 @@ class FormRequestService
     {
         try {
             $formRequestInfo = FormRequestInformation::find($id);
-            return $formRequestInfo->update($request->all());
+            $response = $formRequestInfo->update($request->all());
+            $formRequestInfo->refresh();
+            if ($response && $formRequestInfo->date_of_receipt) {
+                Reminder::updateOrCreate([
+                    'form_request_id' => $formRequestInfo->form_request_id,
+                    'form_request_information_id' => $formRequestInfo->id
+                ], [
+                    'start_date' => date('Y-m-d', strtotime($formRequestInfo->date_of_receipt)),
+                    'end_date' => date('Y-m-d', strtotime($formRequestInfo->date_of_receipt . "+ 30 day"))
+                ]);
+            }
+            return $response;
         } catch (\Throwable $th) {
             //throw $th;
         }
