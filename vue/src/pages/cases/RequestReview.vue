@@ -75,7 +75,8 @@
         </v-col>
       </v-row>
       <v-data-table show-select v-model="selected" :headers="headers" :items="items" :options.sync="options"
-        class="flex-grow-1" :loading="isLoading" :page="page" :pageCount="numberOfPages" :server-items-length="total">
+        class="flex-grow-1 dt-custom-row-cursor" :loading="isLoading" :page="page" :pageCount="numberOfPages" :server-items-length="total"
+        @click:row="handleClick">
         <!-- <template v-slot:item.id="{ item }">
           <div class="font-weight-bold">
             # <copy-label :text="item.id + ''" />
@@ -163,15 +164,15 @@
             </v-tooltip>
 
             <!-- edit case button -->
-            <v-tooltip top>
-              <template v-slot:activator="{ on, attrs }">
-                <v-btn color="primary" icon elevation="0" v-bind="attrs" v-on="on"
-                  :to="`/cases/${currentPageId}/request-review/edit/${item.id}`" v-can="'update-user'">
-                  <v-icon>mdi-pencil-outline</v-icon>
-                </v-btn>
-              </template>
-              <span>{{ $t("cases.editCase") }}</span>
-            </v-tooltip>
+<!--            <v-tooltip top>-->
+<!--              <template v-slot:activator="{ on, attrs }">-->
+<!--                <v-btn color="primary" icon elevation="0" v-bind="attrs" v-on="on"-->
+<!--                  :to="`/cases/${currentPageId}/request-review/edit/${item.id}`" v-can="'update-user'">-->
+<!--                  <v-icon>mdi-pencil-outline</v-icon>-->
+<!--                </v-btn>-->
+<!--              </template>-->
+<!--              <span>{{ $t("cases.editCase") }}</span>-->
+<!--            </v-tooltip>-->
 
             <!-- delete case button -->
             <v-tooltip top>
@@ -328,6 +329,9 @@ export default {
     ...mapActions("cases", ["getFormRequests", "deleteForm", "deleteAll"]),
     ...mapActions("app", ["setBreadCrumb"]),
     search() { },
+    handleClick(event) {
+      this.$router.push(`/cases/${this.currentPageId}/request-review/edit/${event.id}`)
+    },
     setCurrentBread() {
       const currentPage = this.navTemplates.find((nav) => {
         return nav.id === +this.currentPageId;
