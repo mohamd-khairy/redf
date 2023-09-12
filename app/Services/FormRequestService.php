@@ -184,7 +184,8 @@ class FormRequestService
                 'branch',
                 'specialization',
                 'request',
-                'case'
+                'case',
+                'lastFormRequestAction'
             );
 
             if ($request->has('template_id')) {

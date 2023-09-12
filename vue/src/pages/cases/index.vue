@@ -348,7 +348,7 @@ export default {
       console.log(item);
     },
     checkRecieveDate(item) {
-      let last = item?.last_form_request_information;
+      let last = item?.last_form_request_action?.formable;
 
       if (last?.type == "court" && last?.date_of_receipt) {
         return "( تم الاستلام )";

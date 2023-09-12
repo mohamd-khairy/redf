@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\FormRequest;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Foundation\Validation\ValidatesRequests;
@@ -21,7 +22,27 @@ class Controller extends BaseController
 
             $item = $model::whereIn('id', $ids);
 
-            $item->delete();
+            if ($model == FormRequest::class) {
+
+                foreach ($item->get() as $key => $request) {
+                    # code...
+
+                    $request->calenders()->delete();
+                    $request->formRequestActions()->delete();
+                    $request->formRequestInformations()->delete();
+                    $request->formRequestSide()->delete();
+                    $request->tasks()->delete();
+                    $request->form_page_item_fill()->delete();
+                    if ($request->type == 'case') {
+                        FormRequest::whereIn('id', $request->requests()->pluck('formable_id'))->delete();
+                        $request->requests()->delete();
+                    }
+                    // Delete the FormRequest itself
+                    $request->delete();
+                }
+            } else {
+                $item->delete();
+            }
         }
 
         return responseSuccess([], 'action set successfully');
