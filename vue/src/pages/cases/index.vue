@@ -91,11 +91,12 @@
         :headers="headers"
         :items="items"
         :options.sync="options"
-        class="flex-grow-1"
+        class="flex-grow-1 dt-custom-row-cursor"
         :loading="isLoading"
         :page="page"
         :pageCount="numberOfPages"
         :server-items-length="total"
+        @click:row="handleRow"
       >
         <!-- <template v-slot:item.id="{ item }">
           <div class="font-weight-bold">
@@ -114,7 +115,8 @@
         </template>
         <template v-slot:item.form_request_number="{ item }">
           <div class="font-weight-bold">
-            <copy-label :text="item.form_request_number + ''" />
+            <!-- <copy-label :text="item.form_request_number + ''" /> -->
+            {{ item.form_request_number + "" }}
           </div>
           <!-- <div>{{ item.form_request_number ?? "---" }}</div> -->
         </template>
@@ -144,7 +146,7 @@
             small
             :color="getStatusColor(item?.status?.toLowerCase())"
             text-color="white"
-            @click="openShowActionDialog(item)"
+            @click.stop="openShowActionDialog(item)"
           >
             <!-- {{
               item?.status ? $t(`general.${item.status.toLowerCase()}`) : "---"
@@ -206,12 +208,12 @@
                   }}</span>
                 </v-list-item-title>
               </v-list-item>
-              <v-list-item @click="openCaseInfoDialog(item.id)">
+              <!-- <v-list-item @click="openCaseInfoDialog(item.id)">
                 <v-list-item-title>
                   <v-icon>mdi-eye-outline</v-icon>
                   <span class="action-span">{{ $t("cases.view_info") }}</span>
                 </v-list-item-title>
-              </v-list-item>
+              </v-list-item> -->
               <v-list-item @click="openAssignDialog(item.id)">
                 <v-list-item-title>
                   <v-icon>mdi-at</v-icon>
@@ -408,6 +410,10 @@ export default {
     ...mapActions("cases", ["getFormRequests", "deleteForm", "deleteAll"]),
     ...mapActions("app", ["setBreadCrumb"]),
     search() {},
+    handleRow(item) {
+      this.openCaseInfoDialog(item.id);
+      console.log(item);
+    },
     checkRecieveDate(item) {
       let last = item?.last_form_request_information;
 

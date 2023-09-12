@@ -881,3 +881,6 @@
   outline: none !important;
   box-shadow: none !important;
 }
+.dt-custom-row-cursor tbody tr {
+  cursor: pointer;
+}
