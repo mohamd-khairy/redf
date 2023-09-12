@@ -74,7 +74,7 @@
           </v-btn>
         </v-col>
       </v-row>
-      <v-data-table show-select v-model="selected" :headers="headers" :items="items" :options.sync="options"
+      <v-data-table show-select v-model="selected" :headers="headers" :items="items" :options.sync="options" :show-select="false"
         class="flex-grow-1 dt-custom-row-cursor" :loading="isLoading" :page="page" :pageCount="numberOfPages" :server-items-length="total"
         @click:row="handleClick">
         <!-- <template v-slot:item.id="{ item }">
@@ -350,7 +350,7 @@ export default {
       }
       this.setBreadCrumb({
         breadcrumbs: this.breadcrumbs,
-        pageTitle: currentPage.title,
+        pageTitle: 'الطلبات',
       });
     },
     userAssigned() {

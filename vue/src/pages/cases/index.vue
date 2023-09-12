@@ -58,7 +58,7 @@
       </v-row>
       <v-data-table show-select v-model="selected" :headers="headers" :items="items" :options.sync="options"
         class="flex-grow-1 dt-custom-row-cursor" :loading="isLoading" :page="page" :pageCount="numberOfPages"
-        :server-items-length="total" @click:row="handleRow">
+        :show-select="false" :server-items-length="total" @click:row="handleRow">
         <!-- <template v-slot:item.id="{ item }">
           <div class="font-weight-bold">
             # <copy-label :text="item.id + ''" />
@@ -177,7 +177,7 @@
                   <span class="action-span">{{ $t("cases.assign_user") }}</span>
                 </v-list-item-title>
               </v-list-item>
-              <v-list-item :to="`/cases/${currentPageId}/edit/${item.id}`"  v-if="item.form_assigned_requests[0]">
+              <v-list-item :to="`/cases/${currentPageId}/edit/${item.id}`" v-if="item.form_assigned_requests[0]">
                 <v-list-item-title>
                   <v-icon>mdi-pencil-outline</v-icon>
                   <!-- <v-icon>mdi-open-in-new</v-icon> -->
@@ -302,25 +302,30 @@ export default {
     ...mapState("app", ["navTemplates", "pageTitle"]),
     headers() {
       const headers = [
-        { text: this.$t("tables.caseNumber"), value: "form_request_number" },
+        { text: this.$t("tables.caseNumber"), value: "form_request_number", width: 50, align: "center" },
         { text: this.$t("cases.caseName"), value: "name" },
         { text: this.$t("tables.branch"), value: "branch", width: 180 },
-        { text: this.$t("tables.specialization"), value: "specialization"  },
+        {
+          text: this.$t("tables.specialization"), value: "specialization",
+          align: "right"
+        },
         {
           text: this.$t("tables.users"),
           value: "user",
           width: 250,
+          align: "right"
         },
         { text: this.$t("tables.assigner"), value: "assigner" },
-        { text: this.$t("tables.caseStatus"), value: "status", align: "center" },
+        { text: this.$t("tables.caseStatus"), value: "status", align: "right" },
         // { text: this.$t("tables.sub_status"), value: "sub_status" },
-        { text: this.$t("tables.case_date"), value: "case_date" },
+        { text: this.$t("tables.case_date"), value: "case_date", width: 50 },
         // { text: this.$t("tables.created"), value: "created_at" },
         {
           text: this.$t("tables.actions"),
           sortable: false,
           align: "left",
           value: "action",
+          width: 50
         },
       ];
       if (+this.currentPageId === 1) {
@@ -348,7 +353,7 @@ export default {
       console.log(item);
     },
     checkRecieveDate(item) {
-      let last = item?.last_form_request_information;
+      let last = item?.last_form_request_action?.formable;
 
       if (last?.type == "court" && last?.date_of_receipt) {
         return "( تم الاستلام )";

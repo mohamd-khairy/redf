@@ -30,7 +30,7 @@ use Illuminate\Support\Facades\Storage;
 
 class FormRequestController extends Controller
 {
-    public $model = Form::class;
+    public $model = FormRequest::class;
     private $formRequestService;
 
     public function __construct(FormRequestService $formRequestService)

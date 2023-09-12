@@ -184,7 +184,8 @@ class FormRequestService
                 'branch',
                 'specialization',
                 'request',
-                'case'
+                'case',
+                'lastFormRequestAction'
             );
 
             if ($request->has('template_id')) {
@@ -327,7 +328,7 @@ class FormRequestService
             'form_request_information_id' => $formRequestInfo->id
         ], [
             'name' => $formRequestInfo->details ?? '',
-            'color' => 'red',
+            'color' => dechex(rand(0x000000, 0xFFFFFF)),
             'start_date' => date('Y-m-d', strtotime($formRequestInfo->date_of_receipt)),
             'end_date' => date('Y-m-d', strtotime($formRequestInfo->date_of_receipt . "+ 30 day"))
         ]);

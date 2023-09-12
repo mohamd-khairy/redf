@@ -129,6 +129,11 @@ class FormRequest extends Model
         return $this->hasOne(FormRequestInformation::class)->orderBy('id', 'desc');
     }
 
+    public function lastFormRequestAction()
+    {
+        return $this->hasOne(FormRequestAction::class)->orderBy('id', 'desc');
+    }
+
     public function file()
     {
         return $this->morphOne(File::class, 'fileable');
