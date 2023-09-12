@@ -2,7 +2,6 @@
 
 namespace App\Services;
 
-use Carbon\Carbon;
 use App\Models\File;
 use App\Enums\FormEnum;
 use App\Models\Formable;
@@ -16,12 +15,11 @@ use App\Models\FormAssignRequest;
 use Illuminate\Pipeline\Pipeline;
 use Illuminate\Support\Facades\DB;
 use App\Enums\FormAssignRequestType;
-use App\Enums\FormRequestStatus;
 use App\Enums\StatusEnum;
 use App\Http\Requests\PageRequest;
 use Illuminate\Support\Facades\Auth;
 use App\Models\FormRequestInformation;
-use App\Models\User;
+use App\Models\Reminder;
 
 class FormRequestService
 {
@@ -55,7 +53,11 @@ class FormRequestService
                 ]);
 
                 if ($requestData['type'] == 'related_case') {
+
                     $formRequest->update(['status' => StatusEnum::WAIT]);
+
+                    $this->remove_reminder((object)['form_request_id' => $formRequest->id]);
+
                     // $relatedCase = $this->updateStatus($requestData['id']); //form_id
                     // if (isset($formRequest->request->formable)) {
                     //     $formRequest->request->formable->update(['status' => $relatedCase->value]);
@@ -78,7 +80,7 @@ class FormRequestService
                     form_request_id: $requestData->case_id,
                     formable_id: $formRequest->id,
                     formable_type: FormRequest::class,
-                    msg: ' تم اضافه ' . $formRequest->form->name
+                    msg: ' تم اضافه ' . $formRequest->name
                 );
             }
 
@@ -97,33 +99,6 @@ class FormRequestService
 
             return $formRequest;
         });
-    }
-
-    public function updateStatus($formId)
-    {
-        switch ($formId) {
-            case FormEnum::DEFENCE_CASE_FORM->value:
-                $status = CaseTypeEnum::FIRST_RULE;
-                break;
-
-            case FormEnum::CLAIM_CASE_FORM->value:
-                $status = CaseTypeEnum::FIRST_RULE;
-                break;
-
-            case FormEnum::RESUME_CASE_FORM->value:
-                $status = CaseTypeEnum::SECOND_RULE;
-                break;
-
-            case FormEnum::SOLICITATION_CASE_FORM->value:
-                $status = CaseTypeEnum::THIRD_RULE;
-                break;
-
-            default:
-                $status = null;
-                break;
-        }
-
-        return $status;
     }
 
     public function updateFormFill($requestData, $id)
@@ -146,9 +121,9 @@ class FormRequestService
             // save related tables if get case_id
             if ($requestData->case_id) {
                 // Update Formable record
-                Formable::updateOrCreate(
-                    ['form_request_id' => $requestData->case_id],
+                Formable::create(
                     [
+                        'form_request_id' => $requestData->case_id,
                         'formable_id' => $formRequest->id,
                         'formable_type' => FormRequest::class,
                     ]
@@ -330,6 +305,12 @@ class FormRequestService
                 saveCalendarFromRequest($calendarData);
             }
 
+            if ($formRequestInfo->date_of_receipt) {
+                $this->add_reminder($formRequestInfo);
+            } else {
+                $this->remove_reminder($formRequestInfo);
+            }
+
             DB::commit();
 
             return $formRequestInfo;
@@ -344,9 +325,61 @@ class FormRequestService
     {
         try {
             $formRequestInfo = FormRequestInformation::find($id);
-            return $formRequestInfo->update($request->all());
+            $response = $formRequestInfo->update($request->all());
+            $formRequestInfo->refresh();
+            if ($response && $formRequestInfo->date_of_receipt) {
+                $this->add_reminder($formRequestInfo);
+            }
+            return $response;
         } catch (\Throwable $th) {
             //throw $th;
         }
+    }
+
+    public function add_reminder($formRequestInfo)
+    {
+        return Reminder::updateOrCreate([
+            'form_request_id' => $formRequestInfo->form_request_id,
+            'form_request_information_id' => $formRequestInfo->id
+        ], [
+            'name' => $formRequestInfo->details ?? '',
+            'color' => 'red',
+            'start_date' => date('Y-m-d', strtotime($formRequestInfo->date_of_receipt)),
+            'end_date' => date('Y-m-d', strtotime($formRequestInfo->date_of_receipt . "+ 30 day"))
+        ]);
+    }
+
+    public function remove_reminder($formRequestInfo)
+    {
+        return  Reminder::where([
+            'form_request_id' => $formRequestInfo->form_request_id,
+        ])->delete();
+    }
+
+    public function updateStatus($formId)
+    {
+        switch ($formId) {
+            case FormEnum::DEFENCE_CASE_FORM->value:
+                $status = CaseTypeEnum::FIRST_RULE;
+                break;
+
+            case FormEnum::CLAIM_CASE_FORM->value:
+                $status = CaseTypeEnum::FIRST_RULE;
+                break;
+
+            case FormEnum::RESUME_CASE_FORM->value:
+                $status = CaseTypeEnum::SECOND_RULE;
+                break;
+
+            case FormEnum::SOLICITATION_CASE_FORM->value:
+                $status = CaseTypeEnum::THIRD_RULE;
+                break;
+
+            default:
+                $status = null;
+                break;
+        }
+
+        return $status;
     }
 }
