@@ -48,7 +48,7 @@
       <calendar
         v-if="!loading"
         @selectedEventId="setEventId"
-        :events="calendarData"
+        :eventsData="calendarData"
       />
     </div>
     <div id="loading-bg" v-else>
@@ -228,20 +228,21 @@ export default {
     },
     getCalendar() {
       this.$axios
-        .get("/calenders", {
+        .get("/reminders", {
           params: {
             // pageSize: -1,
           },
         })
         .then((res) => {
-          const { calendars } = res.data.data;
-          this.calendarData = calendars.data.map((c) => ({
-            title: c.details,
-            start: new Date(c.date),
-            id: c.id,
-            actionInfo: c.calendarable,
-          }));
-          console.log(this.calendarData);
+          // const { calendars } = res.data.data;
+          // this.calendarData = calendars.data.map((c) => ({
+          //   title: c.details,
+          //   start: new Date(c.date),
+          //   id: c.id,
+          //   actionInfo: c.calendarable,
+          // }));
+          this.calendarData = res.data.data;
+          console.log(res.data.data);
         });
     },
     closeActionPrevDialog() {
