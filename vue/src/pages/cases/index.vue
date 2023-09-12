@@ -121,7 +121,7 @@
               item?.status ? $t(`general.${item.status.toLowerCase()}`) : "---"
             }} -->
             {{ item?.status ? item.status : "---" }}
-          </v-chip>
+          </v-chip><br>
           <v-chip x-small v-if="checkRecieveDate(item) != ''">{{ checkRecieveDate(item) }}</v-chip>
         </template>
 
@@ -151,7 +151,7 @@
               </transition>
             </template>
             <v-list dense>
-              <v-list-item @click="openActionDialog(item)">
+              <v-list-item @click="openActionDialog(item)" v-if="item.form_assigned_requests[0]">
                 <v-list-item-title>
                   <v-icon>mdi-plus-circle-outline</v-icon>
                   <span class="action-span">{{ $t("cases.add_action") }}</span>
@@ -171,13 +171,13 @@
                   <span class="action-span">{{ $t("cases.view_info") }}</span>
                 </v-list-item-title>
               </v-list-item> -->
-              <v-list-item @click="openAssignDialog(item.id)">
+              <v-list-item v-if="!item.form_assigned_requests[0]" @click="openAssignDialog(item.id)">
                 <v-list-item-title>
                   <v-icon>mdi-at</v-icon>
                   <span class="action-span">{{ $t("cases.assign_user") }}</span>
                 </v-list-item-title>
               </v-list-item>
-              <v-list-item :to="`/cases/${currentPageId}/edit/${item.id}`">
+              <v-list-item :to="`/cases/${currentPageId}/edit/${item.id}`"  v-if="item.form_assigned_requests[0]">
                 <v-list-item-title>
                   <v-icon>mdi-pencil-outline</v-icon>
                   <!-- <v-icon>mdi-open-in-new</v-icon> -->
@@ -304,8 +304,8 @@ export default {
       const headers = [
         { text: this.$t("tables.caseNumber"), value: "form_request_number" },
         { text: this.$t("cases.caseName"), value: "name" },
-        { text: this.$t("tables.branch"), value: "branch", width: 110 },
-        { text: this.$t("tables.specialization"), value: "specialization" },
+        { text: this.$t("tables.branch"), value: "branch", width: 180 },
+        { text: this.$t("tables.specialization"), value: "specialization"  },
         {
           text: this.$t("tables.users"),
           value: "user",

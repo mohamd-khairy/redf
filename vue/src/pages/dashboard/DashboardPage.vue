@@ -40,11 +40,16 @@
           <stat-cards :card="card" />
         </v-col>
       </v-row>
-      <v-card v-if="!loading" class="mt-3">
+      <!-- <v-card v-if="!loading" class="mt-3">
         <v-card-text>
           <calendar @selectedEventId="setEventId" :events="calendarData" />
         </v-card-text>
-      </v-card>
+      </v-card> -->
+      <calendar
+        v-if="!loading"
+        @selectedEventId="setEventId"
+        :events="calendarData"
+      />
     </div>
     <div id="loading-bg" v-else>
       <!-- <div class="loading-logo">

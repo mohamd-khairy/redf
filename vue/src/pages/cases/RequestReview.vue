@@ -154,7 +154,7 @@
             </v-tooltip> -->
 
             <!-- assign user button -->
-            <v-tooltip top>
+            <v-tooltip top v-if="!item.form_assigned_requests[0]">
               <template v-slot:activator="{ on, attrs }">
                 <v-btn color="primary" icon elevation="0" v-bind="attrs" v-on="on" @click.prevent.stop="openAssignDialog(item.id)">
                   <v-icon>mdi-at</v-icon>

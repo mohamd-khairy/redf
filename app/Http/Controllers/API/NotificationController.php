@@ -26,7 +26,7 @@ class NotificationController extends Controller
             'count' => Notification::whereNull('open_at')->where(['notifiable_type' => 'App\Models\User', 'notifiable_id' => auth()->user()->id])
                 ->count(),
             'notifications' => Notification::where(['notifiable_type' => 'App\Models\User', 'notifiable_id' => auth()->user()->id])
-                ->orderBy('id', 'desc')->paginate(10)
+                ->orderBy('created_at', 'desc')->paginate(10)
         ];
 
         return responseSuccess($notifications);
