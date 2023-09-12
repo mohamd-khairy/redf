@@ -88,7 +88,7 @@
         </template>
         <template v-slot:item.form_request_number="{ item }">
           <div class="font-weight-bold">
-            <copy-label :text="item.form_request_number + ''" />
+            {{ item.form_request_number }}
           </div>
           <!-- <div>{{ item.form_request_number ?? "---" }}</div> -->
         </template>
