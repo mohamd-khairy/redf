@@ -505,7 +505,8 @@ export default {
     sessionDate: "تاريخ الجلسة",
     cases: "القضايا",
     add_session: "اضافة جلسة",
-    view_timeline: "عرض الخط الزمني للقضية",
+    view_timeline: "الخط الزمني للقضية",
+    request_view_timeline: "الخط الزمني للطلب",
     assign_user: "تعيين مستخدم",
     editCase: "تحديث بيانات القضية",
     add_action: "اضافة اجراء",
@@ -526,6 +527,8 @@ export default {
     add_court: "اضافة حكم",
     another: "اخرى",
     formTypes: "نماذج القضايا",
+    deleteRequest: "حذف الطلب",
+    deleteCase: "حذف القضية",
   },
 
   departments: {
@@ -574,7 +577,7 @@ export default {
     drone8: "طائرة 8",
   },
   tables: {
-    caseName: "اسم القضية",
+    caseName: "موضوع القضية",
     case_date: "تاريخ القضية",
     branch: "المحكمة",
     number: "الرقم",
@@ -629,6 +632,11 @@ export default {
     added_date: "تاريخ الاضافة",
     specialization: "الدائره (الاختصاص)",
     sub_status: "الحالة الفرعية",
+    requestName:"اسم الطلب",
+    requestStatus:"حالة الطلب",
+    caseStatus:"حالة القضية",
+    requestCase:"حالة القضية",
+    users:"المستفيدين",
     // causer_type: "",
   },
   texts: {
