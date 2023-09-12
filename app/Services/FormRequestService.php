@@ -331,6 +331,14 @@ class FormRequestService
                 saveCalendarFromRequest($calendarData);
             }
 
+            if ($formRequestInfo->date_of_receipt) {
+                $this->add_reminder($formRequestInfo);
+            } else {
+                Reminder::where([
+                    'form_request_id' => $formRequestInfo->form_request_id,
+                ])->delete();
+            }
+
             DB::commit();
 
             return $formRequestInfo;
@@ -348,17 +356,23 @@ class FormRequestService
             $response = $formRequestInfo->update($request->all());
             $formRequestInfo->refresh();
             if ($response && $formRequestInfo->date_of_receipt) {
-                Reminder::updateOrCreate([
-                    'form_request_id' => $formRequestInfo->form_request_id,
-                    'form_request_information_id' => $formRequestInfo->id
-                ], [
-                    'start_date' => date('Y-m-d', strtotime($formRequestInfo->date_of_receipt)),
-                    'end_date' => date('Y-m-d', strtotime($formRequestInfo->date_of_receipt . "+ 30 day"))
-                ]);
+                $this->add_reminder($formRequestInfo);
             }
             return $response;
         } catch (\Throwable $th) {
             //throw $th;
         }
+    }
+
+
+    public function add_reminder($formRequestInfo)
+    {
+        return Reminder::updateOrCreate([
+            'form_request_id' => $formRequestInfo->form_request_id,
+            'form_request_information_id' => $formRequestInfo->id
+        ], [
+            'start_date' => date('Y-m-d', strtotime($formRequestInfo->date_of_receipt)),
+            'end_date' => date('Y-m-d', strtotime($formRequestInfo->date_of_receipt . "+ 30 day"))
+        ]);
     }
 }
