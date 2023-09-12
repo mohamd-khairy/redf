@@ -54,25 +54,12 @@ class FormRequestService
 
                 if ($requestData['type'] == 'related_case') {
 
-                    $formRequest->update(['status' => StatusEnum::WAIT]);
-
                     $this->remove_reminder((object)['form_request_id' => $formRequest->id]);
 
-                    // $relatedCase = $this->updateStatus($requestData['id']); //form_id
-                    // if (isset($formRequest->request->formable)) {
-                    //     $formRequest->request->formable->update(['status' => $relatedCase->value]);
-                    // }
-
-                    // FormAssignRequest::create([
-                    //     'form_request_id' => $formRequest->id,
-                    //     'user_id' => Auth::id(),
-                    //     'date' => date('Y-m-d'),
-                    //     'assigner_id' => User::whereHas('roles', function ($q) {
-                    //         $q->where('id', 2); //مستشار الاداره
-                    //     })->first()->id,
-                    //     'status' => 'active',
-                    //     'type' => FormAssignRequestType::EMPLOYEE,
-                    // ]);
+                    $relatedCase = $this->updateStatus($requestData['id']); //form_id
+                    if (isset($formRequest->case->item) && isset($relatedCase->value)) {
+                        $formRequest->case->item->update(['status' => $relatedCase->value]);
+                    }
                 }
 
                 /*********** add action ********* */
@@ -241,7 +228,7 @@ class FormRequestService
                         'type' => FormAssignRequestType::EMPLOYEE,
                     ]);
 
-                    FormRequest::where('id', $formRequestId)->update(['status' => StatusEnum::ASSIGNED]);
+                    FormRequest::where('id', $formRequestId)->update(['status' => StatusEnum::WAIT]);
 
                     saveFormRequestAction(
                         form_request_id: $formRequestId,
@@ -359,20 +346,24 @@ class FormRequestService
     public function updateStatus($formId)
     {
         switch ($formId) {
-            case FormEnum::DEFENCE_CASE_FORM->value:
-                $status = CaseTypeEnum::FIRST_RULE;
-                break;
+                // case FormEnum::DEFENCE_CASE_FORM->value:
+                //     $status = CaseTypeEnum::FIRST_RULE;
+                //     break;
 
-            case FormEnum::CLAIM_CASE_FORM->value:
-                $status = CaseTypeEnum::FIRST_RULE;
-                break;
+                // case FormEnum::CLAIM_CASE_FORM->value:
+                //     $status = CaseTypeEnum::FIRST_RULE;
+                //     break;
 
-            case FormEnum::RESUME_CASE_FORM->value:
-                $status = CaseTypeEnum::SECOND_RULE;
-                break;
+                // case FormEnum::RESUME_CASE_FORM->value:
+                //     $status = CaseTypeEnum::SECOND_RULE;
+                //     break;
 
-            case FormEnum::SOLICITATION_CASE_FORM->value:
-                $status = CaseTypeEnum::THIRD_RULE;
+                // case FormEnum::SOLICITATION_CASE_FORM->value:
+                //     $status = CaseTypeEnum::THIRD_RULE;
+                //     break;
+
+            case FormEnum::IMPLEMENTATION_CASE_FORM->value:
+                $status = StatusEnum::CLOSED;
                 break;
 
             default:
