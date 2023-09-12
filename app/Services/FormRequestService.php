@@ -56,21 +56,21 @@ class FormRequestService
 
                 if ($requestData['type'] == 'related_case') {
                     $formRequest->update(['status' => StatusEnum::WAIT]);
-                    $relatedCase = $this->updateStatus($requestData['id']); //form_id
-                    if (isset($formRequest->request->formable)) {
-                        $formRequest->request->formable->update(['status' => $relatedCase->value]);
-                    }
+                    // $relatedCase = $this->updateStatus($requestData['id']); //form_id
+                    // if (isset($formRequest->request->formable)) {
+                    //     $formRequest->request->formable->update(['status' => $relatedCase->value]);
+                    // }
 
-                    FormAssignRequest::create([
-                        'form_request_id' => $formRequest->id,
-                        'user_id' => Auth::id(),
-                        'date' => date('Y-m-d'),
-                        'assigner_id' => User::whereHas('roles', function ($q) {
-                            $q->where('id', 2); //مستشار الاداره
-                        })->first()->id,
-                        'status' => 'active',
-                        'type' => FormAssignRequestType::EMPLOYEE,
-                    ]);
+                    // FormAssignRequest::create([
+                    //     'form_request_id' => $formRequest->id,
+                    //     'user_id' => Auth::id(),
+                    //     'date' => date('Y-m-d'),
+                    //     'assigner_id' => User::whereHas('roles', function ($q) {
+                    //         $q->where('id', 2); //مستشار الاداره
+                    //     })->first()->id,
+                    //     'status' => 'active',
+                    //     'type' => FormAssignRequestType::EMPLOYEE,
+                    // ]);
                 }
 
                 /*********** add action ********* */
@@ -251,7 +251,6 @@ class FormRequestService
     {
         try {
             return DB::transaction(function () use ($requestData) {
-                $formattedDate = Carbon::createFromFormat('Y-m-d', $requestData['date'])->toDateString();
                 foreach ($requestData['form_request_id'] as $formRequestId) {
                     FormAssignRequest::where('form_request_id', $formRequestId)
                         ->where('status', 'active')
@@ -261,7 +260,7 @@ class FormRequestService
                     $assignNew = FormAssignRequest::create([
                         'form_request_id' => $formRequestId,
                         'user_id' => $requestData['user_id'],
-                        'date' => $formattedDate,
+                        'date' => date('Y-m-d'),
                         'assigner_id' => auth()->id(),
                         'status' => 'active',
                         'type' => FormAssignRequestType::EMPLOYEE,
