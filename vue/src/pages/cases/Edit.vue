@@ -247,7 +247,10 @@
           >
             {{ $t("general.acceptRequest") }}
           </v-btn>
-          <v-btn color="primary" @click="updateCaseStatus('RETURN')">
+          <v-btn
+            color="primary"
+            v-if="caseStatus !== 'RETURN'"
+            @click="updateCaseStatus('RETURN')">
             {{ $t("general.returnRequest") }}
           </v-btn>
           <v-btn
@@ -258,9 +261,9 @@
             {{ $t("general.refuseRequest") }}
           </v-btn>
 
-          <v-btn color="grey" @click="stepBack" class="ms-2">
-            {{ $t("general.back") }}
-          </v-btn>
+<!--          <v-btn color="grey" @click="stepBack" class="ms-2">-->
+<!--            {{ $t("general.back") }}-->
+<!--          </v-btn>-->
         </v-card-actions>
       </div>
       <!--          </v-stepper-content>-->
