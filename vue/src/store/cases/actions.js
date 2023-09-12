@@ -398,7 +398,7 @@ const actions = {
         id: state.selectedForm.id,
 
         name: state.selectedForm.name,
-        pages: state.pages.map((page) => ({
+        pages: state.pagesValues.map((page) => ({
           id: page.id,
           title: page.title,
           items: page.items
