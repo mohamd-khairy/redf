@@ -10,6 +10,8 @@ enum StatusEnum: string
 
     case active = 'active';
     case notactive = 'notactive';
+    
+    case CLOSED = 'انتهت القضية';
     case WAIT = 'بإنتظار الاجراء';
     case WAIT_SESSION = 'بإنتظار الجلسة';
 

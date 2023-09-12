@@ -81,7 +81,13 @@
         </template>
 
         <template v-slot:item.user="{ item }">
-          <div>{{ item.user.name ?? "---" }}</div>
+          <div>
+            <span class="font-weight-bold">{{ " المدعي: " }}</span>
+            <span>{{ item?.form_request_side?.claimant?.name ?? "---" }}</span>
+            <br>
+            <span class="font-weight-bold">{{ "المدعي علية: " }}</span>
+            <span>{{ item?.form_request_side?.defendant?.name ?? "---" }}</span>
+          </div>
         </template>
 
         <template v-slot:item.assigner="{ item }">
@@ -106,7 +112,7 @@
               item?.status ? $t(`general.${item.status.toLowerCase()}`) : "---"
             }} -->
             {{
-              item?.status ? item.status + " " + checkRecieveDate(item) : "---"
+              item?.status ? item.status : "---"
             }}
           </v-chip>
           <v-chip v-else small :color="getStatusColor(item?.status?.toLowerCase())" text-color="white">
@@ -115,6 +121,7 @@
             }} -->
             {{ item?.status ? item.status : "---" }}
           </v-chip>
+          <v-chip x-small>{{ checkRecieveDate(item) }}</v-chip>
         </template>
 
         <!-- <template v-slot:item.sub_status="{ item }">
@@ -298,9 +305,13 @@ export default {
         { text: this.$t("tables.name"), value: "name" },
         { text: this.$t("tables.branch"), value: "branch" },
         { text: this.$t("tables.specialization"), value: "specialization" },
-        { text: this.$t("tables.user"), value: "user" },
+        {
+          text: this.$t("tables.user"),
+          value: "user",
+          width: 250
+        },
         { text: this.$t("tables.assigner"), value: "assigner" },
-        { text: this.$t("tables.status"), value: "status" },
+        { text: this.$t("tables.status"), value: "status", align: "center" },
         // { text: this.$t("tables.sub_status"), value: "sub_status" },
         { text: this.$t("tables.case_date"), value: "case_date" },
         // { text: this.$t("tables.created"), value: "created_at" },
