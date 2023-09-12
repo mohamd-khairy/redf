@@ -56,7 +56,7 @@ class FormRequestService
 
                     $formRequest->update(['status' => StatusEnum::WAIT]);
 
-                    $this->remove_reminder(['form_request_id' => $formRequest->id]);
+                    $this->remove_reminder((object)['form_request_id' => $formRequest->id]);
 
                     // $relatedCase = $this->updateStatus($requestData['id']); //form_id
                     // if (isset($formRequest->request->formable)) {
