@@ -636,7 +636,7 @@ export default {
     requestStatus:"حالة الطلب",
     caseStatus:"حالة القضية",
     requestCase:"حالة القضية",
-    users:"المستفيدين",
+    users:"المستفيدون",
     // causer_type: "",
   },
   texts: {

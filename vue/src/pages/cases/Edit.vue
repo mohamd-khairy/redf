@@ -304,11 +304,6 @@ export default {
       isSubmitingForm: false,
       formRequestId: null,
       breadcrumbs: [
-        {
-          text: this.$t("menu.request_review"),
-          disabled: false,
-          href: "#",
-        },
       ],
       activeTab: null,
       requiredRule: (v) => !!v || this.$t("general.required_input"),
@@ -458,9 +453,14 @@ export default {
         this.breadcrumbs.unshift({
           text: currentPage.title,
           disabled: false,
-          href: `/cases/${currentFormId}`,
+          href:'#'
         });
       }
+      this.breadcrumbs.push(
+      {
+        text: this.$t("menu.request_review"),
+        href:`/cases/${currentFormId}/request-review`
+      });
       this.breadcrumbs.push({
         text: this.$t("general.edit") + " " + this.selectedForm.name,
       });
