@@ -165,7 +165,6 @@ Route::group(['prefix' => 'v1'], function () {
 
     /*********************FormRequestController***************** */
     Route::group(['middleware' => 'auth:sanctum'], function () {
-        Route::get('form-requests/actions', [FormRequestController::class, 'actions']);
         Route::post('store-form-fill', [FormRequestController::class, 'storeFormFill']);
         Route::put('update-form-fill/{id}', [FormRequestController::class, 'updateFormFill']);
         Route::get('get-form-Requests', [FormRequestController::class, 'getFormRequest']);
