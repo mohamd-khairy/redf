@@ -2,6 +2,7 @@
 
 use App\Enums\CaseTypeEnum;
 use App\Enums\FormRequestStatus;
+use App\Enums\StatusEnum;
 use App\Models\User;
 use App\Enums\UserTypeEnum;
 
@@ -18,6 +19,12 @@ if (!function_exists('DisplayStatus')) {
     {
         try {
             $status = $value ? CaseTypeEnum::$value() : null;
+        } catch (\Throwable $th) {
+            $status = null;
+        }
+
+        try {
+            $status = $value ? StatusEnum::$value() : null;
         } catch (\Throwable $th) {
             $status = null;
         }

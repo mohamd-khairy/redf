@@ -66,7 +66,7 @@ class FormRequest extends Model
 
     public function request()
     {
-        return $this->hasOne(Formable::class, 'form_request_id')->with('formable');
+        return $this->hasOne(Formable::class, 'form_request_id')->latest()->with('formable');
     }
 
     public function case()

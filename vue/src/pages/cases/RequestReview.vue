@@ -75,7 +75,8 @@
         </v-col>
       </v-row>
       <v-data-table show-select v-model="selected" :headers="headers" :items="items" :options.sync="options"
-        class="flex-grow-1" :loading="isLoading" :page="page" :pageCount="numberOfPages" :server-items-length="total">
+        class="flex-grow-1 dt-custom-row-cursor" :loading="isLoading" :page="page" :pageCount="numberOfPages" :server-items-length="total"
+        @click:row="handleClick">
         <!-- <template v-slot:item.id="{ item }">
           <div class="font-weight-bold">
             # <copy-label :text="item.id + ''" />
@@ -87,7 +88,7 @@
         </template>
         <template v-slot:item.form_request_number="{ item }">
           <div class="font-weight-bold">
-            <copy-label :text="item.form_request_number + ''" />
+            {{ item.form_request_number }}
           </div>
           <!-- <div>{{ item.form_request_number ?? "---" }}</div> -->
         </template>
@@ -136,7 +137,7 @@
             <v-tooltip top>
               <template v-slot:activator="{ on, attrs }">
                 <v-btn color="primary" icon elevation="0" v-bind="attrs" v-on="on"
-                  @click="openCasePreviewDialog(item.id)">
+                  @click.prevent.stop="openCasePreviewDialog(item.id)">
                   <v-icon>mdi-timeline-text-outline</v-icon>
                 </v-btn>
               </template>
@@ -153,9 +154,9 @@
             </v-tooltip> -->
 
             <!-- assign user button -->
-            <v-tooltip top>
+            <v-tooltip top v-if="!item.form_assigned_requests[0]">
               <template v-slot:activator="{ on, attrs }">
-                <v-btn color="primary" icon elevation="0" v-bind="attrs" v-on="on" @click="openAssignDialog(item.id)">
+                <v-btn color="primary" icon elevation="0" v-bind="attrs" v-on="on" @click.prevent.stop="openAssignDialog(item.id)">
                   <v-icon>mdi-at</v-icon>
                 </v-btn>
               </template>
@@ -163,20 +164,20 @@
             </v-tooltip>
 
             <!-- edit case button -->
-            <v-tooltip top>
-              <template v-slot:activator="{ on, attrs }">
-                <v-btn color="primary" icon elevation="0" v-bind="attrs" v-on="on"
-                  :to="`/cases/${currentPageId}/request-review/edit/${item.id}`" v-can="'update-user'">
-                  <v-icon>mdi-pencil-outline</v-icon>
-                </v-btn>
-              </template>
-              <span>{{ $t("cases.editCase") }}</span>
-            </v-tooltip>
+<!--            <v-tooltip top>-->
+<!--              <template v-slot:activator="{ on, attrs }">-->
+<!--                <v-btn color="primary" icon elevation="0" v-bind="attrs" v-on="on"-->
+<!--                  :to="`/cases/${currentPageId}/request-review/edit/${item.id}`" v-can="'update-user'">-->
+<!--                  <v-icon>mdi-pencil-outline</v-icon>-->
+<!--                </v-btn>-->
+<!--              </template>-->
+<!--              <span>{{ $t("cases.editCase") }}</span>-->
+<!--            </v-tooltip>-->
 
             <!-- delete case button -->
             <v-tooltip top>
               <template v-slot:activator="{ on, attrs }">
-                <v-btn color="error" icon elevation="0" v-bind="attrs" v-on="on" @click.prevent="deleteItem(item.id)"
+                <v-btn color="error" icon elevation="0" v-bind="attrs" v-on="on" @click.prevent.stop="deleteItem(item.id)"
                   v-can="'delete-user'">
                   <v-icon>mdi-close</v-icon>
                 </v-btn>
@@ -328,6 +329,9 @@ export default {
     ...mapActions("cases", ["getFormRequests", "deleteForm", "deleteAll"]),
     ...mapActions("app", ["setBreadCrumb"]),
     search() { },
+    handleClick(event) {
+      this.$router.push(`/cases/${this.currentPageId}/request-review/edit/${event.id}`)
+    },
     setCurrentBread() {
       const currentPage = this.navTemplates.find((nav) => {
         return nav.id === +this.currentPageId;

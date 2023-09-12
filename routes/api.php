@@ -42,6 +42,7 @@ Route::group(['prefix' => 'v1'], function () {
     /*********************HomeController***************** */
     Route::group(['middleware' => 'auth:sanctum'], function () {
         Route::get('index', [HomeController::class, 'index']);
+        Route::get('reminders', [HomeController::class, 'reminders']);
     });
 
     /*********************VerificationController***************** */
