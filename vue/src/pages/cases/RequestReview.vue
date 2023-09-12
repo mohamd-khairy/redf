@@ -137,7 +137,7 @@
             <v-tooltip top>
               <template v-slot:activator="{ on, attrs }">
                 <v-btn color="primary" icon elevation="0" v-bind="attrs" v-on="on"
-                  @click="openCasePreviewDialog(item.id)">
+                  @click.prevent.stop="openCasePreviewDialog(item.id)">
                   <v-icon>mdi-timeline-text-outline</v-icon>
                 </v-btn>
               </template>
@@ -156,7 +156,7 @@
             <!-- assign user button -->
             <v-tooltip top v-if="!item.form_assigned_requests[0]">
               <template v-slot:activator="{ on, attrs }">
-                <v-btn color="primary" icon elevation="0" v-bind="attrs" v-on="on" @click="openAssignDialog(item.id)">
+                <v-btn color="primary" icon elevation="0" v-bind="attrs" v-on="on" @click.prevent.stop="openAssignDialog(item.id)">
                   <v-icon>mdi-at</v-icon>
                 </v-btn>
               </template>
@@ -177,7 +177,7 @@
             <!-- delete case button -->
             <v-tooltip top>
               <template v-slot:activator="{ on, attrs }">
-                <v-btn color="error" icon elevation="0" v-bind="attrs" v-on="on" @click.prevent="deleteItem(item.id)"
+                <v-btn color="error" icon elevation="0" v-bind="attrs" v-on="on" @click.prevent.stop="deleteItem(item.id)"
                   v-can="'delete-user'">
                   <v-icon>mdi-close</v-icon>
                 </v-btn>
