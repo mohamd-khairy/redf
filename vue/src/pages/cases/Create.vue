@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div style="width: 100%">
     <v-stepper v-model="e1">
       <v-stepper-header>
         <v-stepper-step :complete="e1 > 1" step="1">
@@ -254,7 +254,12 @@ export default {
       caseCheck: false,
       breadcrumbs: [
         {
-          text: this.$t("menu.requests"),
+          text: this.$t("menu.cases_child"),
+          disabled: false,
+          href: "#",
+        },
+        {
+          text: this.$t("cases.formTypes"),
           disabled: false,
           href: "#",
         },
@@ -541,7 +546,7 @@ export default {
         return nav.id === +currentFormId;
       });
       if (currentPage) {
-        this.breadcrumbs.push({
+        this.breadcrumbs.unshift({
           text: currentPage.title,
           disabled: false,
           href: `/cases/${currentFormId}`,
@@ -553,7 +558,7 @@ export default {
       this.selectedTitle = this.$t(this.selectedForm.name);
       this.setBreadCrumb({
         breadcrumbs: this.breadcrumbs,
-        pageTitle: this.$t("cases.casesList"),
+        pageTitle: this.$t("cases.cases"),
       });
     },
     init() {

@@ -36,15 +36,20 @@
         :outlined="true"
       ></show-builder-cards> -->
       <v-row>
-        <v-col v-for="card in cards" :key="card.id" cols="2">
+        <v-col v-for="card in cards" :key="card.id" cols="3">
           <stat-cards :card="card" />
         </v-col>
       </v-row>
-      <v-card v-if="!loading" class="mt-3">
+      <!-- <v-card v-if="!loading" class="mt-3">
         <v-card-text>
           <calendar @selectedEventId="setEventId" :events="calendarData" />
         </v-card-text>
-      </v-card>
+      </v-card> -->
+      <calendar
+        v-if="!loading"
+        @selectedEventId="setEventId"
+        :events="calendarData"
+      />
     </div>
     <div id="loading-bg" v-else>
       <!-- <div class="loading-logo">

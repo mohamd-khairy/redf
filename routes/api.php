@@ -42,6 +42,7 @@ Route::group(['prefix' => 'v1'], function () {
     /*********************HomeController***************** */
     Route::group(['middleware' => 'auth:sanctum'], function () {
         Route::get('index', [HomeController::class, 'index']);
+        Route::get('reminders', [HomeController::class, 'reminders']);
     });
 
     /*********************VerificationController***************** */
@@ -169,17 +170,12 @@ Route::group(['prefix' => 'v1'], function () {
         Route::get('get-form-Requests', [FormRequestController::class, 'getFormRequest']);
         Route::get('get-form-Requests/{i}', [FormRequestController::class, 'getFormRequestfill']);
         Route::delete('delete-form-Requests/{id}', [FormRequestController::class, 'deleteFormRequest']);
-
         Route::post('assign-request', [FormRequestController::class, 'assignRequest']);
         Route::post('form-request-side', [FormRequestController::class, 'storeFormRequestSide']);
-
         Route::post('form-request-information', [FormRequestController::class, 'formRequestInformation']);
         Route::put('update-form-request-information/{id}', [FormRequestController::class, 'updateFormRequestInformation']);
-        
         Route::get('retrieve-claimant', [FormRequestController::class, 'retrieveClaimant']);
-
         Route::post('change-status', [FormRequestController::class, 'changeStatus']);
-
         Route::get('get-file/{id}', [FormRequestController::class, 'getFile']);
     });
 });

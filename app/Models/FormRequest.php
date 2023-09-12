@@ -66,7 +66,7 @@ class FormRequest extends Model
 
     public function request()
     {
-        return $this->hasOne(Formable::class, 'form_request_id')->with('formable');
+        return $this->hasOne(Formable::class, 'form_request_id')->latest()->with('formable');
     }
 
     public function case()
@@ -82,6 +82,16 @@ class FormRequest extends Model
     public function formRequestActions()
     {
         return $this->morphMany(FormRequestAction::class, 'formable');
+    }
+
+    public function calenders()
+    {
+        return $this->hasMany(Calendar::class, 'form_request_id');
+    }
+
+    public function actions()
+    {
+        return $this->hasMany(FormRequestAction::class, 'form_request_id');
     }
 
     public function tasks()
@@ -117,6 +127,11 @@ class FormRequest extends Model
     public function lastFormRequestInformation()
     {
         return $this->hasOne(FormRequestInformation::class)->orderBy('id', 'desc');
+    }
+
+    public function lastFormRequestAction()
+    {
+        return $this->hasOne(FormRequestAction::class)->orderBy('id', 'desc');
     }
 
     public function file()
