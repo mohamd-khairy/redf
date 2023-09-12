@@ -25,7 +25,6 @@ class FormRequestService
 {
     public function storeFormFill($requestData)
     {
-        //  return $requestData;
         return DB::transaction(function () use ($requestData) {
 
             $number = $requestData['case_number'] ?? rand(100000, 999999);
@@ -42,6 +41,7 @@ class FormRequestService
                 'form_request_number' => $number,
                 'name' => $requestData['case_name'] ?? ($requestData['name'] . "($number)")
             ]);
+
             // save related tables if get case_id
             if ($requestData->case_id) {
 
@@ -56,10 +56,8 @@ class FormRequestService
 
                     $this->remove_reminder((object)['form_request_id' => $formRequest->id]);
 
-                    $relatedCase = $this->updateStatus($requestData['id']); //form_id
-                    if (isset($formRequest->case->item) && isset($relatedCase->value)) {
-                        $formRequest->case->item->update(['status' => $relatedCase->value]);
-                    }
+                    /*********** add Notifications ********* */
+                    sendMsgFormat(Auth::id(), $formRequest->name . ' تم اضافه طلب', ' تم إضافة طلب ( ' . $formRequest->name . ' ) ');
                 }
 
                 /*********** add action ********* */
@@ -69,6 +67,9 @@ class FormRequestService
                     formable_type: FormRequest::class,
                     msg: ' تم اضافه ' . $formRequest->name
                 );
+            } else {
+                /*********** add Notifications ********* */
+                sendMsgFormat(Auth::id(), $formRequest->name . ' تم اضافه قضية', ' تم إضافة قضية ( ' . $formRequest->name . ' ) ');
             }
 
             saveFormRequestAction(
@@ -78,11 +79,7 @@ class FormRequestService
                 msg: ' تم اضافه ' . $formRequest->name
             );
 
-            /*********** add Notifications ********* */
-            sendMsgFormat(Auth::id(), $formRequest->form->name . ' تم اضافه ', 'اضافه قضيه');
-
             $this->processFormPages($requestData, $formRequest);
-
 
             return $formRequest;
         });
@@ -341,36 +338,5 @@ class FormRequestService
         return  Reminder::where([
             'form_request_id' => $formRequestInfo->form_request_id,
         ])->delete();
-    }
-
-    public function updateStatus($formId)
-    {
-        switch ($formId) {
-                // case FormEnum::DEFENCE_CASE_FORM->value:
-                //     $status = CaseTypeEnum::FIRST_RULE;
-                //     break;
-
-                // case FormEnum::CLAIM_CASE_FORM->value:
-                //     $status = CaseTypeEnum::FIRST_RULE;
-                //     break;
-
-                // case FormEnum::RESUME_CASE_FORM->value:
-                //     $status = CaseTypeEnum::SECOND_RULE;
-                //     break;
-
-                // case FormEnum::SOLICITATION_CASE_FORM->value:
-                //     $status = CaseTypeEnum::THIRD_RULE;
-                //     break;
-
-            case FormEnum::IMPLEMENTATION_CASE_FORM->value:
-                $status = StatusEnum::CLOSED;
-                break;
-
-            default:
-                $status = null;
-                break;
-        }
-
-        return $status;
     }
 }

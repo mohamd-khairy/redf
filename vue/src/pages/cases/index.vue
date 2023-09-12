@@ -304,8 +304,8 @@ export default {
       const headers = [
         { text: this.$t("tables.number"), value: "form_request_number" },
         { text: this.$t("cases.caseName"), value: "name" },
-        { text: this.$t("tables.branch"), value: "branch", width: 110 },
-        { text: this.$t("tables.specialization"), value: "specialization" },
+        { text: this.$t("tables.branch"), value: "branch", width: 180 },
+        { text: this.$t("tables.specialization"), value: "specialization"  },
         {
           text: this.$t("tables.user"),
           value: "user",

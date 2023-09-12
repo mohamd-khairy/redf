@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Enums\FormEnum;
 use Throwable;
 use App\Models\Form;
 use App\Models\User;
@@ -10,6 +11,7 @@ use Illuminate\Http\Request;
 use App\Rules\StatusEnumRule;
 use App\Models\FormRequestSide;
 use App\Enums\FormRequestStatus;
+use App\Enums\StatusEnum;
 use App\Http\Requests\FormAssign;
 use App\Http\Requests\PageRequest;
 use Illuminate\Support\Facades\DB;
@@ -172,8 +174,23 @@ class FormRequestController extends Controller
             return responseFail($validator->errors()->first());
         }
 
-        $status = request('status');
-        $response = FormRequest::where('id', $request->form_request_id)->update(['status' => $status, 'status_request' => $status]);
+        $formRequest = FormRequest::where('id', $request->form_request_id)->first();
+        $response = $formRequest->update(['status' => request('status'), 'status_request' => request('status')]);
+
+        /*********** update form request status عند الموافقه علي خطاب التنفيذ********* */
+        $relatedCase = $this->updateStatus($formRequest->form->id); //form_id
+        if (isset($formRequest->case->item) && isset($relatedCase->value)) {
+            $formRequest->case->item->update(['status' => $relatedCase->value]);
+        }
+        /******************************************************************************* */
+
+        $status = $request->status;
+        saveFormRequestAction(
+            form_request_id: $formRequest->case->item->id,
+            formable_id: $formRequest->id,
+            formable_type: FormRequest::class,
+            msg: FormRequestStatus::$status() . " ( $formRequest->name ) " 
+        );
 
         return responseSuccess($response, 'Status updated successfully');
     }
@@ -205,5 +222,36 @@ class FormRequestController extends Controller
         $b64image = base64_encode(file_get_contents($file->file));
 
         return responseSuccess($b64image);
+    }
+
+    public function updateStatus($formId)
+    {
+        switch ($formId) {
+                // case FormEnum::DEFENCE_CASE_FORM->value:
+                //     $status = CaseTypeEnum::FIRST_RULE;
+                //     break;
+
+                // case FormEnum::CLAIM_CASE_FORM->value:
+                //     $status = CaseTypeEnum::FIRST_RULE;
+                //     break;
+
+                // case FormEnum::RESUME_CASE_FORM->value:
+                //     $status = CaseTypeEnum::SECOND_RULE;
+                //     break;
+
+                // case FormEnum::SOLICITATION_CASE_FORM->value:
+                //     $status = CaseTypeEnum::THIRD_RULE;
+                //     break;
+
+            case FormEnum::IMPLEMENTATION_CASE_FORM->value:
+                $status = StatusEnum::CLOSED;
+                break;
+
+            default:
+                $status = null;
+                break;
+        }
+
+        return $status;
     }
 }
