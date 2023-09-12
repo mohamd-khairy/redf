@@ -226,7 +226,16 @@ class FormRequestService
                         'type' => FormAssignRequestType::EMPLOYEE,
                     ]);
 
-                    FormRequest::where('id', $formRequestId)->update(['status' => StatusEnum::WAIT]);
+
+
+                    $request = FormRequest::where('id', $formRequestId)->first();
+                    if ($request->type == 'case') {
+                        $request->update(['status' => StatusEnum::ASSIGNED]);
+                    }
+
+                    if ($request->type == 'related_case') {
+                        $request->update(['status' => StatusEnum::WAIT]);
+                    }
 
                     saveFormRequestAction(
                         form_request_id: $formRequestId,
@@ -328,7 +337,7 @@ class FormRequestService
             'form_request_information_id' => $formRequestInfo->id
         ], [
             'name' => $formRequestInfo->details ?? '',
-            'color' => dechex(rand(0x000000, 0xFFFFFF)),
+            'color' => "#" . dechex(rand(0x000000, 0xFFFFFF)),
             'start_date' => date('Y-m-d', strtotime($formRequestInfo->date_of_receipt)),
             'end_date' => date('Y-m-d', strtotime($formRequestInfo->date_of_receipt . "+ 30 day"))
         ]);
