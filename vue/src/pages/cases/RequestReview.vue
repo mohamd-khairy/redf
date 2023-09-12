@@ -40,17 +40,8 @@
           </v-menu>
         </v-col>
         <v-col cols="6" class="d-flex text-right align-center">
-          <v-text-field
-            v-model="searchQuery"
-            append-icon="mdi-magnify"
-            class="flex-grow-1 mr-md-2"
-            solo
-            hide-details
-            dense
-            clearable
-            :placeholder="$t('general.search')"
-            @keyup.enter="search(searchQuery)"
-          ></v-text-field>
+          <v-text-field v-model="searchQuery" append-icon="mdi-magnify" class="flex-grow-1 mr-md-2" solo hide-details
+            dense clearable :placeholder="$t('general.search')" @keyup.enter="search(searchQuery)"></v-text-field>
 
           <!--          <v-tooltip top>-->
           <!--            <template v-slot:activator="{ on, attrs }">-->
@@ -78,29 +69,13 @@
           <!--          >-->
           <!--            {{ buttonName }}-->
           <!--          </v-btn>-->
-          <v-btn
-            :loading="isLoading"
-            icon
-            @click.prevent="open()"
-            small
-            class="ml-2"
-          >
+          <v-btn :loading="isLoading" icon @click.prevent="open()" small class="ml-2">
             <v-icon>mdi-refresh</v-icon>
           </v-btn>
         </v-col>
       </v-row>
-      <v-data-table
-        show-select
-        v-model="selected"
-        :headers="headers"
-        :items="items"
-        :options.sync="options"
-        class="flex-grow-1"
-        :loading="isLoading"
-        :page="page"
-        :pageCount="numberOfPages"
-        :server-items-length="total"
-      >
+      <v-data-table show-select v-model="selected" :headers="headers" :items="items" :options.sync="options"
+        class="flex-grow-1" :loading="isLoading" :page="page" :pageCount="numberOfPages" :server-items-length="total">
         <!-- <template v-slot:item.id="{ item }">
           <div class="font-weight-bold">
             # <copy-label :text="item.id + ''" />
@@ -121,18 +96,14 @@
           <div>{{ item?.case?.item?.name ?? "---" }}</div>
         </template>
 
-        <!-- <template v-slot:item.assigner="{ item }">
+        <template v-slot:item.assigner="{ item }">
           <div>
             {{ item.form_assigned_requests[0]?.user.name ?? "---" }}
           </div>
-        </template> -->
+        </template>
 
         <template v-slot:item.status="{ item }">
-          <v-chip
-            small
-            :color="getStatusColor(item?.status?.toLowerCase())"
-            text-color="white"
-          >
+          <v-chip small :color="getStatusColor(item?.status?.toLowerCase())" text-color="white">
             {{ item?.status ? item.display_status : "---" }}
             <!-- {{ item.status ? $t(`general.${item.status} `) : "" }} -->
           </v-chip>
@@ -164,14 +135,8 @@
             <!-- view case timeline button -->
             <v-tooltip top>
               <template v-slot:activator="{ on, attrs }">
-                <v-btn
-                  color="primary"
-                  icon
-                  elevation="0"
-                  v-bind="attrs"
-                  v-on="on"
-                  @click="openCasePreviewDialog(item.id)"
-                >
+                <v-btn color="primary" icon elevation="0" v-bind="attrs" v-on="on"
+                  @click="openCasePreviewDialog(item.id)">
                   <v-icon>mdi-timeline-text-outline</v-icon>
                 </v-btn>
               </template>
@@ -188,27 +153,20 @@
             </v-tooltip> -->
 
             <!-- assign user button -->
-            <!-- <v-tooltip top>
+            <v-tooltip top>
               <template v-slot:activator="{ on, attrs }">
                 <v-btn color="primary" icon elevation="0" v-bind="attrs" v-on="on" @click="openAssignDialog(item.id)">
                   <v-icon>mdi-at</v-icon>
                 </v-btn>
               </template>
               <span>{{ $t("cases.assign_user") }}</span>
-            </v-tooltip> -->
+            </v-tooltip>
 
             <!-- edit case button -->
             <v-tooltip top>
               <template v-slot:activator="{ on, attrs }">
-                <v-btn
-                  color="primary"
-                  icon
-                  elevation="0"
-                  v-bind="attrs"
-                  v-on="on"
-                  :to="`/cases/${currentPageId}/request-review/edit/${item.id}`"
-                  v-can="'update-user'"
-                >
+                <v-btn color="primary" icon elevation="0" v-bind="attrs" v-on="on"
+                  :to="`/cases/${currentPageId}/request-review/edit/${item.id}`" v-can="'update-user'">
                   <v-icon>mdi-pencil-outline</v-icon>
                 </v-btn>
               </template>
@@ -218,15 +176,8 @@
             <!-- delete case button -->
             <v-tooltip top>
               <template v-slot:activator="{ on, attrs }">
-                <v-btn
-                  color="error"
-                  icon
-                  elevation="0"
-                  v-bind="attrs"
-                  v-on="on"
-                  @click.prevent="deleteItem(item.id)"
-                  v-can="'delete-user'"
-                >
+                <v-btn color="error" icon elevation="0" v-bind="attrs" v-on="on" @click.prevent="deleteItem(item.id)"
+                  v-can="'delete-user'">
                   <v-icon>mdi-close</v-icon>
                 </v-btn>
               </template>
@@ -252,32 +203,16 @@
           </div>
         </template>
       </v-data-table>
-      <CasePreviewDialog
-        :dialogVisible="casePrevDialog"
-        :case-id="formId"
-        v-if="casePrevDialog"
-        @closePrevDialog="casePrevDialog = false"
-      />
-      <CaseInfoDialog
-        :dialogVisible="caseInfoDialog"
-        :case-id="formId"
-        v-if="caseInfoDialog"
-        @closeInfoDialog="caseInfoDialog = false"
-      />
-      <AddAction
-        :dialogVisible="addActionDialog"
-        :formRequestId="formId"
+      <CasePreviewDialog :dialogVisible="casePrevDialog" :case-id="formId" v-if="casePrevDialog"
+        @closePrevDialog="casePrevDialog = false" />
+      <CaseInfoDialog :dialogVisible="caseInfoDialog" :case-id="formId" v-if="caseInfoDialog"
+        @closeInfoDialog="caseInfoDialog = false" />
+      <AddAction :dialogVisible="addActionDialog" :formRequestId="formId"
+        :lastAction="selectedForm.last_form_request_information || null" v-if="addActionDialog && currentPageId == 1"
+        @close-action-dialog="closeActionDialog" />
+      <AddDynamicAction :dialogVisible="addDynamicActionDialog" :formRequestId="formId"
         :lastAction="selectedForm.last_form_request_information || null"
-        v-if="addActionDialog && currentPageId == 1"
-        @close-action-dialog="closeActionDialog"
-      />
-      <AddDynamicAction
-        :dialogVisible="addDynamicActionDialog"
-        :formRequestId="formId"
-        :lastAction="selectedForm.last_form_request_information || null"
-        v-else-if="addDynamicActionDialog && currentPageId != 1"
-        @close-action-dialog="closeDynamicActionDialog"
-      />
+        v-else-if="addDynamicActionDialog && currentPageId != 1" @close-action-dialog="closeDynamicActionDialog" />
       <assign @userAssigned="userAssigned" v-model="dialog" :id="formId" />
     </v-card>
   </div>
@@ -339,7 +274,7 @@ export default {
     };
   },
   watch: {
-    selected(val) {},
+    selected(val) { },
     options: {
       handler() {
         this.open();
@@ -366,7 +301,7 @@ export default {
         { text: this.$t("tables.number"), value: "form_request_number" },
         { text: this.$t("tables.name"), value: "name" },
         { text: this.$t("tables.caseName"), value: "caseName" },
-        // { text: this.$t("tables.assigner"), value: "assigner" },
+        { text: this.$t("tables.assigner"), value: "assigner" },
         { text: this.$t("tables.status"), value: "status" },
         { text: this.$t("tables.created"), value: "created_at" },
         {
@@ -392,7 +327,7 @@ export default {
   methods: {
     ...mapActions("cases", ["getFormRequests", "deleteForm", "deleteAll"]),
     ...mapActions("app", ["setBreadCrumb"]),
-    search() {},
+    search() { },
     setCurrentBread() {
       const currentPage = this.navTemplates.find((nav) => {
         return nav.id === +this.currentPageId;
