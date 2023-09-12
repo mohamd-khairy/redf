@@ -17,6 +17,7 @@ use Illuminate\Http\Request;
 use PhpOffice\PhpWord\PhpWord;
 use App\Http\Controllers\Controller;
 use App\Models\Branch;
+use App\Models\Calendar;
 use App\Models\Reminder;
 use App\Models\Specialization;
 use Illuminate\Support\Facades\Storage;
@@ -127,7 +128,30 @@ class HomeController extends Controller
 
     public function reminders()
     {
+        $calender = Calendar::with('calendarable')->get();
         $data = Reminder::get();
-        return responseSuccess($data);
+
+        $all = [];
+
+        foreach ($calender as $key => $value) {
+            $all[] = [
+                'name' => $value->details,
+                'color' => dechex(rand(0x000000, 0xFFFFFF)),
+                'start_date' => $value->date,
+                'end_date' => $value->date,
+                'form_request_id' => $value->form_request_id
+            ];
+        }
+
+        foreach ($data as $key => $value) {
+            $all[] = [
+                'name' => $value->name,
+                'color' => $value->color,
+                'start_date' => $value->start_date,
+                'end_date' => $value->end_date,
+                'form_request_id' => $value->form_request_id
+            ];
+        }
+        return responseSuccess($all);
     }
 }
