@@ -35,8 +35,8 @@ class FormSeeder extends Seeder
         //template
         $form1 = Form::firstOrCreate([
             'id' => FormEnum::CASE,
-            'name' => 'استمارة التقاضي والطلب',
-            'description' => 'استمارة التقاضي والطلب',
+            'name' => 'استمارة القضية',
+            'description' => 'استمارة القضية',
             'user_id' => 1,
             'main' => 1,
             'template_id' => 1,
