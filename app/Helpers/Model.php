@@ -18,19 +18,22 @@ if (!function_exists('DisplayStatus')) {
     function DisplayStatus($value)
     {
         try {
-            $status = $value ? CaseTypeEnum::$value() : null;
+            $status = CaseTypeEnum::$value();
+            return $status;
         } catch (\Throwable $th) {
             $status = null;
         }
 
         try {
-            $status = $value ? StatusEnum::$value() : null;
+            $status = StatusEnum::$value();
+            return $status;
         } catch (\Throwable $th) {
             $status = null;
         }
 
         try {
-            $status = $status ?  $status : FormRequestStatus::$value();
+            $status = FormRequestStatus::$value();
+            return $status;
         } catch (\Throwable $th) {
             $status = $value;
         }

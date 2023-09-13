@@ -43,11 +43,7 @@ class FormRequestInformation extends Model
 
     public function getDisplayStatusAttribute()
     {
-        try {
-            return isset($this->attributes['status']) ? DisplayStatus($this->attributes['status']) : null;
-        } catch (\Throwable $th) {
-            return null;
-        }
+        return DisplayStatus($this->attributes['status']);
     }
 
     // public function getCourtAttribute($value)

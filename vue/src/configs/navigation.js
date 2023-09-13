@@ -111,37 +111,8 @@ export default {
       permission: "read-role",
       items: [],
     },
-    {
-      icon: "mdi-file-document-edit-outline",
-      text: "Organizations",
-      key: "menu.organizations",
-      link: "/organizations",
-      permission: "read-role",
-      items: []
-    },
-    {
-      icon: "mdi-form-textbox",
-      text: "templates",
-      key: "menu.templates",
-      link: "/templates",
-      permission: "read-role",
-      items: [
-        {
-          icon: "mdi-list-box",
-          text: "TemplatesTypes",
-          key: "menu.templatesTypes",
-          permission: "read-role",
-          link: "/templates/types",
-        },
-        {
-          icon: "mdi-list-box",
-          text: "Templates",
-          key: "menu.templates",
-          permission: "read-role",
-          link: "/templates/list",
-        },
-      ],
-    },
+
+
 
     // {
     //   icon: "mdi-chart-line",
@@ -196,6 +167,29 @@ export default {
     //   ]
     // },
     {
+      icon: "mdi-form-textbox",
+      text: "templates",
+      key: "menu.templates",
+      link: "/templates",
+      permission: "read-role",
+      items: [
+        {
+          icon: "mdi-list-box",
+          text: "TemplatesTypes",
+          key: "menu.templatesTypes",
+          permission: "read-role",
+          link: "/templates/types",
+        },
+        {
+          icon: "mdi-list-box",
+          text: "Templates",
+          key: "menu.templates",
+          permission: "read-role",
+          link: "/templates/list",
+        },
+      ],
+    },
+    {
       icon: "mdi-account-multiple-outline",
       text: "Users Management",
       key: "menu.usersManagement",
@@ -247,6 +241,15 @@ export default {
           permission: "read-role",
           items: [],
         },
+        {
+          icon: "mdi-file-document-edit-outline",
+          text: "Organizations",
+          key: "menu.organizations",
+          link: "/organizations",
+          permission: "read-role",
+          items: []
+        },
+
         {
           key: "menu.general",
           text: "General",
