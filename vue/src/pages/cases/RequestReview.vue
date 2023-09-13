@@ -134,7 +134,7 @@
             <!--            </v-tooltip>-->
 
             <!-- view case timeline button -->
-            <v-tooltip top>
+            <!-- <v-tooltip top>
               <template v-slot:activator="{ on, attrs }">
                 <v-btn color="primary" icon elevation="0" v-bind="attrs" v-on="on"
                   @click.prevent.stop="openCasePreviewDialog(item.id)">
@@ -142,7 +142,7 @@
                 </v-btn>
               </template>
               <span>{{ $t("cases.request_view_timeline") }}</span>
-            </v-tooltip>
+            </v-tooltip> -->
             <!-- view case info button -->
             <!-- <v-tooltip top>
               <template v-slot:activator="{ on, attrs }">

@@ -345,14 +345,28 @@ class FormRequestService
     public function updateFormRequestInformation($id, $request)
     {
         try {
+            DB::beginTransaction();
+
             $formRequestInfo = FormRequestInformation::find($id);
-            $response = $formRequestInfo->update($request->all());
+            $response = $formRequestInfo->update($request->only('date_of_receipt'));
             $formRequestInfo->refresh();
             if ($response && $formRequestInfo->date_of_receipt) {
+
+                saveFormRequestAction(
+                    form_request_id: $formRequestInfo->form_request_id,
+                    formable_id: $formRequestInfo->id,
+                    formable_type: FormRequestInformation::class,
+                    msg: 'تم استلام الحكم',
+                );
+
                 $this->add_reminder($formRequestInfo);
             }
+
+            DB::commit();
+
             return $response;
         } catch (\Throwable $th) {
+            DB::rollBack();
             //throw $th;
         }
     }
