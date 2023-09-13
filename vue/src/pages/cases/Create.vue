@@ -2,7 +2,7 @@
   <div style="width: 100%">
     <v-stepper v-model="e1">
       <v-stepper-header>
-        <v-stepper-step :complete="e1 > 1" step="1" :editable="caseId">
+        <v-stepper-step :complete="e1 > 1" step="1">
           {{ $t("cases.selectCase") }}
         </v-stepper-step>
         <!-- <v-divider></v-divider>
@@ -12,7 +12,7 @@
 
         <v-divider></v-divider>
 
-        <v-stepper-step :complete="e1 > 2" step="2" :editable="caseId">
+        <v-stepper-step :complete="e1 > 2" step="2">
           {{ $t("general.info") + " " + selectedTitle }}
         </v-stepper-step>
         <v-divider></v-divider>
@@ -195,9 +195,9 @@
               {{ $t("general.refuseRequest") }}
             </v-btn>
 
-            <v-btn color="grey" @click="stepBack" class="ms-2">
-              {{ $t("general.back") }}
-            </v-btn>
+<!--            <v-btn color="grey" @click="stepBack" class="ms-2">-->
+<!--              {{ $t("general.back") }}-->
+<!--            </v-btn>-->
           </v-card-actions>
         </v-stepper-content>
       </v-stepper-items>
