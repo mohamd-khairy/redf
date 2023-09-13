@@ -113,7 +113,7 @@ class FormRequestService
             // save related tables if get case_id
             if ($requestData->case_id) {
                 // Update Formable record
-                Formable::create(
+                Formable::firstOrCreate(
                     [
                         'form_request_id' => $requestData->case_id,
                         'formable_id' => $formRequest->id,
