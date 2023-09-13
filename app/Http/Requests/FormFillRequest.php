@@ -43,13 +43,15 @@ class FormFillRequest extends FormRequest
         ];
 
         if (request('type') == 'case') {
-            $data['case_number'] = 'required|regex:/^[0-9]+$/';
+            $data['case_number'] = 'required|regex:/^[0-9]+$/|unique:form_requests,case_number';
             $data['case_name'] = 'required|string';
             $data['case_date'] = 'required|date';
             $data['branche_id'] = 'required';
             $data['specialization_id'] = 'required';
             $data['organization_id'] = 'required';
             $data['case_type'] = 'required';
+            $data['file'] = 'nullable';
+            $data['department_id'] = 'nullable';
         }
 
         if (request('type') == 'related_case') {
