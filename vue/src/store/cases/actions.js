@@ -399,14 +399,14 @@ const actions = {
   },
   async updateBackPages(
     { state },
-    { caseName, caseNumber, formId, branch_id, caseDate, type }
+    { caseName, caseNumber, formId, branch_id, caseDate, type,case_id }
   ) {
     try {
       const customFormData = {
         id: state.selectedForm.id,
 
         name: state.selectedForm.name,
-        pages: state.pagesValues.map((page) => ({
+        pages: state.pages.map((page) => ({
           id: page.id,
           title: page.title,
           items: page.items
@@ -442,6 +442,9 @@ const actions = {
       }
       if (type) {
         bodyFormData.set("type", type);
+      }
+      if (case_id) {
+        bodyFormData.set("case_id", case_id);
       }
       const response = await axios.post(
         `update-form-fill/${formId}`,
