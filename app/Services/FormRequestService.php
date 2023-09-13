@@ -38,6 +38,7 @@ class FormRequestService
                 'status' => StatusEnum::PENDING,
                 'form_type' => $requestData['type'],
                 'case_date' => $requestData['case_date'],
+                'department_id' => $requestData['department_id'],
                 'form_request_number' => $number,
                 'name' => $requestData['case_name'] ?? ($requestData['name'] . "($number)")
             ]);
@@ -362,7 +363,7 @@ class FormRequestService
             'form_request_id' => $formRequestInfo->form_request_id,
             'form_request_information_id' => $formRequestInfo->id
         ], [
-            'name' => $formRequestInfo->details ?? '',
+            'name' => "تم استلام الحكم وهناك 30 يوم ثم سيتحول الحكم الي نهائي",
             'color' => "#" . dechex(rand(0x000000, 0xFFFFFF)),
             'start_date' => date('Y-m-d', strtotime($formRequestInfo->date_of_receipt)),
             'end_date' => date('Y-m-d', strtotime($formRequestInfo->date_of_receipt . "+ 30 day"))
