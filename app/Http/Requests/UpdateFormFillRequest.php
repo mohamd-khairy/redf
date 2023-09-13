@@ -50,6 +50,8 @@ class UpdateFormFillRequest extends FormRequest
             $data['specialization_id'] = 'required';
             $data['organization_id'] = 'required';
             $data['case_type'] = 'required';
+            $data['file'] = 'nullable';
+            $data['department_id'] = 'nullable';
         }
 
         if (request('type') == 'related_case') {
