@@ -184,21 +184,21 @@
           ></iframe>
           <div v-else id="filePreview-container"></div>
 
-          <v-card-actions class="mt-2">
-            <v-btn color="primary" @click="updateCaseStatus('ACCEPT')">
-              {{ $t("general.acceptRequest") }}
-            </v-btn>
-            <v-btn color="primary" @click="updateCaseStatus('RETURN')">
-              {{ $t("general.returnRequest") }}
-            </v-btn>
-            <v-btn color="primary" @click="updateCaseStatus('REFUSE')">
-              {{ $t("general.refuseRequest") }}
-            </v-btn>
-
-<!--            <v-btn color="grey" @click="stepBack" class="ms-2">-->
-<!--              {{ $t("general.back") }}-->
+<!--          <v-card-actions class="mt-2">-->
+<!--            <v-btn color="primary" @click="updateCaseStatus('ACCEPT')">-->
+<!--              {{ $t("general.acceptRequest") }}-->
 <!--            </v-btn>-->
-          </v-card-actions>
+<!--            <v-btn color="primary" @click="updateCaseStatus('RETURN')">-->
+<!--              {{ $t("general.returnRequest") }}-->
+<!--            </v-btn>-->
+<!--            <v-btn color="primary" @click="updateCaseStatus('REFUSE')">-->
+<!--              {{ $t("general.refuseRequest") }}-->
+<!--            </v-btn>-->
+
+<!--&lt;!&ndash;            <v-btn color="grey" @click="stepBack" class="ms-2">&ndash;&gt;-->
+<!--&lt;!&ndash;              {{ $t("general.back") }}&ndash;&gt;-->
+<!--&lt;!&ndash;            </v-btn>&ndash;&gt;-->
+<!--          </v-card-actions>-->
         </v-stepper-content>
       </v-stepper-items>
     </v-stepper>

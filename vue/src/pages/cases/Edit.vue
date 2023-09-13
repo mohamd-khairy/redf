@@ -239,7 +239,7 @@
         ></iframe> -->
         <div ref="fileCont" id="filePreview-container"></div>
 
-        <v-card-actions class="mt-2">
+        <v-card-actions class="mt-2" v-if="formAssignedRequests?.length">
           <v-btn
             color="primary"
             v-if="caseStatus !== 'ACCEPT'"
@@ -326,6 +326,7 @@ export default {
       },
       errors: {},
       lastAction: null,
+      formAssignedRequests: null,
       docUrl: "",
     };
   },
@@ -512,7 +513,7 @@ export default {
         .then((data) => {
           this.setCurrentBread();
           this.formData = data;
-
+          this.formAssignedRequests = data.formAssignedRequests
           this.caseStatus = data?.status;
           this.lastAction = data?.lastFormRequestInformation || null;
           this.caseId = data.case?.form_request_id;
