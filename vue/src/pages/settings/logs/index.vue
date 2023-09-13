@@ -2,7 +2,7 @@
   <div class="d-flex flex-column flex-grow-1">
     <v-row>
       <v-col cols="12">
-        <v-card>
+        <v-card class="mb-60">
           <v-card-title>
             <v-row dense class=" align-center">
               <v-col cols="3" class="d-flex text-right align-center">
