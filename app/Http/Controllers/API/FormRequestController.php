@@ -85,7 +85,8 @@ class FormRequestController extends Controller
                 'lastFormRequestInformation',
                 'request',
                 'case',
-                'branche'
+                'branche',
+                'formAssignedRequests'
             )->find($id);
 
             return responseSuccess(new FormRequestResource($formfill), 'Form requests retrieved successfully');
