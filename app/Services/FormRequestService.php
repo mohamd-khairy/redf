@@ -53,7 +53,7 @@ class FormRequestService
             if ($requestData->case_id) {
 
                 // Create a new Formable record
-                Formable::create([
+                Formable::firstOrCreate([
                     'formable_id' => $formRequest->id,
                     'form_request_id' => $requestData->case_id,
                     'formable_type' => FormRequest::class,
