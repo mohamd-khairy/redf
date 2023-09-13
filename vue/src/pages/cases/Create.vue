@@ -2,7 +2,7 @@
   <div style="width: 100%">
     <v-stepper v-model="e1">
       <v-stepper-header>
-        <v-stepper-step :complete="e1 > 1" step="1">
+        <v-stepper-step :complete="e1 > 1" step="1" :editable="caseId">
           {{ $t("cases.selectCase") }}
         </v-stepper-step>
         <!-- <v-divider></v-divider>
@@ -12,7 +12,7 @@
 
         <v-divider></v-divider>
 
-        <v-stepper-step :complete="e1 > 2" step="2">
+        <v-stepper-step :complete="e1 > 2" step="2" :editable="caseId">
           {{ $t("general.info") + " " + selectedTitle }}
         </v-stepper-step>
         <v-divider></v-divider>
@@ -48,7 +48,7 @@
                   v-if="caseId"
                   color="primary"
                   outlined
-                  @click="openCaseInfoDialog()"
+                  @click="openCaseInfoDialog(caseId)"
                   >{{ $t("cases.view_info") }}</v-btn
                 >
               </div>
@@ -422,6 +422,7 @@ export default {
       }
     },
     openCaseInfoDialog(id) {
+      this.getCaseTimeline(id);
       this.caseInfoDialog = true;
     },
     async getCaseTimeline(id) {
@@ -615,14 +616,14 @@ export default {
         this.showErrors = true;
         return;
       }
-      this.getCaseTimeline(this.caseId);
+      // this.getCaseTimeline(this.caseId);
       this.showErrors = false;
       this.stepOneErrors = false;
       this.e1 = 2;
     },
     async saveForm() {
       this.isSubmitingForm = true;
-      if ((await this.validateFormData()) && this.caseName && this.caseNumber) {
+      if ((await this.validateFormData()) && this.caseId) {
         let result = null;
         if (!this.formRequestId) {
           result = await this.savePages({
