@@ -2,21 +2,24 @@
   <v-row class="fill-height">
     <v-col>
       <v-sheet height="64">
-        <v-toolbar flat class="p-2">
+        <v-toolbar flat class="p-2 w-100">
           <v-btn outlined class="ml-4" color="grey darken-2" @click="setToday">
             {{ $t("general.today") }}
           </v-btn>
-          <v-btn fab text small color="grey darken-2" @click="prev">
-            <v-icon small>mdi-chevron-right </v-icon>
-          </v-btn>
-          <v-btn fab text small color="grey darken-2" @click="next">
-            <v-icon small> mdi-chevron-left </v-icon>
-          </v-btn>
-          <v-toolbar-title v-if="$refs.calendar" class="mx-2">
-            {{ $refs.calendar.title }}
-          </v-toolbar-title>
-
           <v-spacer></v-spacer>
+          <div class="d-flex justify-center align-center">
+            <v-btn fab text small color="grey darken-2" @click="prev">
+              <v-icon small>mdi-chevron-right </v-icon>
+            </v-btn>
+            <v-toolbar-title v-if="$refs.calendar" class="mx-2 calendar-title">
+              {{ $refs.calendar.title }}
+            </v-toolbar-title>
+            <v-btn fab text small color="grey darken-2" @click="next">
+              <v-icon small> mdi-chevron-left </v-icon>
+            </v-btn>
+          </div>
+          <v-spacer></v-spacer>
+
           <!-- <v-menu bottom right>
             <template v-slot:activator="{ on, attrs }">
               <v-btn outlined color="grey darken-2" v-bind="attrs" v-on="on">
@@ -244,5 +247,9 @@ export default {
 
 .v-calendar .v-event {
   margin-right: 0 !important;
+}
+.calendar-title {
+  width: 120px;
+  text-align: center;
 }
 </style>
