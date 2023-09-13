@@ -65,15 +65,16 @@ class FormRequestService
 
                     /*********** add Notifications ********* */
                     sendMsgFormat(Auth::id(), $formRequest->name . ' تم اضافه طلب', ' تم إضافة طلب ( ' . $formRequest->name . ' ) ');
-                }
+                } else {
 
-                /*********** add action ********* */
-                saveFormRequestAction(
-                    form_request_id: $requestData->case_id,
-                    formable_id: $formRequest->id,
-                    formable_type: FormRequest::class,
-                    msg: ' تم اضافه ' . $formRequest->name
-                );
+                    /*********** add action ********* */
+                    saveFormRequestAction(
+                        form_request_id: $requestData->case_id,
+                        formable_id: $formRequest->id,
+                        formable_type: FormRequest::class,
+                        msg: ' تم اضافه ' . $formRequest->name
+                    );
+                }
             } else {
                 /*********** add Notifications ********* */
                 sendMsgFormat(Auth::id(), $formRequest->name . ' تم اضافه قضية', ' تم إضافة قضية ( ' . $formRequest->name . ' ) ');
