@@ -43,7 +43,7 @@ class FormFillRequest extends FormRequest
         ];
 
         if (request('type') == 'case') {
-            $data['case_number'] = 'required|regex:/^[0-9]+$/|unique:form_requests,case_number';
+            $data['case_number'] = 'required|regex:/^[0-9]+$/|unique:form_requests,form_request_number';
             $data['case_name'] = 'required|string';
             $data['case_date'] = 'required|date';
             $data['branche_id'] = 'required';
