@@ -240,6 +240,7 @@ const actions = {
       case_type,
       specialization_id,
       organization_id,
+      file
     }
   ) {
     try {
@@ -294,6 +295,9 @@ const actions = {
       if (organization_id) {
         bodyFormData.set("organization_id", organization_id);
       }
+      if (file) {
+        bodyFormData.set("file", file);
+      }
       const result = await axios.post(`store-form-fill`, bodyFormData, {
         headers: {
           "Content-Type": "multipart/form-data",
@@ -318,6 +322,7 @@ const actions = {
       case_type,
       specialization_id,
       organization_id,
+      file
     }
   ) {
     try {
@@ -373,6 +378,9 @@ const actions = {
       }
       if (organization_id) {
         bodyFormData.set("organization_id", organization_id);
+      }
+      if (file) {
+        bodyFormData.set("file", file);
       }
       const response = await axios.post(
         `update-form-fill/${formId}`,

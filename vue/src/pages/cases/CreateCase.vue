@@ -2,19 +2,19 @@
   <div>
     <v-stepper v-model="e1">
       <v-stepper-header>
-        <v-stepper-step :complete="e1 > 1" step="1">
+        <v-stepper-step :complete="e1 > 1" step="1" :editable="formRequestId">
           {{ $t("general.info") + " " + selectedTitle }}
         </v-stepper-step>
 
         <v-divider></v-divider>
 
-        <v-stepper-step :complete="e1 > 2" step="2">
+        <v-stepper-step :complete="e1 > 2" step="2" :editable="formRequestId">
           {{ $t("cases.sidesInfo") }}
         </v-stepper-step>
 
         <v-divider></v-divider>
 
-        <v-stepper-step step="3">
+        <v-stepper-step step="3" :editable="formRequestId">
           {{ $t("cases.caseActions") }}
         </v-stepper-step>
       </v-stepper-header>
@@ -35,9 +35,9 @@
                       :error-messages="stepOneValidation(caseName)" dense :rules="[requiredRule]"></v-text-field>
                   </v-col>
                   <v-col cols="12">
-                    <v-file-input outlined dense counter show-size :v-model="form.file" :label="$t('tasks.document')"
-                      @change="(file) => handleFileUpload(file)" click:clear="handleRemoveFile"
-                      :error-messages="errors['document']">
+                    <v-file-input outlined dense show-size :v-model="caseFile" :label="$t('cases.caseFile')"
+                      @change="(file) => handleCaseFileUpload(file)" click:clear="handleRemoveFile"
+                      :error-messages="errors['file']">
                     </v-file-input>
                   </v-col>
                   <v-col cols="12">
@@ -179,7 +179,7 @@
                 </v-col>
                 <v-col cols="12">
                   <v-select :items="departments" :label="$t('tables.department')" :item-text="(item) => item.name"
-                    :item-value="(item) => item.id" :disabled="caseModel !== 'entry'" dense outlined
+                    :item-value="(item) => item.id" dense outlined
                     v-model="sidesInfo.department_id">
                   </v-select>
                 </v-col>
@@ -355,6 +355,7 @@ export default {
       caseDate: "",
       caseModel: "",
       branch_id: "",
+      caseFile: null,
       specialization_id: "",
       organization_id: "",
       caseModels: [
@@ -685,6 +686,17 @@ export default {
         };
       }
     },
+    handleCaseFileUpload(file) {
+      if (file) {
+        const fileName = file.name.split(".")[0];
+        const fileExtension = file.name.split(".")[1];
+        // input["file_name"] = fileName + "." + fileExtension;
+        this.caseFile = file;
+      }
+    },
+    handleRemoveFile() {
+      this.caseFile = null;
+    },
     getInputLabel(input) {
       const inputLabel = input.label;
       const isRequired = input.required;
@@ -734,6 +746,7 @@ export default {
             case_type: this.caseModel,
             specialization_id: this.specialization_id,
             organization_id: this.organization_id,
+            file: this.caseFile,
           });
         } else {
           result = await this.updatePages({
@@ -743,6 +756,10 @@ export default {
             branch_id: this.branch_id,
             formId: this.formRequestId,
             type: "case",
+            case_type: this.caseModel,
+            specialization_id: this.specialization_id,
+            organization_id: this.organization_id,
+            file: this.caseFile,
           });
         }
 

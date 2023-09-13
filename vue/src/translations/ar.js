@@ -529,6 +529,7 @@ export default {
     formTypes: "نماذج القضايا",
     deleteRequest: "حذف الطلب",
     deleteCase: "حذف القضية",
+    caseFile: "لائحة الدعوة",
   },
 
   departments: {
