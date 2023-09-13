@@ -10,6 +10,7 @@ export default {
     contact: "اتصل بنا",
     tos: "شروط الخدمة",
     policy: "سياسة الخصوصية",
+    close: "غلق",
   },
   board: {
     titlePlaceholder: "أدخل عنوانًا لهذه البطاقة",
