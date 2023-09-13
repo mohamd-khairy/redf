@@ -360,7 +360,9 @@ class FormRequestService
                     msg: 'تم استلام الحكم',
                 );
 
-                $this->add_reminder($formRequestInfo);
+                if ($formRequestInfo->status != 'THIRD_RULE') {
+                    $this->add_reminder($formRequestInfo);
+                }
             }
 
             DB::commit();
