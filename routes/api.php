@@ -1,28 +1,27 @@
 <?php
 
+use App\Http\Controllers\API\StageController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\api\LogController;
+use App\Http\Controllers\API\LogController;
 use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\API\HomeController;
 use App\Http\Controllers\API\RoleController;
 use App\Http\Controllers\Api\TaskController;
 use App\Http\Controllers\API\UserController;
 use App\Http\Controllers\API\FormsController;
-use App\Http\Controllers\Api\BranchController;
+use App\Http\Controllers\API\BranchController;
 use App\Http\Controllers\API\SettingController;
-use App\Http\Controllers\Api\CalenderController;
-use App\Http\Controllers\api\DocumentController;
-use App\Http\Controllers\Api\TemplateController;
-use App\Http\Controllers\Api\DepartmentController;
+use App\Http\Controllers\API\CalenderController;
+use App\Http\Controllers\API\DocumentController;
+use App\Http\Controllers\API\TemplateController;
+use App\Http\Controllers\API\DepartmentController;
 use App\Http\Controllers\API\PermissionController;
 use App\Http\Controllers\API\FormRequestController;
-use App\Http\Controllers\Api\FormSessionController;
+use App\Http\Controllers\API\FormSessionController;
 use App\Http\Controllers\API\NotificationController;
-use App\Http\Controllers\Api\OrganizationController;
+use App\Http\Controllers\API\OrganizationController;
 use App\Http\Controllers\API\VerificationController;
-use App\Http\Controllers\Api\SpecializationController;
-use App\Http\Controllers\Api\FormRequestSideController;
-use App\Http\Controllers\API\RelatedFormRequestController;
+use App\Http\Controllers\API\SpecializationController;
 
 Route::group(['prefix' => 'v1'], function () {
 
@@ -177,5 +176,12 @@ Route::group(['prefix' => 'v1'], function () {
         Route::get('retrieve-claimant', [FormRequestController::class, 'retrieveClaimant']);
         Route::post('change-status', [FormRequestController::class, 'changeStatus']);
         Route::get('get-file/{id}', [FormRequestController::class, 'getFile']);
+    });
+
+    /*********************StageController***************** */
+    Route::group(['middleware' => 'auth:sanctum'], function () {
+        Route::apiResource('stages', StageController::class);
+        Route::get('get-all', [StageController::class, 'allStages']);
+        Route::post('store-form-stages', [StageController::class, 'storeFormStages']);
     });
 });
