@@ -40,8 +40,17 @@
           </v-menu>
         </v-col>
         <v-col cols="6" class="d-flex text-right align-center">
-          <v-text-field v-model="searchQuery" append-icon="mdi-magnify" class="flex-grow-1 mr-md-2" solo hide-details
-            dense clearable :placeholder="$t('general.search')" @keyup.enter="search(searchQuery)"></v-text-field>
+          <v-text-field
+            v-model="searchQuery"
+            append-icon="mdi-magnify"
+            class="flex-grow-1 mr-md-2"
+            solo
+            hide-details
+            dense
+            clearable
+            :placeholder="$t('general.search')"
+            @keyup.enter="search(searchQuery)"
+          ></v-text-field>
 
           <!--          <v-tooltip top>-->
           <!--            <template v-slot:activator="{ on, attrs }">-->
@@ -69,157 +78,85 @@
           <!--          >-->
           <!--            {{ buttonName }}-->
           <!--          </v-btn>-->
-          <v-btn :loading="isLoading" icon @click.prevent="open()" small class="ml-2">
+          <v-btn
+            :loading="isLoading"
+            icon
+            @click.prevent="open()"
+            small
+            class="ml-2"
+          >
             <v-icon>mdi-refresh</v-icon>
           </v-btn>
         </v-col>
       </v-row>
-      <v-data-table show-select v-model="selected" :headers="headers" :items="items" :options.sync="options" :show-select="false"
-        class="flex-grow-1 dt-custom-row-cursor" :loading="isLoading" :page="page" :pageCount="numberOfPages" :server-items-length="total"
-        @click:row="handleClick">
-        <!-- <template v-slot:item.id="{ item }">
-          <div class="font-weight-bold">
-            # <copy-label :text="item.id + ''" />
-          </div>
-        </template> -->
-
-        <template v-slot:item.name="{ item }">
-          <div>{{ item.name ?? "---" }}</div>
-        </template>
-        <template v-slot:item.form_request_number="{ item }">
-          <div class="font-weight-bold">
-            {{ item.form_request_number }}
-          </div>
-          <!-- <div>{{ item.form_request_number ?? "---" }}</div> -->
-        </template>
-
-        <template v-slot:item.caseName="{ item }">
-          <div>{{ item?.case?.item?.name ?? "---" }}</div>
-        </template>
-
-        <template v-slot:item.assigner="{ item }">
-          <div>
-            {{ item.form_assigned_requests[0]?.user.name ?? "---" }}
-          </div>
-        </template>
-
-        <template v-slot:item.status="{ item }">
-          <v-chip small :color="getStatusColor(item?.status?.toLowerCase())" text-color="white">
-            {{ item?.status ? item.display_status : "---" }}
-            <!-- {{ item.status ? $t(`general.${item.status} `) : "" }} -->
-          </v-chip>
-        </template>
-
-        <template v-slot:item.created_at="{ item }">
-          <div>{{ item.created_at | formatDate("lll") }}</div>
-        </template>
-
-        <template v-slot:item.action="{ item }">
-          <div class="actions">
-            <!-- add action button -->
-            <!--            <v-tooltip top>-->
-            <!--              <template v-slot:activator="{ on, attrs }">-->
-            <!--                <v-btn-->
-            <!--                  color="primary"-->
-            <!--                  icon-->
-            <!--                  elevation="0"-->
-            <!--                  v-bind="attrs"-->
-            <!--                  v-on="on"-->
-            <!--                  @click="openActionDialog(item)"-->
-            <!--                >-->
-            <!--                  <v-icon>mdi-plus-circle-outline</v-icon>-->
-            <!--                </v-btn>-->
-            <!--              </template>-->
-            <!--              <span>{{ $t("cases.add_action") }}</span>-->
-            <!--            </v-tooltip>-->
-
-            <!-- view case timeline button -->
-            <!-- <v-tooltip top>
-              <template v-slot:activator="{ on, attrs }">
-                <v-btn color="primary" icon elevation="0" v-bind="attrs" v-on="on"
-                  @click.prevent.stop="openCasePreviewDialog(item.id)">
-                  <v-icon>mdi-timeline-text-outline</v-icon>
-                </v-btn>
-              </template>
-              <span>{{ $t("cases.request_view_timeline") }}</span>
-            </v-tooltip> -->
-            <!-- view case info button -->
-            <!-- <v-tooltip top>
-              <template v-slot:activator="{ on, attrs }">
-                <v-btn color="primary" icon elevation="0" v-bind="attrs" v-on="on" @click="openCaseInfoDialog(item.id)">
-                  <v-icon>mdi-eye-outline</v-icon>
-                </v-btn>
-              </template>
-              <span>{{ $t("cases.view_info") }}</span>
-            </v-tooltip> -->
-
-            <!-- assign user button -->
-            <v-tooltip top v-if="!item.form_assigned_requests[0]">
-              <template v-slot:activator="{ on, attrs }">
-                <v-btn color="primary" icon elevation="0" v-bind="attrs" v-on="on" @click.prevent.stop="openAssignDialog(item.id)">
-                  <v-icon>mdi-at</v-icon>
-                </v-btn>
-              </template>
-              <span>{{ $t("cases.assign_user") }}</span>
-            </v-tooltip>
-
-            <!-- edit case button -->
-<!--            <v-tooltip top>-->
-<!--              <template v-slot:activator="{ on, attrs }">-->
-<!--                <v-btn color="primary" icon elevation="0" v-bind="attrs" v-on="on"-->
-<!--                  :to="`/cases/${currentPageId}/request-review/edit/${item.id}`" v-can="'update-user'">-->
-<!--                  <v-icon>mdi-pencil-outline</v-icon>-->
-<!--                </v-btn>-->
-<!--              </template>-->
-<!--              <span>{{ $t("cases.editCase") }}</span>-->
-<!--            </v-tooltip>-->
-
-            <!-- delete case button -->
-            <v-tooltip top>
-              <template v-slot:activator="{ on, attrs }">
-                <v-btn color="error" icon elevation="0" v-bind="attrs" v-on="on" @click.prevent.stop="deleteItem(item.id)"
-                  v-can="'delete-user'">
-                  <v-icon>mdi-close</v-icon>
-                </v-btn>
-              </template>
-              <span>{{ $t("cases.deleteRequest") }}</span>
-            </v-tooltip>
-
-            <!-- <v-btn
-              color="error"
-              icon
-              @click.prevent="deleteItem(item.id)"
-              v-can="'delete-user'"
-            >
-              <v-icon>mdi-close</v-icon>
-            </v-btn> -->
-          </div>
-        </template>
-        <template v-slot:no-data>
-          <div class="text-center my-2 primary--text" color="primary">
-            <emptyDataSvg></emptyDataSvg>
-            <div class="dt-no_data">
-              {{ $t("general.no_data_available") }}
-            </div>
-          </div>
-        </template>
-      </v-data-table>
-      <CasePreviewDialog :dialogVisible="casePrevDialog" :case-id="formId" v-if="casePrevDialog"
-        @closePrevDialog="casePrevDialog = false" />
-      <CaseInfoDialog :dialogVisible="caseInfoDialog" :case-id="formId" v-if="caseInfoDialog"
-        @closeInfoDialog="caseInfoDialog = false" />
-      <AddAction :dialogVisible="addActionDialog" :formRequestId="formId"
-        :lastAction="selectedForm.last_form_request_information || null" v-if="addActionDialog && currentPageId == 1"
-        @close-action-dialog="closeActionDialog" />
-      <AddDynamicAction :dialogVisible="addDynamicActionDialog" :formRequestId="formId"
+      <div
+        class="min-h-screen d-flex overflow-x-scroll py-4 px-4 kanban-scroll-container"
+        ref="scrollContainer"
+      >
+        <div
+          v-for="(column, i) in columns"
+          :key="column.title"
+          class="bg-gray-100 px-3 py-3 column-width stage-cont"
+          :class="i > 0 ? 'mr-4' : ''"
+        >
+          <p class="stage-title">
+            {{ column.title }}
+          </p>
+          <!-- Draggable component comes from vuedraggable. It provides drag & drop functionality -->
+          <draggable
+            :list="column.tasks"
+            :animation="200"
+            ghost-class="ghost-card"
+            group="tasks"
+            :scroll-sensitivity="500"
+            :force-fallback="true"
+            @start="onDragStart"
+            @end="onDragEnd"
+          >
+            <!-- Each element from here will be draggable and animated. Note :key is very important here to be unique both for draggable and animations to be smooth & consistent. -->
+            <task-card
+              v-for="task in column.tasks"
+              :key="task.id"
+              :task="task"
+              class="mt-3 cursor-move"
+            ></task-card>
+            <!-- </transition-group> -->
+          </draggable>
+        </div>
+      </div>
+      <CasePreviewDialog
+        :dialogVisible="casePrevDialog"
+        :case-id="formId"
+        v-if="casePrevDialog"
+        @closePrevDialog="casePrevDialog = false"
+      />
+      <CaseInfoDialog
+        :dialogVisible="caseInfoDialog"
+        :case-id="formId"
+        v-if="caseInfoDialog"
+        @closeInfoDialog="caseInfoDialog = false"
+      />
+      <AddAction
+        :dialogVisible="addActionDialog"
+        :formRequestId="formId"
         :lastAction="selectedForm.last_form_request_information || null"
-        v-else-if="addDynamicActionDialog && currentPageId != 1" @close-action-dialog="closeDynamicActionDialog" />
+        v-if="addActionDialog && currentPageId == 1"
+        @close-action-dialog="closeActionDialog"
+      />
+      <AddDynamicAction
+        :dialogVisible="addDynamicActionDialog"
+        :formRequestId="formId"
+        :lastAction="selectedForm.last_form_request_information || null"
+        v-else-if="addDynamicActionDialog && currentPageId != 1"
+        @close-action-dialog="closeDynamicActionDialog"
+      />
       <assign @userAssigned="userAssigned" v-model="dialog" :id="formId" />
     </v-card>
   </div>
 </template>
 
 <script>
+import draggable from "vuedraggable";
 import CopyLabel from "../../components/common/CopyLabel";
 import { mapActions, mapState } from "vuex";
 import { ask, makeToast } from "@/helpers";
@@ -229,6 +166,7 @@ import CaseInfoDialog from "../../components/cases/CaseInfoDialog.vue";
 import Assign from "../../components/cases/Assign";
 import AddAction from "../../components/cases/AddAction.vue";
 import AddDynamicAction from "@/components/cases/AddDynamicAction";
+import TaskCard from "./TaskCard.vue";
 
 export default {
   name: "RequestReview",
@@ -240,10 +178,13 @@ export default {
     emptyDataSvg,
     AddAction,
     AddDynamicAction,
+    draggable,
+    TaskCard,
   },
   data() {
     return {
       currentPageId: null,
+      isDragging: false,
       page: 1,
       total: 0,
       numberOfPages: 0,
@@ -272,10 +213,269 @@ export default {
       addActionDialog: false,
       addDynamicActionDialog: false,
       selectedForm: null,
+
+      columns: [
+        {
+          title: "Backlog 1",
+          tasks: [
+            {
+              id: 1,
+              title: "Add discount code to checkout page",
+              date: "Sep 14",
+              type: "Feature Request",
+              users: [
+                {
+                  name: "Moaz Gamal",
+                  img: "/images/avatars/avatar1.svg",
+                },
+                {
+                  name: "Mostafa Gamal",
+                  img: "/images/avatars/avatar1.svg",
+                },
+                {
+                  name: "Mohamed Khairy",
+                  img: "/images/avatars/avatar1.svg",
+                },
+                {
+                  name: "Mohamed Khairy",
+                  img: "/images/avatars/avatar1.svg",
+                },
+              ],
+            },
+            {
+              id: 2,
+              title: "Provide documentation on integrations",
+              date: "Sep 12",
+              users: [
+                {
+                  name: "Mostafa Gamal",
+                  img: "/images/avatars/avatar1.svg",
+                },
+
+                {
+                  name: "Mohamed Khairy",
+                  img: "/images/avatars/avatar1.svg",
+                },
+              ],
+            },
+            {
+              id: 3,
+              title: "Design shopping cart dropdown",
+              date: "Sep 9",
+              type: "Design",
+              users: [
+                {
+                  name: "Mostafa Gamal",
+                  img: "/images/avatars/avatar1.svg",
+                },
+                {
+                  name: "Moaz Gamal",
+                  img: "/images/avatars/avatar1.svg",
+                },
+
+                {
+                  name: "Mohamed Khairy",
+                  img: "/images/avatars/avatar1.svg",
+                },
+              ],
+            },
+            {
+              id: 4,
+              title: "Add discount code to checkout page",
+              date: "Sep 14",
+              type: "Feature Request",
+              users: [
+                {
+                  name: "Mostafa Gamal",
+                  img: "/images/avatars/avatar1.svg",
+                },
+                {
+                  name: "Moaz Gamal",
+                  img: "/images/avatars/avatar1.svg",
+                },
+
+                {
+                  name: "Mohamed Khairy",
+                  img: "/images/avatars/avatar1.svg",
+                },
+              ],
+            },
+            {
+              id: 5,
+              title: "Test checkout flow",
+              date: "Sep 15",
+              type: "QA",
+              users: [
+                {
+                  name: "Mostafa Gamal",
+                  img: "/images/avatars/avatar1.svg",
+                },
+                {
+                  name: "Moaz Gamal",
+                  img: "/images/avatars/avatar1.svg",
+                },
+
+                {
+                  name: "Mohamed Khairy",
+                  img: "/images/avatars/avatar1.svg",
+                },
+              ],
+            },
+          ],
+        },
+        {
+          title: "Backlog 2",
+          tasks: [
+            {
+              id: 1,
+              title: "Add discount code to checkout page",
+              date: "Sep 14",
+              type: "Feature Request",
+            },
+            {
+              id: 2,
+              title: "Provide documentation on integrations",
+              date: "Sep 12",
+            },
+            {
+              id: 3,
+              title: "Design shopping cart dropdown",
+              date: "Sep 9",
+              type: "Design",
+            },
+            {
+              id: 4,
+              title: "Add discount code to checkout page",
+              date: "Sep 14",
+              type: "Feature Request",
+            },
+            {
+              id: 5,
+              title: "Test checkout flow",
+              date: "Sep 15",
+              type: "QA",
+            },
+          ],
+        },
+        {
+          title: "Backlog 3",
+          tasks: [
+            {
+              id: 1,
+              title: "Add discount code to checkout page",
+              date: "Sep 14",
+              type: "Feature Request",
+            },
+            {
+              id: 2,
+              title: "Provide documentation on integrations",
+              date: "Sep 12",
+            },
+            {
+              id: 3,
+              title: "Design shopping cart dropdown",
+              date: "Sep 9",
+              type: "Design",
+            },
+            {
+              id: 4,
+              title: "Add discount code to checkout page",
+              date: "Sep 14",
+              type: "Feature Request",
+            },
+            {
+              id: 5,
+              title: "Test checkout flow",
+              date: "Sep 15",
+              type: "QA",
+            },
+          ],
+        },
+        {
+          title: "In Progress",
+          tasks: [
+            {
+              id: 6,
+              title: "Design shopping cart dropdown",
+              date: "Sep 9",
+              type: "Design",
+            },
+            {
+              id: 7,
+              title: "Add discount code to checkout page",
+              date: "Sep 14",
+              type: "Feature Request",
+            },
+            {
+              id: 8,
+              title: "Provide documentation on integrations",
+              date: "Sep 12",
+              type: "Backend",
+            },
+          ],
+        },
+        {
+          title: "Review",
+          tasks: [
+            {
+              id: 9,
+              title: "Provide documentation on integrations",
+              date: "Sep 12",
+            },
+            {
+              id: 10,
+              title: "Design shopping cart dropdown",
+              date: "Sep 9",
+              type: "Design",
+            },
+            {
+              id: 11,
+              title: "Add discount code to checkout page",
+              date: "Sep 14",
+              type: "Feature Request",
+            },
+            {
+              id: 12,
+              title: "Design shopping cart dropdown",
+              date: "Sep 9",
+              type: "Design",
+            },
+            {
+              id: 13,
+              title: "Add discount code to checkout page",
+              date: "Sep 14",
+              type: "Feature Request",
+            },
+          ],
+        },
+        {
+          title: "Done",
+          tasks: [
+            {
+              id: 14,
+              title: "Add discount code to checkout page",
+              date: "Sep 14",
+              type: "Feature Request",
+            },
+            {
+              id: 15,
+              title: "Design shopping cart dropdown",
+              date: "Sep 9",
+              type: "Design",
+            },
+            {
+              id: 16,
+              title: "Add discount code to checkout page",
+              date: "Sep 14",
+              type: "Feature Request",
+            },
+          ],
+        },
+      ],
     };
   },
   watch: {
-    selected(val) { },
+    selected(val) {},
     options: {
       handler() {
         this.open();
@@ -324,13 +524,55 @@ export default {
   },
   mounted() {
     // this.open()
+    const scrollContainer = this.$refs.scrollContainer;
+
+    if (scrollContainer) {
+      scrollContainer.addEventListener("mousemove", (e) => {
+        if (this.isDragging) {
+          const scrollThreshold = 50; // Adjust this value as needed
+          const { clientX } = e;
+          const containerWidth = scrollContainer.clientWidth;
+
+          if (clientX < scrollThreshold) {
+            this.scrollHorizontally("left");
+          } else if (clientX > containerWidth - scrollThreshold) {
+            this.scrollHorizontally("right");
+          }
+        }
+      });
+    }
   },
   methods: {
     ...mapActions("cases", ["getFormRequests", "deleteForm", "deleteAll"]),
     ...mapActions("app", ["setBreadCrumb"]),
-    search() { },
+    search() {},
+    onDragStart() {
+      this.isDragging = true;
+    },
+    onDragEnd() {
+      this.isDragging = false;
+    },
+    scrollHorizontally(direction) {
+      const scrollContainer = this.$refs.scrollContainer;
+      const scrollAmount = 10; // Adjust this value as needed
+      const containerWidth = scrollContainer.clientWidth;
+      const scrollLeft = scrollContainer.scrollLeft;
+      const maxScrollLeft = scrollContainer.scrollWidth - containerWidth;
+
+      if (scrollContainer) {
+        console.log("aaaaaaaaa", direction === "left" && scrollLeft > 0);
+        console.log(scrollLeft);
+        if (direction === "left") {
+          scrollContainer.scrollLeft -= scrollAmount;
+        } else if (direction === "right") {
+          scrollContainer.scrollLeft += scrollAmount;
+        }
+      }
+    },
     handleClick(event) {
-      this.$router.push(`/cases/${this.currentPageId}/request-review/edit/${event.id}`)
+      this.$router.push(
+        `/cases/${this.currentPageId}/request-review/edit/${event.id}`
+      );
     },
     setCurrentBread() {
       const currentPage = this.navTemplates.find((nav) => {
@@ -350,7 +592,7 @@ export default {
       }
       this.setBreadCrumb({
         breadcrumbs: this.breadcrumbs,
-        pageTitle: 'الطلبات',
+        pageTitle: "الطلبات",
       });
     },
     userAssigned() {
@@ -486,5 +728,53 @@ export default {
 .slide-fade-leave-to {
   transform: translateX(10px);
   opacity: 0;
+}
+</style>
+<style scoped>
+.column-width {
+  min-width: 328px;
+  width: 328px;
+  min-height: 200px;
+}
+/* Unfortunately @apply cannot be setup in codesandbox,
+but you'd use "@apply border opacity-50 border-blue-500 bg-gray-200" here */
+.ghost-card {
+  opacity: 0.5;
+  background: #f7fafc;
+  border: 1px solid #4299e1;
+}
+.overflow-x-scroll {
+  overflow-x: auto;
+}
+.kanban-scroll-container {
+}
+</style>
+<style>
+.stage-cont {
+  border: 1px solid #eaecf0;
+  border-radius: 8px;
+  background: #f9f9fb;
+}
+.stage-title {
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 21px;
+  letter-spacing: -0.02em;
+  text-align: right;
+}
+.stage {
+  border: 1px solid #fff;
+  border-radius: 4px;
+  padding: 20px;
+}
+.stage:hover {
+  border: 1px dashed #ccc;
+}
+.case-title {
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 24px;
+  letter-spacing: -0.02em;
+  text-align: right;
 }
 </style>

@@ -2059,6 +2059,11 @@
     "ip" "^2.0.0"
     "smart-buffer" "^4.2.0"
 
+"sortablejs@1.10.2":
+  "integrity" "sha512-YkPGufevysvfwn5rfdlGyrGjt7/CRHwvRPogD/lC+TnvcN29jDpCifKP+rBqf+LRldfXSTh+0CGLcSg0VIxq3A=="
+  "resolved" "https://registry.npmjs.org/sortablejs/-/sortablejs-1.10.2.tgz"
+  "version" "1.10.2"
+
 "source-map-js@^1.0.2", "source-map-js@>=0.6.2 <2.0.0":
   "integrity" "sha512-R0XvVJ9WusLiqTCEiGCmICCMplcCkIwwR11mOSD9CR5u+IXYdiseeEuXCVAjS54zqwkLcPNnmU4OeJ6tUrWhDw=="
   "resolved" "https://registry.npmjs.org/source-map-js/-/source-map-js-1.0.2.tgz"
@@ -2248,6 +2253,13 @@
   "integrity" "sha512-KIegcN+Ntwg3cbkY/jhw2s/+XJUM0Lpi/LcKFYCS8PrZHcWBl2iKCVze7ZCnRj3w8H7/lUJ9v7rj9KQiNxApBw=="
   "resolved" "https://registry.npmjs.org/vue-multiselect/-/vue-multiselect-2.1.7.tgz"
   "version" "2.1.7"
+
+"vuedraggable@^2.24.3":
+  "integrity" "sha512-6/HDXi92GzB+Hcs9fC6PAAozK1RLt1ewPTLjK0anTYguXLAeySDmcnqE8IC0xa7shvSzRjQXq3/+dsZ7ETGF3g=="
+  "resolved" "https://registry.npmjs.org/vuedraggable/-/vuedraggable-2.24.3.tgz"
+  "version" "2.24.3"
+  dependencies:
+    "sortablejs" "1.10.2"
 
 "walk-up-path@^3.0.1":
   "version" "3.0.1"
