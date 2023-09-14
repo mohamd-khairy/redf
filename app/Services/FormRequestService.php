@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\DB;
 use App\Enums\FormAssignRequestType;
 use App\Enums\StatusEnum;
 use App\Http\Requests\PageRequest;
+use App\Models\Application;
 use Illuminate\Support\Facades\Auth;
 use App\Models\FormRequestInformation;
 use App\Models\Reminder;
@@ -60,6 +61,9 @@ class FormRequestService
                 ]);
 
                 if ($requestData['type'] == 'related_case') {
+
+                    $this->add_application($formRequest);
+
 
                     $this->remove_reminder((object)['form_request_id' => $formRequest->id]);
 
@@ -408,5 +412,14 @@ class FormRequestService
         return Reminder::where([
             'form_request_id' => $formRequestInfo->form_request_id,
         ])->delete();
+    }
+
+    public function add_application($formRequest)
+    {
+        return Application::firstOrCreate([
+            'form_request_id' => $formRequest->id
+        ], [
+            'stage_id' => 1
+        ]);
     }
 }
