@@ -3,12 +3,9 @@
 namespace App\Http\Controllers\API;
 
 use App\Enums\FormEnum;
-use Throwable;
-use App\Models\Form;
 use App\Models\User;
 use App\Models\FormRequest;
 use Illuminate\Http\Request;
-use App\Rules\StatusEnumRule;
 use App\Models\FormRequestSide;
 use App\Enums\FormRequestStatus;
 use App\Enums\StatusEnum;
@@ -17,16 +14,12 @@ use App\Http\Requests\PageRequest;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use App\Services\FormRequestService;
-use Illuminate\Validation\Rules\Enum;
 use App\Http\Requests\FormFillRequest;
 use App\Http\Requests\InformationRequest;
 use App\Http\Requests\UpdateFormFillRequest;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Resources\FormRequestResource;
 use App\Models\File;
-use Illuminate\Support\Facades\File as FacadesFile;
-use Illuminate\Support\Facades\Response;
-use Illuminate\Support\Facades\Storage;
 
 class FormRequestController extends Controller
 {
@@ -92,7 +85,8 @@ class FormRequestController extends Controller
                 'lastFormRequestInformation',
                 'request',
                 'case',
-                'branche'
+                'branche',
+                'formAssignedRequests'
             )->find($id);
 
             return responseSuccess(new FormRequestResource($formfill), 'Form requests retrieved successfully');

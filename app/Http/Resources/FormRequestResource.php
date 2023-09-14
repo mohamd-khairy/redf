@@ -41,6 +41,7 @@ class FormRequestResource extends JsonResource
             'organization_id' => $this->organization_id,
             'organization' => $this->organization,
             'case' => $this->case,
+            'formAssignedRequests' => $this->formAssignedRequests
         ];
     }
 }

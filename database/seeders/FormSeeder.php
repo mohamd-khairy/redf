@@ -59,7 +59,7 @@ class FormSeeder extends Seeder
         ]);
         // pages
         $form_page1 = FormPage::create([
-            'title' => ' طلب قضية',
+            'title' => 'طلب قضية',
             'form_id' => $form1->id
         ]);
         $form_page2 = FormPage::create([

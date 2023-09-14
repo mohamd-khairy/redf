@@ -2,15 +2,15 @@
   <div v-if="formData">
     <v-stepper v-model="e1" class="mb-4">
       <v-stepper-header>
-        <v-stepper-step :complete="e1 > 1" step="1">
+        <v-stepper-step :complete="e1 > 1" step="1" editable>
           {{ $t("general.info") + " " + selectedTitle }}
         </v-stepper-step>
         <v-divider></v-divider>
-        <v-stepper-step :complete="e1 > 2" step="2">
+        <v-stepper-step :complete="e1 > 2" step="2" editable>
           {{ $t("cases.sidesInfo") }}
         </v-stepper-step>
         <v-divider></v-divider>
-        <v-stepper-step step="3">
+        <v-stepper-step step="3" editable>
           {{ $t("cases.caseActions") }}
         </v-stepper-step>
       </v-stepper-header>
@@ -392,7 +392,6 @@
                       :item-text="(item) => item.name"
                       :item-value="(item) => item.id"
                       hide-details
-                      :disabled="caseModel !== 'entry'"
                       dense
                       outlined
                       v-model="sidesInfo.department_id"

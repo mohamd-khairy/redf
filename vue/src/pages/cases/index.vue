@@ -6,7 +6,7 @@
         <v-breadcrumbs :items="breadcrumbs" class="pa-0 py-2"></v-breadcrumbs>
       </div>
     </div> -->
-    <v-card>
+    <v-card class="mb-60">
       <!-- cases list -->
       <v-row dense class="pa-2 align-center">
         <v-col cols="6">

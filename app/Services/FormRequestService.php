@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\DB;
 use App\Enums\FormAssignRequestType;
 use App\Enums\StatusEnum;
 use App\Http\Requests\PageRequest;
+use App\Models\Application;
 use Illuminate\Support\Facades\Auth;
 use App\Models\FormRequestInformation;
 use App\Models\Reminder;
@@ -53,7 +54,7 @@ class FormRequestService
             if ($requestData->case_id) {
 
                 // Create a new Formable record
-                Formable::create([
+                Formable::firstOrCreate([
                     'formable_id' => $formRequest->id,
                     'form_request_id' => $requestData->case_id,
                     'formable_type' => FormRequest::class,
@@ -61,19 +62,23 @@ class FormRequestService
 
                 if ($requestData['type'] == 'related_case') {
 
+                    $this->add_application($formRequest);
+
+
                     $this->remove_reminder((object)['form_request_id' => $formRequest->id]);
 
                     /*********** add Notifications ********* */
                     sendMsgFormat(Auth::id(), $formRequest->name . ' تم اضافه طلب', ' تم إضافة طلب ( ' . $formRequest->name . ' ) ');
-                }
+                } else {
 
-                /*********** add action ********* */
-                saveFormRequestAction(
-                    form_request_id: $requestData->case_id,
-                    formable_id: $formRequest->id,
-                    formable_type: FormRequest::class,
-                    msg: ' تم اضافه ' . $formRequest->name
-                );
+                    /*********** add action ********* */
+                    saveFormRequestAction(
+                        form_request_id: $requestData->case_id,
+                        formable_id: $formRequest->id,
+                        formable_type: FormRequest::class,
+                        msg: ' تم اضافه ' . $formRequest->name
+                    );
+                }
             } else {
                 /*********** add Notifications ********* */
                 sendMsgFormat(Auth::id(), $formRequest->name . ' تم اضافه قضية', ' تم إضافة قضية ( ' . $formRequest->name . ' ) ');
@@ -113,7 +118,7 @@ class FormRequestService
             // save related tables if get case_id
             if ($requestData->case_id) {
                 // Update Formable record
-                Formable::create(
+                Formable::firstOrCreate(
                     [
                         'form_request_id' => $requestData->case_id,
                         'formable_id' => $formRequest->id,
@@ -215,16 +220,16 @@ class FormRequestService
                 'lastFormRequestAction'
             );
 
+            $query = $query->where('form_type', request('form_type', 'case'));
+
             if ($request->has('template_id')) {
                 $query = $query->whereHas('form', fn ($q) => $q->where('template_id', $request->input('template_id')));
             }
 
-            $query = $query->where('form_type', request('form_type', 'case'));
-
-
             $data = app(Pipeline::class)->send($query)->through([SortFilters::class])->thenReturn();
 
             $pageSize = $request->input('pageSize', 15);
+
             $data = $pageSize == -1 ?  $data->get() : $data->paginate($pageSize);
 
             return $data;
@@ -359,7 +364,9 @@ class FormRequestService
                     msg: 'تم استلام الحكم',
                 );
 
-                $this->add_reminder($formRequestInfo);
+                if ($formRequestInfo->status != 'THIRD_RULE') {
+                    $this->add_reminder($formRequestInfo);
+                }
             }
 
             DB::commit();
@@ -373,21 +380,46 @@ class FormRequestService
 
     public function add_reminder($formRequestInfo)
     {
-        return Reminder::updateOrCreate([
+        $start_date = date('Y-m-d', strtotime($formRequestInfo->date_of_receipt));
+        $end_date = date('Y-m-d', strtotime($formRequestInfo->date_of_receipt . "+ 30 day"));
+        $color =  "#" . dechex(rand(0x000000, 0xFFFFFF));
+
+        Reminder::updateOrCreate([
             'form_request_id' => $formRequestInfo->form_request_id,
-            'form_request_information_id' => $formRequestInfo->id
+            'form_request_information_id' => $formRequestInfo->id,
+            'name' => "تم استلام الحكم",
         ], [
-            'name' => "تم استلام الحكم وهناك 30 يوم ثم سيتحول الحكم الي نهائي",
-            'color' => "#" . dechex(rand(0x000000, 0xFFFFFF)),
-            'start_date' => date('Y-m-d', strtotime($formRequestInfo->date_of_receipt)),
-            'end_date' => date('Y-m-d', strtotime($formRequestInfo->date_of_receipt . "+ 30 day"))
+            'color' => $color,
+            'start_date' => $start_date,
+            'end_date' => $start_date
         ]);
+
+        Reminder::updateOrCreate([
+            'form_request_id' => $formRequestInfo->form_request_id,
+            'form_request_information_id' => $formRequestInfo->id,
+            'name' => "نهاية الاعتراض عالحكم",
+        ], [
+            'color' => $color,
+            'start_date' => $end_date,
+            'end_date' => $end_date
+        ]);
+
+        return true;
     }
 
     public function remove_reminder($formRequestInfo)
     {
-        return  Reminder::where([
+        return Reminder::where([
             'form_request_id' => $formRequestInfo->form_request_id,
         ])->delete();
+    }
+
+    public function add_application($formRequest)
+    {
+        return Application::firstOrCreate([
+            'form_request_id' => $formRequest->id
+        ], [
+            'stage_id' => 1
+        ]);
     }
 }

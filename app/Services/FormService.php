@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Services;
 
 use App\Models\Form;
@@ -27,14 +28,12 @@ class FormService
         if (!$form) {
             return responseFail('there is no form with this id');
         }
-        $data = $this->update($request, $form);
+        $data = $this->updateData($request, $form);
         return $form;
     }
 
-    public function update($request, $form)
+    public function updateData($request, $form)
     {
-
-        $form->update($request->all() + ['user_id' => Auth::id()]);
         // Delete old form pages and their items
         $form->pages()->each(function ($page) {
             $page->items()->delete();
@@ -47,8 +46,8 @@ class FormService
             // $page = new FormPage(['title' => $pageData['title']['title'], 'editable' =>  $pageData['title']['editing'] == false ? 0 : 1]);
             // $form->pages()->save($page);
 
-            $page = FormPage::updateOrCreate(['title' => $pageData['title']['title'], 'editable' =>  $pageData['title']['editing'] == false ? 0 : 1]);
-            
+            $page = FormPage::updateOrCreate(['form_id' => $form->id, 'title' => trim($pageData['title']['title'])]);
+
             if (isset($pageData['items']) && is_array($pageData['items'])) {
                 foreach ($pageData['items'] as $itemData) {
                     if (!isset($itemData['removed']) || !$itemData['removed']) {
@@ -61,7 +60,8 @@ class FormService
         return $form->refresh();
     }
 
-    public function updateFormBasic($id , $request){
+    public function updateFormBasic($id, $request)
+    {
         $form = Form::find($id);
         if (!$form) {
             return responseFail('there is no form with this id');
@@ -69,4 +69,4 @@ class FormService
         $data = $form->update($request->only('name', 'description'));
         return $form;
     }
- }
+}

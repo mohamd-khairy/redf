@@ -48,7 +48,7 @@
                   v-if="caseId"
                   color="primary"
                   outlined
-                  @click="openCaseInfoDialog()"
+                  @click="openCaseInfoDialog(caseId)"
                   >{{ $t("cases.view_info") }}</v-btn
                 >
               </div>
@@ -184,21 +184,21 @@
           ></iframe>
           <div v-else id="filePreview-container"></div>
 
-          <v-card-actions class="mt-2">
-            <v-btn color="primary" @click="updateCaseStatus('ACCEPT')">
-              {{ $t("general.acceptRequest") }}
-            </v-btn>
-            <v-btn color="primary" @click="updateCaseStatus('RETURN')">
-              {{ $t("general.returnRequest") }}
-            </v-btn>
-            <v-btn color="primary" @click="updateCaseStatus('REFUSE')">
-              {{ $t("general.refuseRequest") }}
-            </v-btn>
+<!--          <v-card-actions class="mt-2">-->
+<!--            <v-btn color="primary" @click="updateCaseStatus('ACCEPT')">-->
+<!--              {{ $t("general.acceptRequest") }}-->
+<!--            </v-btn>-->
+<!--            <v-btn color="primary" @click="updateCaseStatus('RETURN')">-->
+<!--              {{ $t("general.returnRequest") }}-->
+<!--            </v-btn>-->
+<!--            <v-btn color="primary" @click="updateCaseStatus('REFUSE')">-->
+<!--              {{ $t("general.refuseRequest") }}-->
+<!--            </v-btn>-->
 
-            <v-btn color="grey" @click="stepBack" class="ms-2">
-              {{ $t("general.back") }}
-            </v-btn>
-          </v-card-actions>
+<!--&lt;!&ndash;            <v-btn color="grey" @click="stepBack" class="ms-2">&ndash;&gt;-->
+<!--&lt;!&ndash;              {{ $t("general.back") }}&ndash;&gt;-->
+<!--&lt;!&ndash;            </v-btn>&ndash;&gt;-->
+<!--          </v-card-actions>-->
         </v-stepper-content>
       </v-stepper-items>
     </v-stepper>
@@ -422,6 +422,7 @@ export default {
       }
     },
     openCaseInfoDialog(id) {
+      this.getCaseTimeline(id);
       this.caseInfoDialog = true;
     },
     async getCaseTimeline(id) {
@@ -615,14 +616,14 @@ export default {
         this.showErrors = true;
         return;
       }
-      this.getCaseTimeline(this.caseId);
+      // this.getCaseTimeline(this.caseId);
       this.showErrors = false;
       this.stepOneErrors = false;
       this.e1 = 2;
     },
     async saveForm() {
       this.isSubmitingForm = true;
-      if ((await this.validateFormData()) && this.caseName && this.caseNumber) {
+      if ((await this.validateFormData()) && this.caseId) {
         let result = null;
         if (!this.formRequestId) {
           result = await this.savePages({
