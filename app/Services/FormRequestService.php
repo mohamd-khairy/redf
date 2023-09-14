@@ -376,20 +376,36 @@ class FormRequestService
 
     public function add_reminder($formRequestInfo)
     {
-        return Reminder::updateOrCreate([
+        $start_date = date('Y-m-d', strtotime($formRequestInfo->date_of_receipt));
+        $end_date = date('Y-m-d', strtotime($formRequestInfo->date_of_receipt . "+ 30 day"));
+        $color =  "#" . dechex(rand(0x000000, 0xFFFFFF));
+
+        Reminder::updateOrCreate([
             'form_request_id' => $formRequestInfo->form_request_id,
-            'form_request_information_id' => $formRequestInfo->id
+            'form_request_information_id' => $formRequestInfo->id,
+            'name' => "تم استلام الحكم",
         ], [
-            'name' => "تم استلام الحكم وهناك 30 يوم ثم سيتحول الحكم الي نهائي",
-            'color' => "#" . dechex(rand(0x000000, 0xFFFFFF)),
-            'start_date' => date('Y-m-d', strtotime($formRequestInfo->date_of_receipt)),
-            'end_date' => date('Y-m-d', strtotime($formRequestInfo->date_of_receipt . "+ 30 day"))
+            'color' => $color,
+            'start_date' => $start_date,
+            'end_date' => $start_date
         ]);
+
+        Reminder::updateOrCreate([
+            'form_request_id' => $formRequestInfo->form_request_id,
+            'form_request_information_id' => $formRequestInfo->id,
+            'name' => "نهاية الاعتراض عالحكم",
+        ], [
+            'color' => $color,
+            'start_date' => $end_date,
+            'end_date' => $end_date
+        ]);
+
+        return true;
     }
 
     public function remove_reminder($formRequestInfo)
     {
-        return  Reminder::where([
+        return Reminder::where([
             'form_request_id' => $formRequestInfo->form_request_id,
         ])->delete();
     }
