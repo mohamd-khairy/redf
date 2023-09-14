@@ -60,7 +60,7 @@ class StageSeeder extends Seeder
                     'name' => $value . '-' . $stage->key,
                     'display_name' => strtoupper($value) . ' ' . strtolower($stage->key),
                     'guard_name' => 'web',
-                    'group' => 'Stage',
+                    'group' => $stage->key,
                 ])->name;
             }
 
