@@ -8,11 +8,11 @@ use App\Models\Form;
 use App\Models\Stage;
 use App\Models\StageForm;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class StageController extends Controller
 {
     public $model = Stage::class;
-
 
     public function allStages(): \Illuminate\Http\JsonResponse
     {
@@ -23,14 +23,21 @@ class StageController extends Controller
     public function storeFormStages(Request $request)
     {
         try {
-//            $validatedData = $request->validated();
-            $stageIds = $request->ids;
-            $form = Form::find($request->form_id);
-            $form->stages()->sync($stageIds);
+            $validate = Validator::make($request->all(), [
+                'stage_ids' => 'required|array',
+                'stage_ids.*' => 'required|exists:stages,id',
+                'form_id' => 'required|exists:forms,id',
+            ]);
 
-            return responseSuccess([],'Stage Form has been successfully created');
+            if ($validate->fails()) {
+                return responseFail($validate->messages()->first());
+            }
+
+            $form = Form::find($request->form_id);
+            $form->stages()->sync($request->stage_ids);
+
+            return responseSuccess([], 'Stage Form has been successfully created');
         } catch (\Throwable $e) {
-            // If validation fails, handle the validation errors here.
             return responseFail($e->getMessage());
         }
     }

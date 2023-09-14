@@ -180,8 +180,7 @@ Route::group(['prefix' => 'v1'], function () {
 
     /*********************StageController***************** */
     Route::group(['middleware' => 'auth:sanctum'], function () {
-        Route::apiResource('stages', StageController::class);
-        Route::get('get-all', [StageController::class, 'allStages']);
+        Route::get('get-all-stages', [StageController::class, 'allStages']);
         Route::post('store-form-stages', [StageController::class, 'storeFormStages']);
     });
 });
