@@ -40,18 +40,30 @@
           </v-menu>
         </v-col>
         <v-col cols="6" class="d-flex text-right align-center">
-          <v-text-field
-            v-model="searchQuery"
-            append-icon="mdi-magnify"
-            class="flex-grow-1 mr-md-2"
-            solo
-            hide-details
+<!--          <v-text-field-->
+<!--            v-model="searchQuery"-->
+<!--            append-icon="mdi-magnify"-->
+<!--            class="flex-grow-1 mr-md-2"-->
+<!--            solo-->
+<!--            hide-details-->
+<!--            dense-->
+<!--            clearable-->
+<!--            :placeholder="$t('general.search')"-->
+<!--            @keyup.enter="search(searchQuery)"-->
+<!--          ></v-text-field>-->
+          <v-select
+            :disabled="allForms.length === 0"
+            class=" mx-1"
+            :label="$t('cases.caseTemplates')"
             dense
-            clearable
-            :placeholder="$t('general.search')"
-            @keyup.enter="search(searchQuery)"
-          ></v-text-field>
-
+            :items="allForms"
+            :item-text="item => item.name"
+            :item-value="item => item.id"
+            hide-details
+            v-model="form_id"
+            solo
+          >
+          </v-select>
           <!--          <v-tooltip top>-->
           <!--            <template v-slot:activator="{ on, attrs }">-->
           <!--              <v-btn-->
@@ -95,16 +107,16 @@
       >
         <div
           v-for="(column, i) in columns"
-          :key="column.title"
+          :key="column.id"
           class="bg-gray-100 px-3 py-3 column-width stage-cont"
           :class="i > 0 ? 'mr-4' : ''"
         >
           <p class="stage-title">
-            {{ column.title }}
+            {{ column.name }}
           </p>
           <!-- Draggable component comes from vuedraggable. It provides drag & drop functionality -->
           <draggable
-            :list="column.tasks"
+            :list="column.applications"
             :animation="200"
             ghost-class="ghost-card"
             group="tasks"
@@ -115,7 +127,7 @@
           >
             <!-- Each element from here will be draggable and animated. Note :key is very important here to be unique both for draggable and animations to be smooth & consistent. -->
             <task-card
-              v-for="task in column.tasks"
+              v-for="task in column.applications"
               :key="task.id"
               :task="task"
               class="mt-3 cursor-move scroll-item"
@@ -215,10 +227,11 @@ export default {
       addDynamicActionDialog: false,
       selectedForm: null,
 
-      columns: [
+      columns: [],
+      columnss: [
         {
           title: "Backlog 1",
-          tasks: [
+          applications: [
             {
               id: 1,
               title: "Add discount code to checkout page",
@@ -326,7 +339,7 @@ export default {
         },
         {
           title: "Backlog 2",
-          tasks: [
+          applications: [
             {
               id: 1,
               title: "Add discount code to checkout page",
@@ -360,7 +373,7 @@ export default {
         },
         {
           title: "Backlog 3",
-          tasks: [
+          applications: [
             {
               id: 1,
               title: "Add discount code to checkout page",
@@ -394,7 +407,7 @@ export default {
         },
         {
           title: "In Progress",
-          tasks: [
+          applications: [
             {
               id: 6,
               title: "Design shopping cart dropdown",
@@ -417,7 +430,7 @@ export default {
         },
         {
           title: "Review",
-          tasks: [
+          applications: [
             {
               id: 9,
               title: "Provide documentation on integrations",
@@ -451,7 +464,7 @@ export default {
         },
         {
           title: "Done",
-          tasks: [
+          applications: [
             {
               id: 14,
               title: "Add discount code to checkout page",
@@ -473,6 +486,7 @@ export default {
           ],
         },
       ],
+      form_id:'',
     };
   },
   watch: {
@@ -494,10 +508,25 @@ export default {
         this.setCurrentBread();
       }
     },
+    form_id() {
+      this.fetchApplications(this.form_id);
+    },
   },
   computed: {
-    ...mapState("cases", ["formRequests"]),
+    ...mapState("cases", ["formRequests",'forms']),
     ...mapState("app", ["navTemplates"]),
+    allForms() {
+      let items = this.forms.map(option => {
+        return {
+          id: option.id,
+          name: option.name
+        };
+      });
+      return [
+        { name: this.$t("general.all"), id: "" },
+        ...items
+      ];
+    },
     headers() {
       const headers = [
         { text: this.$t("tables.requestNumber"), value: "form_request_number" },
@@ -518,7 +547,8 @@ export default {
   },
   created() {
     let { id } = this.$route.params;
-
+    this.fetchForms()
+    this.fetchApplications(id)
     this.currentPageId = id;
     this.formTypesUrl = `/cases/${id}/form-types`;
     this.caseUrl = `/cases/${id}/create/${id}`;
@@ -545,8 +575,20 @@ export default {
     }
   },
   methods: {
-    ...mapActions("cases", ["getFormRequests", "deleteForm", "deleteAll"]),
+    ...mapActions("cases", ["getFormRequests", "deleteForm", "getApplications",'getForms']),
     ...mapActions("app", ["setBreadCrumb"]),
+    fetchForms()
+    {
+      let { id } = this.$route.params;
+      this.loading = true;
+      this.getForms(id)
+        .then(() => {
+          this.loading = false;
+        })
+        .catch(() => {
+          this.loading = false;
+        });
+    },
     initScrollBehavior() {
       this.$refs.listItem.forEach((item) => {
         item.addEventListener('dragover', (e) => {
@@ -563,6 +605,32 @@ export default {
           }
         });
       });
+    },
+    fetchApplications(id){
+      this.isLoading = true;
+      this.getApplications(id)
+        .then((response) => {
+          this.isLoading = false;
+          this.columns= response?.data?.data?.sort((a, b) => a.id - b.id)?.map((column)=>{
+            return {
+              id:column.id,
+              name:column.name,
+              key:column.key,
+              applications:column.applications.map((item)=>{
+                return {
+                  id:item.id,
+                  title:item.form_request?.form?.name,
+                  date:item.form_request?.form?.updated_at,
+                }
+              }),
+            }
+          })
+
+
+        })
+        .catch(() => {
+          this.isLoading = false;
+        });
     },
     search() {},
     onDragStart() {

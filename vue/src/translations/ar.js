@@ -531,6 +531,7 @@ export default {
     deleteRequest: "حذف الطلب",
     deleteCase: "حذف القضية",
     caseFile: "لائحة الدعوة",
+    caseTemplates: "نماذج القضايا",
   },
 
   departments: {

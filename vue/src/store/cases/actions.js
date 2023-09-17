@@ -591,6 +591,14 @@ const actions = {
   async updateFormRequestInfo({ commit }, data) {
     return await axios.put(`update-form-request-information/${data.id}`, data);
   },
+
+  async getApplications({ commit }, id) {
+    return await axios.get(`get-all-applications`,{
+      params:{
+        form_id:id
+      }
+    });
+  },
 };
 
 export default actions;
