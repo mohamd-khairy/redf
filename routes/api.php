@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\API\ApplicationController;
 use App\Http\Controllers\API\StageController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\LogController;
@@ -182,5 +183,10 @@ Route::group(['prefix' => 'v1'], function () {
     Route::group(['middleware' => 'auth:sanctum'], function () {
         Route::get('get-all-stages', [StageController::class, 'allStages']);
         Route::post('store-form-stages', [StageController::class, 'storeFormStages']);
+    });
+
+    /*********************ApplicationController***************** */
+    Route::group(['middleware' => 'auth:sanctum'], function () {
+        Route::get('get-all-applications', [ApplicationController::class, 'index']);
     });
 });
