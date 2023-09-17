@@ -182,7 +182,6 @@ Route::group(['prefix' => 'v1'], function () {
     /*********************StageController***************** */
     Route::group(['middleware' => 'auth:sanctum'], function () {
         Route::get('get-all-stages', [StageController::class, 'allStages']);
-        Route::get('get-selected-stages', [StageController::class, 'selectedStages']);
         Route::post('store-form-stages', [StageController::class, 'storeFormStages']);
     });
 

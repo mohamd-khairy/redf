@@ -16,13 +16,7 @@ class StageController extends Controller
 
     public function allStages(): \Illuminate\Http\JsonResponse
     {
-        $data = Stage::all();
-        return responseSuccess(['stages' => $data]);
-    }
-
-    public function selectedStages(): \Illuminate\Http\JsonResponse
-    {
-        $stages = Stage::with('applications.form_request');
+        $stages = Stage::query();
 
         if (request('form_id')) {
             $stages = $stages->whereHas('stage_forms', function ($q) {
@@ -32,9 +26,9 @@ class StageController extends Controller
 
         $data = $stages->get();
 
+
         return responseSuccess(['stages' => $data]);
     }
-
 
     public function storeFormStages(Request $request)
     {
