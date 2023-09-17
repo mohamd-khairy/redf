@@ -118,7 +118,8 @@
               v-for="task in column.tasks"
               :key="task.id"
               :task="task"
-              class="mt-3 cursor-move"
+              class="mt-3 cursor-move scroll-item"
+              ref="listItem"
             ></task-card>
             <!-- </transition-group> -->
           </draggable>
@@ -524,6 +525,7 @@ export default {
   },
   mounted() {
     // this.open()
+    // this.initScrollBehavior()
     const scrollContainer = this.$refs.scrollContainer;
 
     if (scrollContainer) {
@@ -545,6 +547,23 @@ export default {
   methods: {
     ...mapActions("cases", ["getFormRequests", "deleteForm", "deleteAll"]),
     ...mapActions("app", ["setBreadCrumb"]),
+    initScrollBehavior() {
+      this.$refs.listItem.forEach((item) => {
+        item.addEventListener('dragover', (e) => {
+          e.preventDefault();
+          const mouseY = e.clientY;
+          const itemRect = item.getBoundingClientRect();
+
+          if (mouseY < itemRect.top + 50) {
+            // Scroll up
+            item.scrollTop -= 10;
+          } else if (mouseY > itemRect.bottom - 50) {
+            // Scroll down
+            item.scrollTop += 10;
+          }
+        });
+      });
+    },
     search() {},
     onDragStart() {
       this.isDragging = true;
@@ -747,6 +766,9 @@ but you'd use "@apply border opacity-50 border-blue-500 bg-gray-200" here */
   overflow-x: auto;
 }
 .kanban-scroll-container {
+}
+.scroll-item{
+  overflow: auto;
 }
 </style>
 <style>

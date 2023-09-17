@@ -544,6 +544,7 @@ export default {
     updateTemplate: "تعديل نموذج",
     basic_data: "البيانات الأساسية",
     template_edit: "تكوين النموذج",
+    stages: "المراحل",
   },
   builder: {
     page: "صفحة",
