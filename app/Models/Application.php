@@ -17,7 +17,8 @@ class Application extends Model
         'form_request_id',
         'stage_id',
         'action',
-        'action_at'
+        'action_at',
+        'form_id'
     ];
 
     public function getActivitylogOptions(): LogOptions

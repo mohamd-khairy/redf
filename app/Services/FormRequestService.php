@@ -417,7 +417,8 @@ class FormRequestService
     public function add_application($formRequest)
     {
         return Application::firstOrCreate([
-            'form_request_id' => $formRequest->id
+            'form_request_id' => $formRequest->id,
+            'form_id' => $formRequest->form_id
         ], [
             'stage_id' => 1
         ]);
