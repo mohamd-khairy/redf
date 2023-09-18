@@ -34,8 +34,7 @@ class StageController extends Controller
     {
         try {
             $validate = Validator::make($request->all(), [
-                'stage_ids' => 'required|array',
-                'stage_ids.*' => 'required|exists:stages,id',
+                'stages' => 'required|array',
                 'form_id' => 'required|exists:forms,id',
             ]);
 
@@ -43,8 +42,13 @@ class StageController extends Controller
                 return responseFail($validate->messages()->first());
             }
 
+            $collectStages = collect($request->stages);
+            $stage_forms = $collectStages->mapWithKeys(function($item) {
+                return [$item['stage_id'] => ['order'=>$item['order']] ];
+            });
+
             $form = Form::find($request->form_id);
-            $form->stages()->sync($request->stage_ids);
+            $form->stages()->sync($stage_forms);
 
             return responseSuccess([], 'Stage Form has been successfully created');
         } catch (\Throwable $e) {

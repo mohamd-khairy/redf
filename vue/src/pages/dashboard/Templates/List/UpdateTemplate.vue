@@ -44,25 +44,38 @@
                 <DynamicFormBuilder :id="1"></DynamicFormBuilder>
             </v-tab-item>
             <v-tab-item>
-              <v-row>
-                <v-col cols="3" v-for="stage in stages" :key="stage.id">
-                  <v-checkbox
-                    v-model="selected"
-                    multiple
-                    :value="stage.id"
-                    hide-details
-                    color="#fff"
-                    class="checkboxClass"
-                    :class="getClassActive(stage.id)"
+              <draggable
+                  :list="stages"
+                  @start="onDragStart"
+                  @end="onDragEnd"
+                  :animation="200"
+                  ghost-class="ghost-card"
+                  :force-fallback="true"
+                >
+                  <div
+                    v-for="stage in stages"
+                    :key="stage.id"
+                    class="mt-3 cursor-move"
                   >
-                    <template v-slot:label>
-                      <div class="labelClass" :class="getLabelClass(stage.id)">
-                        {{ stage.name }}
-                      </div>
-                    </template>
-                  </v-checkbox>
-                </v-col>
-              </v-row>
+                    <v-checkbox
+                      v-model="selected"
+                      multiple
+                      :value="stage.id"
+                      hide-details
+                      color="#fff"
+                      class="checkboxClass"
+                      :class="getClassActive(stage.id)"
+                      draggable="true"
+                    >
+                      <template v-slot:label>
+                        <div class="labelClass" :class="getLabelClass(stage.id)">
+                          {{ stage.name }}
+                        </div>
+                      </template>
+                    </v-checkbox>
+                  </div>
+
+                </draggable>
               <div class="mt-10">
                 <v-btn :loading="loading" :disabled="loading" @click="updateStages" color="primary">
                   {{ $t("general.save") }}
@@ -79,10 +92,12 @@ import {mapActions, mapState} from "vuex";
 import { makeToast } from "@/helpers";
 import DynamicFormBuilder from "./DynamicFormBuilder.vue"
 import axios from 'axios';
+import draggable from "vuedraggable";
 
 export default {
   components: {
-    DynamicFormBuilder
+    DynamicFormBuilder,
+    draggable,
   },
   data() {
       return {
@@ -93,6 +108,7 @@ export default {
           },
           errors: {},
           loading: false,
+        dragging: false,
           breadcrumbs: [
               {
                   text: this.$t("menu.templates"),
@@ -111,7 +127,8 @@ export default {
           rules: {
               required: (value) => (value && Boolean(value)) || this.$t("general.fieldRequired")
           },
-        selected:[]
+        selected:[],
+        orderedSelected:[]
       };
   },
   computed: {
@@ -134,6 +151,15 @@ export default {
       ...mapActions("templates", ["updateForm"]),
       ...mapActions("stages", ["getStages","updateTemplateStages"]),
       ...mapActions("app", ["setBreadCrumb"]),
+    onDragStart() {
+      this.dragging = true;
+    },
+    onDragEnd() {
+      this.dragging = false;
+      this.orderedSelected = this.stages.map(function(item, index) {
+        return { stage_id: item.id, order: index+1 }
+      })
+    },
     getClassActive(id) {
       if (this.selected.includes(id)) {
         return "checkboxClass1"
@@ -146,43 +172,57 @@ export default {
         return "labelClass1"
       }
     },
-      buildForm(data) {
-          let keys = Object.keys(data);
-          let form = new FormData();
-          form.append("_method", "PUT")
-          for (let index = 0; index < keys.length; index++) {
-              const key = keys[index];
-              if (data[key]) {
-                  form.set(key, data[key]);
-              }
-          }
-          return form;
-      },
-      updateTemplateII() {
-          this.loading = true;
-          this.errors = {};
-          let form = this.buildForm(this.template)
-          this.updateForm(form)
-              .then(response => {
-                  this.loading = false;
-                  makeToast("success", response.data.message);
-                  this.$router.push({ name: "TemplatesList" });
-              })
-              .catch(error => {
-                  this.loading = false;
-                  if (error.response.status == 422) {
-                      const { errors } = error?.response?.data ?? {};
-                      this.errors = errors ?? {};
-                  }
-              });
-      },
+    buildForm(data) {
+        let keys = Object.keys(data);
+        let form = new FormData();
+        form.append("_method", "PUT")
+        for (let index = 0; index < keys.length; index++) {
+            const key = keys[index];
+            if (data[key]) {
+                form.set(key, data[key]);
+            }
+        }
+        return form;
+    },
+    updateTemplateII() {
+        this.loading = true;
+        this.errors = {};
+        let form = this.buildForm(this.template)
+        this.updateForm(form)
+            .then(response => {
+                this.loading = false;
+                makeToast("success", response.data.message);
+                this.$router.push({ name: "TemplatesList" });
+            })
+            .catch(error => {
+                this.loading = false;
+                if (error.response.status == 422) {
+                    const { errors } = error?.response?.data ?? {};
+                    this.errors = errors ?? {};
+                }
+            });
+    },
     updateStages(){
       this.loading = true;
       let {id} = this.$route.params;
-      let data = {
-        form_id:id,
-        stage_ids:this.selected
+      let array = []
+      if(this.orderedSelected.length)
+      {
+        array = this.orderedSelected.filter(element => this.selected.includes(element.stage_id)).map((item,index)=>{
+          return { stage_id: item.stage_id , order: index+1}
+        })
       }
+      else{
+        array = this.selected.map((item,index)=>{
+          return { stage_id: item , order: index+1}
+        })
+      }
+
+      let data = {
+        form_id: id,
+        stages: array
+      }
+      console.log(array)
       this.updateTemplateStages(data)
         .then(response => {
           this.loading = false;
@@ -202,8 +242,8 @@ export default {
 </script>
 <style lang="scss" scoped>
 .checkboxClass{
-  width:280px;
-  height:60px;
+  //width:280px;
+  //height:60px;
   direction: ltr;
   padding: 20px 10px;
 }
