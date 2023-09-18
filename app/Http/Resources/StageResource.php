@@ -15,10 +15,11 @@ class StageResource extends JsonResource
     public function toArray($request)
     {
         return [
-            'id'   => $this->id,
-            'name' => $this->name,
-            'key'  => $this->key,
-            'applications' => ApplicationResource::collection($this->applications)
+            'id'   => $this->stage_id,
+            'form_id'  => $this->form_id,
+            'name' => $this->stage->name,
+            'key'  => $this->stage->key,
+            'applications' => ApplicationResource::collection($this->stage->applications)
         ];
     }
 }
