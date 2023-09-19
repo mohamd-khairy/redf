@@ -2,8 +2,12 @@ import axios from "@/plugins/axios";
 
 const actions = {
   async getStages({ commit }) {
-    const response = await axios.get("get-all-stages");
-    const {stages} = response.data.data
+    const response = await axios.get("get-all-stages", {
+      params: {
+        form_id: 1,
+      },
+    });
+    const { stages } = response.data.data;
     commit("SET_STAGES", stages);
   },
 
