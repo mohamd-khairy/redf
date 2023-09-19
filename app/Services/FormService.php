@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Enums\FormEnum;
 use App\Models\Form;
 use App\Models\FormPage;
 use App\Models\FormPageItem;
@@ -12,7 +13,10 @@ class FormService
 {
     public function getAllForms()
     {
-        return Form::with('template')->paginate(15);
+        return Form::whereIn('id', [
+            FormEnum::DEFENCE_CASE_FORM, FormEnum::CLAIM_CASE_FORM, FormEnum::RESUME_CASE_FORM,
+            FormEnum::SOLICITATION_CASE_FORM, FormEnum::OBJECTION_CASE_FORM, FormEnum::IMPLEMENTATION_CASE_FORM
+        ])->with('template')->paginate(15);
     }
 
     public function createForm($data)
