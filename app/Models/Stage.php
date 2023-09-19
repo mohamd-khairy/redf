@@ -16,7 +16,6 @@ class Stage extends Model
     protected $fillable = [
         'name',
         'key',
-        'order',
         'active'
     ];
 
@@ -27,7 +26,7 @@ class Stage extends Model
 
     public function stage_forms()
     {
-        return $this->hasMany(StageForm::class);
+        return $this->hasMany(StageForm::class)->orderBy('order','ASC');
     }
 
     public function applications()

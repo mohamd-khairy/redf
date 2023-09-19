@@ -16,6 +16,7 @@ class StageForm extends Model
     protected $fillable = [
         'form_id',
         'stage_id',
+        'order',
         'active'
     ];
 

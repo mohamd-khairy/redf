@@ -230,7 +230,7 @@ export default {
       columns: [],
       columnss: [
         {
-          title: "Backlog 1",
+          name: "Backlog 1",
           applications: [
             {
               id: 1,
@@ -338,7 +338,7 @@ export default {
           ],
         },
         {
-          title: "Backlog 2",
+          name: "Backlog 2",
           applications: [
             {
               id: 1,
@@ -372,7 +372,7 @@ export default {
           ],
         },
         {
-          title: "Backlog 3",
+          name: "Backlog 3",
           applications: [
             {
               id: 1,
@@ -406,7 +406,7 @@ export default {
           ],
         },
         {
-          title: "In Progress",
+          name: "In Progress",
           applications: [
             {
               id: 6,
@@ -429,7 +429,7 @@ export default {
           ],
         },
         {
-          title: "Review",
+          name: "Review",
           applications: [
             {
               id: 9,
@@ -463,7 +463,7 @@ export default {
           ],
         },
         {
-          title: "Done",
+          name: "Done",
           applications: [
             {
               id: 14,
@@ -523,7 +523,7 @@ export default {
         };
       });
       return [
-        { name: this.$t("general.all"), id: "" },
+        { name: this.$t("general.all"), id: 1 },
         ...items
       ];
     },
@@ -611,7 +611,7 @@ export default {
       this.getApplications(id)
         .then((response) => {
           this.isLoading = false;
-          this.columns= response?.data?.data?.sort((a, b) => a.id - b.id)?.map((column)=>{
+          this.columns= response?.data?.data?.sort((a, b) => a.order - b.order)?.map((column)=>{
             return {
               id:column.id,
               name:column.name,

@@ -22,27 +22,22 @@ class StageSeeder extends Seeder
                 'id' => 1,
                 'name' => 'بناء',
                 'key' => 'applied',
-                'order' => 1
             ], [
                 'id' => 2,
                 'name' => 'مراجعة',
                 'key' => 'review',
-                'order' => 2
             ], [
                 'id' => 3,
                 'name' => 'قبول',
                 'key' => 'approve',
-                'order' => 3
             ], [
                 'id' => 4,
                 'name' => 'اعادة',
                 'key' => 'return',
-                'order' => 4
             ], [
                 'id' => 5,
                 'name' => 'رفض',
                 'key' => 'reject',
-                'order' => 5
             ]
         ];
 
