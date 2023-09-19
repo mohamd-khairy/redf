@@ -15,12 +15,21 @@ class StageFormResource extends JsonResource
      */
     public function toArray($request)
     {
+        try {
+            $items = Role::with('permissions')->where('name', $this->stage->key)->first()?->permissions?->pluck('name');
+            $actions = $items ? $items->map(function ($i) {
+                return str_replace('-', ' ',  $i);
+            }) : [];
+        } catch (\Throwable $th) {
+            $actions = [];
+        }
+
         return [
             'id'   => $this->stage_id,
             'form_id'  => $this->form_id,
             'name' => $this->stage->name,
             'key'  => $this->stage->key,
-            'actions' => Role::with('permissions')->where('name', $this->stage->key)->first()
+            'actions' => $actions
         ];
     }
 }
