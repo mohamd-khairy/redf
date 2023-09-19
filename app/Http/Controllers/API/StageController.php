@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StageFormRequest;
+use App\Http\Resources\StageFormResource;
 use App\Models\Form;
 use App\Models\Stage;
 use App\Models\StageForm;
@@ -24,9 +25,9 @@ class StageController extends Controller
             return responseFail($validate->messages()->first());
         }
 
-        $data = StageForm::where('form_id', request('form_id'))->get();
+        $data = StageForm::with('stage')->where('form_id', request('form_id'))->get();
 
-        return responseSuccess(['stages' => $data]);
+        return responseSuccess(['stages' => StageFormResource::collection($data)]);
     }
 
     public function storeFormStages(Request $request)
@@ -42,8 +43,8 @@ class StageController extends Controller
             }
 
             $collectStages = collect($request->stages);
-            $stage_forms = $collectStages->mapWithKeys(function($item) {
-                return [$item['stage_id'] => ['order'=>$item['order']] ];
+            $stage_forms = $collectStages->mapWithKeys(function ($item) {
+                return [$item['stage_id'] => ['order' => $item['order']]];
             });
 
             $form = Form::find($request->form_id);
