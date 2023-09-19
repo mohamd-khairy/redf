@@ -2,9 +2,11 @@
 
 namespace Database\Seeders;
 
+use App\Enums\FormEnum;
 use App\Models\Permission;
 use App\Models\Role;
 use App\Models\Stage;
+use App\Models\StageForm;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -60,6 +62,18 @@ class StageSeeder extends Seeder
             }
 
             $role->givePermissionTo($permissions);
+
+            foreach ([
+                FormEnum::DEFENCE_CASE_FORM, FormEnum::CLAIM_CASE_FORM, FormEnum::RESUME_CASE_FORM,
+                FormEnum::SOLICITATION_CASE_FORM, FormEnum::OBJECTION_CASE_FORM, FormEnum::IMPLEMENTATION_CASE_FORM
+            ] as $key => $value) {
+                $stage_form = StageForm::firstOrCreate([
+                    'form_id' => $value,
+                    'stage_id' => $stage->id,
+                    'order' => $key,
+                    'active' =>  true,
+                ]);
+            }
         }
     }
 }
