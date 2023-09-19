@@ -24,7 +24,7 @@ class StageController extends Controller
             return responseFail($validate->messages()->first());
         }
 
-        $data = StageForm::where('form_id', request('form_id'))->get();
+        $data = StageForm::with('stage')->where('form_id', request('form_id'))->get();
 
         return responseSuccess(['stages' => $data]);
     }
