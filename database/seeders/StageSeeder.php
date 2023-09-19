@@ -55,7 +55,7 @@ class StageSeeder extends Seeder
             ]);
 
             $permissions = [];
-            foreach (['create', 'read', 'update', 'delete'] as $key => $value) {
+            foreach (['accept', 'return', 'reject'] as $key => $value) {
                 $permissions[] = Permission::firstOrCreate([
                     'name' => $value . '-' . $stage->key,
                     'display_name' => strtoupper($value) . ' ' . strtolower($stage->key),

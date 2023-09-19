@@ -16,16 +16,15 @@ class StageController extends Controller
 
     public function allStages(): \Illuminate\Http\JsonResponse
     {
-        $stages = Stage::query();
+        $validate = Validator::make(request()->all(), [
+            'form_id' => 'required|exists:forms,id',
+        ]);
 
-        if (request('form_id')) {
-            $stages = $stages->whereHas('stage_forms', function ($q) {
-                $q->where('form_id', request('form_id'));
-            });
+        if ($validate->fails()) {
+            return responseFail($validate->messages()->first());
         }
 
-        $data = $stages->get();
-
+        $data = StageForm::where('form_id', request('form_id'))->get();
 
         return responseSuccess(['stages' => $data]);
     }
