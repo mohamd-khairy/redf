@@ -156,10 +156,10 @@ export default {
           text: this.$t("tables.name"),
           value: "name",
         },
-        {
-          text: this.$t("tables.type"),
-          value: "type",
-        },
+        // {
+        //   text: this.$t("tables.type"),
+        //   value: "type",
+        // },
         {
           text: this.$t("tables.email"),
           value: "email",

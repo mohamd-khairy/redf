@@ -265,18 +265,6 @@
                   {{ action?.user.name || "---" }}
                 </div>
               </v-col>
-              <v-col cols="3" class="input-cont mb-2" v-if="action?.date_of_receipt">
-                <div class="input-label">
-                  {{ $t(`cases.receiptDate`) }}
-                </div>
-                <div class="input-value">
-                  {{ action?.date_of_receipt || "---" }}
-                </div>
-              </v-col>
-
-
-
-
 
               <v-col cols="12" class="input-cont textarea-bg mb-2" v-if="action.details">
                 <div class="input-label">
@@ -284,6 +272,15 @@
                 </div>
                 <div class="input-value">
                   {{ action.details }}
+                </div>
+              </v-col>
+
+              <v-col cols="3" class="input-cont mb-2" v-if="action?.date_of_receipt">
+                <div class="input-label">
+                  {{ $t(`cases.receiptDate`) }}
+                </div>
+                <div class="input-value">
+                  {{ action?.date_of_receipt || "---" }}
                 </div>
               </v-col>
               <!-- <v-col

@@ -7,6 +7,9 @@
             <v-tab>
                 {{ $t("templates.template_edit") }}
             </v-tab>
+            <v-tab>
+                {{ $t("templates.stages") }}
+            </v-tab>
 
             <v-tab-item>
                 <v-card>
@@ -40,93 +43,181 @@
             <v-tab-item>
                 <DynamicFormBuilder :id="1"></DynamicFormBuilder>
             </v-tab-item>
+            <v-tab-item>
+              <v-row>
+                <v-col cols="3" v-for="stage in stages" :key="stage.id">
+                  <v-checkbox
+                    v-model="selected"
+                    multiple
+                    :value="stage.id"
+                    hide-details
+                    color="#fff"
+                    class="checkboxClass"
+                    :class="getClassActive(stage.id)"
+                  >
+                    <template v-slot:label>
+                      <div class="labelClass" :class="getLabelClass(stage.id)">
+                        {{ stage.name }}
+                      </div>
+                    </template>
+                  </v-checkbox>
+                </v-col>
+              </v-row>
+              <div class="mt-10">
+                <v-btn :loading="loading" :disabled="loading" @click="updateStages" color="primary">
+                  {{ $t("general.save") }}
+                </v-btn>
+              </div>
+            </v-tab-item>
         </v-tabs>
 
     </div>
 </template>
 
 <script>
-import { mapActions } from "vuex";
+import {mapActions, mapState} from "vuex";
 import { makeToast } from "@/helpers";
 import DynamicFormBuilder from "./DynamicFormBuilder.vue"
 import axios from 'axios';
 
 export default {
-    data() {
-        return {
-            template: {
-                name: "",
-                description: "",
-                template_id: "",
-            },
-            errors: {},
-            loading: false,
-            breadcrumbs: [
-                {
-                    text: this.$t("menu.templates"),
-                    disabled: false,
-                    href: "#"
-                },
-                {
-                    text: this.$t("templates.templatesList"),
-                    to: "/templates",
-                    exact: true
-                },
-                {
-                    text: `${this.$t("templates.updateTemplate")}`
-                },
-            ],
-            rules: {
-                required: (value) => (value && Boolean(value)) || this.$t("general.fieldRequired")
-            }
-        };
+  components: {
+    DynamicFormBuilder
+  },
+  data() {
+      return {
+          template: {
+              name: "",
+              description: "",
+              template_id: "",
+          },
+          errors: {},
+          loading: false,
+          breadcrumbs: [
+              {
+                  text: this.$t("menu.templates"),
+                  disabled: false,
+                  href: "#"
+              },
+              {
+                  text: this.$t("templates.templatesList"),
+                  to: "/templates",
+                  exact: true
+              },
+              {
+                  text: `${this.$t("templates.updateTemplate")}`
+              },
+          ],
+          rules: {
+              required: (value) => (value && Boolean(value)) || this.$t("general.fieldRequired")
+          },
+        selected:[]
+      };
+  },
+  computed: {
+    ...mapState("stages", ["stages"]),
+  },
+  created() {
+    this.getStages()
+      this.setBreadCrumb({
+          breadcrumbs: this.breadcrumbs,
+          pageTitle: this.$t("templates.updateTemplate")
+      });
+      axios.get(`get-form/${this.$route.params.id}`).then((data) => {
+          this.template = data.data.data
+          this.selected = this.template.stages.map((item)=>{
+            return item.id
+          })
+      })
+  },
+  methods: {
+      ...mapActions("templates", ["updateForm"]),
+      ...mapActions("stages", ["getStages","updateTemplateStages"]),
+      ...mapActions("app", ["setBreadCrumb"]),
+    getClassActive(id) {
+      if (this.selected.includes(id)) {
+        return "checkboxClass1"
+      }else{
+        return "checkboxClass2"
+      }
     },
-    created() {
-        this.setBreadCrumb({
-            breadcrumbs: this.breadcrumbs,
-            pageTitle: this.$t("templates.updateTemplate")
-        });
-        axios.get(`get-form/${this.$route.params.id}`).then((data) => {
-            this.template = data.data.data
+    getLabelClass(id) {
+      if (this.selected.includes(id)) {
+        return "labelClass1"
+      }
+    },
+      buildForm(data) {
+          let keys = Object.keys(data);
+          let form = new FormData();
+          form.append("_method", "PUT")
+          for (let index = 0; index < keys.length; index++) {
+              const key = keys[index];
+              if (data[key]) {
+                  form.set(key, data[key]);
+              }
+          }
+          return form;
+      },
+      updateTemplateII() {
+          this.loading = true;
+          this.errors = {};
+          let form = this.buildForm(this.template)
+          this.updateForm(form)
+              .then(response => {
+                  this.loading = false;
+                  makeToast("success", response.data.message);
+                  this.$router.push({ name: "TemplatesList" });
+              })
+              .catch(error => {
+                  this.loading = false;
+                  if (error.response.status == 422) {
+                      const { errors } = error?.response?.data ?? {};
+                      this.errors = errors ?? {};
+                  }
+              });
+      },
+    updateStages(){
+      this.loading = true;
+      let {id} = this.$route.params;
+      let data = {
+        form_id:id,
+        stage_ids:this.selected
+      }
+      this.updateTemplateStages(data)
+        .then(response => {
+          this.loading = false;
+          makeToast("success", response.data.message);
+          this.$router.push({ name: "TemplatesList" });
         })
-    },
-    methods: {
-        ...mapActions("templates", ["updateForm"]),
-        ...mapActions("app", ["setBreadCrumb"]),
-        buildForm(data) {
-            let keys = Object.keys(data);
-            let form = new FormData();
-            form.append("_method", "PUT")
-            for (let index = 0; index < keys.length; index++) {
-                const key = keys[index];
-                if (data[key]) {
-                    form.set(key, data[key]);
-                }
-            }
-            return form;
-        },
-        updateTemplateII() {
-            this.loading = true;
-            this.errors = {};
-            let form = this.buildForm(this.template)
-            this.updateForm(form)
-                .then(response => {
-                    this.loading = false;
-                    makeToast("success", response.data.message);
-                    this.$router.push({ name: "TemplatesList" });
-                })
-                .catch(error => {
-                    this.loading = false;
-                    if (error.response.status == 422) {
-                        const { errors } = error?.response?.data ?? {};
-                        this.errors = errors ?? {};
-                    }
-                });
-        },
-
-    },
-    components: {
-        DynamicFormBuilder
+        .catch(error => {
+          this.loading = false;
+          if (error.response.status == 422) {
+            const { errors } = error?.response?.data ?? {};
+            this.errors = errors ?? {};
+          }
+        });
     }
+  },
 };
 </script>
+<style lang="scss" scoped>
+.checkboxClass{
+  width:280px;
+  height:60px;
+  direction: ltr;
+  padding: 20px 10px;
+}
+.checkboxClass1{
+  background-color: #014C4F9C;
+}
+.checkboxClass2{
+  background-color: #FFFFFF;
+}
+.labelClass{
+  font-weight: bold;
+  margin-inline-start: auto;
+}
+.labelClass1{
+  color:#fff;
+}
+</style>

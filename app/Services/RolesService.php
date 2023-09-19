@@ -58,7 +58,7 @@ class RolesService
                 'password' => bcrypt(123456),
                 'type' => UserTypeEnum::EMPLOYEE,
                 'email_verified_at' => now(),
-                'department_id' => 1,
+                'department_id' => 1
             ]);
 
             // Assign the role to the user

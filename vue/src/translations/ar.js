@@ -10,6 +10,7 @@ export default {
     contact: "اتصل بنا",
     tos: "شروط الخدمة",
     policy: "سياسة الخصوصية",
+    close: "غلق",
   },
   board: {
     titlePlaceholder: "أدخل عنوانًا لهذه البطاقة",
@@ -529,6 +530,8 @@ export default {
     formTypes: "نماذج القضايا",
     deleteRequest: "حذف الطلب",
     deleteCase: "حذف القضية",
+    caseFile: "لائحة الدعوة",
+    caseTemplates: "نماذج القضايا",
   },
 
   departments: {
@@ -542,6 +545,7 @@ export default {
     updateTemplate: "تعديل نموذج",
     basic_data: "البيانات الأساسية",
     template_edit: "تكوين النموذج",
+    stages: "المراحل",
   },
   builder: {
     page: "صفحة",
@@ -632,11 +636,11 @@ export default {
     added_date: "تاريخ الاضافة",
     specialization: "الدائره (الاختصاص)",
     sub_status: "الحالة الفرعية",
-    requestName:"اسم الطلب",
-    requestStatus:"حالة الطلب",
-    caseStatus:"حالة القضية",
-    requestCase:"حالة القضية",
-    users:"المستفيدون",
+    requestName: "اسم الطلب",
+    requestStatus: "حالة الطلب",
+    caseStatus: "حالة القضية",
+    requestCase: "حالة القضية",
+    users: "المستفيدون",
     // causer_type: "",
   },
   texts: {
@@ -820,6 +824,10 @@ export default {
     refuse: "تم رفض الطلب",
     return: "تم اعادة الطلب للمراجعة",
     wait: "بانتظار الاجراء",
+    day: "يوم",
+    month: "شهر",
+    week: "اسبوع",
+    today: "اليوم",
   },
   reports: {
     buildReport: "انشاء تقرير",

@@ -6,7 +6,7 @@
         <v-breadcrumbs :items="breadcrumbs" class="pa-0 py-2"></v-breadcrumbs>
       </div>
     </div> -->
-    <v-card>
+    <v-card class="mb-60">
       <!-- cases list -->
       <v-row dense class="pa-2 align-center">
         <v-col cols="6">
@@ -307,23 +307,23 @@ export default {
         { text: this.$t("tables.branch"), value: "branch", width: 180 },
         {
           text: this.$t("tables.specialization"), value: "specialization",
-          align: "right"
+          align: "center"
         },
         {
           text: this.$t("tables.users"),
           value: "user",
           width: 250,
-          align: "right"
+          align: "center"
         },
         { text: this.$t("tables.assigner"), value: "assigner" },
-        { text: this.$t("tables.caseStatus"), value: "status", align: "right" },
+        { text: this.$t("tables.caseStatus"), value: "status", align: "center" },
         // { text: this.$t("tables.sub_status"), value: "sub_status" },
         { text: this.$t("tables.case_date"), value: "case_date", width: 50 },
         // { text: this.$t("tables.created"), value: "created_at" },
         {
           text: this.$t("tables.actions"),
           sortable: false,
-          align: "left",
+          align: "center",
           value: "action",
           width: 50
         },
@@ -356,7 +356,7 @@ export default {
       let last = item?.last_form_request_action?.formable;
 
       if (last?.type == "court" && last?.date_of_receipt) {
-        return "( تم الاستلام )";
+        return "( تم استلام الحكم )";
       } else if (last?.type == "court" && !last?.date_of_receipt) {
         return "( بإنتظار استلام الحكم )";
       }

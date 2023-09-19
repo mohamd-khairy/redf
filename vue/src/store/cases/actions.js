@@ -240,6 +240,7 @@ const actions = {
       case_type,
       specialization_id,
       organization_id,
+      file
     }
   ) {
     try {
@@ -294,6 +295,9 @@ const actions = {
       if (organization_id) {
         bodyFormData.set("organization_id", organization_id);
       }
+      if (file) {
+        bodyFormData.set("file", file);
+      }
       const result = await axios.post(`store-form-fill`, bodyFormData, {
         headers: {
           "Content-Type": "multipart/form-data",
@@ -318,6 +322,7 @@ const actions = {
       case_type,
       specialization_id,
       organization_id,
+      file
     }
   ) {
     try {
@@ -374,6 +379,9 @@ const actions = {
       if (organization_id) {
         bodyFormData.set("organization_id", organization_id);
       }
+      if (file) {
+        bodyFormData.set("file", file);
+      }
       const response = await axios.post(
         `update-form-fill/${formId}`,
         bodyFormData,
@@ -391,14 +399,14 @@ const actions = {
   },
   async updateBackPages(
     { state },
-    { caseName, caseNumber, formId, branch_id, caseDate, type }
+    { caseName, caseNumber, formId, branch_id, caseDate, type,case_id }
   ) {
     try {
       const customFormData = {
         id: state.selectedForm.id,
 
         name: state.selectedForm.name,
-        pages: state.pagesValues.map((page) => ({
+        pages: state.pages.map((page) => ({
           id: page.id,
           title: page.title,
           items: page.items
@@ -434,6 +442,9 @@ const actions = {
       }
       if (type) {
         bodyFormData.set("type", type);
+      }
+      if (case_id) {
+        bodyFormData.set("case_id", case_id);
       }
       const response = await axios.post(
         `update-form-fill/${formId}`,
@@ -579,6 +590,14 @@ const actions = {
   },
   async updateFormRequestInfo({ commit }, data) {
     return await axios.put(`update-form-request-information/${data.id}`, data);
+  },
+
+  async getApplications({ commit }, id) {
+    return await axios.get(`get-all-applications`,{
+      params:{
+        form_id:id
+      }
+    });
   },
 };
 

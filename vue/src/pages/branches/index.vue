@@ -1,6 +1,6 @@
 <template>
   <div class="d-flex flex-column flex-grow-1">
-    <v-card>
+    <v-card class="mb-60">
       <!-- branches list -->
       <v-row dense class="pa-2 align-center">
         <v-col cols="6">
