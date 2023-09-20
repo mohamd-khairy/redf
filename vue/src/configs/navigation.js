@@ -39,37 +39,37 @@ export default {
         // },
       ],
     },
-    {
-      icon: "mdi-gavel",
-      text: "legal_advice",
-      key: "menu.legal_advice",
-      permission: "read-role",
-      // link: "/cases/2",
-      items: [
-        {
-          icon: "mdi-list-box",
-          text: "legal_advice",
-          key: "menu.legal_advice",
-          permission: "read-role",
-          link: "/cases/2",
-        },
-        {
-          icon: "mdi-list-box",
-          text: "review_Doc",
-          key: "menu.review_Doc",
-          permission: "read-role",
-          link: "/cases/2/review-doc",
-        },
-      ],
-    },
-    {
-      icon: "mdi-gavel",
-      text: "review_and_audit",
-      key: "menu.review_and_audit",
-      permission: "read-role",
-      link: "/cases/3",
-      items: [],
-    },
+    // {
+    //   icon: "mdi-gavel",
+    //   text: "legal_advice",
+    //   key: "menu.legal_advice",
+    //   permission: "read-role",
+    //   // link: "/cases/2",
+    //   items: [
+    //     {
+    //       icon: "mdi-list-box",
+    //       text: "legal_advice",
+    //       key: "menu.legal_advice",
+    //       permission: "read-role",
+    //       link: "/cases/2",
+    //     },
+    //     {
+    //       icon: "mdi-list-box",
+    //       text: "review_Doc",
+    //       key: "menu.review_Doc",
+    //       permission: "read-role",
+    //       link: "/cases/2/review-doc",
+    //     },
+    //   ],
+    // },
+    // {
+    //   icon: "mdi-gavel",
+    //   text: "review_and_audit",
+    //   key: "menu.review_and_audit",
+    //   permission: "read-role",
+    //   link: "/cases/3",
+    //   items: [],
+    // },
 
     // {
     //   icon: "mdi-gavel",
@@ -111,37 +111,8 @@ export default {
       permission: "read-role",
       items: [],
     },
-    {
-      icon: "mdi-file-document-edit-outline",
-      text: "Organizations",
-      key: "menu.organizations",
-      link: "/organizations",
-      permission: "read-role",
-      items: []
-    },
-    {
-      icon: "mdi-form-textbox",
-      text: "templates",
-      key: "menu.templates",
-      link: "/templates",
-      permission: "read-role",
-      items: [
-        {
-          icon: "mdi-list-box",
-          text: "TemplatesTypes",
-          key: "menu.templatesTypes",
-          permission: "read-role",
-          link: "/templates/types",
-        },
-        {
-          icon: "mdi-list-box",
-          text: "Templates",
-          key: "menu.templates",
-          permission: "read-role",
-          link: "/templates/list",
-        },
-      ],
-    },
+
+
 
     // {
     //   icon: "mdi-chart-line",
@@ -196,6 +167,29 @@ export default {
     //   ]
     // },
     {
+      icon: "mdi-form-textbox",
+      text: "templates",
+      key: "menu.templates",
+      link: "/templates",
+      permission: "read-role",
+      items: [
+        {
+          icon: "mdi-list-box",
+          text: "TemplatesTypes",
+          key: "menu.templatesTypes",
+          permission: "read-role",
+          link: "/templates/types",
+        },
+        {
+          icon: "mdi-list-box",
+          text: "Templates",
+          key: "menu.templates",
+          permission: "read-role",
+          link: "/templates/list",
+        },
+      ],
+    },
+    {
       icon: "mdi-account-multiple-outline",
       text: "Users Management",
       key: "menu.usersManagement",
@@ -247,6 +241,15 @@ export default {
           permission: "read-role",
           items: [],
         },
+        {
+          icon: "mdi-file-document-edit-outline",
+          text: "Organizations",
+          key: "menu.organizations",
+          link: "/organizations",
+          permission: "read-role",
+          items: []
+        },
+
         {
           key: "menu.general",
           text: "General",

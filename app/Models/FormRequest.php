@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Enums\CaseTypeEnum;
+use App\Enums\FormRequestStatus;
 use App\Enums\StatusEnum;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -30,10 +32,12 @@ class FormRequest extends Model
         'case_type',
         'specialization_id',
         'organization_id',
-        'status_request'
+        'status_request',
+        'file',
+        'department_id'
     ];
 
-    protected $appends = ['sub_status', 'category'];
+    protected $appends = ['sub_status', 'category', 'display_status'];
 
     protected $with = ['user', 'lastFormRequestInformation', 'formRequestSide', 'branche'];
 
@@ -64,12 +68,32 @@ class FormRequest extends Model
 
     public function request()
     {
-        return $this->hasOne(Formable::class, 'form_request_id')->with('formable');
+        return $this->hasOne(Formable::class, 'form_request_id')->latest()->with('formable');
+    }
+
+    public function case()
+    {
+        return $this->hasOne(Formable::class, 'formable_id')->with('item');
+    }
+
+    public function requests()
+    {
+        return $this->hasMany(Formable::class, 'form_request_id', 'id');
     }
 
     public function formRequestActions()
     {
         return $this->morphMany(FormRequestAction::class, 'formable');
+    }
+
+    public function calenders()
+    {
+        return $this->hasMany(Calendar::class, 'form_request_id');
+    }
+
+    public function actions()
+    {
+        return $this->hasMany(FormRequestAction::class, 'form_request_id');
     }
 
     public function tasks()
@@ -107,6 +131,11 @@ class FormRequest extends Model
         return $this->hasOne(FormRequestInformation::class)->orderBy('id', 'desc');
     }
 
+    public function lastFormRequestAction()
+    {
+        return $this->hasOne(FormRequestAction::class)->orderBy('id', 'desc');
+    }
+
     public function file()
     {
         return $this->morphOne(File::class, 'fileable');
@@ -125,6 +154,11 @@ class FormRequest extends Model
     public function getSubStatusAttribute()
     {
         return $this->formRequestInformations->where('sessionDate', '>=', now())->count() > 0 ? 'بإنتظار الجلسه' : null;
+    }
+
+    public function getDisplayStatusAttribute()
+    {
+        return DisplayStatus($this->attributes['status']);
     }
 
     public function getCategoryAttribute()

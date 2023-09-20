@@ -63,4 +63,9 @@ class Form extends Model
     {
         return $this->hasManyThrough(Task::class, FormRequest::class);
     }
+
+    public function stages()
+    {
+        return $this->belongsToMany(Stage::class, 'stage_forms', 'form_id', 'stage_id')->withPivot('order');
+    }
 }

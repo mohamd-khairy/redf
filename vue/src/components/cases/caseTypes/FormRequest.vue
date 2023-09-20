@@ -7,14 +7,8 @@
         </h6>
       </v-col>
       <v-col cols="12" sm="9">
-        <v-text-field
-          dense
-          class="custom-disabled-input"
-          :value="action?.formable?.name || ''"
-          solo
-          disabled
-          hide-details
-        ></v-text-field>
+        <v-text-field dense class="custom-disabled-input" :value="action?.formable?.name || ''" solo disabled
+          hide-details></v-text-field>
       </v-col>
     </v-row>
     <v-row class="mb-1" dense>
@@ -24,14 +18,8 @@
         </h6>
       </v-col>
       <v-col cols="12" sm="9">
-        <v-text-field
-          dense
-          class="custom-disabled-input"
-          :value="action?.formable?.form_request_number || ''"
-          solo
-          disabled
-          hide-details
-        ></v-text-field>
+        <v-text-field dense class="custom-disabled-input" :value="action?.formable?.form_request_number || ''" solo
+          disabled hide-details></v-text-field>
       </v-col>
     </v-row>
     <v-row class="mb-1" dense>
@@ -41,14 +29,8 @@
         </h6>
       </v-col>
       <v-col cols="12" sm="9">
-        <v-text-field
-          class="custom-disabled-input"
-          :value="action.formable?.user?.name || ''"
-          solo
-          disabled
-          hide-details
-          dense
-        ></v-text-field>
+        <v-text-field class="custom-disabled-input" :value="action.formable?.user?.name || ''" solo disabled hide-details
+          dense></v-text-field>
       </v-col>
     </v-row>
 
@@ -60,13 +42,8 @@
       </v-col>
 
       <v-col cols="12" sm="9">
-        <v-text-area
-          class="custom-disabled-input"
-          :value="action?.formable?.note || ''"
-          solo
-          disabled
-          hide-details
-        ></v-text-area>
+        <v-text-area class="custom-disabled-input" :value="action?.formable?.note || ''" solo disabled
+          hide-details></v-text-area>
       </v-col>
     </v-row>
     <v-row class="mb-1" dense>
@@ -76,14 +53,8 @@
         </h6>
       </v-col>
       <v-col cols="12" sm="9">
-        <v-text-field
-          class="custom-disabled-input"
-          :value="formatDate(action?.formable?.created_at)"
-          solo
-          disabled
-          hide-details
-          dense
-        ></v-text-field>
+        <v-text-field class="custom-disabled-input" :value="formatDate(action?.formable?.created_at)" solo disabled
+          hide-details dense></v-text-field>
       </v-col>
     </v-row>
     <v-row dense>
@@ -93,12 +64,8 @@
         </h6>
       </v-col>
       <v-col cols="12" sm="9">
-        <v-chip
-          :color="getStatusColor(action?.formable?.status)"
-          label
-          text-color="white"
-        >
-          {{ $t(`general.${action?.formable?.status?.toLocaleLowerCase()}`) }}
+        <v-chip :color="getStatusColor(action?.formable?.status)" label text-color="white">
+          {{ action?.formable?.display_status }}
         </v-chip>
       </v-col>
     </v-row>

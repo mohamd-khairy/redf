@@ -36,15 +36,20 @@
         :outlined="true"
       ></show-builder-cards> -->
       <v-row>
-        <v-col v-for="card in cards" :key="card.id" cols="2">
+        <v-col v-for="card in cards" :key="card.id" cols="3">
           <stat-cards :card="card" />
         </v-col>
       </v-row>
-      <v-card v-if="!loading" class="mt-3">
+      <!-- <v-card v-if="!loading" class="mt-3">
         <v-card-text>
           <calendar @selectedEventId="setEventId" :events="calendarData" />
         </v-card-text>
-      </v-card>
+      </v-card> -->
+      <calendar
+        v-if="!loading"
+        @selectedEventId="setEventId"
+        :eventsData="calendarData"
+      />
     </div>
     <div id="loading-bg" v-else>
       <!-- <div class="loading-logo">
@@ -223,20 +228,21 @@ export default {
     },
     getCalendar() {
       this.$axios
-        .get("/calenders", {
+        .get("/reminders", {
           params: {
             // pageSize: -1,
           },
         })
         .then((res) => {
-          const { calendars } = res.data.data;
-          this.calendarData = calendars.data.map((c) => ({
-            title: c.details,
-            start: new Date(c.date),
-            id: c.id,
-            actionInfo: c.calendarable,
-          }));
-          console.log(this.calendarData);
+          // const { calendars } = res.data.data;
+          // this.calendarData = calendars.data.map((c) => ({
+          //   title: c.details,
+          //   start: new Date(c.date),
+          //   id: c.id,
+          //   actionInfo: c.calendarable,
+          // }));
+          this.calendarData = res.data.data;
+          console.log(res.data.data);
         });
     },
     closeActionPrevDialog() {

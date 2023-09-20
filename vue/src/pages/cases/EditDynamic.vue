@@ -1,9 +1,9 @@
 <template>
-  <div class="d-flex flex-column flex-grow-1" style="margin: 50px">
+  <div class="d-flex flex-column flex-grow-1">
     <edit-case v-if="id == 1"></edit-case>
     <edit-legal-advice v-else-if="id == 2"></edit-legal-advice>
     <edit-review-and-audit v-else-if="id == 3"></edit-review-and-audit>
-    <edit v-else></edit>
+    <!--    <edit v-else></edit>-->
   </div>
 </template>
 
@@ -16,7 +16,7 @@ import Edit from "@/pages/cases/Edit";
 
 export default {
   name: "EditDynamic",
-  components: {Edit, EditReviewAndAudit, EditLegalAdvice, EditCase},
+  components: { Edit, EditReviewAndAudit, EditLegalAdvice, EditCase },
   data() {
     return {
       id: 0,
@@ -31,7 +31,7 @@ export default {
   },
 
   created() {
-    console.log(this.$route.params)
+    console.log(this.$route.params);
     let { formType } = this.$route.params;
     this.id = formType;
 

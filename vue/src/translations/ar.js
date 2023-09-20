@@ -10,6 +10,7 @@ export default {
     contact: "اتصل بنا",
     tos: "شروط الخدمة",
     policy: "سياسة الخصوصية",
+    close: "غلق",
   },
   board: {
     titlePlaceholder: "أدخل عنوانًا لهذه البطاقة",
@@ -249,7 +250,7 @@ export default {
     cases_child: "مراجعة القضايا",
     editCase: "تعديل البيانات",
     request_review: "مراجعة الطلبات",
-    specialization: "الدوائر"
+    specialization: "الدوائر",
   },
   breadcrumbs: {
     pipesList: "قائمة النماذج",
@@ -490,6 +491,7 @@ export default {
     account: "تعديل البيانات الاساسيه",
 
     addAction: "اضافة اجراء",
+    showAction: "عرض الاجراء",
     name: "الاسم",
     number: "الرقم",
     caseName: "موضوع القضية",
@@ -504,7 +506,8 @@ export default {
     sessionDate: "تاريخ الجلسة",
     cases: "القضايا",
     add_session: "اضافة جلسة",
-    view_timeline: "عرض الخط الزمني للقضية",
+    view_timeline: "الخط الزمني للقضية",
+    request_view_timeline: "الخط الزمني للطلب",
     assign_user: "تعيين مستخدم",
     editCase: "تحديث بيانات القضية",
     add_action: "اضافة اجراء",
@@ -524,6 +527,11 @@ export default {
     selectCase: "اختيار القضية",
     add_court: "اضافة حكم",
     another: "اخرى",
+    formTypes: "نماذج القضايا",
+    deleteRequest: "حذف الطلب",
+    deleteCase: "حذف القضية",
+    caseFile: "لائحة الدعوة",
+    caseTemplates: "نماذج القضايا",
   },
 
   departments: {
@@ -537,6 +545,7 @@ export default {
     updateTemplate: "تعديل نموذج",
     basic_data: "البيانات الأساسية",
     template_edit: "تكوين النموذج",
+    stages: "المراحل",
   },
   builder: {
     page: "صفحة",
@@ -572,7 +581,7 @@ export default {
     drone8: "طائرة 8",
   },
   tables: {
-    caseName: "اسم القضية",
+    caseName: "موضوع القضية",
     case_date: "تاريخ القضية",
     branch: "المحكمة",
     number: "الرقم",
@@ -609,7 +618,7 @@ export default {
     description: "الوصف",
     templates: "النماذج",
     user: "المستفيد",
-    assigner: "المستشار",
+    assigner: "الموظف المختص",
     organization: "المنظمة",
     department: "القسم",
     priority: "الاولوية",
@@ -626,7 +635,12 @@ export default {
     assigned_to: "مكلفة الي",
     added_date: "تاريخ الاضافة",
     specialization: "الدائره (الاختصاص)",
-    sub_status: "الحالة الفرعية"
+    sub_status: "الحالة الفرعية",
+    requestName: "اسم الطلب",
+    requestStatus: "حالة الطلب",
+    caseStatus: "حالة القضية",
+    requestCase: "حالة القضية",
+    users: "المستفيدون",
     // causer_type: "",
   },
   texts: {
@@ -806,6 +820,14 @@ export default {
     acceptRequest: "قبول الطلب",
     returnRequest: "اعادة الطلب",
     refuseRequest: "رفض الطلب",
+    accept: "تم قبول الطلب",
+    refuse: "تم رفض الطلب",
+    return: "تم اعادة الطلب للمراجعة",
+    wait: "بانتظار الاجراء",
+    day: "يوم",
+    month: "شهر",
+    week: "اسبوع",
+    today: "اليوم",
   },
   reports: {
     buildReport: "انشاء تقرير",
@@ -928,7 +950,8 @@ export default {
     SpecializationName: "اسم الدائره",
     createSpecialization: "انشاء دائره",
     confirmDeleteSpecialization: "هل انت متأكد من حذف هذه الدائره ؟",
-    confirmDeleteSelectedSpecialization: "هل انت متأكد من حذف الدوائر المحددة ؟",
+    confirmDeleteSelectedSpecialization:
+      "هل انت متأكد من حذف الدوائر المحددة ؟",
     editSpecialization: "تحديث بيانات الدائرة",
     status: "الحالة",
     priority: "الاولوية",

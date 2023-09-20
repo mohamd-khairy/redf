@@ -2,7 +2,6 @@
 
 namespace App\Services;
 
-use Carbon\Carbon;
 use App\Models\File;
 use App\Enums\FormEnum;
 use App\Models\Formable;
@@ -16,18 +15,17 @@ use App\Models\FormAssignRequest;
 use Illuminate\Pipeline\Pipeline;
 use Illuminate\Support\Facades\DB;
 use App\Enums\FormAssignRequestType;
-use App\Enums\FormRequestStatus;
 use App\Enums\StatusEnum;
 use App\Http\Requests\PageRequest;
+use App\Models\Application;
 use Illuminate\Support\Facades\Auth;
 use App\Models\FormRequestInformation;
-use App\Models\User;
+use App\Models\Reminder;
 
 class FormRequestService
 {
     public function storeFormFill($requestData)
     {
-        //  return $requestData;
         return DB::transaction(function () use ($requestData) {
 
             $number = $requestData['case_number'] ?? rand(100000, 999999);
@@ -41,47 +39,52 @@ class FormRequestService
                 'status' => StatusEnum::PENDING,
                 'form_type' => $requestData['type'],
                 'case_date' => $requestData['case_date'],
+                'department_id' => $requestData['department_id'],
                 'form_request_number' => $number,
                 'name' => $requestData['case_name'] ?? ($requestData['name'] . "($number)")
             ]);
+
+            //handle file
+            if ($requestData->has('file')) {
+                $formRequest->file = $this->processFormFile($requestData->file, $formRequest);
+                $formRequest->save();
+            }
+
             // save related tables if get case_id
             if ($requestData->case_id) {
 
                 // Create a new Formable record
-                Formable::create([
-                    'formable_id' => $requestData->case_id,
-                    'form_request_id' => $formRequest->id,
+                Formable::firstOrCreate([
+                    'formable_id' => $formRequest->id,
+                    'form_request_id' => $requestData->case_id,
                     'formable_type' => FormRequest::class,
                 ]);
 
                 if ($requestData['type'] == 'related_case') {
-                    $formRequest->update(['status' => StatusEnum::WAIT]);
-                    $relatedCase = $this->updateStatus($requestData['id']); //form_id
-                    if (isset($formRequest->request->formable)) {
-                        $formRequest->request->formable->update(['status' => $relatedCase->value]);
-                    }
 
-                    FormAssignRequest::create([
-                        'form_request_id' => $formRequest->id,
-                        'user_id' => Auth::id(),
-                        'date' => date('Y-m-d'),
-                        'assigner_id' => User::whereHas('roles', function ($q) {
-                            $q->where('id', 2); //مستشار الاداره
-                        })->first()->id,
-                        'status' => 'active',
-                        'type' => FormAssignRequestType::EMPLOYEE,
-                    ]);
+                    $this->add_application($formRequest);
+
+
+                    $this->remove_reminder((object)['form_request_id' => $formRequest->id]);
+
+                    /*********** add Notifications ********* */
+                    sendMsgFormat(Auth::id(), $formRequest->name . ' تم اضافه طلب', ' تم إضافة طلب ( ' . $formRequest->name . ' ) ');
+                } else {
+
+                    /*********** add action ********* */
+                    saveFormRequestAction(
+                        form_request_id: $requestData->case_id,
+                        formable_id: $formRequest->id,
+                        formable_type: FormRequest::class,
+                        msg: ' تم اضافه ' . $formRequest->name
+                    );
                 }
-
-                /*********** add action ********* */
-                saveFormRequestAction(
-                    form_request_id: $requestData->case_id,
-                    formable_id: $formRequest->id,
-                    formable_type: FormRequest::class,
-                    msg: ' تم اضافه ' . $formRequest->form->name
-                );
+            } else {
+                /*********** add Notifications ********* */
+                sendMsgFormat(Auth::id(), $formRequest->name . ' تم اضافه قضية', ' تم إضافة قضية ( ' . $formRequest->name . ' ) ');
             }
 
+            /*********** add action ********* */
             saveFormRequestAction(
                 form_request_id: $formRequest->id,
                 formable_id: $formRequest->id,
@@ -89,44 +92,10 @@ class FormRequestService
                 msg: ' تم اضافه ' . $formRequest->name
             );
 
-            /*********** add Notifications ********* */
-            sendMsgFormat(Auth::id() , $formRequest->form->name . ' تم اضافه ' ,'اضافه قضيه');
-
             $this->processFormPages($requestData, $formRequest);
 
-
             return $formRequest;
-
         });
-
-
-    }
-
-    public function updateStatus($formId)
-    {
-        switch ($formId) {
-            case FormEnum::DEFENCE_CASE_FORM->value:
-                $status = CaseTypeEnum::FIRST_RULE;
-                break;
-
-            case FormEnum::CLAIM_CASE_FORM->value:
-                $status = CaseTypeEnum::FIRST_RULE;
-                break;
-
-            case FormEnum::RESUME_CASE_FORM->value:
-                $status = CaseTypeEnum::SECOND_RULE;
-                break;
-
-            case FormEnum::SOLICITATION_CASE_FORM->value:
-                $status = CaseTypeEnum::THIRD_RULE;
-                break;
-
-            default:
-                $status = null;
-                break;
-        }
-
-        return $status;
     }
 
     public function updateFormFill($requestData, $id)
@@ -149,11 +118,13 @@ class FormRequestService
             // save related tables if get case_id
             if ($requestData->case_id) {
                 // Update Formable record
-                Formable::updateOrCreate([
-                    'formable_id' => $requestData->case_id,
-                    'form_request_id' => $formRequest->id,
-                    'formable_type' => FormRequest::class,
-                ]);
+                Formable::firstOrCreate(
+                    [
+                        'form_request_id' => $requestData->case_id,
+                        'formable_id' => $formRequest->id,
+                        'formable_type' => FormRequest::class,
+                    ]
+                );
 
                 saveFormRequestAction(
                     form_request_id: $requestData->case_id,
@@ -214,6 +185,25 @@ class FormRequestService
         });
     }
 
+    private function processFormFile($file, $formRequest)
+    {
+        $filePath = UploadService::store($file, 'formPages');
+        // Create a new file record
+        $fileRecord = new File([
+            'name' => 'لائحه الدعوي',
+            'path' => $filePath,
+            'user_id' => auth()->id(),
+            'start_date' => now(),
+            'type' => $formRequest->form_type,
+            'priority' => 'high',
+            'status' => 'active',
+        ]);
+        $fileRecord->fileable()->associate($formRequest); // Associate the file with the task
+        $fileRecord->save();
+
+        return $filePath;
+    }
+
     public function getFormRequest(PageRequest $request)
     {
         try {
@@ -225,19 +215,21 @@ class FormRequestService
                 'lastFormRequestInformation',
                 'branch',
                 'specialization',
-                'request'
+                'request',
+                'case',
+                'lastFormRequestAction'
             );
+
+            $query = $query->where('form_type', request('form_type', 'case'));
 
             if ($request->has('template_id')) {
                 $query = $query->whereHas('form', fn ($q) => $q->where('template_id', $request->input('template_id')));
             }
 
-            $query = $query->where('form_type', request('form_type', 'case'));
-
-
             $data = app(Pipeline::class)->send($query)->through([SortFilters::class])->thenReturn();
 
             $pageSize = $request->input('pageSize', 15);
+
             $data = $pageSize == -1 ?  $data->get() : $data->paginate($pageSize);
 
             return $data;
@@ -251,7 +243,6 @@ class FormRequestService
     {
         try {
             return DB::transaction(function () use ($requestData) {
-                $formattedDate = Carbon::createFromFormat('Y-m-d', $requestData['date'])->toDateString();
                 foreach ($requestData['form_request_id'] as $formRequestId) {
                     FormAssignRequest::where('form_request_id', $formRequestId)
                         ->where('status', 'active')
@@ -261,19 +252,28 @@ class FormRequestService
                     $assignNew = FormAssignRequest::create([
                         'form_request_id' => $formRequestId,
                         'user_id' => $requestData['user_id'],
-                        'date' => $formattedDate,
+                        'date' => date('Y-m-d'),
                         'assigner_id' => auth()->id(),
                         'status' => 'active',
                         'type' => FormAssignRequestType::EMPLOYEE,
                     ]);
 
-                    FormRequest::where('id', $formRequestId)->update(['status' => StatusEnum::ASSIGNED]);
+
+
+                    $request = FormRequest::where('id', $formRequestId)->first();
+                    if ($request->form_type == 'case') {
+                        $request->update(['status' => StatusEnum::ASSIGNED]);
+                    }
+
+                    if ($request->form_type == 'related_case') {
+                        $request->update(['status' => StatusEnum::WAIT]);
+                    }
 
                     saveFormRequestAction(
                         form_request_id: $formRequestId,
                         formable_id: $assignNew->id,
                         formable_type: FormAssignRequest::class,
-                        msg: 'تم اسناد الطلب ل موظف جديد',
+                        msg: 'تم اسناد الطلب ل موظف ',
                     );
                 }
                 return ['assignNew' => $assignNew];
@@ -293,9 +293,7 @@ class FormRequestService
             'department_id' => ['nullable', 'exists:departments,id'],
         ]);
 
-        $formRequestSide = FormRequestSide::updateOrCreate($request->only('form_request_id'), $validatedData);
-
-        return responseSuccess($formRequestSide, 'Form Request Side has been successfully Created');
+        return  $formRequestSide = FormRequestSide::updateOrCreate($request->only('form_request_id'), $validatedData);
     }
 
     public function formRequestInformation($request)
@@ -307,38 +305,112 @@ class FormRequestService
 
             $formRequestInfo = FormRequestInformation::create($validatedData);
 
-            if ($request->status) {
-                $status = $request->status;
-                $formRequestInfo->form_request->update(['status' => CaseTypeEnum::$status()]);
-            }
-
-            if ($request->date) {
-                $calendarData = [
-                    'form_request_id' => $formRequestInfo->form_request_id,
-                    'calendarable_id' => $formRequestInfo->form_request_id,
-                    'calendarable_type' => FormRequest::class,
-                    'details' => $request->details ? $request->details : 'تم اضافه اجراء جديد',
-                    'user_id' => auth()->id(),
-                    'date' => $request->date,
-                ];
-
-                saveCalendarFromRequest($calendarData);
+            $rstatus = $request->status;
+            $status = $request->type == 'session' ? StatusEnum::WAIT_SESSION : ($rstatus ? CaseTypeEnum::$rstatus() : null);
+            if ($status) {
+                $formRequestInfo->form_request->update(['status' => $status]);
             }
 
             saveFormRequestAction(
                 form_request_id: $formRequestInfo->form_request_id,
                 formable_id: $formRequestInfo->id,
                 formable_type: FormRequestInformation::class,
-                msg: $request->details ? $request->details : 'تم اضافه اجراء جديد',
+                msg: $request->type == 'session' ? 'تم اضافة جلسة ' : ($request->details ? $request->details : 'تم اضافه اجراء '),
             );
+
+            if ($request->date || $request->sessionDate) {
+                $calendarData = [
+                    'form_request_id' => $formRequestInfo->form_request_id,
+                    'calendarable_id' => $formRequestInfo->form_request_id,
+                    'calendarable_type' => FormRequest::class,
+                    'details' => $request->type == 'session' ? 'تم اضافة جلسة' : ($request->details ? $request->details : 'تم اضافه اجراء '),
+                    'user_id' => auth()->id(),
+                    'date' => $request->date ?? $request->sessionDate,
+                ];
+
+                saveCalendarFromRequest($calendarData);
+            }
+
+            if ($formRequestInfo->date_of_receipt) {
+                $this->add_reminder($formRequestInfo);
+            } else {
+                $this->remove_reminder($formRequestInfo);
+            }
 
             DB::commit();
 
-            return responseSuccess($formRequestInfo, 'Form Request Information and Sessions have been successfully created.');
+            return $formRequestInfo;
         } catch (\Exception $e) {
 
             DB::rollBack();
             return responseFail($e->getMessage());
         }
+    }
+
+    public function updateFormRequestInformation($id, $request)
+    {
+        try {
+            DB::beginTransaction();
+
+            $formRequestInfo = FormRequestInformation::find($id);
+            $response = $formRequestInfo->update($request->only('date_of_receipt'));
+            $formRequestInfo->refresh();
+            if ($response && $formRequestInfo->date_of_receipt) {
+
+                saveFormRequestAction(
+                    form_request_id: $formRequestInfo->form_request_id,
+                    formable_id: $formRequestInfo->id,
+                    formable_type: FormRequestInformation::class,
+                    msg: 'تم استلام الحكم',
+                );
+
+                if ($formRequestInfo->status != 'THIRD_RULE') {
+                    $this->add_reminder($formRequestInfo);
+                }
+            }
+
+            DB::commit();
+
+            return $response;
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            //throw $th;
+        }
+    }
+
+    public function add_reminder($formRequestInfo)
+    {
+        $start_date = date('Y-m-d', strtotime($formRequestInfo->date_of_receipt));
+        $end_date = date('Y-m-d', strtotime($formRequestInfo->date_of_receipt . "+ 30 day"));
+        $color =  "#" . dechex(rand(0x000000, 0xFFFFFF));
+
+        Reminder::updateOrCreate([
+            'form_request_id' => $formRequestInfo->form_request_id,
+            'form_request_information_id' => $formRequestInfo->id,
+            'name' => "تم استلام الحكم",
+        ], [
+            'color' => $color,
+            'start_date' => $start_date,
+            'end_date' => $end_date
+        ]);
+
+        return true;
+    }
+
+    public function remove_reminder($formRequestInfo)
+    {
+        return Reminder::where([
+            'form_request_id' => $formRequestInfo->form_request_id,
+        ])->delete();
+    }
+
+    public function add_application($formRequest)
+    {
+        return Application::firstOrCreate([
+            'form_request_id' => $formRequest->id,
+            'form_id' => $formRequest->form_id
+        ], [
+            'stage_id' => 1
+        ]);
     }
 }

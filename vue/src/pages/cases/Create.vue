@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div style="width: 100%">
     <v-stepper v-model="e1">
       <v-stepper-header>
         <v-stepper-step :complete="e1 > 1" step="1">
@@ -28,10 +28,10 @@
             <div class="mt-2">
               <div class="d-flex">
                 <v-select
-                  :items="formRequests"
+                  :items="cases"
                   :label="$t('cases.belongToCase')"
-                  :item-text="(item) => item.name"
-                  :item-value="(item) => item.id"
+                  item-text="name"
+                  item-value="id"
                   hide-details
                   dense
                   outlined
@@ -48,13 +48,13 @@
                   v-if="caseId"
                   color="primary"
                   outlined
-                  @click="openCaseInfoDialog()"
+                  @click="openCaseInfoDialog(caseId)"
                   >{{ $t("cases.view_info") }}</v-btn
                 >
               </div>
             </div>
           </div>
-          <v-card-actions>
+          <v-card-actions class="mt-2">
             <v-btn color="primary" @click="saveCaseInfo">
               {{ $t("general.continue") }}
             </v-btn>
@@ -113,6 +113,7 @@
                                 dense
                                 counter
                                 show-size
+                                accept=".doc, .docx"
                                 :label="getInputLabel(input)"
                                 @change="
                                   (file) => handleFileUpload(file, input)
@@ -175,132 +176,29 @@
           </v-card-actions>
         </v-stepper-content>
         <v-stepper-content step="3">
-          <iframe :src="docUrl" width="100%" height="500"></iframe>
-          <!-- <div class="d-flex flex-column flex-sm-row">
-            <div class="flex-grow-1 pt-2 pa-sm-2">
-              <v-row dense>
-                <v-col cols="6">
-                  <v-text-field
-                    type="number"
-                    v-model="caseAction.amount"
-                    :label="$t('cases.amount')"
-                    outlined
-                    dense
-                  >
-                    <template v-slot:append>
-                      <v-icon> mdi-cash </v-icon>
-                    </template>
-                  </v-text-field>
-                </v-col>
-                <v-col cols="6">
-                  <v-text-field
-                    type="number"
-                    v-model="caseAction.percentage"
-                    :label="$t('cases.percentageLose')"
-                    dense
-                    outlined
-                  >
-                    <template v-slot:append>
-                      <v-icon> mdi-percent </v-icon>
-                    </template>
-                  </v-text-field>
-                </v-col>
-                <v-col cols="6">
-                  <v-select
-                    :items="caseTypes"
-                    item-text="title"
-                    item-value="value"
-                    :label="$t('tables.status')"
-                    dense
-                    outlined
-                    required="true"
-                    :rules="[rules.required]"
-                    :error-messages="stepOneValidation(caseAction.status)"
-                    v-model="caseAction.status"
-                  >
-                  </v-select>
-                </v-col>
-                <v-col cols="12" sm="6">
-                  <v-dialog
-                    ref="dateDialog"
-                    v-model="dateDialog"
-                    :return-value.sync="caseAction.date"
-                    persistent
-                    width="290px"
-                  >
-                    <template v-slot:activator="{ on, attrs }">
-                      <v-text-field
-                        v-model="caseAction.date"
-                        :label="$t('tables.date')"
-                        prepend-icon="mdi-calendar"
-                        readonly
-                        v-bind="attrs"
-                        v-on="on"
-                        dense
-                        required="true"
-                        :rules="[rules.required]"
-                        :error-messages="stepOneValidation(caseAction.date)"
-                        outlined
-                      ></v-text-field>
-                    </template>
-                    <v-date-picker v-model="caseAction.date" scrollable>
-                      <v-spacer></v-spacer>
-                      <v-btn text color="primary" @click="modal = false">
-                        Cancel
-                      </v-btn>
-                      <v-btn
-                        text
-                        color="primary"
-                        @click="$refs.dateDialog.save(caseAction.date)"
-                      >
-                        OK
-                      </v-btn>
-                    </v-date-picker>
-                  </v-dialog>
-                </v-col>
+          <iframe
+            v-if="uploadedFileType === 'pdf'"
+            :src="docUrl"
+            width="100%"
+            height="500"
+          ></iframe>
+          <div v-else id="filePreview-container"></div>
 
-                <v-col cols="12">
-                  <v-select
-                    :items="courts"
-                    :label="$t('tables.court')"
-                    item-text="title"
-                    item-value="value"
-                    dense
-                    outlined
-                    v-model="caseAction.court"
-                  >
-                  </v-select>
-                </v-col>
-                <v-col cols="12">
-                  <v-textarea
-                    :label="$t('cases.action')"
-                    value=""
-                    v-model="caseAction.details"
-                    dense
-                    outlined
-                  ></v-textarea>
-                </v-col>
-              </v-row>
-            </div>
-          </div> -->
-          <v-card-actions>
-            <!-- <v-btn  color="primary">
-              {{ $t("general.downloadWord") }}
-            </v-btn> -->
-            <v-btn color="primary">
-              {{ $t("general.acceptRequest") }}
-            </v-btn>
-            <v-btn color="primary">
-              {{ $t("general.returnRequest") }}
-            </v-btn>
-            <v-btn color="primary">
-              {{ $t("general.refuseRequest") }}
-            </v-btn>
+<!--          <v-card-actions class="mt-2">-->
+<!--            <v-btn color="primary" @click="updateCaseStatus('ACCEPT')">-->
+<!--              {{ $t("general.acceptRequest") }}-->
+<!--            </v-btn>-->
+<!--            <v-btn color="primary" @click="updateCaseStatus('RETURN')">-->
+<!--              {{ $t("general.returnRequest") }}-->
+<!--            </v-btn>-->
+<!--            <v-btn color="primary" @click="updateCaseStatus('REFUSE')">-->
+<!--              {{ $t("general.refuseRequest") }}-->
+<!--            </v-btn>-->
 
-            <v-btn color="grey" @click="stepBack" class="ms-2">
-              {{ $t("general.back") }}
-            </v-btn>
-          </v-card-actions>
+<!--&lt;!&ndash;            <v-btn color="grey" @click="stepBack" class="ms-2">&ndash;&gt;-->
+<!--&lt;!&ndash;              {{ $t("general.back") }}&ndash;&gt;-->
+<!--&lt;!&ndash;            </v-btn>&ndash;&gt;-->
+<!--          </v-card-actions>-->
         </v-stepper-content>
       </v-stepper-items>
     </v-stepper>
@@ -324,6 +222,7 @@ import CaseInfoDialog from "../../components/cases/CaseInfoDialog.vue";
 import { makeToast } from "@/helpers";
 import axios from "@/plugins/axios";
 import AppealFormPreview from "./AppealFormPreview.vue";
+import * as docx from "docx-preview";
 
 export default {
   name: "Create",
@@ -336,6 +235,8 @@ export default {
   },
   data() {
     return {
+      fileUploaded: null,
+      uploadedFileType: null,
       e1: 1,
       docUrl: "",
       selectedTitle: "",
@@ -353,7 +254,12 @@ export default {
       caseCheck: false,
       breadcrumbs: [
         {
-          text: this.$t("menu.requests"),
+          text: this.$t("menu.cases_child"),
+          disabled: false,
+          href: "#",
+        },
+        {
+          text: this.$t("cases.formTypes"),
           disabled: false,
           href: "#",
         },
@@ -416,9 +322,19 @@ export default {
   watch: {
     e1(val) {
       if (val === 3) {
-        this.getPagesValues(this.formRequestId).then((data) => {
-          this.docUrl = data.form_page_item_fill[1].value;
-        });
+        if (this.uploadedFileType === "pdf") {
+          this.getPagesValues(this.formRequestId).then((data) => {
+            const url = data.form_page_item_fill[1].value;
+            this.docUrl = url;
+          });
+        } else {
+          docx
+            .renderAsync(
+              this.fileUploaded,
+              document.getElementById("filePreview-container")
+            )
+            .then((x) => console.log("docx: finished"));
+        }
       }
     },
   },
@@ -428,7 +344,7 @@ export default {
       "selectedForm",
       "courts",
       "caseTypes",
-      "formRequests",
+      "cases",
     ]),
     ...mapState("auth", ["user"]),
     ...mapState("app", ["navTemplates"]),
@@ -490,26 +406,37 @@ export default {
       "saveRequestSide",
       "saveFormInformation",
       "getCourts",
-      "getFormRequests",
+      "getCases",
       "savePages",
       "updateBackPages",
       "getPagesValues",
+      "changeStatus",
     ]),
+    async updateCaseStatus(status) {
+      const res = await this.changeStatus({
+        status,
+        formId: this.formRequestId,
+      });
+      if (res) {
+        this.$router.push({ path: `/cases/1/request-review` });
+      }
+    },
     openCaseInfoDialog(id) {
+      this.getCaseTimeline(id);
       this.caseInfoDialog = true;
     },
     async getCaseTimeline(id) {
       try {
         this.loading = true;
         const response = await this.$axios.get(`get-form-Requests/${id}`);
-        console.log(response?.data?.data);
+
         const { form_request_side, form_request_number, name } =
           response?.data?.data;
 
         this.formRequestSide = form_request_side;
         this.caseName = name;
         this.caseNumber = form_request_number;
-        console.log(this.caseNumber);
+
         this.caseClaimant = {
           id: form_request_side.claimant.id,
           name: form_request_side.claimant.name,
@@ -525,7 +452,8 @@ export default {
         template_id: 1,
         pageSize: -1,
       };
-      this.getFormRequests(data)
+
+      this.getCases(data)
         .then(() => {})
         .catch(() => {});
     },
@@ -619,7 +547,7 @@ export default {
         return nav.id === +currentFormId;
       });
       if (currentPage) {
-        this.breadcrumbs.push({
+        this.breadcrumbs.unshift({
           text: currentPage.title,
           disabled: false,
           href: `/cases/${currentFormId}`,
@@ -631,7 +559,7 @@ export default {
       this.selectedTitle = this.$t(this.selectedForm.name);
       this.setBreadCrumb({
         breadcrumbs: this.breadcrumbs,
-        pageTitle: this.$t("cases.casesList"),
+        pageTitle: this.$t("cases.cases"),
       });
     },
     init() {
@@ -642,7 +570,6 @@ export default {
       this.initialLoading = true;
       this.getPages(id)
         .then((_) => {
-          console.log(this.pages);
           this.setCurrentBread();
         })
         .finally((_) => {
@@ -651,8 +578,12 @@ export default {
     },
     handleFileUpload(file, input) {
       if (file) {
+        this.fileUploaded = file;
         const fileName = file.name.split(".")[0];
+
         const fileExtension = file.name.split(".")[1];
+
+        this.uploadedFileType = fileExtension.toLowerCase();
         input["file_name"] = fileName + "." + fileExtension;
         const reader = new FileReader();
         reader.readAsDataURL(file);
@@ -685,14 +616,14 @@ export default {
         this.showErrors = true;
         return;
       }
-      this.getCaseTimeline(this.caseId);
+      // this.getCaseTimeline(this.caseId);
       this.showErrors = false;
       this.stepOneErrors = false;
       this.e1 = 2;
     },
     async saveForm() {
       this.isSubmitingForm = true;
-      if ((await this.validateFormData()) && this.caseName && this.caseNumber) {
+      if ((await this.validateFormData()) && this.caseId) {
         let result = null;
         if (!this.formRequestId) {
           result = await this.savePages({

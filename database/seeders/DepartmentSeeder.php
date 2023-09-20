@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Department;
+use App\Models\Organization;
 use Illuminate\Database\Seeder;
 
 class DepartmentSeeder extends Seeder
@@ -22,8 +23,20 @@ class DepartmentSeeder extends Seeder
             ],
         ];
 
+        $organizations = [
+            [
+                'id' => 1,
+                'name' => 'التصنيف',
+                'description' => 'التصنيف',
+            ],
+        ];
+
         foreach ($data as $item) {
             Department::firstOrCreate($item);
+        }
+
+        foreach ($organizations as $item) {
+            Organization::firstOrCreate($item);
         }
     }
 }

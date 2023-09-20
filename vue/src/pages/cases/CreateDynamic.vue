@@ -1,5 +1,5 @@
 <template>
-  <div class="d-flex flex-column flex-grow-1" style="margin: 50px">
+  <div class="d-flex flex-column flex-grow-1">
     <create-case v-if="id == 1"></create-case>
     <create-legal-advice v-else-if="id == 2"></create-legal-advice>
     <create-review-and-audit v-else-if="id == 3"></create-review-and-audit>

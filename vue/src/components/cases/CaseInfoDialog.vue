@@ -173,12 +173,13 @@
                 {{ $t(`cases.civil`) }}
               </div>
               <div class="input-value">
-                {{ caseType=== 'from_redf' ? formRequestSide?.defendant?.user_information?.civil_number : formRequestSide?.claimant?.user_information?.civil_number }}
+                {{ caseType === 'from_redf' ? formRequestSide?.defendant?.user_information?.civil_number :
+                  formRequestSide?.claimant?.user_information?.civil_number }}
               </div>
             </v-col>
           </v-row>
         </div>
-        <div>
+        <div v-if="formRequestInformation.length > 0">
           <div class="form-title mb-1">
             <h4>
               {{ $t("cases.actions") }}
@@ -191,7 +192,7 @@
               </h5>
             </div>
             <v-row dense class="mb-3">
-              <v-col cols="3" class="input-cont mb-2">
+              <v-col cols="3" class="input-cont mb-2" v-if="action?.amount">
                 <div class="input-label">
                   {{ $t(`cases.amount`) }}
                 </div>
@@ -199,7 +200,7 @@
                   {{ action?.amount || "---" }}
                 </div>
               </v-col>
-              <v-col cols="3" class="input-cont mb-2">
+              <v-col cols="3" class="input-cont mb-2" v-if="action?.percentage">
                 <div class="input-label">
                   {{ $t(`cases.percentageLose`) }}
                 </div>
@@ -207,7 +208,7 @@
                   {{ action?.percentage || "---" }}
                 </div>
               </v-col>
-              <v-col cols="3" class="input-cont mb-2">
+              <v-col cols="3" class="input-cont mb-2" v-if="action?.date">
                 <div class="input-label">
                   {{ $t(`cases.date`) }}
                 </div>
@@ -215,19 +216,18 @@
                   {{ action?.date || "---" }}
                 </div>
               </v-col>
-              <v-col cols="3" class="input-cont mb-2">
+              <v-col cols="3" class="input-cont mb-2" v-if="action.status">
                 <div class="input-label">
                   {{ $t(`cases.status`) }}
                 </div>
                 <div class="input-value">
                   {{
-                    action.status
-                    ? $t(`general.${action.status.toLowerCase()}`)
-                    : "---"
+                    action.display_status
+
                   }}
                 </div>
               </v-col>
-              <v-col cols="3" class="input-cont mb-2">
+              <v-col cols="3" class="input-cont mb-2" v-if="action.court">
                 <div class="input-label">
                   {{ $t(`cases.court`) }}
                 </div>
@@ -241,18 +241,46 @@
               </v-col>
               <v-col cols="3" class="input-cont mb-2" v-if="action?.sessionDate">
                 <div class="input-label">
-                  {{ $t(`cases.sessionDate`) }}
+                  {{ $t('cases.sessionDate') }}
                 </div>
                 <div class="input-value">
                   {{ action?.sessionDate || "---" }}
                 </div>
               </v-col>
-              <v-col cols="12" class="input-cont textarea-bg mb-2">
+              <v-col cols="3" class="input-cont mb-2" v-if="action?.session_place">
+                <div class="input-label">
+                  {{ $t(`cases.casePlace`) }}
+                </div>
+                <div class="input-value">
+                  {{ action?.session_place || "---" }}
+                </div>
+              </v-col>
+
+
+              <v-col cols="3" class="input-cont mb-2" v-if="action?.user_id">
+                <div class="input-label">
+                  {{ $t(`cases.judgment_for`) }}
+                </div>
+                <div class="input-value">
+                  {{ action?.user.name || "---" }}
+                </div>
+              </v-col>
+
+              <v-col cols="12" class="input-cont textarea-bg mb-2" v-if="action.details">
                 <div class="input-label">
                   {{ $t(`cases.details`) }}
                 </div>
                 <div class="input-value">
                   {{ action.details }}
+                </div>
+              </v-col>
+
+              <v-col cols="3" class="input-cont mb-2" v-if="action?.date_of_receipt">
+                <div class="input-label">
+                  {{ $t(`cases.receiptDate`) }}
+                </div>
+                <div class="input-value">
+                  {{ action?.date_of_receipt || "---" }}
                 </div>
               </v-col>
               <!-- <v-col

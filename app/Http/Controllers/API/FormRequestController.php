@@ -2,28 +2,28 @@
 
 namespace App\Http\Controllers\API;
 
-use Throwable;
-use App\Models\Form;
+use App\Enums\FormEnum;
 use App\Models\User;
 use App\Models\FormRequest;
 use Illuminate\Http\Request;
-use App\Rules\StatusEnumRule;
 use App\Models\FormRequestSide;
 use App\Enums\FormRequestStatus;
+use App\Enums\StatusEnum;
 use App\Http\Requests\FormAssign;
 use App\Http\Requests\PageRequest;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use App\Services\FormRequestService;
-use Illuminate\Validation\Rules\Enum;
 use App\Http\Requests\FormFillRequest;
 use App\Http\Requests\InformationRequest;
+use App\Http\Requests\UpdateFormFillRequest;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Resources\FormRequestResource;
+use App\Models\File;
 
 class FormRequestController extends Controller
 {
-    public $model = Form::class;
+    public $model = FormRequest::class;
     private $formRequestService;
 
     public function __construct(FormRequestService $formRequestService)
@@ -49,11 +49,11 @@ class FormRequestController extends Controller
         }
     }
 
-    public function updateFormFill(Request $request, $id)
+    public function updateFormFill(UpdateFormFillRequest $request, $id)
     {
         try {
             $formRequest = $this->formRequestService->updateFormFill($request, $id);
-            return responseSuccess([], 'Form Fill has been successfully updated');
+            return responseSuccess($formRequest, 'Form Fill has been successfully updated');
         } catch (\Throwable $th) {
             return responseFail($th->getMessage());
         }
@@ -84,7 +84,9 @@ class FormRequestController extends Controller
                 'formRequestSide',
                 'lastFormRequestInformation',
                 'request',
-                'branche'
+                'case',
+                'branche',
+                'formAssignedRequests'
             )->find($id);
 
             return responseSuccess(new FormRequestResource($formfill), 'Form requests retrieved successfully');
@@ -111,24 +113,41 @@ class FormRequestController extends Controller
 
     public function storeFormRequestSide(Request $request)
     {
-        return $this->formRequestService->formRequestSide($request);
+        $formRequestSide = $this->formRequestService->formRequestSide($request);
+
+        return responseSuccess($formRequestSide, 'Form Request Side has been successfully Created');
     }
 
     public function formRequestInformation(InformationRequest $request)
     {
-        return $this->formRequestService->formRequestInformation($request);
+        $response = $this->formRequestService->formRequestInformation($request);
+
+        return responseSuccess($response, 'Form Request Information and Sessions have been successfully created.');
+    }
+
+    public function updateFormRequestInformation($id, InformationRequest $request)
+    {
+        $response = $this->formRequestService->updateFormRequestInformation($id, $request);
+
+        return responseSuccess($response, 'updated successfully');
     }
 
     public function deleteFormRequest($id)
     {
         try {
             return DB::transaction(function () use ($id) {
-                $formRequest = FormRequest::findOrFail($id);
+                $formRequest = FormRequest::with('requests')->findOrFail($id);
                 // Delete related records
+                $formRequest->calenders()->delete();
+                $formRequest->formRequestActions()->delete();
                 $formRequest->formRequestInformations()->delete();
                 $formRequest->formRequestSide()->delete();
                 $formRequest->tasks()->delete();
                 $formRequest->form_page_item_fill()->delete();
+                if ($formRequest->type == 'case') {
+                    FormRequest::whereIn('id', $formRequest->requests()->pluck('formable_id'))->delete();
+                    $formRequest->requests()->delete();
+                }
                 // Delete the FormRequest itself
                 $formRequest->delete();
                 return responseSuccess('Form Request Deleted Successfully');
@@ -142,16 +161,32 @@ class FormRequestController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'form_request_id' => 'required|exists:form_requests,id',
-            'status' => [new Enum(FormRequestStatus::class)],
+            'status' => ['required'],
         ]);
 
         if ($validator->fails()) {
             return responseFail($validator->errors()->first());
         }
 
-        FormRequest::where('id', $request->form_request_id)->update(['status' => $request->status]);
+        $formRequest = FormRequest::where('id', $request->form_request_id)->first();
+        $response = $formRequest->update(['status' => request('status'), 'status_request' => request('status')]);
 
-        return responseSuccess('Status updated successfully');
+        /*********** update form request status عند الموافقه علي خطاب التنفيذ********* */
+        $relatedCase = $this->updateStatus($formRequest->form->id); //form_id
+        if (isset($formRequest->case->item) && isset($relatedCase->value)) {
+            $formRequest->case->item->update(['status' => $relatedCase->value]);
+        }
+        /******************************************************************************* */
+
+        $status = $request->status;
+        saveFormRequestAction(
+            form_request_id: $formRequest->case->item->id,
+            formable_id: $formRequest->id,
+            formable_type: FormRequest::class,
+            msg: FormRequestStatus::$status() . " ( $formRequest->name ) " 
+        );
+
+        return responseSuccess($response, 'Status updated successfully');
     }
 
     public function retrieveClaimant(Request $request)
@@ -168,5 +203,49 @@ class FormRequestController extends Controller
         }
 
         return responseSuccess([], 'Retrieve Claimant And Defendant');
+    }
+
+    public function getFile($id)
+    {
+        $file = File::where(['fileable_id' => $id, 'fileable_type' => 'App\Models\FormRequest'])->first();
+
+        if (!$file) {
+            return responseFail('there is no file for this id');
+        }
+
+        $b64image = base64_encode(file_get_contents($file->file));
+
+        return responseSuccess($b64image);
+    }
+
+    public function updateStatus($formId)
+    {
+        switch ($formId) {
+                // case FormEnum::DEFENCE_CASE_FORM->value:
+                //     $status = CaseTypeEnum::FIRST_RULE;
+                //     break;
+
+                // case FormEnum::CLAIM_CASE_FORM->value:
+                //     $status = CaseTypeEnum::FIRST_RULE;
+                //     break;
+
+                // case FormEnum::RESUME_CASE_FORM->value:
+                //     $status = CaseTypeEnum::SECOND_RULE;
+                //     break;
+
+                // case FormEnum::SOLICITATION_CASE_FORM->value:
+                //     $status = CaseTypeEnum::THIRD_RULE;
+                //     break;
+
+            case FormEnum::IMPLEMENTATION_CASE_FORM->value:
+                $status = StatusEnum::CLOSED;
+                break;
+
+            default:
+                $status = null;
+                break;
+        }
+
+        return $status;
     }
 }

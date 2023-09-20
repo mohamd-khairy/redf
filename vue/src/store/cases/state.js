@@ -1,8 +1,9 @@
 const state = {
   forms: [],
   formRequests: [],
-  branches: [],
+  sessionPlaces: [],
   cards: [],
+  cases: [],
   eventTypes: [],
   statuses: [],
   locations: [],

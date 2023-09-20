@@ -27,6 +27,22 @@ const actions = {
     const formRequests = response?.data.data;
     commit("SET_formRequests", formRequests);
   },
+  async getCases({ commit }, data) {
+    const response = await axios.get(`get-form-Requests`, {
+      params: {
+        template_id: data.template_id,
+        form_type: data.form_type,
+        type: "case",
+        search: data.search,
+        pageSize: data.pageSize,
+        page: data.pageNumber,
+        sortDirection: data.sortDirection,
+        sortCoulmn: data.sortColumn,
+      },
+    });
+    const cases = response?.data.data;
+    commit("SET_CASES", cases);
+  },
   async deleteForm({ commit }, id) {
     return await axios.delete(`delete-form-Requests/${id}`);
   },
@@ -159,7 +175,7 @@ const actions = {
   },
   async getPagesValues({ commit }, formId) {
     const response = await axios.get(`get-form-Requests/${formId}`);
-    console.log("pages", response?.data.data);
+
     let pageTabs = response?.data.data.form.pages;
     const inputValues = response?.data.data.form_page_item_fill;
     const selectedFormName = response?.data.data.form.name;
@@ -224,6 +240,7 @@ const actions = {
       case_type,
       specialization_id,
       organization_id,
+      file
     }
   ) {
     try {
@@ -278,6 +295,9 @@ const actions = {
       if (organization_id) {
         bodyFormData.set("organization_id", organization_id);
       }
+      if (file) {
+        bodyFormData.set("file", file);
+      }
       const result = await axios.post(`store-form-fill`, bodyFormData, {
         headers: {
           "Content-Type": "multipart/form-data",
@@ -294,6 +314,7 @@ const actions = {
     {
       caseName,
       caseNumber,
+      case_id,
       formId,
       branch_id,
       caseDate,
@@ -301,6 +322,7 @@ const actions = {
       case_type,
       specialization_id,
       organization_id,
+      file
     }
   ) {
     try {
@@ -339,6 +361,9 @@ const actions = {
       if (caseDate) {
         bodyFormData.set("case_date", caseDate);
       }
+      if (case_id) {
+        bodyFormData.set("case_id", case_id);
+      }
       if (branch_id) {
         bodyFormData.set("branche_id", branch_id);
       }
@@ -353,6 +378,9 @@ const actions = {
       }
       if (organization_id) {
         bodyFormData.set("organization_id", organization_id);
+      }
+      if (file) {
+        bodyFormData.set("file", file);
       }
       const response = await axios.post(
         `update-form-fill/${formId}`,
@@ -371,7 +399,7 @@ const actions = {
   },
   async updateBackPages(
     { state },
-    { caseName, caseNumber, formId, branch_id, caseDate, type }
+    { caseName, caseNumber, formId, branch_id, caseDate, type,case_id }
   ) {
     try {
       const customFormData = {
@@ -414,6 +442,9 @@ const actions = {
       }
       if (type) {
         bodyFormData.set("type", type);
+      }
+      if (case_id) {
+        bodyFormData.set("case_id", case_id);
       }
       const response = await axios.post(
         `update-form-fill/${formId}`,
@@ -524,7 +555,7 @@ const actions = {
     const { branches } = response?.data.data;
     const { organizations } = response?.data.data;
     commit("SET_CORTS", court_types);
-    commit("SET_BRANCHES", branches);
+    commit("SET_SESSION_PLACES", branches);
     commit("SET_CASE_TYPES", case_types);
     commit("SET_specializations", specialization);
     commit("SET_organizations", organizations);
@@ -543,6 +574,30 @@ const actions = {
     const response = await axios.get(`action-preview/${id}`);
     const { formRequestActions } = response?.data?.data;
     return formRequestActions;
+  },
+  async changeStatus({ commit }, { status, formId }) {
+    try {
+      const response = await axios.post(`change-status`, {
+        status: status,
+        form_request_id: formId,
+      });
+      if (response) {
+        return true;
+      }
+    } catch (error) {
+      return false;
+    }
+  },
+  async updateFormRequestInfo({ commit }, data) {
+    return await axios.put(`update-form-request-information/${data.id}`, data);
+  },
+
+  async getApplications({ commit }, id) {
+    return await axios.get(`get-all-applications`,{
+      params:{
+        form_id:id
+      }
+    });
   },
 };
 

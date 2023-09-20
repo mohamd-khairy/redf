@@ -13,6 +13,8 @@ class File extends Model
 
     protected $fillable = ['name', 'path', 'fileable_type', 'fileable_id', 'priority', 'start_date', 'end_date', 'type', 'user_id', 'status'];
 
+    protected $appends = ['file'];
+
     public function fileable()
     {
         return $this->morphTo();
@@ -25,5 +27,10 @@ class File extends Model
         }
 
         return null;
+    }
+
+    public function getFileAttribute()
+    {
+        return $this->attributes['path'] ? 'storage/' . $this->attributes['path'] : null;
     }
 }

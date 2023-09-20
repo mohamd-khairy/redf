@@ -106,11 +106,11 @@
               <!-- <template v-slot:activator="{ on, attrs }">
                                     <v-btn color="primary" v-bind="attrs" v-on="on">From the bottom</v-btn>
                                 </template> -->
-              <template v-slot:activator="{ on, attrs }">
-                <v-btn icon v-bind="attrs" v-on="on" v-can="'create-user'">
-                  <v-icon> mdi-account-key </v-icon>
-                </v-btn>
-              </template>
+<!--              <template v-slot:activator="{ on, attrs }">-->
+<!--                <v-btn icon v-bind="attrs" v-on="on" v-can="'create-user'">-->
+<!--                  <v-icon> mdi-account-key </v-icon>-->
+<!--                </v-btn>-->
+<!--              </template>-->
 
               <template v-slot:default="dialog">
                 <v-card>
