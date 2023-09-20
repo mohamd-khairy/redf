@@ -155,6 +155,23 @@
                   ></v-select>
                 </v-col>
               </v-row>
+
+              <v-row class="mb-1">
+                <v-col cols="6">
+                  <v-file-input
+                    outlined
+                    dense
+                    counter
+                    show-size
+                    :v-model="user.avatar"
+                    :label="$t('users.user_photo')"
+                    @change="(file) => handleFileUpload(file)"
+                    click:clear="handleRemoveFile"
+                    :error-messages="errors['avatar']"
+                  >
+                  </v-file-input>
+                </v-col>
+              </v-row>
               <!-- <hr /> -->
               <div class="mt-2">
                 <v-btn
@@ -296,13 +313,31 @@ export default {
           this.isLoading = false;
         });
     },
+    handleFileUpload(file, input) {
+      if (file) {
+        const fileName = file.name.split(".")[0];
+        const fileExtension = file.name.split(".")[1];
+        this.user.avatar = file;
+      }
+    },
+    handleRemoveFile() {
+      this.user.avatar = null;
+    },
     changeImage() {
       document.getElementById("update-avatar").click();
     },
     updateProfile() {
-      const { email, name, password, confirm_password, username, roles } =
-        this.user;
+      const {
+        avatar,
+        email,
+        name,
+        password,
+        confirm_password,
+        username,
+        roles,
+      } = this.user;
       let data = {
+        avatar,
         email,
         name,
         password,
