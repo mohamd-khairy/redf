@@ -143,6 +143,7 @@ class FormRequestController extends Controller
                 $formRequest->formRequestInformations()->delete();
                 $formRequest->formRequestSide()->delete();
                 $formRequest->tasks()->delete();
+                $formRequest->applications()->delete();
                 $formRequest->form_page_item_fill()->delete();
                 if ($formRequest->type == 'case') {
                     FormRequest::whereIn('id', $formRequest->requests()->pluck('formable_id'))->delete();

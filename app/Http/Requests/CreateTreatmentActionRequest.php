@@ -2,9 +2,11 @@
 
 namespace App\Http\Requests;
 
+use App\Enums\TreatmentActionEnum;
+use Illuminate\Validation\Rules\Enum;
 use Illuminate\Foundation\Http\FormRequest;
 
-class FormAssign extends FormRequest
+class CreateTreatmentActionRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -23,13 +25,11 @@ class FormAssign extends FormRequest
      */
     public function rules()
     {
-        $id = $this->request->get('id');
         return [
-            'form_request_id' => 'required',
-            'user_id' => 'required',
-            // 'assigner_id' => 'required',
-            // 'date' => 'required',
-            // 'type' => 'sometimes|in:claimant,employee,defendant,default:employee',
+            'treatment_id' => 'required|exists:treatments,id',
+            'user_id' => 'required|exists:users,id',
+            'type' => [new Enum(TreatmentActionEnum::class)],
+            'text' => 'required|string',
         ];
     }
 }
