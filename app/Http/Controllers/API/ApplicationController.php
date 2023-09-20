@@ -19,7 +19,6 @@ class ApplicationController extends Controller
 
     public function index(PageRequest $request)
     {
-
         $data = Stage::with('applications.form_request');
 
         if (request('form_id')) {
@@ -33,6 +32,6 @@ class ApplicationController extends Controller
 
         $data = request('pageSize') == -1 ?  $data->get() : $data->paginate(request('pageSize', 15));
 
-        return responseSuccess(StageResource::collection($data));
+        return responseSuccess($data); //StageResource::collection($data)
     }
 }
