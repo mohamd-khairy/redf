@@ -156,7 +156,7 @@ export default {
     checkout: "Checkout",
   },
   menu: {
-    specializations:"Specializations",
+    specializations: "Specializations",
     search: 'Search (press "ctrl + /" to focus)',
     dashboard: "Dashboard",
     departments: "Departments",
@@ -469,6 +469,7 @@ export default {
       employee: "Employee",
       governorate: "Governorate",
     },
+    user_photo: "User Photo",
   },
   cases: {
     caseType: "Cases Type",
@@ -490,9 +491,7 @@ export default {
     courtDate: "Court Date",
     adviceActions: "Advice Actions",
 
-
     createCase: "Create case",
-
   },
   charts: {
     Station1: "Station 1",
@@ -559,7 +558,7 @@ export default {
     template: "Template",
     causer_id: "Causer ID",
     specialization: "Specialization",
-    sub_status: "Sub Status"
+    sub_status: "Sub Status",
   },
   texts: {
     editor: "Editor",

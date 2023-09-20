@@ -456,6 +456,7 @@ export default {
       employee: "موظف",
       governorate: "محافظة",
     },
+    user_photo: "صورة المستخدم",
   },
   cases: {
     caseType: "نوع القضية",

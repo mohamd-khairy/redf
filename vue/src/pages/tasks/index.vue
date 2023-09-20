@@ -34,7 +34,7 @@
           <v-btn
             :loading="isLoading"
             icon
-            @click.prevent="getTasks()"
+            @click.prevent="getTasksData()"
             small
             class="ml-2"
           >
@@ -114,7 +114,6 @@ import draggable from "vuedraggable";
 import CopyLabel from "../../components/common/CopyLabel";
 import { mapActions, mapState } from "vuex";
 import { ask, makeToast } from "@/helpers";
-import axios from "axios";
 import emptyDataSvg from "@/assets/images/illustrations/empty-data.svg";
 import TaskCard from "./TaskCard.vue";
 
