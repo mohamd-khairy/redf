@@ -18,6 +18,7 @@ class ApplicationResource extends JsonResource
             'id'   => $this->id,
             'action' => $this->action,
             'action_at'  => $this->action_at,
+            'form_id'  => $this->form_id,
             'form_request' => new FormRequestResource($this->form_request)
         ];
     }

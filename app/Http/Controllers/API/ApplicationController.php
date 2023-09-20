@@ -19,19 +19,17 @@ class ApplicationController extends Controller
 
     public function index(PageRequest $request)
     {
-        $data = StageForm::query()
-            ->with('stage.applications.form_request')
-            ->with(['stage.applications' => function ($q) {
-                if (request('form_id')) {
-                    $q->where('form_id', request('form_id'));
-                }
-            }]);
+
+        $data = Stage::with('applications.form_request');
 
         if (request('form_id')) {
-            $data->where('form_id', request('form_id'));
+            $data = $data->with(['applications' => function ($q) {
+                $q->where('form_id', request('form_id'));
+            }])->whereHas('stage_forms', function ($q) {
+                $q->where('form_id', request('form_id'))
+                    ->orderBy('order', 'asc');
+            });
         }
-
-        $data = $data->orderBy('order', 'asc');
 
         $data = request('pageSize') == -1 ?  $data->get() : $data->paginate(request('pageSize', 15));
 
