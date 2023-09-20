@@ -36,14 +36,16 @@ class TaskController extends Controller
      */
     public function index(PageRequest $request)
     {
-        $tasks = Task::with('user:id,name', 'assigner:id,name', 'file');
+        $tasks = Task::with('user:id,name,avatar', 'assigner:id,name,avatar', 'file');
 
         $data = app(Pipeline::class)->send($tasks)->through([
             SearchFilters::class,
             SortFilters::class,
         ])->thenReturn();
 
-        $data = $data->take(200)->get()->groupBy('stage_id');
+        $data = request('pageSize') == -1 ?  $data->get() : $data->paginate(request('pageSize', 200));
+
+        $data = $data->groupBy('stage_id');
 
         $data =  collect(Task::$stages)->map(function ($stage) use ($data) {
             $stage['tasks'] = isset($data[$stage['id']]) ? $data[$stage['id']] : [];

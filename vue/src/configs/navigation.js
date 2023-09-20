@@ -39,37 +39,37 @@ export default {
         // },
       ],
     },
-    {
-      icon: "mdi-gavel",
-      text: "legal_advice",
-      key: "menu.legal_advice",
-      permission: "read-role",
-      // link: "/cases/2",
-      items: [
-        {
-          icon: "mdi-list-box",
-          text: "legal_advice",
-          key: "menu.legal_advice",
-          permission: "read-role",
-          link: "/cases/2",
-        },
-        {
-          icon: "mdi-list-box",
-          text: "review_Doc",
-          key: "menu.review_Doc",
-          permission: "read-role",
-          link: "/cases/2/review-doc",
-        },
-      ],
-    },
-    {
-      icon: "mdi-gavel",
-      text: "review_and_audit",
-      key: "menu.review_and_audit",
-      permission: "read-role",
-      link: "/cases/3",
-      items: [],
-    },
+    // {
+    //   icon: "mdi-gavel",
+    //   text: "legal_advice",
+    //   key: "menu.legal_advice",
+    //   permission: "read-role",
+    //   // link: "/cases/2",
+    //   items: [
+    //     {
+    //       icon: "mdi-list-box",
+    //       text: "legal_advice",
+    //       key: "menu.legal_advice",
+    //       permission: "read-role",
+    //       link: "/cases/2",
+    //     },
+    //     {
+    //       icon: "mdi-list-box",
+    //       text: "review_Doc",
+    //       key: "menu.review_Doc",
+    //       permission: "read-role",
+    //       link: "/cases/2/review-doc",
+    //     },
+    //   ],
+    // },
+    // {
+    //   icon: "mdi-gavel",
+    //   text: "review_and_audit",
+    //   key: "menu.review_and_audit",
+    //   permission: "read-role",
+    //   link: "/cases/3",
+    //   items: [],
+    // },
 
     // {
     //   icon: "mdi-gavel",
