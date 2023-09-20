@@ -1,27 +1,8 @@
 <template>
   <div class="d-flex flex-column flex-grow-1">
-    <v-card class="mb-60">
-      <!-- users list -->
+    <v-card>
       <v-row dense class="pa-2 align-center">
-        <v-col cols="6">
-          <v-menu offset-y left>
-            <template v-slot:activator="{ on }">
-              <transition name="slide-fade" mode="out-in">
-                <v-btn v-show="selectedTasks.length > 0" v-on="on">
-                  {{ $t("general.actions") }}
-                  <v-icon right>mdi-menu-down</v-icon>
-                </v-btn>
-              </transition>
-            </template>
-            <v-list dense>
-              <v-list-item @click="deleteAllTasks()">
-                <v-list-item-title>{{
-                  $t("general.delete")
-                }}</v-list-item-title>
-              </v-list-item>
-            </v-list>
-          </v-menu>
-        </v-col>
+        <v-col cols="6"> </v-col>
         <v-col cols="6" class="d-flex text-right align-center">
           <v-text-field
             v-model="searchQuery"
@@ -53,7 +34,7 @@
           <v-btn
             :loading="isLoading"
             icon
-            @click.prevent="open()"
+            @click.prevent="getData()"
             small
             class="ml-2"
           >
@@ -61,80 +42,68 @@
           </v-btn>
         </v-col>
       </v-row>
-      <v-data-table
-        show-select
-        v-model="selectedTasks"
-        :headers="headers"
-        :items="taskItems"
-        :options.sync="options"
-        class="flex-grow-1"
-        :loading="isLoading"
-        :page="page"
-        :pageCount="numberOfPages"
-        :server-items-length="totalTasks"
+      <!-- cases list -->
+      {{ columns }}
+      <div
+        class="min-h-screen d-flex overflow-x-scroll py-4 px-4 kanban-scroll-container"
+        ref="scrollContainer"
       >
-        <template v-slot:item.id="{ item }">
-          {{ item.id }}
-        </template>
-        <template v-slot:item.name="{ item }">
-          {{ item.name }}
-        </template>
+        <!-- <div
+          v-for="(column, i) in columnss"
+          :key="column.id"
+          class="bg-gray-100 px-3 py-3 column-width stage-cont"
+          :class="i > 0 ? 'mr-4' : ''"
+        >
+          <p class="stage-title">
+            {{ column.name }}
+          </p>
 
-        <template v-slot:item.type="{ item }">
-          {{ item.type }}
-        </template>
-
-        <template v-slot:item.user="{ item }">
-          {{ item.user.name }}
-        </template>
-        <template v-slot:item.assigner="{ item }">
-          {{ item.assigner.name }}
-        </template>
-        <template v-slot:item.file="{ item }">
-          <a :href="item.file.path" target="_blank">
-            <v-icon> mdi-file </v-icon>
-          </a>
-        </template>
-        <template v-slot:item.due_date="{ item }">
-          <div>{{ item.due_date | formatDate("lll") }}</div>
-        </template>
-
-        <template v-slot:item.action="{ item }">
-          <div class="actions">
-            <v-btn color="primary" icon :to="`/tasks/edit/${item.id}`">
-              <v-icon>mdi-open-in-new</v-icon>
-            </v-btn>
-            <v-btn color="error" icon @click.prevent="deleteItem(item.id)">
-              <v-icon>mdi-close</v-icon>
-            </v-btn>
-          </div>
-        </template>
-        <template v-slot:no-data>
-          <div class="text-center my-2 primary--text" color="primary">
-            <emptyDataSvg></emptyDataSvg>
-            <div class="dt-no_data">
-              {{ $t("general.no_data_available") }}
-            </div>
-          </div>
-        </template>
-      </v-data-table>
+          <draggable
+            :list="column.applications"
+            :animation="200"
+            ghost-class="ghost-card"
+            group="tasks"
+            :scroll-sensitivity="500"
+            :force-fallback="true"
+            @start="onDragStart"
+            @end="onDragEnd"
+          >
+            <task-card
+              v-for="task in column.applications"
+              :key="task.id"
+              :task="task"
+              class="mt-3 cursor-move scroll-item"
+              ref="listItem"
+            ></task-card>
+          </draggable>
+        </div> -->
+      </div>
     </v-card>
   </div>
 </template>
 
 <script>
+import draggable from "vuedraggable";
+import CopyLabel from "../../components/common/CopyLabel";
 import { mapActions, mapState } from "vuex";
 import { ask, makeToast } from "@/helpers";
+import axios from "axios";
 import emptyDataSvg from "@/assets/images/illustrations/empty-data.svg";
+import TaskCard from "./TaskCard.vue";
+
 export default {
+  name: "tasks",
   components: {
+    CopyLabel,
     emptyDataSvg,
+    draggable,
+    TaskCard,
   },
   data() {
     return {
-      page: 1,
-      totalTasks: 0,
-      numberOfPages: 0,
+      currentPageId: null,
+      isDragging: false,
+
       options: {},
       isLoading: false,
       breadcrumbs: [
@@ -143,129 +112,370 @@ export default {
           disabled: false,
           href: "#",
         },
+
         {
           text: this.$t("tasks.tasksList"),
+          to: "/tasks/list",
+          exact: true,
         },
       ],
 
       searchQuery: "",
-      selectedTasks: [],
-      taskItems: [],
-      headers: [
-        { text: this.$t("tables.id"), value: "id" },
-        { text: this.$t("tables.name"), value: "name" },
-        { text: this.$t("tables.type"), value: "type" },
-        { text: this.$t("tasks.requested_from"), value: "user" },
-        { text: this.$t("tasks.assigned_to"), value: "assigner" },
-        { text: this.$t("tasks.document"), value: "file" },
-        { text: this.$t("tasks.due_date"), value: "due_date" },
-        { text: "", sortable: false, align: "right", value: "action" },
-      ],
+      columns: [],
+
+      // columnss: [
+      //   {
+      //     name: "Backlog 1",
+      //     applications: [
+      //       {
+      //         id: 1,
+      //         title: "Add discount code to checkout page",
+      //         date: "Sep 14",
+      //         type: "Feature Request",
+      //         users: [
+      //           {
+      //             name: "Moaz Gamal",
+      //             img: "/images/avatars/avatar1.svg",
+      //           },
+      //           {
+      //             name: "Mostafa Gamal",
+      //             img: "/images/avatars/avatar1.svg",
+      //           },
+      //           {
+      //             name: "Mohamed Khairy",
+      //             img: "/images/avatars/avatar1.svg",
+      //           },
+      //           {
+      //             name: "Mohamed Khairy",
+      //             img: "/images/avatars/avatar1.svg",
+      //           },
+      //         ],
+      //       },
+      //       {
+      //         id: 2,
+      //         title: "Provide documentation on integrations",
+      //         date: "Sep 12",
+      //         users: [
+      //           {
+      //             name: "Mostafa Gamal",
+      //             img: "/images/avatars/avatar1.svg",
+      //           },
+
+      //           {
+      //             name: "Mohamed Khairy",
+      //             img: "/images/avatars/avatar1.svg",
+      //           },
+      //         ],
+      //       },
+      //       {
+      //         id: 3,
+      //         title: "Design shopping cart dropdown",
+      //         date: "Sep 9",
+      //         type: "Design",
+      //         users: [
+      //           {
+      //             name: "Mostafa Gamal",
+      //             img: "/images/avatars/avatar1.svg",
+      //           },
+      //           {
+      //             name: "Moaz Gamal",
+      //             img: "/images/avatars/avatar1.svg",
+      //           },
+
+      //           {
+      //             name: "Mohamed Khairy",
+      //             img: "/images/avatars/avatar1.svg",
+      //           },
+      //         ],
+      //       },
+      //       {
+      //         id: 4,
+      //         title: "Add discount code to checkout page",
+      //         date: "Sep 14",
+      //         type: "Feature Request",
+      //         users: [
+      //           {
+      //             name: "Mostafa Gamal",
+      //             img: "/images/avatars/avatar1.svg",
+      //           },
+      //           {
+      //             name: "Moaz Gamal",
+      //             img: "/images/avatars/avatar1.svg",
+      //           },
+
+      //           {
+      //             name: "Mohamed Khairy",
+      //             img: "/images/avatars/avatar1.svg",
+      //           },
+      //         ],
+      //       },
+      //       {
+      //         id: 5,
+      //         title: "Test checkout flow",
+      //         date: "Sep 15",
+      //         type: "QA",
+      //         users: [
+      //           {
+      //             name: "Mostafa Gamal",
+      //             img: "/images/avatars/avatar1.svg",
+      //           },
+      //           {
+      //             name: "Moaz Gamal",
+      //             img: "/images/avatars/avatar1.svg",
+      //           },
+
+      //           {
+      //             name: "Mohamed Khairy",
+      //             img: "/images/avatars/avatar1.svg",
+      //           },
+      //         ],
+      //       },
+      //     ],
+      //   },
+      //   {
+      //     name: "Backlog 2",
+      //     applications: [
+      //       {
+      //         id: 1,
+      //         title: "Add discount code to checkout page",
+      //         date: "Sep 14",
+      //         type: "Feature Request",
+      //       },
+      //       {
+      //         id: 2,
+      //         title: "Provide documentation on integrations",
+      //         date: "Sep 12",
+      //       },
+      //       {
+      //         id: 3,
+      //         title: "Design shopping cart dropdown",
+      //         date: "Sep 9",
+      //         type: "Design",
+      //       },
+      //       {
+      //         id: 4,
+      //         title: "Add discount code to checkout page",
+      //         date: "Sep 14",
+      //         type: "Feature Request",
+      //       },
+      //       {
+      //         id: 5,
+      //         title: "Test checkout flow",
+      //         date: "Sep 15",
+      //         type: "QA",
+      //       },
+      //     ],
+      //   },
+      //   {
+      //     name: "Backlog 3",
+      //     applications: [
+      //       {
+      //         id: 1,
+      //         title: "Add discount code to checkout page",
+      //         date: "Sep 14",
+      //         type: "Feature Request",
+      //       },
+      //       {
+      //         id: 2,
+      //         title: "Provide documentation on integrations",
+      //         date: "Sep 12",
+      //       },
+      //       {
+      //         id: 3,
+      //         title: "Design shopping cart dropdown",
+      //         date: "Sep 9",
+      //         type: "Design",
+      //       },
+      //       {
+      //         id: 4,
+      //         title: "Add discount code to checkout page",
+      //         date: "Sep 14",
+      //         type: "Feature Request",
+      //       },
+      //       {
+      //         id: 5,
+      //         title: "Test checkout flow",
+      //         date: "Sep 15",
+      //         type: "QA",
+      //       },
+      //     ],
+      //   },
+      //   {
+      //     name: "In Progress",
+      //     applications: [
+      //       {
+      //         id: 6,
+      //         title: "Design shopping cart dropdown",
+      //         date: "Sep 9",
+      //         type: "Design",
+      //       },
+      //       {
+      //         id: 7,
+      //         title: "Add discount code to checkout page",
+      //         date: "Sep 14",
+      //         type: "Feature Request",
+      //       },
+      //       {
+      //         id: 8,
+      //         title: "Provide documentation on integrations",
+      //         date: "Sep 12",
+      //         type: "Backend",
+      //       },
+      //     ],
+      //   },
+      //   {
+      //     name: "Review",
+      //     applications: [
+      //       {
+      //         id: 9,
+      //         title: "Provide documentation on integrations",
+      //         date: "Sep 12",
+      //       },
+      //       {
+      //         id: 10,
+      //         title: "Design shopping cart dropdown",
+      //         date: "Sep 9",
+      //         type: "Design",
+      //       },
+      //       {
+      //         id: 11,
+      //         title: "Add discount code to checkout page",
+      //         date: "Sep 14",
+      //         type: "Feature Request",
+      //       },
+      //       {
+      //         id: 12,
+      //         title: "Design shopping cart dropdown",
+      //         date: "Sep 9",
+      //         type: "Design",
+      //       },
+      //       {
+      //         id: 13,
+      //         title: "Add discount code to checkout page",
+      //         date: "Sep 14",
+      //         type: "Feature Request",
+      //       },
+      //     ],
+      //   },
+      //   {
+      //     name: "Done",
+      //     applications: [
+      //       {
+      //         id: 14,
+      //         title: "Add discount code to checkout page",
+      //         date: "Sep 14",
+      //         type: "Feature Request",
+      //       },
+      //       {
+      //         id: 15,
+      //         title: "Design shopping cart dropdown",
+      //         date: "Sep 9",
+      //         type: "Design",
+      //       },
+      //       {
+      //         id: 16,
+      //         title: "Add discount code to checkout page",
+      //         date: "Sep 14",
+      //         type: "Feature Request",
+      //       },
+      //     ],
+      //   },
+      // ],
+      form_id: "",
     };
   },
   watch: {
+    navTemplates() {
+      this.setCurrentBread();
+    },
     options: {
       handler() {
         this.open();
       },
     },
+    deep: true,
     searchQuery() {
       this.open();
     },
   },
   computed: {
-    ...mapState("tasks", ["tasks"]),
+    ...mapState("app", ["navTemplates"]),
   },
   created() {
     this.setBreadCrumb({
       breadcrumbs: this.breadcrumbs,
-      pageTitle: this.$t("tasks.tasksList"),
+      pageTitle: "المهام",
     });
+    this.getData();
   },
+  mounted() {
+    const scrollContainer = this.$refs.scrollContainer;
 
+    if (scrollContainer) {
+      scrollContainer.addEventListener("mousemove", (e) => {
+        if (this.isDragging) {
+          const scrollThreshold = 50; // Adjust this value as needed
+          const { clientX } = e;
+          const containerWidth = scrollContainer.clientWidth;
+
+          if (clientX < scrollThreshold) {
+            this.scrollHorizontally("left");
+          } else if (clientX > containerWidth - scrollThreshold) {
+            this.scrollHorizontally("right");
+          }
+        }
+      });
+    }
+  },
   methods: {
     ...mapActions("app", ["setBreadCrumb"]),
+    async getData() {
+      const response = await axios.get("tasks");
+      const { tasks } = response?.data.data;
+      this.columns = tasks;
+    },
 
-    ...mapActions("tasks", ["getTasks", "deleteTask", "deleteAll"]),
-    open() {
-      this.isLoading = true;
-      let { page, itemsPerPage } = this.options;
-      const direction = this.options.sortDesc[0] ? "asc" : "desc";
+    initScrollBehavior() {
+      this.$refs.listItem.forEach((item) => {
+        item.addEventListener("dragover", (e) => {
+          e.preventDefault();
+          const mouseY = e.clientY;
+          const itemRect = item.getBoundingClientRect();
 
-      let data = {
-        search: this.searchQuery,
-        pageSize: itemsPerPage,
-        pageNumber: page,
-        sortDirection: direction,
-        sortColumn: this.options.sortBy[0] ?? "",
-      };
-      this.getTasks(data)
-        .then(() => {
-          this.isLoading = false;
-          if (itemsPerPage != -1) {
-            this.taskItems = this.tasks.data;
-            this.totalTasks = this.tasks.total;
-            this.numberOfPages = this.tasks.last_page;
-          } else {
-            this.taskItems = this.tasks;
-            this.totalTasks = this.tasks.length;
-            this.numberOfPages = 1;
+          if (mouseY < itemRect.top + 50) {
+            // Scroll up
+            item.scrollTop -= 10;
+          } else if (mouseY > itemRect.bottom - 50) {
+            // Scroll down
+            item.scrollTop += 10;
           }
-        })
-        .catch(() => {
-          this.isLoading = false;
         });
+      });
     },
-    async deleteItem(id) {
-      const { isConfirmed } = await ask(
-        this.$t("tasks.confirmDeleteTask"),
-        "warning"
-      );
+    search() {},
+    onDragStart() {
+      this.isDragging = true;
+    },
+    onDragEnd() {
+      this.isDragging = false;
+    },
+    scrollHorizontally(direction) {
+      const scrollContainer = this.$refs.scrollContainer;
+      const scrollAmount = 10; // Adjust this value as needed
+      const containerWidth = scrollContainer.clientWidth;
+      const scrollLeft = scrollContainer.scrollLeft;
+      const maxScrollLeft = scrollContainer.scrollWidth - containerWidth;
 
-      if (isConfirmed) {
-        this.isLoading = true;
-        this.deleteTask(id)
-          .then((response) => {
-            makeToast("success", response.data.message);
-            this.open();
-            this.isLoading = false;
-          })
-          .catch(() => {
-            this.isLoading = false;
-          });
-      }
-    },
-    async deleteAllTasks() {
-      let data = {};
-      let ids = [];
-      const { isConfirmed } = await ask(
-        this.$t("tasks.confirmDeleteSelectedTask"),
-        "warning"
-      );
-      if (isConfirmed) {
-        if (this.selectedTasks.length) {
-          this.selectedTasks.forEach((item) => {
-            ids.push(item.id);
-          });
+      if (scrollContainer) {
+        console.log("aaaaaaaaa", direction === "left" && scrollLeft > 0);
+        console.log(scrollLeft);
+        if (direction === "left") {
+          scrollContainer.scrollLeft -= scrollAmount;
+        } else if (direction === "right") {
+          scrollContainer.scrollLeft += scrollAmount;
         }
-        data = {
-          ids: ids,
-          action: "delete",
-          value: 1,
-        };
-        this.isLoading = true;
-        this.deleteAll(data)
-          .then((response) => {
-            makeToast("success", response.data.message);
-            this.open();
-            this.isLoading = false;
-          })
-          .catch(() => {
-            this.isLoading = false;
-          });
       }
     },
-    searchTask() {},
   },
 };
 </script>
@@ -274,12 +484,65 @@ export default {
 .slide-fade-enter-active {
   transition: all 0.3s ease;
 }
+
 .slide-fade-leave-active {
   transition: all 0.3s cubic-bezier(1, 0.5, 0.8, 1);
 }
+
 .slide-fade-enter,
 .slide-fade-leave-to {
   transform: translateX(10px);
   opacity: 0;
+}
+</style>
+<style scoped>
+.column-width {
+  min-width: 328px;
+  width: 328px;
+  min-height: 200px;
+}
+/* Unfortunately @apply cannot be setup in codesandbox,
+but you'd use "@apply border opacity-50 border-blue-500 bg-gray-200" here */
+.ghost-card {
+  opacity: 0.5;
+  background: #f7fafc;
+  border: 1px solid #4299e1;
+}
+.overflow-x-scroll {
+  overflow-x: auto;
+}
+.kanban-scroll-container {
+}
+.scroll-item {
+  overflow: auto;
+}
+</style>
+<style>
+.stage-cont {
+  border: 1px solid #eaecf0;
+  border-radius: 8px;
+  background: #f9f9fb;
+}
+.stage-title {
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 21px;
+  letter-spacing: -0.02em;
+  text-align: right;
+}
+.stage {
+  border: 1px solid #fff;
+  border-radius: 4px;
+  padding: 20px;
+}
+.stage:hover {
+  border: 1px dashed #ccc;
+}
+.case-title {
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 24px;
+  letter-spacing: -0.02em;
+  text-align: right;
 }
 </style>
