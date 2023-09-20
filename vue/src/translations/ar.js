@@ -532,6 +532,8 @@ export default {
     deleteCase: "حذف القضية",
     caseFile: "لائحة الدعوة",
     caseTemplates: "نماذج القضايا",
+    view_board: "عرض اللوحة",
+    view_menu: "عرض القائمة",
   },
 
   departments: {

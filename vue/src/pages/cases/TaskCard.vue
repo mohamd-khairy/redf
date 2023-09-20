@@ -1,7 +1,9 @@
 <template>
   <v-card class="bg-white stage">
     <div class="d-flex justify-content-between">
-      <v-card-title class="pa-0 case-title">{{ task.title }}</v-card-title>
+      <v-card-title class="pa-0 case-title">
+        <a href="#" @click.prevent="taskPath(task.id)">{{ task.title }}</a>
+      </v-card-title>
 
       <v-menu offset-y left>
         <template v-slot:activator="{ on }">
@@ -12,31 +14,37 @@
           </transition>
         </template>
         <v-list dense>
-          <v-list-item>
-            <v-list-item-title>
-              <v-icon>mdi-plus-circle-outline</v-icon>
-              <span class="action-span">{{ $t("cases.add_action") }}</span>
-            </v-list-item-title>
-          </v-list-item>
-          <v-list-item>
-            <v-list-item-title>
-              <v-icon>mdi-timeline-text-outline</v-icon>
-              <span class="action-span">{{ $t("cases.view_timeline") }}</span>
-            </v-list-item-title>
-          </v-list-item>
-          <v-list-item>
+<!--          <v-list-item>-->
+<!--            <v-list-item-title>-->
+<!--              <v-icon>mdi-plus-circle-outline</v-icon>-->
+<!--              <span class="action-span">{{ $t("cases.add_action") }}</span>-->
+<!--            </v-list-item-title>-->
+<!--          </v-list-item>-->
+<!--          <v-list-item>-->
+<!--            <v-list-item-title>-->
+<!--              <v-icon>mdi-timeline-text-outline</v-icon>-->
+<!--              <span class="action-span">{{ $t("cases.view_timeline") }}</span>-->
+<!--            </v-list-item-title>-->
+<!--          </v-list-item>-->
+          <v-list-item @click="openAssignAction">
             <v-list-item-title>
               <v-icon>mdi-at</v-icon>
               <span class="action-span">{{ $t("cases.assign_user") }}</span>
             </v-list-item-title>
           </v-list-item>
-          <v-list-item>
+          <v-list-item @click="deleteApplication">
             <v-list-item-title>
-              <v-icon>mdi-pencil-outline</v-icon>
-              <!-- <v-icon>mdi-open-in-new</v-icon> -->
-              <span class="action-span">{{ $t("cases.editCase") }}</span>
+              <v-icon>mdi-close</v-icon>
+              <span class="action-span">{{ $t("cases.deleteRequest") }}</span>
             </v-list-item-title>
           </v-list-item>
+<!--          <v-list-item>-->
+<!--            <v-list-item-title>-->
+<!--              <v-icon>mdi-pencil-outline</v-icon>-->
+<!--              &lt;!&ndash; <v-icon>mdi-open-in-new</v-icon> &ndash;&gt;-->
+<!--              <span class="action-span">{{ $t("cases.editCase") }}</span>-->
+<!--            </v-list-item-title>-->
+<!--          </v-list-item>-->
         </v-list>
       </v-menu>
     </div>
@@ -111,6 +119,23 @@ export default {
       return mappings[this.task.type] || mappings.default;
     },
   },
+  methods:{
+    taskPath(taskId)
+    {
+      let { id } = this.$route.params;
+      this.$router.push(
+        `/cases/${id}/request-review/edit/${taskId}`
+      );
+    },
+    openAssignAction()
+    {
+      this.$emit("openAssign");
+    },
+    deleteApplication()
+    {
+      this.$emit("deleteItem");
+    }
+  }
 };
 </script>
 <style>
