@@ -43,7 +43,12 @@ class TaskController extends Controller
             SortFilters::class,
         ])->thenReturn();
 
-        $data = request('pageSize') == -1 ?  $data->get() : $data->paginate(request('pageSize', 15));
+        $data = $data->take(200)->get()->groupBy('stage_id');
+
+        $data =  collect(Task::$stages)->map(function ($stage) use ($data) {
+            $stage['tasks'] = isset($data[$stage['id']]) ? $data[$stage['id']] : [];
+            return $stage;
+        });
 
         return responseSuccess(['tasks' => $data]);
     }
@@ -62,8 +67,7 @@ class TaskController extends Controller
 
             unset($validatedData['file']);
             // Parse the due_date
-            $validatedData['due_date'] = Carbon::createFromFormat('d-m-Y', $validatedData['due_date'])
-                ->format('Y-m-d');
+            $validatedData['due_date'] = Carbon::createFromFormat('d-m-Y', $validatedData['due_date'])->format('Y-m-d');
             // Create the task
             $task = Task::create($validatedData);
             // Handle the file upload
@@ -84,13 +88,14 @@ class TaskController extends Controller
                 $fileRecord->save();
             }
 
-            saveFormRequestAction(
-                form_request_id: $request->form_request_id,
-                formable_id: $request->form_request_id,
-                formable_type: FormRequest::class,
-                msg: 'تم اسناد المهمه الي قضيه '
-            );
-
+            if ($request->form_request_id) {
+                saveFormRequestAction(
+                    form_request_id: $request->form_request_id,
+                    formable_id: $request->form_request_id,
+                    formable_type: FormRequest::class,
+                    msg: 'تم اسناد المهمه الي قضيه '
+                );
+            }
             return responseSuccess($task, 'Task has been successfully created');
         } catch (Throwable $e) {
             return responseFail($e->getMessage());
@@ -116,6 +121,7 @@ class TaskController extends Controller
             'share_with' => 'sometimes|string',
             'form_request_id' => 'sometimes|exists:forms,id',
             'file' => 'nullable|file|mimes:jpg,jpeg,png,pdf,docx',
+            'stage_id' => 'nullable|integer'
         ]);
 
         unset($validatedData['file']);
