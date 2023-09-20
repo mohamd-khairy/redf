@@ -165,4 +165,9 @@ class FormRequest extends Model
     {
         return $this->organization ? $this->organization->name : null;
     }
+
+    public function applications()
+    {
+        return $this->hasMany(Application::class);
+    }
 }
