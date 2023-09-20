@@ -260,6 +260,14 @@ class FormRequestService
                     FormAssignRequest::create($items);
                 }
 
+                if ($request->form_type == 'case') {
+                    $request->update(['status' => StatusEnum::ASSIGNED]);
+                }
+
+                if ($request->form_type == 'related_case') {
+                    $request->update(['status' => StatusEnum::WAIT]);
+                }
+
                 saveFormRequestAction(
                     form_request_id: $request->id,
                     formable_id: $user_id,
