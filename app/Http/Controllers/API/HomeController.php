@@ -135,6 +135,8 @@ class HomeController extends Controller
 
         foreach ($calender as $key => $value) {
             $all[] = [
+                'id' => null,
+                'expand' => false,
                 'name' => $value->details,
                 'color' => "#" . dechex(rand(0x000000, 0xFFFFFF)),
                 'start_date' => $value->date,
@@ -145,11 +147,13 @@ class HomeController extends Controller
 
         foreach ($data as $key => $value) {
             $all[] = [
+                'id' => $value->id,
+                'expand' => true,
                 'name' => $value->name,
                 'color' => $value->color,
                 'start_date' => $value->start_date,
                 'end_date' => $value->end_date,
-                'form_request_id' => $value->form_request_id
+                'form_request_id' => $value->form_request_id,
             ];
         }
         return responseSuccess($all);

@@ -391,16 +391,6 @@ class FormRequestService
         ], [
             'color' => $color,
             'start_date' => $start_date,
-            'end_date' => $start_date
-        ]);
-
-        Reminder::updateOrCreate([
-            'form_request_id' => $formRequestInfo->form_request_id,
-            'form_request_information_id' => $formRequestInfo->id,
-            'name' => "نهاية الاعتراض عالحكم",
-        ], [
-            'color' => $color,
-            'start_date' => $end_date,
             'end_date' => $end_date
         ]);
 
