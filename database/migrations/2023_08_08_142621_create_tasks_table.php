@@ -20,12 +20,12 @@ return new class extends Migration
             $table->dateTime('due_date');
             $table->text('details')->nullable();
             $table->string('share_with')->nullable();
-             $table->unsignedBigInteger('user_id');
+            $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('assigner_id');
-             $table->unsignedBigInteger('form_request_id')->nullable();
+            $table->unsignedBigInteger('form_request_id')->nullable();
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('assigner_id')->references('id')->on('users')->onDelete('cascade');
-             $table->foreign('form_request_id')->references('id')->on('forms')->onDelete('cascade');
+            $table->foreign('form_request_id')->references('id')->on('forms')->onDelete('cascade');
             $table->softDeletes();
             $table->timestamps();
         });
