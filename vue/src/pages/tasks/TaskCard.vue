@@ -45,7 +45,22 @@
     </div>
     <v-card-text class="p-0 mt-1">
       <div class="desc-cont">{{ task.details }}</div>
-      <div class="progress-cont mt-2">
+      <div>
+        <v-chip v-if="progress == 25" color="#f7e5ed" text-color="#db2777">
+          بحاجة الي المراجعة
+        </v-chip>
+        <v-chip v-if="progress == 50" color="#f0e6f8" text-color="#a454ed">
+          جاري العمل عليها
+        </v-chip>
+        <v-chip v-if="progress == 75" color="#f5efe1" text-color="#ca8a04">
+          متأخر
+        </v-chip>
+        <v-chip v-if="progress == 100" color="#e6f2ea" text-color="#2FAD5E">
+          مكتمل
+        </v-chip>
+        <v-chip outlined color="white" text-color="secondary"> #222 </v-chip>
+      </div>
+      <!-- <div class="progress-cont mt-2">
         <div
           class="prog-title-cont d-flex justify-content-between align-center"
         >
@@ -61,14 +76,9 @@
           rounded
           :value="progress"
         ></v-progress-linear>
-      </div>
+      </div> -->
       <div class="d-flex mt-3 justify-content-between align-center">
-        <span class="text-sm text-gray-600">{{
-          task.due_date.split(" ")[0]
-        }}</span>
-
         <div class="avatar-container" v-if="task.user">
-          <!-- {{ task.user.avatar }} -->
           <v-tooltip top>
             <template v-slot:activator="{ on, attrs }">
               <v-avatar v-bind="attrs" v-on="on" size="40">
@@ -84,6 +94,9 @@
             <span>{{ task.name }}</span>
           </v-tooltip>
         </div>
+        <span class="text-sm text-gray-600">
+          {{ task.due_date.split(" ")[0] }}
+        </span>
       </div>
     </v-card-text>
   </v-card>
