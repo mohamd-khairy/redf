@@ -59,6 +59,10 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return LogOptions::defaults()->logOnly(self::getFillable());
     }
+    public function treatments()
+    {
+        return $this->belongsToMany(Treatment::class, 'treatment_user', 'user_id', 'treatment_id');
+    }
 
     public function getAvatarAttribute($value)
     {

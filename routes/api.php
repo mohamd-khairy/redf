@@ -13,16 +13,19 @@ use App\Http\Controllers\API\SettingController;
 use App\Http\Controllers\Api\CalenderController;
 use App\Http\Controllers\api\DocumentController;
 use App\Http\Controllers\Api\TemplateController;
+use App\Http\Controllers\Api\TreatmentController;
 use App\Http\Controllers\Api\DepartmentController;
 use App\Http\Controllers\API\PermissionController;
 use App\Http\Controllers\API\FormRequestController;
 use App\Http\Controllers\Api\FormSessionController;
+use App\Http\Controllers\Api\TransactionController;
 use App\Http\Controllers\API\NotificationController;
 use App\Http\Controllers\Api\OrganizationController;
 use App\Http\Controllers\API\VerificationController;
 use App\Http\Controllers\Api\SpecializationController;
 use App\Http\Controllers\Api\FormRequestSideController;
 use App\Http\Controllers\API\RelatedFormRequestController;
+use App\Http\Controllers\Api\TreatmentInformationController;
 
 Route::group(['prefix' => 'v1'], function () {
 
@@ -99,6 +102,21 @@ Route::group(['prefix' => 'v1'], function () {
         Route::get('branches/actions', [BranchController::class, 'actions']);
         Route::apiResource('branches', BranchController::class);
     });
+
+    /*********************trratmentController***************** */
+      Route::group(['middleware' => 'auth:sanctum'], function () {
+
+        Route::post('treatments/upload-files', [TreatmentController::class, 'uploadFiles']);
+        Route::post('treatments/assign-users', [TreatmentController::class, 'assignUser']);
+        Route::post('treatments/actions', [TreatmentController::class, 'treatmentActions']);
+        Route::apiResource('treatments', TreatmentController::class);
+    });
+
+     /*********************trratmentInfoController***************** */
+     Route::group(['middleware' => 'auth:sanctum'], function () {
+        Route::apiResource('treatment-informations', TreatmentInformationController::class);
+    });
+
 
     /*********************SpecialiszeController***************** */
     Route::group(['middleware' => 'auth:sanctum'], function () {
