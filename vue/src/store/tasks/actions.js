@@ -2,15 +2,7 @@ import axios from "@/plugins/axios";
 
 const actions = {
   async getTasks({ commit }, data) {
-    const response = await axios.get("tasks", {
-      params: {
-        search: data.search,
-        pageSize: data.pageSize,
-        page: data.pageNumber,
-        sortDirection: data.sortDirection,
-        sortCoulmn: data.sortColumn,
-      },
-    });
+    const response = await axios.get("tasks");
     const { tasks } = response?.data.data;
     commit("SET_TASKS", tasks);
   },
@@ -33,7 +25,8 @@ const actions = {
     });
   },
   async updateTask({ state }, formData) {
-    const { id } = state?.task ?? {};
+    console.log("formData", formData);
+
     const bodyFormData = new FormData();
 
     for (const key in formData) {
@@ -41,7 +34,7 @@ const actions = {
       bodyFormData.set(key, value);
     }
     bodyFormData.set("_method", "PUT");
-    return await axios.post(`tasks/${id}`, bodyFormData, {
+    return await axios.post(`tasks/${formData.id}`, bodyFormData, {
       headers: {
         "Content-Type": "multipart/form-data",
       },

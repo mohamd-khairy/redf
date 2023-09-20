@@ -1,6 +1,6 @@
 <template>
   <div class="d-flex flex-column flex-grow-1">
-    <v-card>
+    <v-card :loading="isLoading">
       <v-row dense class="pa-2 align-center">
         <v-col cols="6"> </v-col>
         <v-col cols="6" class="d-flex text-right align-center">
@@ -34,7 +34,7 @@
           <v-btn
             :loading="isLoading"
             icon
-            @click.prevent="getData()"
+            @click.prevent="getTasks()"
             small
             class="ml-2"
           >
@@ -43,25 +43,50 @@
         </v-col>
       </v-row>
       <!-- cases list -->
-      {{ columns }}
+
       <div
         class="min-h-screen d-flex overflow-x-scroll py-4 px-4 kanban-scroll-container"
         ref="scrollContainer"
       >
-        <!-- <div
-          v-for="(column, i) in columnss"
+        <div
+          v-for="(column, i) in tasks"
           :key="column.id"
           class="bg-gray-100 px-3 py-3 column-width stage-cont"
           :class="i > 0 ? 'mr-4' : ''"
         >
           <p class="stage-title">
+            <!-- <v-chip
+              v-if="column.id == 1"
+              class="ma-2"
+              color="#DB2777"
+              text-color="#DB27771A"
+            >
+              {{ column.tasks.length }}
+            </v-chip>
+            <v-chip
+              v-if="column.id == 2"
+              class="ma-2"
+              color="green"
+              text-color="white"
+            >
+              {{ column.tasks.length }}
+            </v-chip>
+            <v-chip
+              v-if="column.id == 3"
+              class="ma-2"
+              color="red"
+              text-color="white"
+            >
+              {{ column.tasks.length }}
+            </v-chip> -->
             {{ column.name }}
           </p>
 
           <draggable
-            :list="column.applications"
+            :list="column.tasks"
             :animation="200"
             ghost-class="ghost-card"
+            :id="`stage_${column.id}`"
             group="tasks"
             :scroll-sensitivity="500"
             :force-fallback="true"
@@ -69,14 +94,16 @@
             @end="onDragEnd"
           >
             <task-card
-              v-for="task in column.applications"
+              v-for="task in column.tasks"
+              :progress="(100 / tasks.length) * column.id"
               :key="task.id"
+              :id="`task_${task.id}`"
               :task="task"
               class="mt-3 cursor-move scroll-item"
               ref="listItem"
             ></task-card>
           </draggable>
-        </div> -->
+        </div>
       </div>
     </v-card>
   </div>
@@ -122,272 +149,9 @@ export default {
 
       searchQuery: "",
       columns: [],
-
-      // columnss: [
-      //   {
-      //     name: "Backlog 1",
-      //     applications: [
-      //       {
-      //         id: 1,
-      //         title: "Add discount code to checkout page",
-      //         date: "Sep 14",
-      //         type: "Feature Request",
-      //         users: [
-      //           {
-      //             name: "Moaz Gamal",
-      //             img: "/images/avatars/avatar1.svg",
-      //           },
-      //           {
-      //             name: "Mostafa Gamal",
-      //             img: "/images/avatars/avatar1.svg",
-      //           },
-      //           {
-      //             name: "Mohamed Khairy",
-      //             img: "/images/avatars/avatar1.svg",
-      //           },
-      //           {
-      //             name: "Mohamed Khairy",
-      //             img: "/images/avatars/avatar1.svg",
-      //           },
-      //         ],
-      //       },
-      //       {
-      //         id: 2,
-      //         title: "Provide documentation on integrations",
-      //         date: "Sep 12",
-      //         users: [
-      //           {
-      //             name: "Mostafa Gamal",
-      //             img: "/images/avatars/avatar1.svg",
-      //           },
-
-      //           {
-      //             name: "Mohamed Khairy",
-      //             img: "/images/avatars/avatar1.svg",
-      //           },
-      //         ],
-      //       },
-      //       {
-      //         id: 3,
-      //         title: "Design shopping cart dropdown",
-      //         date: "Sep 9",
-      //         type: "Design",
-      //         users: [
-      //           {
-      //             name: "Mostafa Gamal",
-      //             img: "/images/avatars/avatar1.svg",
-      //           },
-      //           {
-      //             name: "Moaz Gamal",
-      //             img: "/images/avatars/avatar1.svg",
-      //           },
-
-      //           {
-      //             name: "Mohamed Khairy",
-      //             img: "/images/avatars/avatar1.svg",
-      //           },
-      //         ],
-      //       },
-      //       {
-      //         id: 4,
-      //         title: "Add discount code to checkout page",
-      //         date: "Sep 14",
-      //         type: "Feature Request",
-      //         users: [
-      //           {
-      //             name: "Mostafa Gamal",
-      //             img: "/images/avatars/avatar1.svg",
-      //           },
-      //           {
-      //             name: "Moaz Gamal",
-      //             img: "/images/avatars/avatar1.svg",
-      //           },
-
-      //           {
-      //             name: "Mohamed Khairy",
-      //             img: "/images/avatars/avatar1.svg",
-      //           },
-      //         ],
-      //       },
-      //       {
-      //         id: 5,
-      //         title: "Test checkout flow",
-      //         date: "Sep 15",
-      //         type: "QA",
-      //         users: [
-      //           {
-      //             name: "Mostafa Gamal",
-      //             img: "/images/avatars/avatar1.svg",
-      //           },
-      //           {
-      //             name: "Moaz Gamal",
-      //             img: "/images/avatars/avatar1.svg",
-      //           },
-
-      //           {
-      //             name: "Mohamed Khairy",
-      //             img: "/images/avatars/avatar1.svg",
-      //           },
-      //         ],
-      //       },
-      //     ],
-      //   },
-      //   {
-      //     name: "Backlog 2",
-      //     applications: [
-      //       {
-      //         id: 1,
-      //         title: "Add discount code to checkout page",
-      //         date: "Sep 14",
-      //         type: "Feature Request",
-      //       },
-      //       {
-      //         id: 2,
-      //         title: "Provide documentation on integrations",
-      //         date: "Sep 12",
-      //       },
-      //       {
-      //         id: 3,
-      //         title: "Design shopping cart dropdown",
-      //         date: "Sep 9",
-      //         type: "Design",
-      //       },
-      //       {
-      //         id: 4,
-      //         title: "Add discount code to checkout page",
-      //         date: "Sep 14",
-      //         type: "Feature Request",
-      //       },
-      //       {
-      //         id: 5,
-      //         title: "Test checkout flow",
-      //         date: "Sep 15",
-      //         type: "QA",
-      //       },
-      //     ],
-      //   },
-      //   {
-      //     name: "Backlog 3",
-      //     applications: [
-      //       {
-      //         id: 1,
-      //         title: "Add discount code to checkout page",
-      //         date: "Sep 14",
-      //         type: "Feature Request",
-      //       },
-      //       {
-      //         id: 2,
-      //         title: "Provide documentation on integrations",
-      //         date: "Sep 12",
-      //       },
-      //       {
-      //         id: 3,
-      //         title: "Design shopping cart dropdown",
-      //         date: "Sep 9",
-      //         type: "Design",
-      //       },
-      //       {
-      //         id: 4,
-      //         title: "Add discount code to checkout page",
-      //         date: "Sep 14",
-      //         type: "Feature Request",
-      //       },
-      //       {
-      //         id: 5,
-      //         title: "Test checkout flow",
-      //         date: "Sep 15",
-      //         type: "QA",
-      //       },
-      //     ],
-      //   },
-      //   {
-      //     name: "In Progress",
-      //     applications: [
-      //       {
-      //         id: 6,
-      //         title: "Design shopping cart dropdown",
-      //         date: "Sep 9",
-      //         type: "Design",
-      //       },
-      //       {
-      //         id: 7,
-      //         title: "Add discount code to checkout page",
-      //         date: "Sep 14",
-      //         type: "Feature Request",
-      //       },
-      //       {
-      //         id: 8,
-      //         title: "Provide documentation on integrations",
-      //         date: "Sep 12",
-      //         type: "Backend",
-      //       },
-      //     ],
-      //   },
-      //   {
-      //     name: "Review",
-      //     applications: [
-      //       {
-      //         id: 9,
-      //         title: "Provide documentation on integrations",
-      //         date: "Sep 12",
-      //       },
-      //       {
-      //         id: 10,
-      //         title: "Design shopping cart dropdown",
-      //         date: "Sep 9",
-      //         type: "Design",
-      //       },
-      //       {
-      //         id: 11,
-      //         title: "Add discount code to checkout page",
-      //         date: "Sep 14",
-      //         type: "Feature Request",
-      //       },
-      //       {
-      //         id: 12,
-      //         title: "Design shopping cart dropdown",
-      //         date: "Sep 9",
-      //         type: "Design",
-      //       },
-      //       {
-      //         id: 13,
-      //         title: "Add discount code to checkout page",
-      //         date: "Sep 14",
-      //         type: "Feature Request",
-      //       },
-      //     ],
-      //   },
-      //   {
-      //     name: "Done",
-      //     applications: [
-      //       {
-      //         id: 14,
-      //         title: "Add discount code to checkout page",
-      //         date: "Sep 14",
-      //         type: "Feature Request",
-      //       },
-      //       {
-      //         id: 15,
-      //         title: "Design shopping cart dropdown",
-      //         date: "Sep 9",
-      //         type: "Design",
-      //       },
-      //       {
-      //         id: 16,
-      //         title: "Add discount code to checkout page",
-      //         date: "Sep 14",
-      //         type: "Feature Request",
-      //       },
-      //     ],
-      //   },
-      // ],
-      form_id: "",
     };
   },
   watch: {
-    navTemplates() {
-      this.setCurrentBread();
-    },
     options: {
       handler() {
         this.open();
@@ -400,13 +164,15 @@ export default {
   },
   computed: {
     ...mapState("app", ["navTemplates"]),
+    ...mapState("tasks", ["tasks"]),
   },
   created() {
     this.setBreadCrumb({
       breadcrumbs: this.breadcrumbs,
       pageTitle: "المهام",
     });
-    this.getData();
+    // this.getTasks();
+    this.getTasksData();
   },
   mounted() {
     const scrollContainer = this.$refs.scrollContainer;
@@ -428,11 +194,17 @@ export default {
     }
   },
   methods: {
+    ...mapActions("tasks", ["updateTask", "getTasks"]),
     ...mapActions("app", ["setBreadCrumb"]),
-    async getData() {
-      const response = await axios.get("tasks");
-      const { tasks } = response?.data.data;
-      this.columns = tasks;
+    async getTasksData() {
+      this.isLoading = true;
+      this.getTasks()
+        .then(() => {
+          this.isLoading = false;
+        })
+        .catch(() => {
+          this.isLoading = false;
+        });
     },
 
     initScrollBehavior() {
@@ -456,8 +228,17 @@ export default {
     onDragStart() {
       this.isDragging = true;
     },
-    onDragEnd() {
+    onDragEnd(event) {
       this.isDragging = false;
+      console.log("event", event);
+      const stepId = event.to.getAttribute("id").split("_")[1];
+      const taskId = event.clone.getAttribute("id").split("_")[1];
+      console.log("data", stepId, taskId);
+      let data = {
+        id: taskId,
+        stage_id: stepId,
+      };
+      this.updateTask(data);
     },
     scrollHorizontally(direction) {
       const scrollContainer = this.$refs.scrollContainer;

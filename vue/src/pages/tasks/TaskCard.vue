@@ -1,124 +1,146 @@
 <template>
-    <v-card class="bg-white stage">
-      <div class="d-flex justify-content-between">
-        <v-card-title class="pa-0 case-title">{{ task.title }}</v-card-title>
-  
-        <v-menu offset-y left>
-          <template v-slot:activator="{ on }">
-            <transition name="slide-fade" mode="out-in">
-              <v-btn small icon v-on="on" color="primary" class="ms-1 me-0">
+  <v-card class="bg-white stage">
+    <div class="d-flex justify-content-between">
+      <!-- {{ task }} -->
+      <v-card-title class="pa-0 case-title">
+        {{ task.name }}
+      </v-card-title>
+
+      <v-menu offset-y left>
+        <template v-slot:activator="{ on }">
+          <transition name="slide-fade" mode="out-in">
+            <v-btn small icon v-on="on" color="primary" class="ms-1 me-0">
+              <v-icon>mdi-dots-horizontal</v-icon>
+            </v-btn>
+          </transition>
+        </template>
+        <v-list dense>
+          <v-list-item>
+            <v-list-item-title>
+              <v-icon>mdi-plus-circle-outline</v-icon>
+              <span class="action-span">{{ $t("cases.add_action") }}</span>
+            </v-list-item-title>
+          </v-list-item>
+          <v-list-item>
+            <v-list-item-title>
+              <v-icon>mdi-timeline-text-outline</v-icon>
+              <span class="action-span">{{ $t("cases.view_timeline") }}</span>
+            </v-list-item-title>
+          </v-list-item>
+          <v-list-item>
+            <v-list-item-title>
+              <v-icon>mdi-at</v-icon>
+              <span class="action-span">{{ $t("cases.assign_user") }}</span>
+            </v-list-item-title>
+          </v-list-item>
+          <v-list-item>
+            <v-list-item-title>
+              <v-icon>mdi-pencil-outline</v-icon>
+              <!-- <v-icon>mdi-open-in-new</v-icon> -->
+              <span class="action-span">{{ $t("cases.editCase") }}</span>
+            </v-list-item-title>
+          </v-list-item>
+        </v-list>
+      </v-menu>
+    </div>
+    <v-card-text class="p-0 mt-1">
+      <div class="desc-cont">الوصف</div>
+      <div class="progress-cont mt-2">
+        <div
+          class="prog-title-cont d-flex justify-content-between align-center"
+        >
+          <div class="prog-title">
+            <v-icon class="me-1"> mdi-list-status </v-icon>
+            <span> تقدم </span>
+          </div>
+          <div class="prog-current">{{ progress }} %</div>
+        </div>
+        <v-progress-linear
+          class="mt-1"
+          :color="calculatedColor"
+          rounded
+          :value="progress"
+        ></v-progress-linear>
+      </div>
+      <div class="d-flex mt-3 justify-content-between align-center">
+        <span class="text-sm text-gray-600">{{
+          task.due_date.split(" ")[0]
+        }}</span>
+
+        <div class="avatar-container" v-if="task.users && task?.users?.length">
+          <!-- More avatars -->
+          <v-menu offset-y v-if="task?.users?.length > 3">
+            <template v-slot:activator="{ on }">
+              <v-btn icon small size="24" class="more-avatar" v-on="on">
                 <v-icon>mdi-dots-horizontal</v-icon>
               </v-btn>
-            </transition>
-          </template>
-          <v-list dense>
-            <v-list-item>
-              <v-list-item-title>
-                <v-icon>mdi-plus-circle-outline</v-icon>
-                <span class="action-span">{{ $t("cases.add_action") }}</span>
-              </v-list-item-title>
-            </v-list-item>
-            <v-list-item>
-              <v-list-item-title>
-                <v-icon>mdi-timeline-text-outline</v-icon>
-                <span class="action-span">{{ $t("cases.view_timeline") }}</span>
-              </v-list-item-title>
-            </v-list-item>
-            <v-list-item>
-              <v-list-item-title>
-                <v-icon>mdi-at</v-icon>
-                <span class="action-span">{{ $t("cases.assign_user") }}</span>
-              </v-list-item-title>
-            </v-list-item>
-            <v-list-item>
-              <v-list-item-title>
-                <v-icon>mdi-pencil-outline</v-icon>
-                <!-- <v-icon>mdi-open-in-new</v-icon> -->
-                <span class="action-span">{{ $t("cases.editCase") }}</span>
-              </v-list-item-title>
-            </v-list-item>
-          </v-list>
-        </v-menu>
-      </div>
-      <v-card-text class="p-0 mt-1">
-        <div class="desc-cont">الوصف</div>
-        <div class="progress-cont mt-2">
-          <div
-            class="prog-title-cont d-flex justify-content-between align-center"
+            </template>
+            <v-list>
+              <!-- Render avatars here -->
+              <v-list-item v-for="(user, index) in task.users" :key="user.name">
+                <v-avatar size="24">
+                  <img :src="user.img" :alt="'Avatar ' + (index + 4)" />
+                </v-avatar>
+              </v-list-item>
+            </v-list>
+          </v-menu>
+          <!-- Avatar 1 -->
+          <v-avatar
+            v-for="user in task.users.slice(0, 3)"
+            size="30"
+            class="avatar-item"
           >
-            <div class="prog-title">
-              <v-icon class="me-1"> mdi-list-status </v-icon>
-              <span> تقدم </span>
-            </div>
-            <div class="prog-current">4/10</div>
-          </div>
-          <v-progress-linear
-            class="mt-1"
-            color="red darken-2"
-            rounded
-            value="30"
-          ></v-progress-linear>
+            <img :src="user.img" alt="Avatar 1" />
+          </v-avatar>
         </div>
-        <div class="d-flex mt-3 justify-content-between align-center">
-          <span class="text-sm text-gray-600">{{ task.date }}</span>
-          <div class="avatar-container" v-if="task.users && task?.users?.length">
-            <!-- More avatars -->
-            <v-menu offset-y v-if="task?.users?.length > 3">
-              <template v-slot:activator="{ on }">
-                <v-btn icon small size="24" class="more-avatar" v-on="on">
-                  <v-icon>mdi-dots-horizontal</v-icon>
-                </v-btn>
-              </template>
-              <v-list>
-                <!-- Render avatars here -->
-                <v-list-item v-for="(user, index) in task.users" :key="user.name">
-                  <v-avatar size="24">
-                    <img :src="user.img" :alt="'Avatar ' + (index + 4)" />
-                  </v-avatar>
-                </v-list-item>
-              </v-list>
-            </v-menu>
-            <!-- Avatar 1 -->
-            <v-avatar
-              v-for="user in task.users.slice(0, 3)"
-              size="30"
-              class="avatar-item"
-            >
-              <img :src="user.img" alt="Avatar 1" />
-            </v-avatar>
-          </div>
-        </div>
-      </v-card-text>
-    </v-card>
-  </template>
-  <script>
-  export default {
-    props: {
-      task: {
-        type: Object,
-        default: () => ({}),
-      },
+      </div>
+    </v-card-text>
+  </v-card>
+</template>
+<script>
+export default {
+  props: {
+    task: {
+      type: Object,
+      default: () => ({}),
     },
-    computed: {
-      badgeColor() {
-        const mappings = {
-          Design: "purple",
-          "Feature Request": "teal",
-          Backend: "blue",
-          QA: "green",
-          default: "teal",
-        };
-        return mappings[this.task.type] || mappings.default;
-      },
+    progress: {
+      type: Number,
+      default: 0,
     },
-  };
-  </script>
-  <style>
-  .avatar-item {
-    border: 1px solid #fff;
-  }
-  .avatar-item:not(:last-child) {
-    margin-left: -8px;
-  }
-  </style>
-  
+  },
+  computed: {
+    calculatedColor() {
+      let color = "#D82027";
+      if (this.progress == 25) {
+        color = "#D82027";
+      } else if (this.progress == 50) {
+        color = "#3AD820";
+      } else if (this.progress == 75) {
+        color = "#02A98B";
+      } else if (this.progress == 100) {
+        color = "#005A4E";
+      }
+      return color;
+    },
+    badgeColor() {
+      const mappings = {
+        Design: "purple",
+        "Feature Request": "teal",
+        Backend: "blue",
+        QA: "green",
+        default: "teal",
+      };
+      return mappings[this.task.type] || mappings.default;
+    },
+  },
+};
+</script>
+<style>
+.avatar-item {
+  border: 1px solid #fff;
+}
+.avatar-item:not(:last-child) {
+  margin-left: -8px;
+}
+</style>
