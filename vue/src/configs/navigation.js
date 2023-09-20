@@ -39,29 +39,29 @@ export default {
         // },
       ],
     },
-    // {
-    //   icon: "mdi-gavel",
-    //   text: "legal_advice",
-    //   key: "menu.legal_advice",
-    //   permission: "read-role",
-    //   // link: "/cases/2",
-    //   items: [
-    //     {
-    //       icon: "mdi-list-box",
-    //       text: "legal_advice",
-    //       key: "menu.legal_advice",
-    //       permission: "read-role",
-    //       link: "/cases/2",
-    //     },
-    //     {
-    //       icon: "mdi-list-box",
-    //       text: "review_Doc",
-    //       key: "menu.review_Doc",
-    //       permission: "read-role",
-    //       link: "/cases/2/review-doc",
-    //     },
-    //   ],
-    // },
+    {
+      icon: "mdi-gavel",
+      text: "legal_advice",
+      key: "menu.legal_advice",
+      permission: "read-role",
+      // link: "/cases/2",
+      items: [
+        {
+          icon: "mdi-list-box",
+          text: "legal_advice",
+          key: "menu.legal_advice",
+          permission: "read-role",
+          link: "/cases/2",
+        },
+        {
+          icon: "mdi-list-box",
+          text: "review_Doc",
+          key: "menu.review_Doc",
+          permission: "read-role",
+          link: "/cases/2/review-doc",
+        },
+      ],
+    },
     // {
     //   icon: "mdi-gavel",
     //   text: "review_and_audit",
@@ -111,8 +111,6 @@ export default {
       permission: "read-role",
       items: [],
     },
-
-
 
     // {
     //   icon: "mdi-chart-line",
@@ -215,7 +213,6 @@ export default {
       key: "menu.settings",
       text: "Settings",
       items: [
-
         // { key: 'menu.sms', link: '/settings/sms' },
         {
           icon: "mdi-list-box",
@@ -247,7 +244,7 @@ export default {
           key: "menu.organizations",
           link: "/organizations",
           permission: "read-role",
-          items: []
+          items: [],
         },
 
         {
