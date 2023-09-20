@@ -241,47 +241,72 @@ class FormRequestService
 
     public function assignRequest($requestData)
     {
-        try {
-            return DB::transaction(function () use ($requestData) {
-                foreach ($requestData['form_request_id'] as $formRequestId) {
-                    FormAssignRequest::where('form_request_id', $formRequestId)
-                        ->where('status', 'active')
-                        ->where('status', '!=', 'deleted')
-                        ->update(['status' => 'deleted']);
+        // try {
+        return DB::transaction(function () use ($requestData) {
 
-                    $assignNew = FormAssignRequest::create([
-                        'form_request_id' => $formRequestId,
-                        'user_id' => $requestData['user_id'],
-                        'date' => date('Y-m-d'),
-                        'assigner_id' => auth()->id(),
-                        'status' => 'active',
-                        'type' => FormAssignRequestType::EMPLOYEE,
-                    ]);
+            $request = FormRequest::where('id', $requestData->form_request_id)->first();
+            $request->formAssignedRequests()->delete();
 
+            $items = [];
+            foreach ($requestData['user_id'] as $user_id) {
+                $items[] = [
+                    'user_id' => $user_id,
+                    'date' => date('Y-m-d'),
+                    'assigner_id' => auth()->id(),
+                    'status' => 'active',
+                    'type' => FormAssignRequestType::EMPLOYEE,
+                ];
 
 
-                    $request = FormRequest::where('id', $formRequestId)->first();
-                    if ($request->form_type == 'case') {
-                        $request->update(['status' => StatusEnum::ASSIGNED]);
-                    }
+                saveFormRequestAction(
+                    form_request_id: $request->id,
+                    formable_id: $user_id,
+                    formable_type: FormAssignRequest::class,
+                    msg: 'تم اسناد الطلب ل موظف ',
+                );
+            }
+            return  $request->formAssignedRequests()->saveMany($items);
 
-                    if ($request->form_type == 'related_case') {
-                        $request->update(['status' => StatusEnum::WAIT]);
-                    }
 
-                    saveFormRequestAction(
-                        form_request_id: $formRequestId,
-                        formable_id: $assignNew->id,
-                        formable_type: FormAssignRequest::class,
-                        msg: 'تم اسناد الطلب ل موظف ',
-                    );
-                }
-                return ['assignNew' => $assignNew];
-            });
-        } catch (\Throwable $e) {
-            // You could consider throwing an exception here if needed
-            return null;
-        }
+            // foreach ($requestData['user_id'] as $formRequestId) {
+            //     FormAssignRequest::where('form_request_id', $formRequestId)
+            //         ->where('status', 'active')
+            //         ->where('status', '!=', 'deleted')
+            //         ->update(['status' => 'deleted']);
+
+            //     $assignNew = FormAssignRequest::create([
+            //         'form_request_id' => $formRequestId,
+            //         'user_id' => $requestData['user_id'],
+            //         'date' => date('Y-m-d'),
+            //         'assigner_id' => auth()->id(),
+            //         'status' => 'active',
+            //         'type' => FormAssignRequestType::EMPLOYEE,
+            //     ]);
+
+
+
+            //     $request = FormRequest::where('id', $formRequestId)->first();
+            //     if ($request->form_type == 'case') {
+            //         $request->update(['status' => StatusEnum::ASSIGNED]);
+            //     }
+
+            //     if ($request->form_type == 'related_case') {
+            //         $request->update(['status' => StatusEnum::WAIT]);
+            //     }
+
+            //     saveFormRequestAction(
+            //         form_request_id: $formRequestId,
+            //         formable_id: $assignNew->id,
+            //         formable_type: FormAssignRequest::class,
+            //         msg: 'تم اسناد الطلب ل موظف ',
+            //     );
+            // }
+            // return ['assignNew' => $assignNew];
+        });
+        // } catch (\Throwable $e) {
+        //     // You could consider throwing an exception here if needed
+        //     return null;
+        // }
     }
 
     public function formRequestSide($request)

@@ -25,7 +25,7 @@ class FormAssign extends FormRequest
     {
         $id = $this->request->get('id');
         return [
-            'form_request_id' => 'required|array',
+            'form_request_id' => 'required',
             'user_id' => 'required',
             // 'assigner_id' => 'required',
             // 'date' => 'required',
