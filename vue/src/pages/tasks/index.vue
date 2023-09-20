@@ -55,30 +55,38 @@
           :class="i > 0 ? 'mr-4' : ''"
         >
           <p class="stage-title">
-            <!-- <v-chip
+            <v-chip
               v-if="column.id == 1"
               class="ma-2"
-              color="#DB2777"
-              text-color="#DB27771A"
+              color="#f7e5ed"
+              text-color="#db2777"
             >
               {{ column.tasks.length }}
             </v-chip>
             <v-chip
               v-if="column.id == 2"
               class="ma-2"
-              color="green"
-              text-color="white"
+              color="#f0e6f8"
+              text-color="#a454ed"
             >
               {{ column.tasks.length }}
             </v-chip>
             <v-chip
               v-if="column.id == 3"
               class="ma-2"
-              color="red"
-              text-color="white"
+              color="#f5efe1"
+              text-color="#ca8a04"
             >
               {{ column.tasks.length }}
-            </v-chip> -->
+            </v-chip>
+            <v-chip
+              v-if="column.id == 4"
+              class="ma-2"
+              color="#e6f2ea"
+              text-color="#2FAD5E"
+            >
+              {{ column.tasks.length }}
+            </v-chip>
             {{ column.name }}
           </p>
 
@@ -164,6 +172,19 @@ export default {
   computed: {
     ...mapState("app", ["navTemplates"]),
     ...mapState("tasks", ["tasks"]),
+    calculatedColor(id) {
+      let color = "#D82027";
+      if (this.progress == 1) {
+        color = "#D82027";
+      } else if (this.progress == 2) {
+        color = "#3AD820";
+      } else if (this.progress == 3) {
+        color = "#02A98B";
+      } else if (this.progress == 4) {
+        color = "#005A4E";
+      }
+      return color;
+    },
   },
   created() {
     this.setBreadCrumb({
