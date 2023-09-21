@@ -106,6 +106,7 @@
               :progress="(100 / tasks.length) * column.id"
               :key="task.id"
               :id="`task_${task.id}`"
+              @delete-task="deleteItem"
               :task="task"
               class="mt-3 cursor-move scroll-item"
               ref="listItem"
@@ -137,7 +138,6 @@ export default {
     return {
       currentPageId: null,
       isDragging: false,
-
       options: {},
       isLoading: false,
       breadcrumbs: [
@@ -214,8 +214,24 @@ export default {
     }
   },
   methods: {
-    ...mapActions("tasks", ["updateTask", "getTasks"]),
+    ...mapActions("tasks", ["updateTask", "getTasks", "deleteTask"]),
     ...mapActions("app", ["setBreadCrumb"]),
+    async deleteItem(id) {
+      const msg = this.$t("general.delete_confirmation");
+      const { isConfirmed } = await ask(msg, "error");
+      if (isConfirmed) {
+        this.isLoading = true;
+        this.deleteTask(id)
+          .then((response) => {
+            makeToast("success", response.data.message);
+            this.getTasksData();
+            this.isLoading = false;
+          })
+          .catch(() => {
+            this.isLoading = false;
+          });
+      }
+    },
     async getTasksData() {
       this.isLoading = true;
       this.getTasks()
