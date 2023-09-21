@@ -2,16 +2,11 @@
 
 namespace App\Http\Controllers\API;
 
-use App\Filters\SearchFilters;
-use App\Filters\SortFilters;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\PageRequest;
-use App\Http\Resources\StageResource;
 use App\Models\Application;
 use App\Models\Stage;
-use App\Models\StageForm;
-use Illuminate\Http\Request;
-use Illuminate\Pipeline\Pipeline;
+use Illuminate\Support\Facades\DB;
 
 class ApplicationController extends Controller
 {
@@ -19,15 +14,19 @@ class ApplicationController extends Controller
 
     public function index(PageRequest $request)
     {
-        $data = Stage::with('applications.form_request');
+        DB::statement('SET sql_mode = " "');
+
+        $data = Stage::select('stages.*')
+            ->join('stage_forms', 'stage_forms.stage_id', '=', 'stages.id')
+            ->orderBy('stage_forms.order', 'asc')
+            ->groupBy('id')
+            ->with('applications.form_request');
 
         if (request('form_id')) {
-            $data = $data->with(['applications' => function ($q) {
-                $q->where('form_id', request('form_id'));
-            }])->whereHas('stage_forms', function ($q) {
-                $q->where('form_id', request('form_id'))
-                    ->orderBy('order', 'asc');
-            });
+            $data = $data->where('stage_forms.form_id', request('form_id'))
+                ->with(['applications' => function ($q) {
+                    $q->where('form_id', request('form_id'));
+                }]);
         }
 
         $data = request('pageSize') == -1 ?  $data->get() : $data->paginate(request('pageSize', 15));

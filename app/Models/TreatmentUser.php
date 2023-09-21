@@ -9,7 +9,9 @@ class TreatmentUser extends Model
 {
     use HasFactory;
 
-
     protected $table = 'treatment_user';
 
+    protected $fillable = [
+        'treatment_id', 'user_id', 'date'
+    ];
 }
