@@ -45,6 +45,12 @@ class Task extends Model
             'key' => 'finished',
             'tasks' => []
         ],
+        [
+            'id' => 5,
+            'name' => 'الارشيف',
+            'key' => 'archieve',
+            'tasks' => []
+        ],
     ];
 
     public function getActivitylogOptions(): LogOptions
