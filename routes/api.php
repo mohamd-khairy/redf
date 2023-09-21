@@ -108,7 +108,6 @@ Route::group(['prefix' => 'v1'], function () {
 
     /*********************trratmentController***************** */
       Route::group(['middleware' => 'auth:sanctum'], function () {
-
         Route::post('treatments/upload-files', [TreatmentController::class, 'uploadFiles']);
         Route::post('treatments/assign-users', [TreatmentController::class, 'assignUser']);
         Route::post('treatments/actions', [TreatmentController::class, 'treatmentActions']);
