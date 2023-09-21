@@ -35,9 +35,8 @@ class TreatmentController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function index(PageRequest $request)
-    {
+    { 
         $treatments = Treatment::with('files');
-
         $data = app(Pipeline::class)->send($treatments)->through([
             SearchFilters::class,
             SortFilters::class,

@@ -14,6 +14,10 @@ const actions = {
     const { departments } = response?.data.data
     commit('SET_DEPARTMENTS', departments)
   },
+  async updateDepartment({ commit }, data) {
+    console.log("action dep: ", data.get("id"));
+    return await axios.post(`departments/${data.get("id")}`, data)
+  },
   async storeDepartment({ commit }, data) {
     return await axios.post('departments', data)
   },
