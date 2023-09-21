@@ -141,6 +141,7 @@ Route::group(['prefix' => 'v1'], function () {
     /*********************TasksController***************** */
     Route::group(['middleware' => 'auth:sanctum'], function () {
         Route::get('tasks/actions', [TaskController::class, 'actions']);
+        Route::post('tasks/late', [TaskController::class, 'updateTaskStage']);
         Route::apiResource('tasks', TaskController::class);
     });
 

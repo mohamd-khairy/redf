@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\API;
 
+use DateTime;
 use Throwable;
 use Carbon\Carbon;
 use App\Models\File;
@@ -117,16 +118,17 @@ class TaskController extends Controller
     {
         $validatedData = $request->validate([
             'name' => 'sometimes|string|max:255',
-            'type' => 'sometimes', // Enum values
+            'status' => 'sometimes', // Enum values
             'user_id' => 'sometimes|exists:users,id',
             'assigner_id' => 'sometimes|exists:users,id',
+            'department_id' => 'sometimes|exists:departments,id',
             'due_date' => 'sometimes|date',
             'details' => 'sometimes|string',
             'share_with' => 'sometimes|string',
             'form_request_id' => 'sometimes|exists:forms,id',
             'file' => 'nullable|file|mimes:jpg,jpeg,png,pdf,docx',
-            'stage_id' => 'nullable|integer'
-        ]);
+            'stage_id' => 'nullable|integer',
+         ]);
 
         unset($validatedData['file']);
 
@@ -183,5 +185,24 @@ class TaskController extends Controller
         $task->delete();
 
         return responseSuccess([], 'Task has been successfully deleted');
+    }
+    public function updateTaskStage(Request $request){
+
+        // get todate date
+        $ldate = new DateTime('today');
+
+        $tasks = Task::whereDate('due_date', '<', $ldate)
+        ->where(function ($query) {
+            $query->where('stage_id', 1)
+                  ->orWhere('stage_id', 2);
+        })
+        ->get();
+
+        foreach ($tasks as $task) {
+            $task->stage_id = 3;
+            $task->save();
+        }
+        return responseSuccess([], 'Task has been successfully updated');
+
     }
 }

@@ -19,6 +19,7 @@ import DocumentsRoutes from "./documents.routes";
 import TasksRoutes from "./tasks.routes";
 import Branches from "./branches.routes";
 import Specialization from "./specializations.routes";
+import Treatments from "./treatments.routes";
 
 import CasesRoutes from "./cases.routes";
 import store from "@/store";
@@ -60,6 +61,7 @@ export const routes = [
   ...TasksRoutes,
   ...Branches,
   ...Specialization,
+  ...Treatments,
 
   {
     path: "/blank",
@@ -68,14 +70,6 @@ export const routes = [
       import(/* webpackChunkName: "blank" */ "@/pages/BlankPage.vue"),
     meta: {
       title: "blank",
-    },
-  },
-  {
-    path: "/test",
-    name: "test",
-    component: () => import(/* webpackChunkName: "test" */ "@/pages/test.vue"),
-    meta: {
-      title: "test",
     },
   },
   {
