@@ -57,7 +57,6 @@ class TreatmentController extends Controller
     public function store(TreatmentRequest $request)
     {
         try {
-
             $validatedData = $request->validated();
             if (!isset($validatedData['type'])) {
                 $validatedData['type'] = TreatmentTypeEnum::CONSULTATION;
@@ -116,6 +115,16 @@ class TreatmentController extends Controller
     public function destroy($id)
     {
         $treatment = Treatment::findOrFail($id);
+        // Delete related files
+        $treatment->files()->delete();
+
+        // Delete related treatment information
+        $treatment->treatmentInformation()->delete();
+
+        // Delete related treatment actions
+        $treatment->treatmentAction()->delete();
+
+        // Finally, delete the treatment itself
         $treatment->delete();
 
         return responseSuccess([], 'Treatment has been successfully deleted');
@@ -148,6 +157,7 @@ class TreatmentController extends Controller
 
     public function assignUser(AssignUsersToTreatmentRequest $request){
         try {
+
             $treatment = Treatment::findOrFail($request->treatment_id );
             $userIds = $request->user_ids;
             $date = $request->date;

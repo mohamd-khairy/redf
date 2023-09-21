@@ -17,7 +17,7 @@ class Task extends Model
     public $inPermission = true;
 
     protected $fillable = [
-        'name', 'type', 'user_id', 'assigner_id', 'due_date', 'details', 'share_with', 'form_request_id', 'stage_id'
+        'name' , 'user_id', 'department_id' , 'status','assigner_id', 'due_date', 'details', 'share_with', 'form_request_id', 'stage_id'
     ];
 
     public static $stages =  [
@@ -68,8 +68,5 @@ class Task extends Model
         return $this->belongsTo(User::class, 'assigner_id');
     }
 
-    // public function getTypeAttribute($value)
-    // {
-    //     return TaskTypeEnum::all()[$value];
-    // }
+
 }

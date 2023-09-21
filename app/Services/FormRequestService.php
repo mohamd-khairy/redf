@@ -27,8 +27,8 @@ class FormRequestService
 {
     public function storeFormFill($requestData)
     {
-        return DB::transaction(function () use ($requestData) {
 
+        return DB::transaction(function () use ($requestData) {
             $number = $requestData['case_number'] ?? rand(100000, 999999);
             $formRequest = FormRequest::create([
                 'form_id' => $requestData['id'],
