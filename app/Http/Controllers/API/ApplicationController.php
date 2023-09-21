@@ -31,7 +31,7 @@ class ApplicationController extends Controller
                     }]);
             }
 
-            $data = $data->get();
+            $data = ['data' =>  $data->get()];
         } else {
 
             $data = Application::with('form_request.formAssignedRequests', 'stage');
