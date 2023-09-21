@@ -102,7 +102,7 @@ class TreatmentController extends Controller
 
     public function show($id)
     {
-        $treatment = Treatment::with('user:id,name', 'department:id,name')->findOrFail($id);
+        $treatment = Treatment::with('files','treatmentInformation','treatmentAction','user:id,name', 'department:id,name')->findOrFail($id);
 
         return responseSuccess($treatment, 'Treatment has been successfully showed');
     }
