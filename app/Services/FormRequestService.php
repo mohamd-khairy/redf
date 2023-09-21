@@ -258,6 +258,13 @@ class FormRequestService
                     ];
 
                     FormAssignRequest::create($items);
+
+                    saveFormRequestAction(
+                        form_request_id: $request->id,
+                        formable_id: $user_id,
+                        formable_type: FormAssignRequest::class,
+                        msg: 'تم اسناد الطلب ل موظف ',
+                    );
                 }
 
                 if ($request->form_type == 'case') {
@@ -267,13 +274,6 @@ class FormRequestService
                 if ($request->form_type == 'related_case') {
                     $request->update(['status' => StatusEnum::WAIT]);
                 }
-
-                saveFormRequestAction(
-                    form_request_id: $request->id,
-                    formable_id: $user_id,
-                    formable_type: FormAssignRequest::class,
-                    msg: 'تم اسناد الطلب ل موظف ',
-                );
 
                 return true;
             });
