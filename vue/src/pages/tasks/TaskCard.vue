@@ -16,9 +16,11 @@
         </template>
         <v-list dense>
           <v-list-item>
-            <v-list-item-title>
-              <v-icon>mdi-plus-circle-outline</v-icon>
-              <span class="action-span">{{ $t("cases.add_action") }}</span>
+            <v-list-item-title @click="deleteItem(task.id)">
+              <a>
+                <v-icon class="text-error" color="error">mdi-close</v-icon>
+                <span class="action-span">{{ $t("cases.delete") }}</span>
+              </a>
             </v-list-item-title>
           </v-list-item>
           <v-list-item>
@@ -58,7 +60,9 @@
         <v-chip v-if="progress == 100" color="#e6f2ea" text-color="#2FAD5E">
           مكتمل
         </v-chip>
-        <v-chip outlined color="white" text-color="secondary"> #222 </v-chip>
+        <v-chip class="font-weight-black mx-1" outlined text-color="#606C80">
+          #{{ task.id }}
+        </v-chip>
       </div>
       <!-- <div class="progress-cont mt-2">
         <div
@@ -102,6 +106,8 @@
   </v-card>
 </template>
 <script>
+import { mapActions, mapState } from "vuex";
+import { ask, makeToast } from "@/helpers";
 export default {
   props: {
     task: {
@@ -136,6 +142,12 @@ export default {
         default: "teal",
       };
       return mappings[this.task.type] || mappings.default;
+    },
+  },
+  methods: {
+    ...mapActions("tasks", ["deleteTask", "getTasks"]),
+    async deleteItem(id) {
+      this.$emit("delete-task", id);
     },
   },
 };

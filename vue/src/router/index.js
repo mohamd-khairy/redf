@@ -71,6 +71,14 @@ export const routes = [
     },
   },
   {
+    path: "/test",
+    name: "test",
+    component: () => import(/* webpackChunkName: "test" */ "@/pages/test.vue"),
+    meta: {
+      title: "test",
+    },
+  },
+  {
     path: "*",
     name: "error",
     component: () =>
