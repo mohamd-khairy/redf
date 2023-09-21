@@ -87,6 +87,10 @@ export default {
         ...mapActions("app", ["setBreadCrumb"]),
         ...mapActions("departments", ["getDepartments"]),
         searchtemplate() { },
+        treatmentCreated() {
+            this.open();
+        },
+
         open() {
             this.isLoading = true;
             let { page, itemsPerPage } = this.options;
@@ -204,7 +208,7 @@ export default {
                 <div class="effect-3 effects"></div>
             </div>
         </v-card>
-        <add-treatment-dialog v-if="dialog" v-model="dialog"></add-treatment-dialog>
+        <add-treatment-dialog @treatmentCreated="treatmentCreated" v-if="dialog" v-model="dialog"></add-treatment-dialog>
     </div>
 </template>
   

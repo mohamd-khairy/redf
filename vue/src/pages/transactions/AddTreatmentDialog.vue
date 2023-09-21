@@ -77,11 +77,11 @@
                 <v-card-actions class="py-2">
                     <v-spacer></v-spacer>
 
-                    <v-btn color="primary" @click="save">
+                    <v-btn color="primary" @click="save" large>
                         {{ $t("general.save") }}
                     </v-btn>
 
-                    <v-btn color="grey" class="ms-2" @click="dialog = false">
+                    <v-btn color="grey" class="ms-2" @click="dialog = false" large>
                         {{ $t("general.cancel") }}
                     </v-btn>
                 </v-card-actions>
@@ -224,13 +224,14 @@ export default {
             let data = this.treatment
             this.storeTreatment(data)
                 .then((response) => {
-                    this.isLoading = true;
+                    this.isLoading = false;
                     this.dialog = false;
                     this.errors = {};
+                    this.$emit('treatmentCreated')
                     makeToast("success", this.$t("general.new_treatment_added"));
                 })
                 .catch((error) => {
-                    this.isLoading = true;
+                    this.isLoading = false;
                     // if (error.response.status == 422) {
                     //   const { errors } = error?.response?.data;
                     //   this.errors = errors ?? {};
