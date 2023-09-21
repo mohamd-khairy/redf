@@ -2,7 +2,7 @@
   <v-card class="bg-white stage">
     <div class="d-flex justify-content-between">
       <v-card-title class="pa-0 case-title">
-        <a href="#" @click.prevent="taskPath(task.id)">{{ task.title }}</a>
+        <a href="#" @click.prevent="taskPath(task.form_request?.id)">{{ task.form_request?.name }}</a>
       </v-card-title>
 
       <v-menu offset-y left>
@@ -49,7 +49,7 @@
       </v-menu>
     </div>
     <v-card-text class="p-0 mt-1">
-      <div class="desc-cont">الوصف</div>
+      <div class="desc-cont">{{ task.form_request?.display_status }}</div>
       <div class="progress-cont mt-2">
         <div
           class="prog-title-cont d-flex justify-content-between align-center"
@@ -69,26 +69,26 @@
       </div>
       <div class="d-flex mt-3 justify-content-between align-center">
         <span class="text-sm text-gray-600">{{ task.date }}</span>
-        <div class="avatar-container" v-if="task.form_request?.formAssignedRequests && task?.form_request?.formAssignedRequests?.length">
+        <div class="avatar-container" v-if="task.form_request?.form_assigned_requests && task?.form_request?.form_assigned_requests?.length">
           <!-- More avatars -->
-<!--          <v-menu offset-y v-if="task?.form_request?.formAssignedRequests?.length > 3">-->
-<!--            <template v-slot:activator="{ on }">-->
-<!--              <v-btn icon small size="24" class="more-avatar" v-on="on">-->
-<!--                <v-icon>mdi-dots-horizontal</v-icon>-->
-<!--              </v-btn>-->
-<!--            </template>-->
-<!--            <v-list>-->
-<!--              &lt;!&ndash; Render avatars here &ndash;&gt;-->
-<!--              <v-list-item v-for="(item, index) in task?.form_request?.formAssignedRequests?.length" :key="item.user.name">-->
-<!--                <v-avatar size="24">-->
-<!--                  <img :src="'/images/avatars/avatar1.svg'" :alt="'Avatar ' + (index + 4)" />-->
-<!--                </v-avatar>-->
-<!--              </v-list-item>-->
-<!--            </v-list>-->
-<!--          </v-menu>-->
+          <v-menu offset-y v-if="task?.form_request?.form_assigned_requests?.length > 3">
+            <template v-slot:activator="{ on }">
+              <v-btn icon small size="24" class="more-avatar" v-on="on">
+                <v-icon>mdi-dots-horizontal</v-icon>
+              </v-btn>
+            </template>
+            <v-list>
+              <!-- Render avatars here -->
+              <v-list-item v-for="(item, index) in task?.form_request?.form_assigned_requests" :key="item.user.name">
+                <v-avatar size="24">
+                  <img :src="'/images/avatars/avatar1.svg'" :alt="'Avatar ' + (index + 4)" />
+                </v-avatar>
+              </v-list-item>
+            </v-list>
+          </v-menu>
           <!-- Avatar 1 -->
           <v-avatar
-            v-for="user in task?.form_request?.formAssignedRequests"
+            v-for="user in task?.form_request?.form_assigned_requests"
             size="30"
             class="avatar-item"
           >

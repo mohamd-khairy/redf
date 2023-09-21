@@ -63,6 +63,9 @@ const mutations = {
   SET_SESSION_PLACES(state, value) {
     state.sessionPlaces = value;
   },
+  SET_COLUMNS(state, value) {
+    state.columns = value;
+  },
 };
 
 export default mutations;

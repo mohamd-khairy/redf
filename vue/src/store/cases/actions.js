@@ -592,13 +592,22 @@ const actions = {
     return await axios.put(`update-form-request-information/${data.id}`, data);
   },
 
-  async getApplications({ commit }, id) {
-    return await axios.get(`get-all-applications`,{
-      params:{
-        form_id:id
-      }
+  async getApplications({ commit }, data) {
+    const response = await axios.get(`get-all-applications`,{
+      params: {
+        form_id: data.id,
+        search: data.search,
+        pageSize: data.pageSize,
+        page: data.pageNumber,
+        sortDirection: data.sortDirection,
+        sortCoulmn: data.sortColumn,
+      },
     });
+    const columns = response?.data.data.data;
+    commit("SET_COLUMNS", columns);
+    return response;
   },
+
 };
 
 export default actions;

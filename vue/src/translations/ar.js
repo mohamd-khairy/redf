@@ -600,6 +600,7 @@ export default {
     drone8: "طائرة 8",
   },
   tables: {
+    details: "الوصف",
     caseName: "موضوع القضية",
     case_date: "تاريخ القضية",
     branch: "المحكمة",

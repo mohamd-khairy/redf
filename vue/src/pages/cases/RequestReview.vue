@@ -1,5 +1,6 @@
 <template>
   <div class="d-flex flex-column flex-grow-1">
+<!--    {{ items}}-->
     <!-- <div class="d-flex align-center py-3">
       <div>
         <div class="display-1">{{ $t('cases.casesList') }}</div>
@@ -35,7 +36,6 @@
       <v-tabs
         hide-slider
         show-arrows
-        v-model="form_id"
         active-class="active-form"
         class="mb-4 mt-1"
         centered
@@ -44,7 +44,7 @@
       >
         <v-tab
           v-for="(tab,index) in selectedForms"
-          :key="index"
+          :key="tab.id"
           :value="tab.id"
           @click="fetchApplications(tab.id)"
         >
@@ -72,7 +72,7 @@
               ref="scrollContainer"
             >
               <div
-                v-for="(column, i) in columns"
+                v-for="(column, i) in items"
                 :key="column.id"
                 class="bg-gray-100 px-3 py-3 column-width stage-cont"
                 :class="i > 0 ? 'mr-4' : ''"
@@ -100,8 +100,8 @@
                     :task="task"
                     class="mt-3"
                     ref="listItem"
-                    @openAssign="openAssignDialog(task.id)"
-                    @deleteItem="deleteItem(task.form_request?.id)"
+                    @openAssign="openAssignDialog(task.form_request_id , task)"
+                    @deleteItem="deleteItem(task.form_request_id)"
                   ></task-card>
                   <!-- </transition-group> -->
                 </draggable>
@@ -111,9 +111,9 @@
           </v-tab-item>
           <v-tab-item>
             <div class="min-h-screen d-flex py-4 px-4">
-              <v-data-table show-select v-model="selected" :headers="headers" :items="items" :options.sync="options" :show-select="false"
-                          class="flex-grow-1 dt-custom-row-cursor" :loading="isLoading" :page="page" :pageCount="numberOfPages" :server-items-length="total"
-                          @click:row="handleClick">
+              <v-data-table v-model="selected" :headers="headers" :items="items" :options.sync="options" :show-select="false"
+                            class="flex-grow-1 dt-custom-row-cursor" :loading="isLoading" :page="page" :pageCount="numberOfPages" :server-items-length="total"
+                            @click:row="handleClick">
               <!-- <template v-slot:item.id="{ item }">
                 <div class="font-weight-bold">
                   # <copy-label :text="item.id + ''" />
@@ -121,7 +121,7 @@
               </template> -->
 
               <template v-slot:item.name="{ item }">
-                <div>{{ item.name ?? "---" }}</div>
+                <div>{{ item.form_request?.name ?? "---" }}</div>
               </template>
               <template v-slot:item.form_request_number="{ item }">
                 <div class="font-weight-bold">
@@ -130,19 +130,25 @@
                 <!-- <div>{{ item.form_request_number ?? "---" }}</div> -->
               </template>
 
-              <template v-slot:item.caseName="{ item }">
-                <div>{{ item?.case?.item?.name ?? "---" }}</div>
-              </template>
+<!--              <template v-slot:item.caseName="{ item }">-->
+<!--                <div>{{ item?.case?.item?.name ?? "-&#45;&#45;" }}</div>-->
+<!--              </template>-->
 
-              <template v-slot:item.assigner="{ item }">
+              <template v-slot:item.users="{ item }">
                 <div>
-                  {{ item.form_assigned_requests[0]?.user.name ?? "---" }}
+                  <v-avatar
+                    v-for="user in item?.form_request?.form_assigned_requests"
+                    size="30"
+                    class="avatar-item"
+                  >
+                    <img :src="'/images/avatars/avatar1.svg'" alt="Avatar 1" />
+                  </v-avatar>
                 </div>
               </template>
 
               <template v-slot:item.status="{ item }">
-                <v-chip small :color="getStatusColor(item?.status?.toLowerCase())" text-color="white">
-                  {{ item?.status ? item.display_status : "---" }}
+                <v-chip small :color="getStatusColor(item?.display_status?.display_status?.toLowerCase())" text-color="white">
+                  {{ item?.form_request?.display_status ? item.form_request?.display_status : "---" }}
                   <!-- {{ item.status ? $t(`general.${item.status} `) : "" }} -->
                 </v-chip>
               </template>
@@ -153,63 +159,15 @@
 
               <template v-slot:item.action="{ item }">
                 <div class="actions">
-                  <!-- add action button -->
-                  <!--            <v-tooltip top>-->
-                  <!--              <template v-slot:activator="{ on, attrs }">-->
-                  <!--                <v-btn-->
-                  <!--                  color="primary"-->
-                  <!--                  icon-->
-                  <!--                  elevation="0"-->
-                  <!--                  v-bind="attrs"-->
-                  <!--                  v-on="on"-->
-                  <!--                  @click="openActionDialog(item)"-->
-                  <!--                >-->
-                  <!--                  <v-icon>mdi-plus-circle-outline</v-icon>-->
-                  <!--                </v-btn>-->
-                  <!--              </template>-->
-                  <!--              <span>{{ $t("cases.add_action") }}</span>-->
-                  <!--            </v-tooltip>-->
-
-                  <!-- view case timeline button -->
-                  <!-- <v-tooltip top>
-                    <template v-slot:activator="{ on, attrs }">
-                      <v-btn color="primary" icon elevation="0" v-bind="attrs" v-on="on"
-                        @click.prevent.stop="openCasePreviewDialog(item.id)">
-                        <v-icon>mdi-timeline-text-outline</v-icon>
-                      </v-btn>
-                    </template>
-                    <span>{{ $t("cases.request_view_timeline") }}</span>
-                  </v-tooltip> -->
-                  <!-- view case info button -->
-                  <!-- <v-tooltip top>
-                    <template v-slot:activator="{ on, attrs }">
-                      <v-btn color="primary" icon elevation="0" v-bind="attrs" v-on="on" @click="openCaseInfoDialog(item.id)">
-                        <v-icon>mdi-eye-outline</v-icon>
-                      </v-btn>
-                    </template>
-                    <span>{{ $t("cases.view_info") }}</span>
-                  </v-tooltip> -->
-
                   <!-- assign user button -->
-                  <v-tooltip top v-if="!item.form_assigned_requests[0]">
+                  <v-tooltip top v-if="!item.form_request?.form_assigned_requests?.length">
                     <template v-slot:activator="{ on, attrs }">
-                      <v-btn color="primary" icon elevation="0" v-bind="attrs" v-on="on" @click.prevent.stop="openAssignDialog(item.id)">
+                      <v-btn color="primary" icon elevation="0" v-bind="attrs" v-on="on" @click.prevent.stop="openAssignDialog(item.form_request_id , item)">
                         <v-icon>mdi-at</v-icon>
                       </v-btn>
                     </template>
                     <span>{{ $t("cases.assign_user") }}</span>
                   </v-tooltip>
-
-                  <!-- edit case button -->
-                  <!--            <v-tooltip top>-->
-                  <!--              <template v-slot:activator="{ on, attrs }">-->
-                  <!--                <v-btn color="primary" icon elevation="0" v-bind="attrs" v-on="on"-->
-                  <!--                  :to="`/cases/${currentPageId}/request-review/edit/${item.id}`" v-can="'update-user'">-->
-                  <!--                  <v-icon>mdi-pencil-outline</v-icon>-->
-                  <!--                </v-btn>-->
-                  <!--              </template>-->
-                  <!--              <span>{{ $t("cases.editCase") }}</span>-->
-                  <!--            </v-tooltip>-->
 
                   <!-- delete case button -->
                   <v-tooltip top>
@@ -222,14 +180,6 @@
                     <span>{{ $t("cases.deleteRequest") }}</span>
                   </v-tooltip>
 
-                  <!-- <v-btn
-                    color="error"
-                    icon
-                    @click.prevent="deleteItem(item.id)"
-                    v-can="'delete-user'"
-                  >
-                    <v-icon>mdi-close</v-icon>
-                  </v-btn> -->
                 </div>
               </template>
               <template v-slot:no-data>
@@ -246,35 +196,7 @@
         </v-tabs-items>
       </v-card-text>
 
-
-
-      <CasePreviewDialog
-        :dialogVisible="casePrevDialog"
-        :case-id="formId"
-        v-if="casePrevDialog"
-        @closePrevDialog="casePrevDialog = false"
-      />
-      <CaseInfoDialog
-        :dialogVisible="caseInfoDialog"
-        :case-id="formId"
-        v-if="caseInfoDialog"
-        @closeInfoDialog="caseInfoDialog = false"
-      />
-      <AddAction
-        :dialogVisible="addActionDialog"
-        :formRequestId="formId"
-        :lastAction="selectedForm.last_form_request_information || null"
-        v-if="addActionDialog && currentPageId == 1"
-        @close-action-dialog="closeActionDialog"
-      />
-      <AddDynamicAction
-        :dialogVisible="addDynamicActionDialog"
-        :formRequestId="formId"
-        :lastAction="selectedForm.last_form_request_information || null"
-        v-else-if="addDynamicActionDialog && currentPageId != 1"
-        @close-action-dialog="closeDynamicActionDialog"
-      />
-      <multi-assign @userAssigned="userAssigned" v-model="dialog" :id="formId" />
+      <multi-assign @userAssigned="userAssigned" @updateUserIds="updateUserIds" :userIds="assignedUsers" v-model="dialog" :id="formId" />
     </v-card>
   </div>
 </template>
@@ -285,22 +207,14 @@ import CopyLabel from "../../components/common/CopyLabel";
 import { mapActions, mapState } from "vuex";
 import { ask, makeToast } from "@/helpers";
 import emptyDataSvg from "@/assets/images/illustrations/empty-data.svg";
-import CasePreviewDialog from "../../components/cases/CasePreviewDialog.vue";
-import CaseInfoDialog from "../../components/cases/CaseInfoDialog.vue";
 import MultiAssign from "../../components/cases/MultiAssign";
-import AddAction from "../../components/cases/AddAction.vue";
-import AddDynamicAction from "@/components/cases/AddDynamicAction";
 import TaskCard from "./TaskCard.vue";
 
 export default {
   name: "RequestReview",
   components: {
-    CasePreviewDialog,
-    CaseInfoDialog,
     CopyLabel,
     emptyDataSvg,
-    AddAction,
-    AddDynamicAction,
     draggable,
     TaskCard,
     MultiAssign
@@ -330,31 +244,28 @@ export default {
       plusButtonTitle: "",
       formId: 0,
       dialog: false,
-      casePrevDialog: false,
-      caseInfoDialog: false,
       addActionDialog: false,
       addDynamicActionDialog: false,
       selectedForm: null,
-
-      columns: [],
-      form_id:4,
       activeTab: null,
       selectedForms: [{
         id: 4,
         name: 'مذكرة الدفاع'
       },],
+      activeFormId:'',
+      assignedUsers:[]
     };
   },
   watch: {
     selected(val) {},
     options: {
       handler() {
-        this.open();
+        this.fetchApplications(this.activeFormId)
       },
     },
     deep: true,
     searchQuery() {
-      this.open();
+      // this.fetchApplications(this.activeFormId)
     },
     navTemplates() {
       this.setCurrentBread();
@@ -364,20 +275,28 @@ export default {
         this.setCurrentBread();
       }
     },
-    // form_id() {
-    //   this.fetchApplications(this.form_id);
-    // },
+    selectedForms(){
+      if(this.selectedForms.length === 1)
+      {
+        this.activeFormId=4
+        this.fetchApplications(this.activeFormId)
+      }
+    },
+    'activeTab'()
+    {
+      this.fetchApplications(this.activeFormId)
+    }
   },
   computed: {
-    ...mapState("cases", ["formRequests",'forms']),
+    ...mapState("cases", ["formRequests",'forms','columns']),
     ...mapState("app", ["navTemplates"]),
     headers() {
       const headers = [
-        { text: this.$t("tables.requestNumber"), value: "form_request_number" },
+        // { text: this.$t("tables.requestNumber"), value: "form_request_number" },
         { text: this.$t("tables.requestName"), value: "name" },
-        { text: this.$t("tables.caseName"), value: "caseName" },
-        { text: this.$t("tables.assigner"), value: "assigner" },
+        { text: this.$t("tables.details"), value: "details" },
         { text: this.$t("tables.requestStatus"), value: "status" },
+        { text: this.$t("tables.users"), value: "users" },
         { text: this.$t("tables.created"), value: "created_at" },
         {
           text: this.$t("tables.actions"),
@@ -392,13 +311,16 @@ export default {
   created() {
     let { id } = this.$route.params;
     this.fetchForms()
-    this.fetchApplications(this.form_id)
+    if(this.selectedForms.length === 1)
+    {
+      this.activeFormId=4
+      // this.fetchApplications(this.activeFormId)
+    }
     this.currentPageId = id;
     this.formTypesUrl = `/cases/${id}/form-types`;
     this.caseUrl = `/cases/${id}/create/${id}`;
   },
   mounted() {
-    // this.open()
     // this.initScrollBehavior()
     const scrollContainer = this.$refs.scrollContainer;
 
@@ -450,33 +372,6 @@ export default {
         });
       });
     },
-    fetchApplications(id){
-      this.isLoading = true;
-      this.getApplications(id)
-        .then((response) => {
-          this.isLoading = false;
-          this.columns= response?.data?.data?.sort((a, b) => a.order - b.order)?.map((column)=>{
-            return {
-              id:column.id,
-              name:column.name,
-              key:column.key,
-              applications:column.applications.map((item)=>{
-                return {
-                  id:item.id,
-                  form_request:item.form_request,
-                  title:item.form_request?.form?.name,
-                  date:item.form_request?.form?.updated_at
-                }
-              }),
-            }
-          })
-
-
-        })
-        .catch(() => {
-          this.isLoading = false;
-        });
-    },
     search() {},
     onDragStart() {
       this.isDragging = true;
@@ -527,65 +422,76 @@ export default {
         pageTitle: "الطلبات",
       });
     },
+    updateUserIds(selected) {
+      this.assignedUsers = selected
+    },
     userAssigned() {
-      this.open();
+      this.fetchApplications(this.activeFormId)
     },
-    open() {
+    fetchApplications(id){
+      this.activeFormId = id
       this.isLoading = true;
-      let { page, itemsPerPage } = this.options;
-      const direction = this.options.sortDesc[0] ? "asc" : "desc";
-      let { id } = this.$route.params;
-      let data = {
-        template_id: id,
-        form_type: "related_case",
-        search: this.searchQuery,
-        pageSize: itemsPerPage,
-        pageNumber: page,
-        sortDirection: direction,
-        sortColumn: this.options.sortBy[0] ?? "",
-      };
-      this.getFormRequests(data)
-        .then(() => {
-          this.isLoading = false;
-          if (itemsPerPage != -1) {
-            this.items = this.formRequests.data;
-            this.total = this.formRequests.total;
-            this.numberOfPages = this.formRequests.last_page;
-          } else {
-            this.items = this.formRequests;
-            this.total = this.formRequests.length;
-            this.numberOfPages = 1;
-          }
-        })
-        .catch(() => {
-          this.isLoading = false;
-        });
+      if(this.activeTab !== 1) {
+        let data = {
+          id: id,
+          pageSize: -1,
+        };
+        this.getApplications(data)
+          .then(() => {
+            this.isLoading = false;
+            this.items = this.columns?.sort((a, b) => a.order - b.order)?.map((column) => {
+              return {
+                id: column.id,
+                name: column.name,
+                key: column.key,
+                applications: column.applications
+              }
+            })
+          })
+          .catch(() => {
+            this.isLoading = false;
+          });
+      }
+      else{
+        let { page, itemsPerPage } = this.options;
+        const direction = this.options?.sortDesc?.length ? "asc" : "desc";
+        let data = {
+          id: this.activeFormId,
+          search: this.searchQuery,
+          pageSize: itemsPerPage,
+          pageNumber: page,
+          sortDirection: direction,
+          sortColumn: this.options?.sortBy?.length ?? "",
+        };
+        this.getApplications(data)
+          .then((response) => {
+            this.isLoading = false;
+            if (itemsPerPage != -1) {
+              this.items = response.data.data.data;
+              this.total = response.data.data.total;
+              this.numberOfPages = response.data.data.last_page;
+            }
+            else {
+              this.items = response.data.data;
+              this.total = response.data.data.length;
+              this.numberOfPages = 1;
+            }
+          })
+          .catch(() => {
+            this.isLoading = false;
+          });
+      }
+
     },
-    openAssignDialog(id) {
+    openAssignDialog(id , item) {
+      this.assignedUsers = []
+      if(item.form_request?.form_assigned_requests?.length > 0){
+        for(let i=0; i<item.form_request?.form_assigned_requests?.length; i++) {
+          this.assignedUsers.push(item.form_request.form_assigned_requests[i].user_id)
+        }
+      }
       this.dialog = true;
       this.formId = id;
-    },
-    openActionDialog(item) {
-      if (this.currentPageId == 1) this.addActionDialog = true;
-      else this.addDynamicActionDialog = true;
-      this.formId = item.id;
-      this.selectedForm = item;
-    },
-    openCasePreviewDialog(id) {
-      this.formId = id;
-      this.casePrevDialog = true;
-    },
-    openCaseInfoDialog(id) {
-      this.formId = id;
-      this.caseInfoDialog = true;
-    },
-    closeActionDialog() {
-      this.addActionDialog = false;
-      this.open();
-    },
-    closeDynamicActionDialog() {
-      this.addDynamicActionDialog = false;
-      this.open();
     },
     getStatusColor(status) {
       const colors = {
@@ -594,7 +500,6 @@ export default {
         accepted: "green",
         closed: "red",
       };
-
       return colors[status] || "primary";
     },
 
@@ -607,8 +512,7 @@ export default {
         this.deleteForm(id)
           .then((response) => {
             makeToast("success", response.data.data);
-            this.open();
-            this.fetchApplications(this.form_id)
+            this.fetchApplications(this.activeFormId)
             this.isLoading = false;
           })
           .catch(() => {
@@ -617,33 +521,6 @@ export default {
       }
     },
 
-    async deleteAllCases() {
-      let data = {};
-      let ids = [];
-      const { isConfirmed } = await ask("Are you sure to delete it?", "info");
-      if (isConfirmed) {
-        if (this.selected.length) {
-          this.selected.forEach((item) => {
-            ids.push(item.id);
-          });
-        }
-        data = {
-          ids: ids,
-          action: "delete",
-          value: 1,
-        };
-        this.isLoading = true;
-        this.deleteAll(data)
-          .then((response) => {
-            makeToast("success", response.data.message);
-            this.open();
-            this.isLoading = false;
-          })
-          .catch(() => {
-            this.isLoading = false;
-          });
-      }
-    },
   },
 };
 </script>
