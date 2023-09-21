@@ -38,6 +38,17 @@ class Treatment extends Model
     {
         return $this->morphMany(File::class, 'fileable');
     }
+    public function treatmentInformation()
+    {
+        return $this->hasMany(TreatmentInformation::class);
+    }
+
+    public function treatmentAction()
+    {
+        return $this->hasMany(TreatmentAction::class);
+    }
+
+
 
     public function user()
     {
