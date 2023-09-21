@@ -30,6 +30,7 @@ class TreatmentRequest extends FormRequest
             'status' => 'nullable',
             'type' => [new Enum(TreatmentTypeEnum::class)],
             'name' => 'nullable',
+            'description' => 'nullable',
             'department_id' => 'nullable|exists:departments,id',
             'user_id' => 'nullable|exists:users,id',
             'treatment_number' => 'nullable|unique:treatments,treatment_number,' . $this->route('treatment'),
