@@ -40,7 +40,7 @@ class ApplicationController extends Controller
                 $data = $data->where('form_id', request('form_id'));
             }
 
-            $data = $data->paginate(request('pageSize', 15));
+            $data['data'] = $data->paginate(request('pageSize', 15));
         }
 
         return responseSuccess($data); //StageResource::collection($data)
