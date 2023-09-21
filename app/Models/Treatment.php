@@ -21,6 +21,7 @@ class Treatment extends Model
         'date',
         'department_id',
         'user_id',
+        'description',
         'treatment_number',
     ];
 
