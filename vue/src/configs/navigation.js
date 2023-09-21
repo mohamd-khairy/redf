@@ -88,6 +88,14 @@ export default {
     //   items: []
     // },
     {
+      icon: "mdi-file-arrow-left-right-outline",
+      text: "treatments",
+      key: "menu.transactions",
+      link: "/treatments",
+      permission: "read-role",
+      items: [],
+    },
+    {
       icon: "mdi-file-document",
       text: "tasks",
       key: "menu.tasks",

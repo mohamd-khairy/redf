@@ -230,6 +230,7 @@ export default {
     cases: "Cases",
     legal_advice: "Legal Advice",
     tasks: "Tasks",
+    transactions: "Transactions",
     documents: "Documents",
     beneficiaries: "Beneficiaries",
     log: "Log",
@@ -470,6 +471,9 @@ export default {
       governorate: "Governorate",
     },
     user_photo: "User Photo",
+  },
+  transactions: {
+    new_transaction: "Add Treatment"
   },
   cases: {
     caseType: "Cases Type",

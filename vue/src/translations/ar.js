@@ -235,6 +235,7 @@ export default {
     projects: "المشاريع",
     legal_advice: "الاستشارات القانونية",
     tasks: "المهام",
+    transactions: "المعاملات",
     documents: "الوثائق",
     beneficiaries: "المستفيدون",
     log: "سجل الحركة",
@@ -457,6 +458,9 @@ export default {
       governorate: "محافظة",
     },
     user_photo: "صورة المستخدم",
+  },
+  transactions: {
+    new_transaction: "إضافة معاملة"
   },
   cases: {
     caseType: "نوع القضية",

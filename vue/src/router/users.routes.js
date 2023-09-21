@@ -71,6 +71,18 @@ export default [
       )
   },
   {
+    path: "/treatments",
+    name: "Treatments",
+    meta: {
+      auth: true,
+      title: "menu.transactions"
+    },
+    component: () =>
+      import(
+        "@/pages/transactions/MainPage.vue"
+      )
+  },
+  {
     path: "/activities",
     name: "Activities",
     meta: {

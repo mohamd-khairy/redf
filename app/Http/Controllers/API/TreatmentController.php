@@ -16,6 +16,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\TreatmentRequest;
 use App\Http\Requests\CreateTreatmentActionRequest;
 use App\Http\Requests\AssignUsersToTreatmentRequest;
+use Throwable;
 
 class TreatmentController extends Controller
 {
@@ -36,7 +37,7 @@ class TreatmentController extends Controller
      */
     public function index(PageRequest $request)
     {
-        $treatments = Treatment::with('files');
+        $treatments = Treatment::query();
 
         $data = app(Pipeline::class)->send($treatments)->through([
             SearchFilters::class,
@@ -65,7 +66,7 @@ class TreatmentController extends Controller
             $treatment = Treatment::create($validatedData);
 
             return responseSuccess($treatment, 'Treatment has been successfully created');
-        } catch (Throwable $e) {
+        } catch (\Throwable $e) {
             return responseFail($e->getMessage());
         }
     }
@@ -94,14 +95,14 @@ class TreatmentController extends Controller
             $treatment->update($validatedData);
 
             return responseSuccess($treatment, 'treatment has been successfully updated');
-        } catch (Throwable $e) {
+        } catch (\Throwable $e) {
             return responseFail($e->getMessage());
         }
     }
 
     public function show($id)
     {
-        $treatment = Treatment::with('files','treatmentInformation','treatmentAction','user:id,name', 'department:id,name')->findOrFail($id);
+        $treatment = Treatment::with('files', 'treatmentInformation', 'treatmentAction', 'user:id,name,avatar', 'department:id,name')->findOrFail($id);
 
         return responseSuccess($treatment, 'Treatment has been successfully showed');
     }
@@ -130,7 +131,8 @@ class TreatmentController extends Controller
         return responseSuccess([], 'Treatment has been successfully deleted');
     }
 
-    public function uploadFiles(Request $request){
+    public function uploadFiles(Request $request)
+    {
         $treatment = Treatment::with('files')->find($request->treatment_id);
         if ($request->hasFile('files')) {
             $files = $request->file('files');
@@ -155,27 +157,28 @@ class TreatmentController extends Controller
         }
     }
 
-    public function assignUser(AssignUsersToTreatmentRequest $request){
+    public function assignUser(AssignUsersToTreatmentRequest $request)
+    {
         try {
 
             $treatment = Treatment::findOrFail($request->treatment_id );
             $userIds = $request->user_ids;
             $date = $request->date;
 
-           // Detach all users from the treatment
+            // Detach all users from the treatment
             $treatment->users()->detach();
             // Attach multiple users to the treatment with the specified date
             foreach ($userIds as $userId) {
                 $treatment->users()->attach($userId, ['date' => $date]);
             }
             return responseSuccess([], 'Users assigned to treatment successfully');
-
-         } catch (Throwable $e) {
+        } catch (\Throwable $e) {
             return response()->json(['error' => $e->getMessage()], 500);
         }
     }
 
-    public function treatmentActions(CreateTreatmentActionRequest  $request){
+    public function treatmentActions(CreateTreatmentActionRequest  $request)
+    {
         try {
             // Create a new treatment action
             $treatmentAction = TreatmentAction::create($request->validated());

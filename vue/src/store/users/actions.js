@@ -31,6 +31,20 @@ const actions = {
     const { users } = response?.data.data;
     commit("SET_BENEFICIARIES", users);
   },
+  async getTreatments({ commit }, data) {
+    const response = await axios.get("treatments", {
+      params: {
+        search: data.search,
+        pageSize: data.pageSize,
+        page: data.pageNumber,
+        sortDirection: data.sortDirection,
+        sortCoulmn: data.sortColumn,
+      },
+    });
+    console.log(response?.data);
+    const { treatments } = response?.data.data;
+    commit("SET_TREATMENTS", treatments);
+  },
   async getActivities({ commit }, data) {
     const response = await axios.get("all-logs", {
       params: {
