@@ -5,5 +5,5 @@ namespace App\Enums;
 
 enum TreatmentActionEnum: string
 {
-    case SAVE = 'حفظ';
+    case SAVE = 'save';
 }

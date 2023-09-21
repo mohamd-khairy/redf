@@ -2,15 +2,10 @@
 
 namespace App\Enums;
 
-
 enum TreatmentTypeEnum: string
 {
-
-
-    case PREPARING_SPEECH = 'اعداد خطاب';
-    case CONSULTATION = 'استشاره';
-    case NORMAL = 'عاديه';
-    case ANOTHER_TREATMENT = 'معاملات اخري';
-
-
+    case PREPARING_SPEECH = 'preparing speech';
+    case CONSULTATION = 'consultation';
+    case NORMAL = 'normal';
+    case ANOTHER_TREATMENT = 'another treatment';
 }
