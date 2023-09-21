@@ -111,7 +111,7 @@
           </v-tab-item>
           <v-tab-item>
             <div class="min-h-screen d-flex py-4 px-4">
-              <v-data-table v-model="selected" :headers="headers" :items="items" :options.sync="options" :show-select="false"
+              <v-data-table :footer-props="footerProps" v-model="selected" :headers="headers" :items="items" :options.sync="options" :show-select="false"
                             class="flex-grow-1 dt-custom-row-cursor" :loading="isLoading" :page="page" :pageCount="numberOfPages" :server-items-length="total"
                             @click:row="handleClick">
               <!-- <template v-slot:item.id="{ item }">
@@ -253,7 +253,8 @@ export default {
         name: 'مذكرة الدفاع'
       },],
       activeFormId:'',
-      assignedUsers:[]
+      assignedUsers:[],
+      footerProps: {'items-per-page-options': [5, 10,15, 30]},
     };
   },
   watch: {
@@ -453,7 +454,7 @@ export default {
           });
       }
       else{
-        let { page, itemsPerPage } = this.options;
+        let { page, itemsPerPage} = this.options;
         const direction = this.options?.sortDesc?.length ? "asc" : "desc";
         let data = {
           id: this.activeFormId,
