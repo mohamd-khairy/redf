@@ -57,7 +57,7 @@ export default {
     };
   },
   watch: {
-    selectedTemplates(val) {},
+    selectedTemplates(val) { },
     options: {
       handler() {
         this.open();
@@ -84,7 +84,7 @@ export default {
     ...mapActions("users", ["getTreatments"]),
     ...mapActions("app", ["setBreadCrumb"]),
     ...mapActions("departments", ["getDepartments"]),
-    searchtemplate() {},
+    searchtemplate() { },
     open() {
       this.isLoading = true;
       let { page, itemsPerPage } = this.options;
@@ -160,11 +160,7 @@ export default {
       $t("transactions.new_transaction")
     }}</v-btn>
     <v-card class="px-3 pt-2" v-if="!isLoading">
-      <div
-        class="transaction-card mb-5"
-        v-for="treat in templateItems"
-        :key="treat.id"
-      >
+      <div class="transaction-card mb-5" v-for="treat in templateItems" :key="treat.id">
         <v-row class="py-0 px-2" align="center">
           <v-col cols="3">
             <h4>هـ1409نظام المركز الوطني للوثائق والمحفوظات لعام</h4>
@@ -224,7 +220,7 @@ export default {
         <div class="effect-3 effects"></div>
       </div>
     </v-card>
-    <add-treatment-dialog v-if="dialog" v-model="dialog"></add-treatment-dialog>
+    <add-treatment-dialog @treatmentCreated="treatmentCreated" v-if="dialog" v-model="dialog"></add-treatment-dialog>
   </div>
 </template>
 
