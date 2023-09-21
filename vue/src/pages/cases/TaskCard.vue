@@ -1,8 +1,8 @@
 <template>
-  <v-card class="bg-white stage">
+  <v-card @click="taskPath(task.form_request?.id)" class="bg-white stage">
     <div class="d-flex justify-content-between">
       <v-card-title class="pa-0 case-title">
-        <a href="#" @click.prevent="taskPath(task.form_request?.id)">{{ task.form_request?.name }}</a>
+        {{ task.form_request?.name }}
       </v-card-title>
 
       <v-menu offset-y left>
