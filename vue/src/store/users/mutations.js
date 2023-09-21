@@ -8,6 +8,9 @@ const mutations = {
   SET_BENEFICIARIES(state, value) {
     state.beneficiaries = value;
   },
+  SET_CONSULTATIONS(state, value) {
+    state.consultations = value;
+  },
   SET_ACTIVITIES(state, value) {
     state.actvs = value;
   },

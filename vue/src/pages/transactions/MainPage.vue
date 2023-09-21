@@ -263,6 +263,10 @@ export default {
       span {
         font-size: small;
         color: #475467;
+        width: 100%;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
       }
 
       h5 {

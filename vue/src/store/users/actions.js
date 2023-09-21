@@ -45,6 +45,10 @@ const actions = {
     const { treatments } = response?.data.data;
     commit("SET_TREATMENTS", treatments);
   },
+  async getConsultations({ commit }, data) {
+    const response = await axios.get("get-form-Requests?template_id=2&form_type=legal_advice");
+    commit("SET_CONSULTATIONS", response?.data.data.data);
+  },
   async getActivities({ commit }, data) {
     const response = await axios.get("all-logs", {
       params: {
@@ -82,6 +86,9 @@ const actions = {
   },
   async storeUser({ commit }, data) {
     return await axios.post("users", data);
+  },
+  async storeTreatment({ commit }, data) {
+    return await axios.post("treatments", data);
   },
 };
 

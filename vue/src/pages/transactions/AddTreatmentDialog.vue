@@ -14,6 +14,31 @@
 
                 <v-card-text class="mt-4">
                     <v-row dense>
+                        <v-col cols="12">
+                            <v-text-field type="text" v-model="treatment.name" @keydown="handleInput" outlined dense
+                                :label="$t('transactions.name')"></v-text-field>
+                        </v-col>
+                        <v-col cols="12">
+                            <v-text-field type="number" v-model="treatment.treatment_number" @keydown="handleInput" outlined
+                                dense :label="$t('transactions.number')"></v-text-field>
+                        </v-col>
+                        <v-col cols="12">
+                            <v-text-field type="date" v-model="treatment.date" @keydown="handleInput" outlined dense
+                                :rules="[rules.required]" :label="$t('transactions.date')"
+                                :error-messages="showErrorMsg(treatment.date)"></v-text-field>
+                        </v-col>
+                        <v-col cols="12">
+                            <v-select v-model="treatment.type" :label="$t('transactions.type')" outlined dense
+                                :items="types" item-value="value" item-text="name" @change="loadConsalts"></v-select>
+                        </v-col>
+                        <v-col cols="12" v-if="treatment.type == 'consultation'">
+                            <v-select v-model="selectedConsultation" :label="$t('transactions.consultations')" outlined
+                                dense :items="consultations" item-value="id" item-text="name"></v-select>
+                        </v-col>
+                        <v-col cols="12">
+                            <v-select v-model="treatment.department_id" :label="$t('transactions.department')" outlined
+                                dense :items="departments" item-value="id" item-text="name"></v-select>
+                        </v-col>
                         <!-- <v-col cols="12">
                             <v-text-field type="number" v-model="user.civil_number" @keydown="handleInput" outlined dense
                                 :rules="civilRules" :label="$t('cases.civil')"
@@ -80,13 +105,22 @@ export default {
     },
     data() {
         return {
+            isLoading: false,
+            types: [
+                { name: `${this.$t('transactions.types.preparing_speech')}`, value: 'preparing_speech' },
+                { name: `${this.$t('transactions.types.consultation')}`, value: 'consultation' },
+                { name: `${this.$t('transactions.types.normal')}`, value: 'normal' },
+                { name: `${this.$t('transactions.types.another_treatment')}`, value: 'another_treatment' },
+            ],
+            selectedConsultation: null,
+            showError: false,
             treatment: {
                 name: "",
-                showError: false,
                 treatment_number: "",
                 department_id: "",
                 status: "",
                 type: "",
+                date: "",
                 // department_id: "",
             },
             rules: {
@@ -111,6 +145,7 @@ export default {
     },
     computed: {
         ...mapState("departments", ["departments"]),
+        ...mapState("users", ["consultations"]),
         dialog: {
             get() {
                 return this.value;
@@ -133,8 +168,12 @@ export default {
         //   this.refresh()
         // }
     },
+    mounted() {
+        this.fetchData()
+    },
     methods: {
-        ...mapActions("cases", ["createUser"]),
+        ...mapActions("users", ["getConsultations", "storeTreatment"]),
+        ...mapActions("departments", ["getDepartments"]),
         refresh() {
             this.loading = true;
             this.event = this.eventItem;
@@ -150,44 +189,48 @@ export default {
             const msg = this.$t("general.required_input");
             return this.showError && !value ? [msg] : [];
         },
-        handlename(event) {
-            if (/\d/.test(event.key)) {
-                event.preventDefault();
-            }
+        fetchData() {
+            // Departments
+            this.isLoading = true;
+            let data = {
+                pageSize: -1,
+            };
+            this.getDepartments(data)
+                .then((response) => {
+                    this.isLoading = false;
+                })
+                .catch(() => {
+                    this.isLoading = false;
+                });
         },
-        fetchData: function () {
-            // this.$root.$emit("userCreated");
-            // this.$emit("userCreated");
+        loadConsalts() {
+            if (this.treatment.type == "consultation") {
+                this.getConsultations()
+                    .then((response) => {
+                        this.isLoading = false;
+                    })
+                    .catch(() => {
+                        this.isLoading = false;
+                    });
+            }
+
         },
         save() {
-            this.loading = true;
+            this.isLoading = true;
             this.errors = {};
-            if (
-                !this.user.name ||
-                !this.user.civil_number ||
-                !this.user.phone ||
-                !this.user.email
-            ) {
-                makeToast("error", "يرجي ملئ الحقول المطلوبة");
-                return;
+            if (this.selectedConsultations != null) {
+                this.treatment.consultations = this.selectedConsultation
             }
-            let data = {
-                name: this.user.name,
-                civil_number: Number(this.user.civil_number),
-                phone: this.user.phone,
-                email: this.user.email,
-                // department_id: this.user.department_id,
-            };
-            this.createUser(data)
+            let data = this.treatment
+            this.storeTreatment(data)
                 .then((response) => {
-                    this.loading = false;
+                    this.isLoading = true;
                     this.dialog = false;
-                    this.fetchData();
                     this.errors = {};
-                    makeToast("success", this.$t("general.new_beneficiary_added"));
+                    makeToast("success", this.$t("general.new_treatment_added"));
                 })
                 .catch((error) => {
-                    this.loading = false;
+                    this.isLoading = true;
                     // if (error.response.status == 422) {
                     //   const { errors } = error?.response?.data;
                     //   this.errors = errors ?? {};
