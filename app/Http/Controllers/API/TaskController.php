@@ -73,21 +73,23 @@ class TaskController extends Controller
             // Create the task
             $task = Task::create($validatedData);
             // Handle the file upload
-            if ($request->hasFile('file')) {
-                $file = $request->file('file');
-                $filename = $file->getClientOriginalName();
-                $filePath = UploadService::store($file, 'tasks');
-                // Create a new file record
-                $fileRecord = new File([
-                    'name' => $filename,
-                    'path' => $filePath,
-                    'user_id' => auth()->id(),
-                    'start_date' => now(),
-                    'type' => 'task',
-                    'priority' => 'high'
-                ]);
-                $fileRecord->fileable()->associate($task); // Associate the file with the task
-                $fileRecord->save();
+
+            if ($request->hasFile('files')) {
+                foreach ($request->file('files') as $uploadedFile) {
+                    $filename = $uploadedFile->getClientOriginalName();
+                    $filePath = UploadService::store($uploadedFile, 'tasks');
+                    // Create a new file record for each uploaded file
+                    $fileRecord = new File([
+                        'name' => $filename,
+                        'path' => $filePath,
+                        'user_id' => auth()->id(),
+                        'start_date' => now(),
+                        'type' => 'task',
+                        'priority' => 'high',
+                    ]);
+                    $fileRecord->fileable()->associate($task);
+                    $fileRecord->save();
+                }
             }
 
             if ($request->form_request_id) {

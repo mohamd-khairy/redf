@@ -48,9 +48,6 @@ class Treatment extends Model
     {
         return $this->hasMany(TreatmentAction::class);
     }
-
-
-
     public function user()
     {
         return $this->belongsTo(User::class);
