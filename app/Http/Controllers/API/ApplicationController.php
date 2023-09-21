@@ -31,7 +31,7 @@ class ApplicationController extends Controller
                     }]);
             }
 
-            $data = $data->get();
+            $data = ['data' =>  $data->get()];
         } else {
 
             $data = Application::with('form_request.formAssignedRequests', 'stage');
@@ -40,7 +40,7 @@ class ApplicationController extends Controller
                 $data = $data->where('form_id', request('form_id'));
             }
 
-            $data['data'] = $data->paginate(request('pageSize', 15));
+            $data = $data->paginate(request('pageSize', 15));
         }
 
         return responseSuccess($data); //StageResource::collection($data)
