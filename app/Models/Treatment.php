@@ -4,10 +4,16 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Spatie\Activitylog\LogOptions;
+use Spatie\Activitylog\Traits\LogsActivity;
 
 class Treatment extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes , LogsActivity;
+
+    public $inPermission = true;
+
     protected $fillable = [
         'status',
         'type',
@@ -18,6 +24,11 @@ class Treatment extends Model
         'treatment_number',
     ];
 
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()->logOnly(self::getFillable());
+    }
+
     public function department()
     {
         return $this->belongsTo(Department::class);
@@ -27,6 +38,17 @@ class Treatment extends Model
     {
         return $this->morphMany(File::class, 'fileable');
     }
+    public function treatmentInformation()
+    {
+        return $this->hasMany(TreatmentInformation::class);
+    }
+
+    public function treatmentAction()
+    {
+        return $this->hasMany(TreatmentAction::class);
+    }
+
+
 
     public function user()
     {

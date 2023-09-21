@@ -27,6 +27,7 @@
         clearable
         prepend-inner-icon="mdi-magnify"
         chips
+        @click:clear="fetchApplications()"
       >
       </v-autocomplete>
     </div>
@@ -80,6 +81,7 @@
                   {{ column.name }}
                 </p>
                 <!-- Draggable component comes from vuedraggable. It provides drag & drop functionality -->
+                <div class="scroll-item">
                 <draggable
                   :disabled="true"
                   :list="column.applications"
@@ -96,13 +98,14 @@
                     v-for="task in column.applications"
                     :key="task.id"
                     :task="task"
-                    class="mt-3 cursor-move scroll-item"
+                    class="mt-3"
                     ref="listItem"
                     @openAssign="openAssignDialog(task.id)"
                     @deleteItem="deleteItem(task.form_request?.id)"
                   ></task-card>
                   <!-- </transition-group> -->
                 </draggable>
+                </div>
               </div>
             </div>
           </v-tab-item>
@@ -318,11 +321,9 @@ export default {
         //   href: "#",
         // },
       ],
-
       searchQuery: "",
       selected: [],
       items: [],
-
       formTypesUrl: "",
       caseUrl: "",
       buttonName: "",
@@ -336,264 +337,6 @@ export default {
       selectedForm: null,
 
       columns: [],
-      columnss: [
-        {
-          name: "Backlog 1",
-          applications: [
-            {
-              id: 1,
-              title: "Add discount code to checkout page",
-              date: "Sep 14",
-              type: "Feature Request",
-              users: [
-                {
-                  name: "Moaz Gamal",
-                  img: "/images/avatars/avatar1.svg",
-                },
-                {
-                  name: "Mostafa Gamal",
-                  img: "/images/avatars/avatar1.svg",
-                },
-                {
-                  name: "Mohamed Khairy",
-                  img: "/images/avatars/avatar1.svg",
-                },
-                {
-                  name: "Mohamed Khairy",
-                  img: "/images/avatars/avatar1.svg",
-                },
-              ],
-            },
-            {
-              id: 2,
-              title: "Provide documentation on integrations",
-              date: "Sep 12",
-              users: [
-                {
-                  name: "Mostafa Gamal",
-                  img: "/images/avatars/avatar1.svg",
-                },
-
-                {
-                  name: "Mohamed Khairy",
-                  img: "/images/avatars/avatar1.svg",
-                },
-              ],
-            },
-            {
-              id: 3,
-              title: "Design shopping cart dropdown",
-              date: "Sep 9",
-              type: "Design",
-              users: [
-                {
-                  name: "Mostafa Gamal",
-                  img: "/images/avatars/avatar1.svg",
-                },
-                {
-                  name: "Moaz Gamal",
-                  img: "/images/avatars/avatar1.svg",
-                },
-
-                {
-                  name: "Mohamed Khairy",
-                  img: "/images/avatars/avatar1.svg",
-                },
-              ],
-            },
-            {
-              id: 4,
-              title: "Add discount code to checkout page",
-              date: "Sep 14",
-              type: "Feature Request",
-              users: [
-                {
-                  name: "Mostafa Gamal",
-                  img: "/images/avatars/avatar1.svg",
-                },
-                {
-                  name: "Moaz Gamal",
-                  img: "/images/avatars/avatar1.svg",
-                },
-
-                {
-                  name: "Mohamed Khairy",
-                  img: "/images/avatars/avatar1.svg",
-                },
-              ],
-            },
-            {
-              id: 5,
-              title: "Test checkout flow",
-              date: "Sep 15",
-              type: "QA",
-              users: [
-                {
-                  name: "Mostafa Gamal",
-                  img: "/images/avatars/avatar1.svg",
-                },
-                {
-                  name: "Moaz Gamal",
-                  img: "/images/avatars/avatar1.svg",
-                },
-
-                {
-                  name: "Mohamed Khairy",
-                  img: "/images/avatars/avatar1.svg",
-                },
-              ],
-            },
-          ],
-        },
-        {
-          name: "Backlog 2",
-          applications: [
-            {
-              id: 1,
-              title: "Add discount code to checkout page",
-              date: "Sep 14",
-              type: "Feature Request",
-            },
-            {
-              id: 2,
-              title: "Provide documentation on integrations",
-              date: "Sep 12",
-            },
-            {
-              id: 3,
-              title: "Design shopping cart dropdown",
-              date: "Sep 9",
-              type: "Design",
-            },
-            {
-              id: 4,
-              title: "Add discount code to checkout page",
-              date: "Sep 14",
-              type: "Feature Request",
-            },
-            {
-              id: 5,
-              title: "Test checkout flow",
-              date: "Sep 15",
-              type: "QA",
-            },
-          ],
-        },
-        {
-          name: "Backlog 3",
-          applications: [
-            {
-              id: 1,
-              title: "Add discount code to checkout page",
-              date: "Sep 14",
-              type: "Feature Request",
-            },
-            {
-              id: 2,
-              title: "Provide documentation on integrations",
-              date: "Sep 12",
-            },
-            {
-              id: 3,
-              title: "Design shopping cart dropdown",
-              date: "Sep 9",
-              type: "Design",
-            },
-            {
-              id: 4,
-              title: "Add discount code to checkout page",
-              date: "Sep 14",
-              type: "Feature Request",
-            },
-            {
-              id: 5,
-              title: "Test checkout flow",
-              date: "Sep 15",
-              type: "QA",
-            },
-          ],
-        },
-        {
-          name: "In Progress",
-          applications: [
-            {
-              id: 6,
-              title: "Design shopping cart dropdown",
-              date: "Sep 9",
-              type: "Design",
-            },
-            {
-              id: 7,
-              title: "Add discount code to checkout page",
-              date: "Sep 14",
-              type: "Feature Request",
-            },
-            {
-              id: 8,
-              title: "Provide documentation on integrations",
-              date: "Sep 12",
-              type: "Backend",
-            },
-          ],
-        },
-        {
-          name: "Review",
-          applications: [
-            {
-              id: 9,
-              title: "Provide documentation on integrations",
-              date: "Sep 12",
-            },
-            {
-              id: 10,
-              title: "Design shopping cart dropdown",
-              date: "Sep 9",
-              type: "Design",
-            },
-            {
-              id: 11,
-              title: "Add discount code to checkout page",
-              date: "Sep 14",
-              type: "Feature Request",
-            },
-            {
-              id: 12,
-              title: "Design shopping cart dropdown",
-              date: "Sep 9",
-              type: "Design",
-            },
-            {
-              id: 13,
-              title: "Add discount code to checkout page",
-              date: "Sep 14",
-              type: "Feature Request",
-            },
-          ],
-        },
-        {
-          name: "Done",
-          applications: [
-            {
-              id: 14,
-              title: "Add discount code to checkout page",
-              date: "Sep 14",
-              type: "Feature Request",
-            },
-            {
-              id: 15,
-              title: "Design shopping cart dropdown",
-              date: "Sep 9",
-              type: "Design",
-            },
-            {
-              id: 16,
-              title: "Add discount code to checkout page",
-              date: "Sep 14",
-              type: "Feature Request",
-            },
-          ],
-        },
-      ],
       form_id:4,
       activeTab: null,
       selectedForms: [{
@@ -940,6 +683,7 @@ but you'd use "@apply border opacity-50 border-blue-500 bg-gray-200" here */
 }
 .scroll-item{
   overflow: auto;
+  height: 600px;
 }
 </style>
 <style>
