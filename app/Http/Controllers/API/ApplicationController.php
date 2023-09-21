@@ -20,7 +20,7 @@ class ApplicationController extends Controller
             ->join('stage_forms', 'stage_forms.stage_id', '=', 'stages.id')
             ->orderBy('stage_forms.order', 'asc')
             ->groupBy('id')
-            ->with('applications.form_request');
+            ->with('applications.form_request.formAssignedRequests');
 
         if (request('form_id')) {
             $data = $data->where('stage_forms.form_id', request('form_id'))

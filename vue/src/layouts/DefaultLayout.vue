@@ -1,39 +1,20 @@
 <template>
-  <div
-    v-shortkey="['ctrl', '/']"
-    class="d-flex flex-grow-1"
-    @shortkey="onKeyup"
-  >
+  <div v-shortkey="['ctrl', '/']" class="d-flex flex-grow-1" @shortkey="onKeyup">
     <!-- Navigation -->
-    <v-navigation-drawer
-      v-model="drawer"
-      app
-      floating
-      class="elevation-0 navigation-cont custom-nav-cont"
-      :right="$vuetify.rtl"
-      :light="menuTheme === 'light'"
-      :dark="menuTheme === 'dark'"
-    >
+    <v-navigation-drawer v-model="drawer" app floating class="elevation-0 navigation-cont custom-nav-cont"
+      :right="$vuetify.rtl" :light="menuTheme === 'light'" :dark="menuTheme === 'dark'">
       <!-- Navigation menu info -->
       <template v-slot:prepend>
         <div class="px-2 pt-2" style="height: 80px">
-          <div
-            class="title font-weight-bold text-center text-uppercase"
-            style="height: 100%"
-          >
+          <div class="title font-weight-bold text-center text-uppercase" style="height: 100%">
             <!--            {{ product.name }}-->
-            <img
-              :class="!websiteLogo ? 'd-none' : ''"
-              :src="websiteLogo"
-              :alt="websiteName"
-              style="
+            <img :class="!websiteLogo ? 'd-none' : ''" :src="websiteLogo" :alt="websiteName" style="
                 width: 100%;
                 max-width: 100%;
                 height: auto;
                 max-height: 100%;
                 object-fit: cover;
-              "
-            />
+              " />
             <!-- <img src="../assets/images/logo.png" alt=""
               style="width: 100%;max-width: 100%; height: auto;max-height: 100%; object-fit: cover;"> -->
           </div>
@@ -42,24 +23,14 @@
       </template>
 
       <!-- Navigation menu -->
-      <main-menu
-        :menu="navigationPermissions"
-        :pinned="pinnedReports"
-        :templates="navTemplates"
-      />
+      <main-menu :menu="navigationPermissions" :pinned="pinnedReports" :templates="navTemplates" />
 
       <!-- Navigation menu footer -->
       <template v-slot:append>
         <!-- Footer navigation links -->
         <div class="pa-1 text-center">
-          <v-btn
-            v-for="(item, index) in navigation.footer"
-            :key="index"
-            :href="item.href"
-            :target="item.target"
-            small
-            text
-          >
+          <v-btn v-for="(item, index) in navigation.footer" :key="index" :href="item.href" :target="item.target" small
+            text>
             {{ item.key ? $t(item.key) : item.text }}
           </v-btn>
         </div>
@@ -67,24 +38,13 @@
     </v-navigation-drawer>
 
     <!-- Toolbar -->
-    <v-app-bar
-      app
-      flat
-      outlined
-      :color="isToolbarDetached ? 'surface' : undefined"
-      :light="toolbarTheme === 'light'"
-      :dark="toolbarTheme === 'dark'"
-    >
-      <v-card
-        class="flex-grow-1 d-flex fill-height"
-        :class="[isToolbarDetached ? 'pa-1 mt-3 mx-1' : 'pa-0 ma-0']"
-        :flat="!isToolbarDetached"
-      >
+    <v-app-bar app flat outlined :color="isToolbarDetached ? 'surface' : undefined" :light="toolbarTheme === 'light'"
+      :dark="toolbarTheme === 'dark'">
+      <v-card class="flex-grow-1 d-flex fill-height" :class="[isToolbarDetached ? 'pa-1 mt-3 mx-1' : 'pa-0 ma-0']"
+        :flat="!isToolbarDetached">
         <div class="d-flex flex-grow-1 align-center">
           <div class="d-flex flex-grow-1 align-start fill-height">
-            <v-app-bar-nav-icon
-              @click.stop="drawer = !drawer"
-            ></v-app-bar-nav-icon>
+            <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
             <!-- <v-app-bar-title>{{ pageTitle }}</v-app-bar-title> -->
 
             <!-- <v-spacer class="d-none d-lg-block"></v-spacer>
@@ -110,13 +70,11 @@
     <v-main>
       <v-container class="fill-height" :fluid="!isContentBoxed">
         <v-layout class="d-flex flex-column flex-grow-1">
-          <div class="p-3 pt-0">
-            <div class="display-1">{{ pageTitle }}</div>
-            <v-breadcrumbs
-              v-if="breadcrumbs.length > 1"
-              :items="breadcrumbs"
-              class="pa-0 py-2"
-            ></v-breadcrumbs>
+          <div class="d-flex justify-content-between align-items-center">
+            <div class="p-3 pt-0">
+              <div class="display-1">{{ pageTitle }}</div>
+              <v-breadcrumbs :items="breadcrumbs" class="pa-0 py-2"></v-breadcrumbs>
+            </div>
           </div>
           <slot></slot>
         </v-layout>
@@ -126,13 +84,8 @@
         <v-spacer></v-spacer>
         <div class="overline">
           Built with <v-icon small color="pink">mdi-heart</v-icon>
-          <a
-            class="text-decoration-none"
-            href="https://wakeb.tech"
-            target="_blank"
-          >
-            Wakeb</a
-          >
+          <a class="text-decoration-none" href="https://wakeb.tech" target="_blank">
+            Wakeb</a>
         </div>
       </v-footer>
     </v-main>
@@ -291,17 +244,11 @@ export default {
   background: #014c4f !important;
 }
 
-.v-menu__content
-  .theme--light.v-list-item:not(.v-list-item--active):not(
-    .v-list-item--disabled
-  ) {
+.v-menu__content .theme--light.v-list-item:not(.v-list-item--active):not(.v-list-item--disabled) {
   color: #000 !important;
 }
 
-.custom-nav-cont
-  .theme--light.v-list-item:not(.v-list-item--active):not(
-    .v-list-item--disabled
-  ) {
+.custom-nav-cont .theme--light.v-list-item:not(.v-list-item--active):not(.v-list-item--disabled) {
   color: #fff !important;
 }
 
@@ -320,25 +267,16 @@ export default {
   background: #fff;
 }
 
-.navigation-cont.custom-nav-cont
-  .v-list-group--active
-  .v-list-item--active
-  .v-icon::before {
+.navigation-cont.custom-nav-cont .v-list-group--active .v-list-item--active .v-icon::before {
   color: #014c4f !important;
 }
 
-.navigation-cont.custom-nav-cont
-  .v-list-group--active
-  .v-list-item--active
-  .v-list-item {
+.navigation-cont.custom-nav-cont .v-list-group--active .v-list-item--active .v-list-item {
   background: transparent !important;
   color: #014c4f !important;
 }
 
-.navigation-cont.custom-nav-cont
-  .v-list--dense
-  .v-list-item.active--text
-  .v-icon::before {
+.navigation-cont.custom-nav-cont .v-list--dense .v-list-item.active--text .v-icon::before {
   color: #014c4f !important;
 }
 
@@ -346,10 +284,7 @@ export default {
   margin-top: 5px;
 }
 
-.navigation-cont.custom-nav-cont
-  .v-list-group.v-list-group--active
-  .v-list-group__items
-  .v-list-item--active:not(.v-list-group__header) {
+.navigation-cont.custom-nav-cont .v-list-group.v-list-group--active .v-list-group__items .v-list-item--active:not(.v-list-group__header) {
   border-color: transparent !important;
   margin-top: 5px;
   color: #014c4f !important;
