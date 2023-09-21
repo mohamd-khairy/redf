@@ -460,7 +460,19 @@ export default {
     user_photo: "صورة المستخدم",
   },
   transactions: {
-    new_transaction: "إضافة معاملة"
+    new_transaction: "إضافة معاملة",
+    name: "اسم المعاملة",
+    number: "رقم المعاملة",
+    date: "التاريخ",
+    type: "النوع",
+    department: "الإدارة",
+    consultations: "الإستشارات",
+    types: {
+      preparing_speech: "تحضير الكلام",
+      consultation: "الإستشارات",
+      normal: "عادية",
+      another_treatment: "معاملة أخري",
+    }
   },
   cases: {
     caseType: "نوع القضية",
@@ -821,6 +833,7 @@ export default {
     delete_confirmation: "هل انت متأكد من الحذف ؟",
     actionPreview: "عرض الاجراء",
     new_beneficiary_added: "تم اضافة مستفيد جديد",
+    new_treatment_added: "تم اضافة معاملة جديد",
     consultation: "استشارة",
     belongsTo: "تنتمي الي",
     downloadWord: "تحميل ملف Word",

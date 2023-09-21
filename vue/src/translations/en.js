@@ -473,7 +473,19 @@ export default {
     user_photo: "User Photo",
   },
   transactions: {
-    new_transaction: "Add Treatment"
+    new_transaction: "Add Treatment",
+    name: "Treatment Name",
+    number: "Treatment Number",
+    date: "Treatment Date",
+    type: "Type",
+    department: "Department",
+    consultations: "Consultations",
+    types: {
+      preparing_speech: "Preparing Speech",
+      consultation: "Consultation",
+      normal: "Normal",
+      another_treatment: "Another Treatment",
+    }
   },
   cases: {
     caseType: "Cases Type",
@@ -708,6 +720,8 @@ export default {
     active: "Active",
     notactive: "Not Active",
     assigner: "Assigner",
+    new_treatment_added: "New Treatment Added",
+
   },
   reports: {
     buildReport: "Build Report",

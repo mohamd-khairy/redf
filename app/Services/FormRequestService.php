@@ -222,6 +222,7 @@ class FormRequestService
             );
 
             $query = $query->where('form_type', request('form_type', 'case'));
+           
 
             if ($request->has('template_id')) {
                 $query = $query->whereHas('form', fn ($q) => $q->where('template_id', $request->input('template_id')));
