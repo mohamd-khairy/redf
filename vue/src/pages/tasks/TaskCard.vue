@@ -44,8 +44,23 @@
       </v-menu>
     </div>
     <v-card-text class="p-0 mt-1">
-      <div class="desc-cont">الوصف</div>
-      <div class="progress-cont mt-2">
+      <div class="desc-cont">{{ task.details }}</div>
+      <div>
+        <v-chip v-if="progress == 25" color="#f7e5ed" text-color="#db2777">
+          بحاجة الي المراجعة
+        </v-chip>
+        <v-chip v-if="progress == 50" color="#f0e6f8" text-color="#a454ed">
+          جاري العمل عليها
+        </v-chip>
+        <v-chip v-if="progress == 75" color="#f5efe1" text-color="#ca8a04">
+          متأخر
+        </v-chip>
+        <v-chip v-if="progress == 100" color="#e6f2ea" text-color="#2FAD5E">
+          مكتمل
+        </v-chip>
+        <v-chip outlined color="white" text-color="secondary"> #222 </v-chip>
+      </div>
+      <!-- <div class="progress-cont mt-2">
         <div
           class="prog-title-cont d-flex justify-content-between align-center"
         >
@@ -61,38 +76,27 @@
           rounded
           :value="progress"
         ></v-progress-linear>
-      </div>
+      </div> -->
       <div class="d-flex mt-3 justify-content-between align-center">
-        <span class="text-sm text-gray-600">{{
-          task.due_date.split(" ")[0]
-        }}</span>
-
-        <div class="avatar-container" v-if="task.users && task?.users?.length">
-          <!-- More avatars -->
-          <v-menu offset-y v-if="task?.users?.length > 3">
-            <template v-slot:activator="{ on }">
-              <v-btn icon small size="24" class="more-avatar" v-on="on">
-                <v-icon>mdi-dots-horizontal</v-icon>
-              </v-btn>
+        <div class="avatar-container" v-if="task.user">
+          <v-tooltip top>
+            <template v-slot:activator="{ on, attrs }">
+              <v-avatar v-bind="attrs" v-on="on" size="40">
+                <v-img
+                  :src="
+                    task.user.avatar
+                      ? task.user.avatar
+                      : '/images/avatars/avatar1.svg'
+                  "
+                ></v-img>
+              </v-avatar>
             </template>
-            <v-list>
-              <!-- Render avatars here -->
-              <v-list-item v-for="(user, index) in task.users" :key="user.name">
-                <v-avatar size="24">
-                  <img :src="user.img" :alt="'Avatar ' + (index + 4)" />
-                </v-avatar>
-              </v-list-item>
-            </v-list>
-          </v-menu>
-          <!-- Avatar 1 -->
-          <v-avatar
-            v-for="user in task.users.slice(0, 3)"
-            size="30"
-            class="avatar-item"
-          >
-            <img :src="user.img" alt="Avatar 1" />
-          </v-avatar>
+            <span>{{ task.name }}</span>
+          </v-tooltip>
         </div>
+        <span class="text-sm text-gray-600">
+          {{ task.due_date.split(" ")[0] }}
+        </span>
       </div>
     </v-card-text>
   </v-card>

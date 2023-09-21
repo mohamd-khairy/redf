@@ -130,6 +130,22 @@
                   ></v-select>
                 </v-col>
               </v-row>
+              <v-row>
+                <v-col cols="6">
+                  <v-file-input
+                    outlined
+                    dense
+                    counter
+                    show-size
+                    :v-model="user.image"
+                    :label="$t('users.user_photo')"
+                    @change="(file) => handleFileUpload(file)"
+                    click:clear="handleRemoveFile"
+                    :error-messages="errors['avatar']"
+                  >
+                  </v-file-input>
+                </v-col>
+              </v-row>
 
               <!--              <div class="d-flex flex-column">-->
               <!--                <v-checkbox v-model="user.verified" dense :label="$t('users.emailVerified')"></v-checkbox>-->
@@ -274,7 +290,7 @@
 
 <script>
 import { mapActions, mapState } from "vuex";
-
+import avatar from "@/assets//images/avatars/avatar1.svg";
 export default {
   props: {
     user: {
@@ -350,6 +366,7 @@ export default {
     },
     updateProfile() {
       const {
+        avatar,
         email,
         name,
         password,
@@ -360,6 +377,7 @@ export default {
         department_id,
       } = this.user;
       let data = {
+        avatar,
         email,
         name,
         password,
@@ -377,6 +395,16 @@ export default {
       this.$emit("createUser", form);
       // document.getElementById("update-avatar").files = null;
       this.avatar = {};
+    },
+    handleFileUpload(file, input) {
+      if (file) {
+        const fileName = file.name.split(".")[0];
+        const fileExtension = file.name.split(".")[1];
+        this.user.avatar = file;
+      }
+    },
+    handleRemoveFile() {
+      this.user.avatar = null;
     },
   },
   created() {

@@ -456,6 +456,7 @@ export default {
       employee: "موظف",
       governorate: "محافظة",
     },
+    user_photo: "صورة المستخدم",
   },
   cases: {
     caseType: "نوع القضية",
@@ -532,6 +533,8 @@ export default {
     deleteCase: "حذف القضية",
     caseFile: "لائحة الدعوة",
     caseTemplates: "نماذج القضايا",
+    view_board: "عرض اللوحة",
+    view_menu: "عرض القائمة",
   },
 
   departments: {

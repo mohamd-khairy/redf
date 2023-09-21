@@ -1,7 +1,9 @@
 <template>
   <v-card class="bg-white stage">
     <div class="d-flex justify-content-between">
-      <v-card-title class="pa-0 case-title">{{ task.title }}</v-card-title>
+      <v-card-title class="pa-0 case-title">
+        <a href="#" @click.prevent="taskPath(task.id)">{{ task.title }}</a>
+      </v-card-title>
 
       <v-menu offset-y left>
         <template v-slot:activator="{ on }">
@@ -12,31 +14,37 @@
           </transition>
         </template>
         <v-list dense>
-          <v-list-item>
-            <v-list-item-title>
-              <v-icon>mdi-plus-circle-outline</v-icon>
-              <span class="action-span">{{ $t("cases.add_action") }}</span>
-            </v-list-item-title>
-          </v-list-item>
-          <v-list-item>
-            <v-list-item-title>
-              <v-icon>mdi-timeline-text-outline</v-icon>
-              <span class="action-span">{{ $t("cases.view_timeline") }}</span>
-            </v-list-item-title>
-          </v-list-item>
-          <v-list-item>
+<!--          <v-list-item>-->
+<!--            <v-list-item-title>-->
+<!--              <v-icon>mdi-plus-circle-outline</v-icon>-->
+<!--              <span class="action-span">{{ $t("cases.add_action") }}</span>-->
+<!--            </v-list-item-title>-->
+<!--          </v-list-item>-->
+<!--          <v-list-item>-->
+<!--            <v-list-item-title>-->
+<!--              <v-icon>mdi-timeline-text-outline</v-icon>-->
+<!--              <span class="action-span">{{ $t("cases.view_timeline") }}</span>-->
+<!--            </v-list-item-title>-->
+<!--          </v-list-item>-->
+          <v-list-item @click="openAssignAction">
             <v-list-item-title>
               <v-icon>mdi-at</v-icon>
               <span class="action-span">{{ $t("cases.assign_user") }}</span>
             </v-list-item-title>
           </v-list-item>
-          <v-list-item>
+          <v-list-item @click="deleteApplication">
             <v-list-item-title>
-              <v-icon>mdi-pencil-outline</v-icon>
-              <!-- <v-icon>mdi-open-in-new</v-icon> -->
-              <span class="action-span">{{ $t("cases.editCase") }}</span>
+              <v-icon>mdi-close</v-icon>
+              <span class="action-span">{{ $t("cases.deleteRequest") }}</span>
             </v-list-item-title>
           </v-list-item>
+<!--          <v-list-item>-->
+<!--            <v-list-item-title>-->
+<!--              <v-icon>mdi-pencil-outline</v-icon>-->
+<!--              &lt;!&ndash; <v-icon>mdi-open-in-new</v-icon> &ndash;&gt;-->
+<!--              <span class="action-span">{{ $t("cases.editCase") }}</span>-->
+<!--            </v-list-item-title>-->
+<!--          </v-list-item>-->
         </v-list>
       </v-menu>
     </div>
@@ -61,30 +69,30 @@
       </div>
       <div class="d-flex mt-3 justify-content-between align-center">
         <span class="text-sm text-gray-600">{{ task.date }}</span>
-        <div class="avatar-container" v-if="task.users && task?.users?.length">
+        <div class="avatar-container" v-if="task.form_request?.formAssignedRequests && task?.form_request?.formAssignedRequests?.length">
           <!-- More avatars -->
-          <v-menu offset-y v-if="task?.users?.length > 3">
-            <template v-slot:activator="{ on }">
-              <v-btn icon small size="24" class="more-avatar" v-on="on">
-                <v-icon>mdi-dots-horizontal</v-icon>
-              </v-btn>
-            </template>
-            <v-list>
-              <!-- Render avatars here -->
-              <v-list-item v-for="(user, index) in task.users" :key="user.name">
-                <v-avatar size="24">
-                  <img :src="user.img" :alt="'Avatar ' + (index + 4)" />
-                </v-avatar>
-              </v-list-item>
-            </v-list>
-          </v-menu>
+<!--          <v-menu offset-y v-if="task?.form_request?.formAssignedRequests?.length > 3">-->
+<!--            <template v-slot:activator="{ on }">-->
+<!--              <v-btn icon small size="24" class="more-avatar" v-on="on">-->
+<!--                <v-icon>mdi-dots-horizontal</v-icon>-->
+<!--              </v-btn>-->
+<!--            </template>-->
+<!--            <v-list>-->
+<!--              &lt;!&ndash; Render avatars here &ndash;&gt;-->
+<!--              <v-list-item v-for="(item, index) in task?.form_request?.formAssignedRequests?.length" :key="item.user.name">-->
+<!--                <v-avatar size="24">-->
+<!--                  <img :src="'/images/avatars/avatar1.svg'" :alt="'Avatar ' + (index + 4)" />-->
+<!--                </v-avatar>-->
+<!--              </v-list-item>-->
+<!--            </v-list>-->
+<!--          </v-menu>-->
           <!-- Avatar 1 -->
           <v-avatar
-            v-for="user in task.users.slice(0, 3)"
+            v-for="user in task?.form_request?.formAssignedRequests"
             size="30"
             class="avatar-item"
           >
-            <img :src="user.img" alt="Avatar 1" />
+            <img :src="'/images/avatars/avatar1.svg'" alt="Avatar 1" />
           </v-avatar>
         </div>
       </div>
@@ -111,6 +119,23 @@ export default {
       return mappings[this.task.type] || mappings.default;
     },
   },
+  methods:{
+    taskPath(taskId)
+    {
+      let { id } = this.$route.params;
+      this.$router.push(
+        `/cases/${id}/request-review/edit/${taskId}`
+      );
+    },
+    openAssignAction()
+    {
+      this.$emit("openAssign");
+    },
+    deleteApplication()
+    {
+      this.$emit("deleteItem");
+    }
+  }
 };
 </script>
 <style>
