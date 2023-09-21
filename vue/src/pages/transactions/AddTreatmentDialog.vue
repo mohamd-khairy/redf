@@ -32,8 +32,8 @@
                                 :items="types" item-value="value" item-text="name" @change="loadConsalts"></v-select>
                         </v-col>
                         <v-col cols="12" v-if="treatment.type == 'consultation'">
-                            <v-select v-model="selectedConsultations" :label="$t('transactions.consultations')" outlined
-                                dense :items="consultations" item-value="value" item-text="name"></v-select>
+                            <v-select v-model="selectedConsultation" :label="$t('transactions.consultations')" outlined
+                                dense :items="consultations" item-value="id" item-text="name"></v-select>
                         </v-col>
                         <v-col cols="12">
                             <v-select v-model="treatment.department_id" :label="$t('transactions.department')" outlined
@@ -112,7 +112,7 @@ export default {
                 { name: `${this.$t('transactions.types.normal')}`, value: 'normal' },
                 { name: `${this.$t('transactions.types.another_treatment')}`, value: 'another_treatment' },
             ],
-            selectedConsultations: [],
+            selectedConsultation: null,
             showError: false,
             treatment: {
                 name: "",
@@ -218,8 +218,8 @@ export default {
         save() {
             this.isLoading = true;
             this.errors = {};
-            if (this.selectedConsultations.length > 0) {
-                this.treatment.consultations = this.selectedConsultations
+            if (this.selectedConsultations != null) {
+                this.treatment.consultations = this.selectedConsultation
             }
             let data = this.treatment
             this.storeTreatment(data)
