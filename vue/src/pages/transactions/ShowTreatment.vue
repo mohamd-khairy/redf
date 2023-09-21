@@ -17,7 +17,7 @@
               <v-card outlined :loading="isLoading">
                 <v-card-text class="">
                   <h5 class="card-title-text">اسم المعاملة</h5>
-                  <div class="card-body-text">
+                  <div v-if="treatmentInfo" class="card-body-text">
                     {{ treatmentInfo.name || "-" }}
                   </div>
                 </v-card-text>
@@ -57,14 +57,14 @@
               <v-card outlined :loading="isLoading">
                 <v-card-text class="">
                   <h5 class="card-title-text">الادارة</h5>
-                  <div class="card-body-text">
+                  <div v-if="treatmentInfo.department" class="card-body-text">
                     {{ treatmentInfo.department.name || "-" }}
                   </div>
                 </v-card-text>
               </v-card>
             </v-col>
           </v-row>
-          <v-row v-if="treatmentInfo.type == 'preparing_speech'">
+          <!-- <v-row v-if="treatmentInfo.type == 'preparing_speech'">
             <v-col class="my-1 py-0" cols="12">
               <h2 class="text-h6 font-weight-regular">الوصف</h2>
             </v-col>
@@ -335,7 +335,7 @@
               </svg>
               <span>لا يوجد وصف</span>
             </div>
-          </v-row>
+          </v-row> -->
         </v-tab-item>
         <v-tab-item> tab2 </v-tab-item>
       </v-tabs-items>
@@ -348,7 +348,7 @@
 import { mapActions, mapState } from "vuex";
 import axios from "axios";
 export default {
-  name: "test",
+  name: "ShowTreatment",
   data() {
     return {
       isLoading: false,
@@ -356,16 +356,16 @@ export default {
       activeTab: "",
       breadcrumbs: [
         {
-          text: this.$t("tasks.tasksManagement"),
+          text: "الاستشارات القانونية",
           disabled: false,
-          href: "#",
+          href: "/treatments/list",
         },
 
-        {
-          text: this.$t("tasks.tasksList"),
-          to: "/tasks/list",
-          exact: true,
-        },
+        // {
+        //   text: treatmentInfo.name,
+        //   to: "#",
+        //   exact: true,
+        // },
       ],
     };
   },
