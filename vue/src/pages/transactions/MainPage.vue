@@ -142,41 +142,16 @@ export default {
           });
       }
     },
-    computed: {
-      ...mapState("users", ["treatments"]),
-    },
-    created() {
-      this.setBreadCrumb({
-        breadcrumbs: this.breadcrumbs,
-        pageTitle: this.$t("menu.transactions"),
-      });
-      this.getDepartments({
-        pageSize: -1,
-      });
-    },
-    methods: {
-      ...mapActions("users", ["getTreatments"]),
-      ...mapActions("app", ["setBreadCrumb"]),
-      ...mapActions("departments", ["getDepartments"]),
-      searchtemplate() { },
-      treatmentCreated() {
-        this.open();
-      },
 
-      open() {
-        this.isLoading = true;
-        let { page, itemsPerPage } = this.options;
-        // const direction = this.options.sortDesc[0] ? "asc" : "desc";
-
-        pushRoute(id) {
-          console.log("id", id);
-          this.$router.push(`/treatments/list/${id}`);
-        },
-      },
-      mounted() {
-        this.open(true);
-      },
-    };
+    pushRoute(id) {
+      console.log("id", id);
+      this.$router.push(`/treatments/list/${id}`);
+    },
+  },
+  mounted() {
+    this.open(true);
+  },
+};
 </script>
 
 <template>
@@ -245,7 +220,7 @@ export default {
         <div class="effect-3 effects"></div>
       </div>
     </v-card>
-    <add-treatment-dialog v-if="dialog" v-model="dialog"></add-treatment-dialog>
+    <add-treatment-dialog @treatmentCreated="treatmentCreated" v-if="dialog" v-model="dialog"></add-treatment-dialog>
   </div>
 </template>
 
