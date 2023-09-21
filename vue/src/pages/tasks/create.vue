@@ -17,10 +17,10 @@
 
             <v-col cols="6">
               <v-select
-                v-model="form.type"
-                :items="types"
-                :label="$t('tasks.types')"
-                :error-messages="errors['types']"
+                v-model="form.status"
+                :items="statuss"
+                :label="$t('tasks.status')"
+                :error-messages="errors['status']"
                 outlined
                 dense
               ></v-select>
@@ -73,19 +73,41 @@
               </v-dialog>
             </v-col>
 
-            <v-col cols="12">
+            <v-col cols="6">
               <v-file-input
                 outlined
                 dense
                 counter
                 show-size
-                :v-model="form.file"
+                multiple
+                :v-model="form.files"
                 :label="$t('tasks.document')"
-                @change="(file) => handleFileUpload(file)"
+                @change="(files) => handleFileUpload(files)"
                 click:clear="handleRemoveFile"
                 :error-messages="errors['document']"
               >
               </v-file-input>
+            </v-col>
+            <v-col cols="6">
+              <v-autocomplete
+                v-model="form.department_id"
+                :items="departments.departments.data"
+                item-text="name"
+                item-value="id"
+                :label="$t('tasks.department_id')"
+                :error-messages="errors['department_id']"
+                outlined
+                dense
+              ></v-autocomplete>
+            </v-col>
+            <v-col cols="12">
+              <v-textarea
+                v-model="form.details"
+                outlined
+                :error-messages="errors['assigner_id']"
+                dense
+                :label="$t('tasks.details')"
+              ></v-textarea>
             </v-col>
             <v-col cols="4">
               <div class="d-flex align-items-center">
@@ -147,6 +169,7 @@
 </template>
 
 <script>
+import axios from "axios";
 import { mapActions, mapState } from "vuex";
 
 export default {
@@ -175,19 +198,22 @@ export default {
         .toISOString()
         .substr(0, 10),
       form: {
+        department_id: "",
+        details: "",
         name: "",
-        type: "",
+        status: "",
         form_request_id: "",
         consultation_id: "",
         user_id: null,
-        file: null,
+        files: null,
         assigner_id: null,
         due_date: "",
       },
       dueDateModal: false,
-      types: ["Type 1", "Type 2", "Type 3"],
+      statuss: ["Status 1", "Status 2", "Status 3"],
       errors: {},
       isDateInvalid: false,
+      departments: [],
     };
   },
   computed: {
@@ -213,6 +239,9 @@ export default {
       pageTitle: this.$t("tasks.tasksList"),
     });
     this.open();
+    axios.get("departments").then((res) => {
+      this.departments = res.data.data;
+    });
   },
 
   methods: {
@@ -224,7 +253,7 @@ export default {
       "getConsultationNames",
     ]),
     handleRemoveFile() {
-      this.form.file = null;
+      this.form.files = null;
     },
     saveTask() {
       this.loading = true;
@@ -255,11 +284,11 @@ export default {
       const [year, month, day] = date.split("-");
       return `${day}-${month}-${year}`;
     },
-    handleFileUpload(file, input) {
-      if (file) {
-        const fileName = file.name.split(".")[0];
+    handleFileUpload(files, input) {
+      if (files) {
+        const fileName = files.name.split(".")[0];
         const fileExtension = file.name.split(".")[1];
-        this.form.file = file;
+        this.form.files = files;
       }
     },
   },
