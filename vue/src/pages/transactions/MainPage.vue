@@ -57,7 +57,7 @@ export default {
     };
   },
   watch: {
-    selectedTemplates(val) { },
+    selectedTemplates(val) {},
     options: {
       handler() {
         this.open();
@@ -69,7 +69,7 @@ export default {
     },
   },
   computed: {
-    ...mapState("users", ["treatments"]),
+    ...mapState("treatments", ["treatments"]),
   },
   created() {
     this.setBreadCrumb({
@@ -81,12 +81,12 @@ export default {
     });
   },
   methods: {
-    ...mapActions("users", ["getTreatments"]),
+    ...mapActions("treatments", ["getTreatments"]),
     ...mapActions("app", ["setBreadCrumb"]),
     ...mapActions("departments", ["getDepartments"]),
-    searchtemplate() { },
+    searchtemplate() {},
     treatmentCreated() {
-      this.open(true)
+      this.open(true);
     },
     open() {
       this.isLoading = true;
@@ -147,7 +147,7 @@ export default {
     },
 
     pushRoute(id) {
-      console.log("id", id);
+      // console.log("id", id);
       this.$router.push(`/treatments/list/${id}`);
     },
   },
@@ -163,7 +163,11 @@ export default {
       $t("transactions.new_transaction")
     }}</v-btn>
     <v-card class="px-3 pt-2" v-if="!isLoading">
-      <div class="transaction-card mb-5" v-for="treat in templateItems" :key="treat.id">
+      <div
+        class="transaction-card mb-5"
+        v-for="treat in templateItems"
+        :key="treat.id"
+      >
         <v-row class="py-0 px-2" align="center">
           <v-col cols="3">
             <h4>هـ1409نظام المركز الوطني للوثائق والمحفوظات لعام</h4>
@@ -190,7 +194,7 @@ export default {
               </div>
               <div class="sm-crd py-1">
                 <span>الإدارة</span>
-                <h5>{{ treat.department_id ? treat.department_id : "-" }}</h5>
+                <h5>{{ treat.department ? treat.department.name : "-" }}</h5>
               </div>
             </div>
           </v-col>
@@ -223,7 +227,11 @@ export default {
         <div class="effect-3 effects"></div>
       </div>
     </v-card>
-    <add-treatment-dialog @treatmentCreated="treatmentCreated" v-if="dialog" v-model="dialog"></add-treatment-dialog>
+    <add-treatment-dialog
+      @treatmentCreated="treatmentCreated"
+      v-if="dialog"
+      v-model="dialog"
+    ></add-treatment-dialog>
   </div>
 </template>
 

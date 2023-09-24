@@ -22,6 +22,7 @@ import Tasks from "./tasks";
 import Branches from "./branches";
 import Specializations from "./specializations";
 import Stages from "./stages";
+import Treatments from "./treatments";
 
 // Example Apps
 import BoardModule from "../apps/board/store";
@@ -65,7 +66,8 @@ const store = new Vuex.Store({
     tasks: Tasks,
     branches: Branches,
     specializations: Specializations,
-    stages: Stages
+    stages: Stages,
+    treatments: Treatments,
   },
 });
 
