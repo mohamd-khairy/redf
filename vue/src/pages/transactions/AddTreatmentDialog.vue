@@ -77,12 +77,19 @@
                 <v-card-actions class="py-2">
                     <v-spacer></v-spacer>
 
-                    <v-btn color="primary" @click="save" large>
-                        {{ $t("general.save") }}
+                    <v-btn color="primary" @click="save" size="55" x-large>
+                        <span v-if="!isLoading">
+                            {{ $t("general.save") }}
+                        </span>
+                        <div class="spinner-border" role="status" v-else>
+                            <span class="sr-only">Loading...</span>
+                        </div>
                     </v-btn>
 
-                    <v-btn color="grey" class="ms-2" @click="dialog = false" large>
-                        {{ $t("general.cancel") }}
+                    <v-btn color="grey" class="ms-2" @click="dialog = false" x-large>
+                        <span>
+                            {{ $t("general.cancel") }}
+                        </span>
                     </v-btn>
                 </v-card-actions>
             </v-card>

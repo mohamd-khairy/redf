@@ -85,6 +85,9 @@ export default {
     ...mapActions("app", ["setBreadCrumb"]),
     ...mapActions("departments", ["getDepartments"]),
     searchtemplate() { },
+    treatmentCreated() {
+      this.open(true)
+    },
     open() {
       this.isLoading = true;
       let { page, itemsPerPage } = this.options;
@@ -242,6 +245,7 @@ export default {
 
   .sm-cards {
     display: flex;
+    // flex-wrap: wrap;
     background: #ececec;
     border-radius: 8px;
     padding: 10px;
