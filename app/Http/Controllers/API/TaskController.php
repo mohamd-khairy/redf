@@ -71,13 +71,32 @@ class TaskController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(TaskRequest $request)
+    public function store(Request $request)
     {
+
         try {
-
+            if ($request->hasFile('filesss')) {
+                foreach ($request->file('filesss') as $uploadedFile) {
+                    dd($uploadedFile);
+                    $filename = $uploadedFile->getClientOriginalName();
+                    $filePath = UploadService::store($uploadedFile, 'tasks');
+                    // Create a new file record for each uploaded file
+                    $fileRecord = new File([
+                        'name' => $filename,
+                        'path' => $filePath,
+                        'user_id' => auth()->id(),
+                        'start_date' => now(),
+                        'type' => 'task',
+                        'priority' => 'high',
+                    ]);
+                    $fileRecord->fileable()->associate($task);
+                    $fileRecord->save();
+                }
+            }
+            // dd($request->filesss);
             $validatedData = $request->validated();
-
-            unset($validatedData['file']);
+            dd($validatedData);
+            unset($validatedData['files']);
             // Parse the due_date
             $validatedData['due_date'] = Carbon::createFromFormat('d-m-Y', $validatedData['due_date'])->format('Y-m-d');
             // Create the task
@@ -86,6 +105,7 @@ class TaskController extends Controller
 
             if ($request->hasFile('files')) {
                 foreach ($request->file('files') as $uploadedFile) {
+                    dd($uploadedFile);
                     $filename = $uploadedFile->getClientOriginalName();
                     $filePath = UploadService::store($uploadedFile, 'tasks');
                     // Create a new file record for each uploaded file

@@ -57,6 +57,11 @@ class FormRequest extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function benefire()
+    {
+        return $this->belongsTo(User::class,'benefire_id');
+    }
+
     public function form()
     {
         return $this->belongsTo(Form::class);

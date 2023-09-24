@@ -37,6 +37,7 @@ class FormRequestService
                 /*********** add Notifications ********* */
                 sendMsgFormat(Auth::id(), $formRequest->name . ' تم اضافه طلب', ' تم إضافة طلب ( ' . $formRequest->name . ' ) ');
             } else {
+
                 // legal advice
                 $number = $requestData['case_number'] ?? rand(100000, 999999);
 
@@ -107,7 +108,46 @@ class FormRequestService
 
     public function updateFormFill($requestData, $id)
     {
-        return DB::transaction(function () use ($requestData, $id) {
+        if($requestData['case_id']){
+            //legal_advice or related case
+            if ($requestData['type'] == 'related_case') {
+                $this->add_application($formRequest);
+                $this->remove_reminder((object)['form_request_id' => $formRequest->id]);
+
+                /*********** add Notifications ********* */
+                sendMsgFormat(Auth::id(), $formRequest->name . ' تم اضافه طلب', ' تم إضافة طلب ( ' . $formRequest->name . ' ) ');
+            } else {
+                // legal advice
+                $formRequest = FormRequest::findOrFail($id);
+                $updatedData = [
+                    'form_id' => $requestData['id'],
+                    'user_id' => Auth::id(),
+                    'benefire_id' => $requestData['benefire_id'],
+                    'status' => StatusEnum::PENDING,
+                    'form_type' => $requestData['form_type'],
+                    'form_request_number' => $number,
+                    'name' => $requestData['case_name'] ?? ($requestData['name'] . "($number)")
+                ];
+                $formRequest->update($updatedData);
+            }
+
+             /*********** update action ********* */
+             saveFormRequestAction(
+                form_request_id: $requestData->case_id,
+                formable_id: $formRequest->id,
+                formable_type: FormRequest::class,
+                msg: ' تم تحديث ' . $formRequest->name
+            );
+            // Create a new Formable record
+            Formable::firstOrCreate([
+                'formable_id' => $formRequest->id,
+                'form_request_id' => $requestData->case_id,
+                'formable_type' => FormRequest::class,
+            ]);
+
+
+        }else{
+            // case
 
             $formRequest = FormRequest::findOrFail($id);
             $updatedData = [
@@ -121,6 +161,29 @@ class FormRequestService
                 'name' => $requestData['case_name'] ?? $formRequest->name
             ];
             $formRequest->update($updatedData);
+
+        }
+        //handle file لائحه الدعوي
+        if ($requestData->has('file')) {
+            $formRequest->file = $this->processFormFile($requestData->file, $formRequest);
+            $formRequest->save();
+        }
+
+          /*********** add action ********* */
+          saveFormRequestAction(
+            form_request_id: $formRequest->id,
+            formable_id: $formRequest->id,
+            formable_type: FormRequest::class,
+            msg: ' تم اضافه ' . $formRequest->name
+        );
+
+        $this->processFormPages($requestData, $formRequest);
+
+        return $formRequest;
+
+        return DB::transaction(function () use ($requestData, $id) {
+
+
 
             // save related tables if get case_id
             if ($requestData->case_id) {
@@ -221,6 +284,7 @@ class FormRequestService
             $query = FormRequest::with(
                 'form.pages.items',
                 'user',
+                'benefire',
                 'formAssignedRequests.assigner',
                 'form_page_item_fill.page_item',
                 'lastFormRequestInformation',
