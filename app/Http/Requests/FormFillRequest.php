@@ -31,7 +31,7 @@ class FormFillRequest extends FormRequest
     public function rules()
     {
         $data =  [
-            'type' => 'required|in:related_case,case,consultation',
+            'form_type' => 'required|in:related_case,case,legal_advice',
             'pages' => 'required',
             'pages.*' => 'required',
             'pages.*.title' => 'required|string',
@@ -42,7 +42,7 @@ class FormFillRequest extends FormRequest
             'pages.*.items.*.form_page_item_id' => 'required',
         ];
 
-        if (request('type') == 'case') {
+        if (request('form_type') == 'case') {
             $data['case_number'] = 'required|regex:/^[0-9]+$/|unique:form_requests,form_request_number';
             $data['case_name'] = 'required|string';
             $data['case_date'] = 'required|date';
@@ -53,8 +53,11 @@ class FormFillRequest extends FormRequest
             $data['file'] = 'nullable';
             $data['department_id'] = 'nullable';
         }
-
-        if (request('type') == 'related_case') {
+        if (request('form_type') == 'legal_advice') {
+            $data['case_id'] = 'required';
+            $data['benefire_id'] = 'required';
+        }
+        if (request('form_type') == 'related_case') {
             $data['case_id'] = 'required';
         }
 

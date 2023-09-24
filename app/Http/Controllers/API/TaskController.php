@@ -37,23 +37,32 @@ class TaskController extends Controller
      */
     public function index(PageRequest $request)
     {
-        $tasks = Task::with('user:id,name,avatar', 'assigner:id,name,avatar', 'file');
+        try {
 
-        $data = app(Pipeline::class)->send($tasks)->through([
-            SearchFilters::class,
-            SortFilters::class,
-        ])->thenReturn();
+            $this->updateTaskStage();
 
-        $data = request('pageSize') == -1 ?  $data->get() : $data->paginate(request('pageSize', 200));
+            $tasks = Task::with('user:id,name,avatar', 'assigner:id,name,avatar', 'file');
 
-        $data = $data->groupBy('stage_id');
+            $data = app(Pipeline::class)->send($tasks)->through([
+                SearchFilters::class,
+                SortFilters::class,
+            ])->thenReturn();
 
-        $data =  collect(Task::$stages)->map(function ($stage) use ($data) {
-            $stage['tasks'] = isset($data[$stage['id']]) ? $data[$stage['id']] : [];
-            return $stage;
-        });
+            $data = request('pageSize') == -1 ?  $data->get() : $data->paginate(request('pageSize', 200));
 
-        return responseSuccess(['tasks' => $data]);
+            $data = $data->groupBy('stage_id');
+
+            $data =  collect(Task::$stages)->map(function ($stage) use ($data) {
+                $stage['tasks'] = isset($data[$stage['id']]) ? $data[$stage['id']] : [];
+                return $stage;
+            });
+
+            return responseSuccess(['tasks' => $data]);
+
+            //code...
+        } catch (\Throwable $th) {
+            //throw $th;
+        }
     }
 
     /**
@@ -62,13 +71,15 @@ class TaskController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(TaskRequest $request)
+    public function store(Request $request)
     {
+        return $request->all();
         try {
-
+            // return $request->all();
             $validatedData = $request->validated();
+            return $validatedData['files'];
 
-            unset($validatedData['file']);
+            unset($validatedData['files']);
             // Parse the due_date
             $validatedData['due_date'] = Carbon::createFromFormat('d-m-Y', $validatedData['due_date'])->format('Y-m-d');
             // Create the task
@@ -77,6 +88,7 @@ class TaskController extends Controller
 
             if ($request->hasFile('files')) {
                 foreach ($request->file('files') as $uploadedFile) {
+                    dd($uploadedFile);
                     $filename = $uploadedFile->getClientOriginalName();
                     $filePath = UploadService::store($uploadedFile, 'tasks');
                     // Create a new file record for each uploaded file
@@ -128,7 +140,7 @@ class TaskController extends Controller
             'form_request_id' => 'sometimes|exists:forms,id',
             'file' => 'nullable|file|mimes:jpg,jpeg,png,pdf,docx',
             'stage_id' => 'nullable|integer',
-         ]);
+        ]);
 
         unset($validatedData['file']);
 
@@ -186,23 +198,19 @@ class TaskController extends Controller
 
         return responseSuccess([], 'Task has been successfully deleted');
     }
-    public function updateTaskStage(Request $request){
 
+    public function updateTaskStage()
+    {
         // get todate date
         $ldate = new DateTime('today');
 
         $tasks = Task::whereDate('due_date', '<', $ldate)
-        ->where(function ($query) {
-            $query->where('stage_id', 1)
-                  ->orWhere('stage_id', 2);
-        })
-        ->get();
+            ->where(function ($query) {
+                $query->where('stage_id', 1)
+                    ->orWhere('stage_id', 2);
+            })
+            ->update(['stage_id' => 3]);
 
-        foreach ($tasks as $task) {
-            $task->stage_id = 3;
-            $task->save();
-        }
         return responseSuccess([], 'Task has been successfully updated');
-
     }
 }

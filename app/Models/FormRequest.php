@@ -30,6 +30,7 @@ class FormRequest extends Model
         'form_type',
         'case_date',
         'case_type',
+        'benefire_id',
         'specialization_id',
         'organization_id',
         'status_request',
@@ -54,6 +55,11 @@ class FormRequest extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function benefire()
+    {
+        return $this->belongsTo(User::class,'benefire_id');
     }
 
     public function form()

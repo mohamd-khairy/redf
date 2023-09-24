@@ -16,8 +16,8 @@ return new class extends Migration
         Schema::create('treatment_information', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('treatment_id');
-            $table->text('text');
-            $table->string('type');
+            $table->text('value');
+            $table->string('key');
             $table->date('date');
             $table->foreign('treatment_id')->references('id')->on('treatments')->onDelete('cascade');
             $table->timestamps();

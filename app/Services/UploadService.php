@@ -16,6 +16,7 @@ class UploadService
      */
     public static function store($files, string $path = 'files', string $disk = 'public')
     {
+
         $items = is_array($files) ? $files : [$files];
 
         $paths = [];

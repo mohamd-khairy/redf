@@ -33,7 +33,7 @@ class TaskRequest extends FormRequest
             'details' => 'nullable|string',
             'share_with' => 'nullable|string',
             'form_request_id' => 'nullable|exists:form_requests,id',
-            'file' => 'nullable|file|mimes:jpg,jpeg,png,pdf,docx',
+            // 'files' => 'required',
             'stage_id' => 'nullable|integer'
         ];
     }

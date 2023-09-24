@@ -42,6 +42,7 @@ class FormRequestController extends Controller
             $requestData = $request->validated();
             $requestData['id'] = $request->id;
             $formRequest = $this->formRequestService->storeFormFill($request);
+
             return responseSuccess(['formRequest' => $formRequest], 'Form Fill has been successfully Created');
         } catch (\Throwable $th) {
             // throw $th;
@@ -184,7 +185,7 @@ class FormRequestController extends Controller
             form_request_id: $formRequest->case->item->id,
             formable_id: $formRequest->id,
             formable_type: FormRequest::class,
-            msg: FormRequestStatus::$status() . " ( $formRequest->name ) " 
+            msg: FormRequestStatus::$status() . " ( $formRequest->name ) "
         );
 
         return responseSuccess($response, 'Status updated successfully');

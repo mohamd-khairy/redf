@@ -385,8 +385,7 @@ export default {
         };
         this.getApplications(data)
           .then(() => {
-            this.isLoading = false;
-            this.items = this.columns?.sort((a, b) => a.order - b.order)?.map((column) => {
+            this.items = this.columns?.map((column) => {
               return {
                 id: column.id,
                 name: column.name,
@@ -394,10 +393,13 @@ export default {
                 applications: column.applications
               }
             })
+            // this.isLoading = false;
           })
           .catch(() => {
+            // this.isLoading = false;
+          }).finally((_)=>{
             this.isLoading = false;
-          });
+        })
       }
       else {
         let { page, itemsPerPage } = this.options;

@@ -46,6 +46,7 @@
         </v-card-text>
       </v-card> -->
       <calendar
+        @expandEvent="expandEvent"
         v-if="!loading"
         @selectedEventId="setEventId"
         :eventsData="calendarData"
@@ -215,6 +216,9 @@ export default {
       "getStatCards",
     ]),
     ...mapActions("app", ["setBreadCrumb"]),
+    expandEvent(ev) {
+      console.log(ev);
+    },
     fetchConfig() {
       this.isLoading = true;
 
@@ -241,8 +245,12 @@ export default {
           //   id: c.id,
           //   actionInfo: c.calendarable,
           // }));
-          this.calendarData = res.data.data;
-          console.log(res.data.data);
+          this.calendarData = res.data.data.map((action, i) =>
+            i % 2 === 0
+              ? { ...action, expand: true }
+              : { ...action, expand: false }
+          );
+          console.log(this.calendarData);
         });
     },
     closeActionPrevDialog() {
