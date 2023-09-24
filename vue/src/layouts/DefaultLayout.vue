@@ -8,7 +8,8 @@
         <div class="px-2 pt-2" style="height: 80px">
           <div class="title font-weight-bold text-center text-uppercase" style="height: 100%">
             <!--            {{ product.name }}-->
-            <img :class="!websiteLogo ? 'd-none' : ''" :src="websiteLogo" :alt="websiteName" style="
+            <img :class="!websiteLogo ? 'd-none' : ''" :src="websiteLogo ? websiteLogo : '/images/logo.svg'"
+              :alt="websiteName" style="
                 width: 100%;
                 max-width: 100%;
                 height: auto;
@@ -68,17 +69,17 @@
     </v-app-bar>
 
     <v-main>
-      <v-container class="fill-height" :fluid="!isContentBoxed">
-        <v-layout class="d-flex flex-column flex-grow-1">
-          <div class="d-flex justify-content-between align-items-center">
-            <div class="p-3 pt-0">
-              <div class="display-1">{{ pageTitle }}</div>
-              <v-breadcrumbs :items="breadcrumbs" class="pa-0 py-2"></v-breadcrumbs>
-            </div>
+      <v-layout class="d-flex flex-column flex-grow-1 pa-lg-4 pa-md-3 pa-sm-2 pa-1">
+        <div class="d-flex justify-content-between align-items-center">
+          <div class="p-3 pt-0">
+            <div class="display-1">{{ pageTitle }}</div>
+            <v-breadcrumbs :items="breadcrumbs" class="pa-0 py-2"></v-breadcrumbs>
           </div>
-          <slot></slot>
-        </v-layout>
-      </v-container>
+        </div>
+        <slot></slot>
+      </v-layout>
+      <!-- <v-container class="fill-height" fluid>
+      </v-container> -->
 
       <v-footer app inset>
         <v-spacer></v-spacer>
@@ -144,10 +145,10 @@ export default {
     ]),
     ...mapState("app", {
       websiteLogo: (state) => {
-        if (!state.websiteLoginIcon) {
-          return "/images/logo.png";
-        }
-        return state.websiteLoginIcon;
+        // if (!state.websiteLoginIcon) {
+        //   return "/images/logo.png";
+        // }
+        return "/images/logo.png";
       },
       websitefavIcon: (state) => {
         const result = state.generalSettings.filter(

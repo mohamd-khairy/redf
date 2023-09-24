@@ -159,9 +159,11 @@ export default {
 
 <template>
   <div class="d-flex flex-column flex-grow-1">
-    <v-btn color="primary" class="py-3 mb-2" @click="dialog = true">{{
-      $t("transactions.new_transaction")
-    }}</v-btn>
+    <v-btn color="primary" class="py-3 px-5 mb-2"
+      :class="{ 'mr-auto': $vuetify.lang.current == 'ar', 'ml-auto': $vuetify.lang.current == 'en' }"
+      @click="dialog = true">{{
+        $t("transactions.new_transaction")
+      }}</v-btn>
     <v-card class="px-3 pt-2" v-if="!isLoading">
       <div class="transaction-card mb-5" v-for="treat in templateItems" :key="treat.id">
         <v-row class="py-0 px-2" align="center">

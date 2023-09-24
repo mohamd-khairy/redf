@@ -27,7 +27,7 @@ export default [
       auth: true,
     },
     component: () =>
-      import(/* webpackChunkName: "cases-list" */ "@/pages/cases/RequestReview"),
+    import(/* webpackChunkName: "cases-list" */ "@/pages/cases/RequestReview"),
   },
   {
     path: "/cases/:id/form-types",

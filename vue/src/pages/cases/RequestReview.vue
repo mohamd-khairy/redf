@@ -1,6 +1,6 @@
 <template>
   <div class="d-flex flex-column flex-grow-1">
-<!--    {{ items}}-->
+    <!--    {{ items}}-->
     <!-- <div class="d-flex align-center py-3">
       <div>
         <div class="display-1">{{ $t('cases.casesList') }}</div>
@@ -13,190 +13,140 @@
     </div> -->
     <div class="d-flex align-center align-self-center">
       <v-spacer></v-spacer>
-      <v-autocomplete
-        :disabled="forms.length === 0"
-        class="mx-1 autocomplete_select"
-        :label="$t('cases.caseTemplates')"
-        :items="forms"
-        :item-text="item => item.name"
-        :item-value="item => item.id"
-        hide-details
-        v-model="selectedForms"
-        return-object
-        multiple
-        solo
-        clearable
-        prepend-inner-icon="mdi-magnify"
-        chips
-        @click:clear="fetchApplications()"
-      >
+      <v-autocomplete :disabled="forms.length === 0" class="mx-1 autocomplete_select" :label="$t('cases.caseTemplates')"
+        :items="forms" :item-text="item => item.name" :item-value="item => item.id" hide-details v-model="selectedForms"
+        return-object multiple solo clearable prepend-inner-icon="mdi-magnify" chips @click:clear="fetchApplications()">
       </v-autocomplete>
     </div>
 
-      <v-tabs
-        hide-slider
-        show-arrows
-        active-class="active-form"
-        class="mb-4 mt-1"
-        centered
-        grow
-        background-color="#fafafa"
-      >
-        <v-tab
-          v-for="(tab,index) in selectedForms"
-          :key="tab.id"
-          :value="tab.id"
-          @click="fetchApplications(tab.id)"
-        >
-          {{ tab.name }}
-        </v-tab>
-      </v-tabs>
+    <v-tabs hide-slider show-arrows active-class="active-form" class="mb-4 mt-1" centered grow background-color="#fafafa">
+      <v-tab v-for="(tab, index) in selectedForms" :key="tab.id" :value="tab.id" @click="fetchApplications(tab.id)">
+        {{ tab.name }}
+      </v-tab>
+    </v-tabs>
 
     <v-card>
       <v-tabs v-model="activeTab" center-active active-class="active" hide-slider>
         <v-tab class="view_tabs">
           <v-icon>mdi-view-dashboard-outline</v-icon>
-          <span>{{$t("cases.view_board")}}</span>
+          <span>{{ $t("cases.view_board") }}</span>
         </v-tab>
         <v-tab class="view_tabs">
           <v-icon>mdi-menu</v-icon>
-          <span>{{$t("cases.view_menu")}}</span>
+          <span>{{ $t("cases.view_menu") }}</span>
         </v-tab>
       </v-tabs>
 
       <v-card-text>
         <v-tabs-items v-model="activeTab">
           <v-tab-item>
-            <div
-              class="min-h-screen d-flex overflow-x-scroll py-4 px-4 kanban-scroll-container"
-              ref="scrollContainer"
-            >
-              <div
-                v-for="(column, i) in items"
-                :key="column.id"
-                class="bg-gray-100 px-3 py-3 column-width stage-cont"
-                :class="i > 0 ? 'mr-4' : ''"
-              >
+            <div class="min-h-screen d-flex overflow-x-scroll py-4 px-4 kanban-scroll-container" ref="scrollContainer">
+              <div v-for="(column, i) in items" :key="column.id" class="bg-gray-100 px-3 py-3 column-width stage-cont"
+                :class="i > 0 ? 'mr-4' : ''">
                 <p class="stage-title">
                   {{ column.name }}
                 </p>
                 <!-- Draggable component comes from vuedraggable. It provides drag & drop functionality -->
                 <div class="scroll-item">
-                <draggable
-                  :disabled="true"
-                  :list="column.applications"
-                  :animation="200"
-                  ghost-class="ghost-card"
-                  group="tasks"
-                  :scroll-sensitivity="500"
-                  :force-fallback="true"
-                  @start="onDragStart"
-                  @end="onDragEnd"
-                >
-                  <!-- Each element from here will be draggable and animated. Note :key is very important here to be unique both for draggable and animations to be smooth & consistent. -->
-                  <task-card
-                    v-for="task in column.applications"
-                    :key="task.id"
-                    :task="task"
-                    class="mt-3"
-                    ref="listItem"
-                    @openAssign="openAssignDialog(task.form_request_id , task)"
-                    @deleteItem="deleteItem(task.form_request_id)"
-                  ></task-card>
-                  <!-- </transition-group> -->
-                </draggable>
+                  <draggable :disabled="true" :list="column.applications" :animation="200" ghost-class="ghost-card"
+                    group="tasks" :scroll-sensitivity="500" :force-fallback="true" @start="onDragStart" @end="onDragEnd">
+                    <!-- Each element from here will be draggable and animated. Note :key is very important here to be unique both for draggable and animations to be smooth & consistent. -->
+                    <task-card v-for="task in column.applications" :key="task.id" :task="task" class="mt-3" ref="listItem"
+                      @openAssign="openAssignDialog(task.form_request_id, task)"
+                      @deleteItem="deleteItem(task.form_request_id)"></task-card>
+                    <!-- </transition-group> -->
+                  </draggable>
                 </div>
               </div>
             </div>
           </v-tab-item>
           <v-tab-item>
             <div class="min-h-screen d-flex py-4 px-4">
-              <v-data-table :footer-props="footerProps" v-model="selected" :headers="headers" :items="items" :options.sync="options" :show-select="false"
-                            class="flex-grow-1 dt-custom-row-cursor" :loading="isLoading" :page="page" :pageCount="numberOfPages" :server-items-length="total"
-                            @click:row="handleClick">
-              <!-- <template v-slot:item.id="{ item }">
+              <v-data-table :footer-props="footerProps" v-model="selected" :headers="headers" :items="items"
+                :options.sync="options" :show-select="false" class="flex-grow-1 dt-custom-row-cursor" :loading="isLoading"
+                :page="page" :pageCount="numberOfPages" :server-items-length="total" @click:row="handleClick">
+                <!-- <template v-slot:item.id="{ item }">
                 <div class="font-weight-bold">
                   # <copy-label :text="item.id + ''" />
                 </div>
               </template> -->
 
-              <template v-slot:item.name="{ item }">
-                <div>{{ item.form_request?.name ?? "---" }}</div>
-              </template>
-              <template v-slot:item.form_request_number="{ item }">
-                <div class="font-weight-bold">
-                  {{ item.form_request_number }}
-                </div>
-                <!-- <div>{{ item.form_request_number ?? "---" }}</div> -->
-              </template>
-
-<!--              <template v-slot:item.caseName="{ item }">-->
-<!--                <div>{{ item?.case?.item?.name ?? "-&#45;&#45;" }}</div>-->
-<!--              </template>-->
-
-              <template v-slot:item.users="{ item }">
-                <div>
-                  <v-avatar
-                    v-for="user in item?.form_request?.form_assigned_requests"
-                    size="30"
-                    class="avatar-item"
-                  >
-                    <img :src="'/images/avatars/avatar1.svg'" alt="Avatar 1" />
-                  </v-avatar>
-                </div>
-              </template>
-
-              <template v-slot:item.status="{ item }">
-                <v-chip small :color="getStatusColor(item?.display_status?.display_status?.toLowerCase())" text-color="white">
-                  {{ item?.form_request?.display_status ? item.form_request?.display_status : "---" }}
-                  <!-- {{ item.status ? $t(`general.${item.status} `) : "" }} -->
-                </v-chip>
-              </template>
-
-              <template v-slot:item.created_at="{ item }">
-                <div>{{ item.created_at | formatDate("lll") }}</div>
-              </template>
-
-              <template v-slot:item.action="{ item }">
-                <div class="actions">
-                  <!-- assign user button -->
-                  <v-tooltip top v-if="!item.form_request?.form_assigned_requests?.length">
-                    <template v-slot:activator="{ on, attrs }">
-                      <v-btn color="primary" icon elevation="0" v-bind="attrs" v-on="on" @click.prevent.stop="openAssignDialog(item.form_request_id , item)">
-                        <v-icon>mdi-at</v-icon>
-                      </v-btn>
-                    </template>
-                    <span>{{ $t("cases.assign_user") }}</span>
-                  </v-tooltip>
-
-                  <!-- delete case button -->
-                  <v-tooltip top>
-                    <template v-slot:activator="{ on, attrs }">
-                      <v-btn color="error" icon elevation="0" v-bind="attrs" v-on="on" @click.prevent.stop="deleteItem(item.id)"
-                             v-can="'delete-user'">
-                        <v-icon>mdi-close</v-icon>
-                      </v-btn>
-                    </template>
-                    <span>{{ $t("cases.deleteRequest") }}</span>
-                  </v-tooltip>
-
-                </div>
-              </template>
-              <template v-slot:no-data>
-                <div class="text-center my-2 primary--text" color="primary">
-                  <emptyDataSvg></emptyDataSvg>
-                  <div class="dt-no_data">
-                    {{ $t("general.no_data_available") }}
+                <template v-slot:item.name="{ item }">
+                  <div>{{ item.form_request?.name ?? "---" }}</div>
+                </template>
+                <template v-slot:item.form_request_number="{ item }">
+                  <div class="font-weight-bold">
+                    {{ item.form_request_number }}
                   </div>
-                </div>
-              </template>
-            </v-data-table>
+                  <!-- <div>{{ item.form_request_number ?? "---" }}</div> -->
+                </template>
+
+                <!--              <template v-slot:item.caseName="{ item }">-->
+                <!--                <div>{{ item?.case?.item?.name ?? "-&#45;&#45;" }}</div>-->
+                <!--              </template>-->
+
+                <template v-slot:item.users="{ item }">
+                  <div>
+                    <v-avatar v-for="user in item?.form_request?.form_assigned_requests" size="30" class="avatar-item">
+                      <img :src="'/images/avatars/avatar1.svg'" alt="Avatar 1" />
+                    </v-avatar>
+                  </div>
+                </template>
+
+                <template v-slot:item.status="{ item }">
+                  <v-chip small :color="getStatusColor(item?.display_status?.display_status?.toLowerCase())"
+                    text-color="white">
+                    {{ item?.form_request?.display_status ? item.form_request?.display_status : "---" }}
+                    <!-- {{ item.status ? $t(`general.${item.status} `) : "" }} -->
+                  </v-chip>
+                </template>
+
+                <template v-slot:item.created_at="{ item }">
+                  <div>{{ item.created_at | formatDate("lll") }}</div>
+                </template>
+
+                <template v-slot:item.action="{ item }">
+                  <div class="actions">
+                    <!-- assign user button -->
+                    <v-tooltip top v-if="!item.form_request?.form_assigned_requests?.length">
+                      <template v-slot:activator="{ on, attrs }">
+                        <v-btn color="primary" icon elevation="0" v-bind="attrs" v-on="on"
+                          @click.prevent.stop="openAssignDialog(item.form_request_id, item)">
+                          <v-icon>mdi-at</v-icon>
+                        </v-btn>
+                      </template>
+                      <span>{{ $t("cases.assign_user") }}</span>
+                    </v-tooltip>
+
+                    <!-- delete case button -->
+                    <v-tooltip top>
+                      <template v-slot:activator="{ on, attrs }">
+                        <v-btn color="error" icon elevation="0" v-bind="attrs" v-on="on"
+                          @click.prevent.stop="deleteItem(item.id)" v-can="'delete-user'">
+                          <v-icon>mdi-close</v-icon>
+                        </v-btn>
+                      </template>
+                      <span>{{ $t("cases.deleteRequest") }}</span>
+                    </v-tooltip>
+
+                  </div>
+                </template>
+                <template v-slot:no-data>
+                  <div class="text-center my-2 primary--text" color="primary">
+                    <emptyDataSvg></emptyDataSvg>
+                    <div class="dt-no_data">
+                      {{ $t("general.no_data_available") }}
+                    </div>
+                  </div>
+                </template>
+              </v-data-table>
             </div>
           </v-tab-item>
         </v-tabs-items>
       </v-card-text>
 
-      <multi-assign @userAssigned="userAssigned" @updateUserIds="updateUserIds" :userIds="assignedUsers" v-model="dialog" :id="formId" />
+      <multi-assign @userAssigned="userAssigned" @updateUserIds="updateUserIds" :userIds="assignedUsers" v-model="dialog"
+        :id="formId" />
     </v-card>
   </div>
 </template>
@@ -252,13 +202,13 @@ export default {
         id: 4,
         name: 'مذكرة الدفاع'
       },],
-      activeFormId:'',
-      assignedUsers:[],
-      footerProps: {'items-per-page-options': [5, 10,15, 30]},
+      activeFormId: '',
+      assignedUsers: [],
+      footerProps: { 'items-per-page-options': [5, 10, 15, 30] },
     };
   },
   watch: {
-    selected(val) {},
+    selected(val) { },
     options: {
       handler() {
         this.fetchApplications(this.activeFormId)
@@ -276,20 +226,18 @@ export default {
         this.setCurrentBread();
       }
     },
-    selectedForms(){
-      if(this.selectedForms.length === 1)
-      {
-        this.activeFormId=4
+    selectedForms() {
+      if (this.selectedForms.length === 1) {
+        this.activeFormId = 4
         this.fetchApplications(this.activeFormId)
       }
     },
-    'activeTab'()
-    {
+    'activeTab'() {
       this.fetchApplications(this.activeFormId)
     }
   },
   computed: {
-    ...mapState("cases", ["formRequests",'forms','columns']),
+    ...mapState("cases", ["formRequests", 'forms', 'columns']),
     ...mapState("app", ["navTemplates"]),
     headers() {
       const headers = [
@@ -312,9 +260,8 @@ export default {
   created() {
     let { id } = this.$route.params;
     this.fetchForms()
-    if(this.selectedForms.length === 1)
-    {
-      this.activeFormId=4
+    if (this.selectedForms.length === 1) {
+      this.activeFormId = 4
       // this.fetchApplications(this.activeFormId)
     }
     this.currentPageId = id;
@@ -342,10 +289,9 @@ export default {
     }
   },
   methods: {
-    ...mapActions("cases", ["getFormRequests", "deleteForm", "getApplications",'getForms']),
+    ...mapActions("cases", ["getFormRequests", "deleteForm", "getApplications", 'getForms']),
     ...mapActions("app", ["setBreadCrumb"]),
-    fetchForms()
-    {
+    fetchForms() {
       let { id } = this.$route.params;
       this.loading = true;
       this.getForms(id)
@@ -373,7 +319,7 @@ export default {
         });
       });
     },
-    search() {},
+    search() { },
     onDragStart() {
       this.isDragging = true;
     },
@@ -429,10 +375,10 @@ export default {
     userAssigned() {
       this.fetchApplications(this.activeFormId)
     },
-    fetchApplications(id){
+    fetchApplications(id) {
       this.activeFormId = id
       this.isLoading = true;
-      if(this.activeTab !== 1) {
+      if (this.activeTab !== 1) {
         let data = {
           id: id,
           pageSize: -1,
@@ -453,8 +399,8 @@ export default {
             this.isLoading = false;
           });
       }
-      else{
-        let { page, itemsPerPage} = this.options;
+      else {
+        let { page, itemsPerPage } = this.options;
         const direction = this.options?.sortDesc?.length ? "asc" : "desc";
         let data = {
           id: this.activeFormId,
@@ -484,10 +430,10 @@ export default {
       }
 
     },
-    openAssignDialog(id , item) {
+    openAssignDialog(id, item) {
       this.assignedUsers = []
-      if(item.form_request?.form_assigned_requests?.length > 0){
-        for(let i=0; i<item.form_request?.form_assigned_requests?.length; i++) {
+      if (item.form_request?.form_assigned_requests?.length > 0) {
+        for (let i = 0; i < item.form_request?.form_assigned_requests?.length; i++) {
           this.assignedUsers.push(item.form_request.form_assigned_requests[i].user_id)
         }
       }
@@ -547,6 +493,7 @@ export default {
   width: 328px;
   min-height: 200px;
 }
+
 /* Unfortunately @apply cannot be setup in codesandbox,
 but you'd use "@apply border opacity-50 border-blue-500 bg-gray-200" here */
 .ghost-card {
@@ -554,12 +501,14 @@ but you'd use "@apply border opacity-50 border-blue-500 bg-gray-200" here */
   background: #f7fafc;
   border: 1px solid #4299e1;
 }
+
 .overflow-x-scroll {
   overflow-x: auto;
 }
-.kanban-scroll-container {
-}
-.scroll-item{
+
+.kanban-scroll-container {}
+
+.scroll-item {
   overflow: auto;
   height: 600px;
 }
@@ -570,6 +519,7 @@ but you'd use "@apply border opacity-50 border-blue-500 bg-gray-200" here */
   border-radius: 8px;
   background: #f9f9fb;
 }
+
 .stage-title {
   font-size: 14px;
   font-weight: 700;
@@ -577,14 +527,17 @@ but you'd use "@apply border opacity-50 border-blue-500 bg-gray-200" here */
   letter-spacing: -0.02em;
   text-align: right;
 }
+
 .stage {
   border: 1px solid #fff;
   border-radius: 4px;
   padding: 20px;
 }
+
 .stage:hover {
   border: 1px dashed #ccc;
 }
+
 .case-title {
   font-size: 16px;
   font-weight: 700;
@@ -592,24 +545,28 @@ but you'd use "@apply border opacity-50 border-blue-500 bg-gray-200" here */
   letter-spacing: -0.02em;
   text-align: right;
 }
-.view_tabs {
 
-}
-.view_tabs span{
+.view_tabs {}
+
+.view_tabs span {
   margin-right: 8px;
 }
+
 .active {
-  color:#fff !important;
+  color: #fff !important;
   background-color: #014C4F !important;
-  border-radius : 5px
+  border-radius: 5px
 }
-.autocomplete_select{
+
+.autocomplete_select {
   width: 400px;
 }
-.active-form{
+
+.active-form {
   background-color: #e0e9e9 !important;
-  border-radius : 7px
+  border-radius: 7px
 }
+
 /*.v-autocomplete .v-autocomplete__content[style*="display: none"] {*/
 /*  display: none !important;*/
 /*}*/
