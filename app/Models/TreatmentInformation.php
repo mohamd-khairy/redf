@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class TreatmentInformation extends Model
 {
     use HasFactory;
-    protected $fillable = ['treatment_id', 'text', 'type', 'date'];
+    protected $fillable = ['treatment_id', 'key', 'value', 'date'];
 
     public function treatment()
     {

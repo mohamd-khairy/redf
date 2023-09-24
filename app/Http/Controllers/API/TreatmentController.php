@@ -38,7 +38,6 @@ class TreatmentController extends Controller
     public function index(PageRequest $request)
     {
         $treatments = Treatment::with('department:id,name');
-
         $data = app(Pipeline::class)->send($treatments)->through([
             SearchFilters::class,
             SortFilters::class,

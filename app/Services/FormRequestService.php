@@ -221,12 +221,10 @@ class FormRequestService
                 'lastFormRequestAction'
             );
 
+
             $query = $query->where('form_type', request('form_type', 'case'));
-         
 
             if ($request->has('template_id')) {
-                // return $query->with('form')->get();
-
                 $query = $query->whereHas('form', fn ($q) => $q->where('template_id', $request->input('template_id')));
             }
             $data = app(Pipeline::class)->send($query)->through([SortFilters::class])->thenReturn();

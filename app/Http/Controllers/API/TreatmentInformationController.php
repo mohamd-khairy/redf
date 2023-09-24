@@ -49,12 +49,19 @@ class TreatmentInformationController extends Controller
     public function store(TreatmentInformationRequest $request)
     {
         try {
+            $data = $request->except(['treatment_id', 'date']);
+            foreach ($data as $key => $value) {
+               $treatmentInformation = TreatmentInformation::create([
+                    'treatment_id' => $request->treatment_id,
+                    'date' => $request->date,
+                    'value' => $value,
+                    'key' => $key,
+                ]);
+            }
+            // $validatedData = $request->validated();
 
-            $validatedData = $request->validated();
-
-            // Create the treatment information record
-            $treatmentInformation = TreatmentInformation::create($validatedData);
-
+            // // Create the treatment information record
+            // $treatmentInformation = TreatmentInformation::create($validatedData);
 
             return responseSuccess($treatmentInformation, 'Treatment information has been successfully created');
         } catch (Throwable $e) {
