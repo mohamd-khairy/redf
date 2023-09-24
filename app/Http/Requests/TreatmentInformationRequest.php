@@ -20,21 +20,39 @@ class TreatmentInformationRequest extends FormRequest
 
     public function rules()
     {
+        // Define validation rules dynamically based on the keys in the request
         $rules = [
             'treatment_id' => 'required|exists:treatments,id',
-            'type' => [new Enum(TreatmentInformationTypeEnum::class)],
-            'text' => 'required',
             'date' => 'required|date',
         ];
 
-        // For the 'update' method, make the fields optional
-        if ($this->isMethod('patch') || $this->isMethod('put')) {
-            $rules['treatment_id'] = 'nullable';
-            $rules['type'] = 'nullable';
-            $rules['text'] = 'nullable';
-            $rules['date'] = 'nullable';
+        $data = $this->all();
+
+        foreach ($data as $key => $value) {
+            if ($key !== 'treatment_id' && $key !== 'date') {
+                $rules[$key] = 'required|string';
+            }
         }
 
         return $rules;
+
+        // $rules = [
+        //     // 'treatment_id' => 'required|exists:treatments,id',
+        //     // 'key' => [new Enum(TreatmentInformationTypeEnum::class)],
+        //     // 'value' => 'required',
+        //     // 'date' => 'required|date',
+        //     'treatment_id' => 'required|exists:treatments,id',
+        //     'date' => 'required|date',
+        // ];
+
+        // // For the 'update' method, make the fields optional
+        // if ($this->isMethod('patch') || $this->isMethod('put')) {
+        //     $rules['treatment_id'] = 'nullable';
+        //     $rules['key'] = 'nullable';
+        //     $rules['value'] = 'nullable';
+        //     $rules['date'] = 'nullable';
+        // }
+
+        // return $rules;
     }
 }

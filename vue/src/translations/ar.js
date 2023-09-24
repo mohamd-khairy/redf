@@ -241,7 +241,7 @@ export default {
     log: "سجل الحركة",
     review_and_audit: "المراجعة والتدقيق",
     review_Doc: "مراجعة الوثائق",
-    templates: "النماذج",
+    templates: "نماذج الطلبات",
     templatesTypes: "أنواع النماذج",
     casesManagement: "ادارة القضايا",
     requests: "الطلبات",
