@@ -67,11 +67,27 @@
           :events="events"
           :event-color="getEventColor"
           :type="type"
-          @click:event="showEvent"
           @click:more="viewDay"
           @click:date="viewDay"
           @change="updateRange"
-        ></v-calendar>
+        >
+          <template #event="{ event }">
+            <div
+              @click="($event) => showEvent($event, event)"
+              :key="event.id || Math.random()"
+              class="event"
+            >
+              {{ event.name }}
+            </div>
+          </template>
+        </v-calendar>
+        <!-- <template v-slot:day-body="{ date, week, month }">
+          <div
+            class="v-current-time"
+            :class="{ first: date === week[0].date }"
+            :style="{ top: nowY }"
+          ></div>
+        </template> -->
         <v-menu
           v-model="selectedOpen"
           :close-on-content-click="false"
@@ -171,7 +187,68 @@ export default {
     next() {
       this.$refs.calendar.next();
     },
-    showEvent({ nativeEvent, event }) {
+    showEvent(nativeEvent, event) {
+      // this.events.map((ev) => {
+      //   if (ev.expanded) {
+      //     ev.end = ev.start;
+      //     ev.expanded = false;
+      //   }
+      //   return ev;
+      // });
+      // if (event.expand && event.expanded) {
+      //   event.end = event.start;
+      //   event.expanded = false;
+      //   return;
+      // } else if (event.expand && !event.expanded) {
+      //   // this.$emit("expandEvent", event);
+      //   this.events = this.events.map((ev) => {
+      //     if (ev.expanded === true) {
+      //       ev.expanded = false;
+      //       ev.end = ev.start;
+      //     }
+      //     return ev;
+      //   });
+      //   const startDateString = event.start;
+      //   const startDate = new Date(startDateString);
+
+      //   // Calculate the end date by adding 30 days to the start date
+      //   const endDate = new Date(startDate);
+      //   endDate.setDate(startDate.getDate() + 30);
+
+      //   // Format the end date as "YYYY-MM-DD"
+      //   const endDateString = endDate.toISOString().split("T")[0];
+      //   event.end = endDateString;
+      //   event.expanded = true;
+      // }
+
+      if (event.expand && event.expanded) {
+        // Close the currently expanded event
+        event.expanded = false;
+        event.end = event.start;
+      } else if (event.expand && !event.expanded) {
+        // Close all other expanded events
+        this.events = this.events.map((ev) => {
+          if (ev.expanded === true) {
+            ev.expanded = false;
+            ev.end = ev.start;
+          }
+          return ev;
+        });
+
+        // Expand the clicked event
+        const startDateString = event.start;
+        const startDate = new Date(startDateString);
+
+        // Calculate the end date by adding 30 days to the start date
+        const endDate = new Date(startDate);
+        endDate.setDate(startDate.getDate() + 30);
+
+        // Format the end date as "YYYY-MM-DD"
+        const endDateString = endDate.toISOString().split("T")[0];
+        event.end = endDateString;
+        event.expanded = true;
+      }
+
       const open = () => {
         this.selectedEvent = event;
         this.selectedElement = nativeEvent.target;
@@ -188,6 +265,7 @@ export default {
       }
 
       nativeEvent.stopPropagation();
+      // this.$refs.calendar.checkChange();
     },
     updateRange({ start, end }) {
       const events = [];
@@ -197,14 +275,17 @@ export default {
       const eventCount = this.rnd(days, days + 5);
       this.eventsData.forEach((ev) => {
         events.push({
+          id: ev.form_request_id,
           name: ev.name,
           start: ev.start_date,
-          end: ev.end_date,
+          end: ev.start_date,
+          endDate: ev.end_date,
           color: ev.color,
           timed: true,
+          expand: ev.expand,
         });
       });
-      console.log(events);
+      console.log(this.events);
       // for (let i = 0; i < eventCount; i++) {
       //   const allDay = this.rnd(0, 3) === 0;
       //   const firstTimestamp = this.rnd(min.getTime(), max.getTime());

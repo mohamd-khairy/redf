@@ -39,10 +39,12 @@
                     dense
                   ></v-text-field>
                   </v-col>
-    <!--              <v-checkbox-->
-    <!--                v-model="caseCheck"-->
-    <!--                :label="$t('cases.belongToCase')"-->
-    <!--              ></v-checkbox>-->
+                  <v-col cols="12">
+                    <v-file-input outlined dense show-size :v-model="adviceFile" :label="$t('cases.file')"
+                                  @change="(file) => handleAdviceFileUpload(file)" click:clear="handleRemoveFile"
+                                  :error-messages="errors['file']">
+                    </v-file-input>
+                  </v-col>
                   <v-col cols="12">
                     <v-select
                     :items="checkBelongs"
@@ -53,6 +55,7 @@
                     outlined
                     v-model="caseCheck"
                     clearable
+                    @change="checkBelongsTo"
                   >
                   </v-select>
                   </v-col>
@@ -307,12 +310,12 @@ export default {
       caseNumber: "",
       case_id: "",
       user_id: "",
+      adviceFile: null,
       initialLoading: false,
       isLoading: false,
       isSubmitingForm: false,
       caseCheck: '',
       formRequestId: null,
-
       breadcrumbs: [
         {
           text: this.$t("menu.requests"),
@@ -411,13 +414,28 @@ export default {
         .catch(() => {
         });
     },
+    checkBelongsTo(){
+      if(this.caseCheck === 1)
+        this.user_id = ''
+      else
+        this.case_id = ''
+    },
+    handleAdviceFileUpload(file) {
+      if (file) {
+        const fileName = file.name.split(".")[0];
+        const fileExtension = file.name.split(".")[1];
+        this.adviceFile = file;
+      }
+    },
+    handleRemoveFile() {
+      this.adviceFile = null;
+    },
     addDate(index) {
       this.caseAction.dates.push({ caseDate: "" });
     },
     removeDate(index) {
       this.caseAction.dates.splice(index, 1);
     },
-
     setCurrentBread() {
       const { formType: currentFormId } = this.$route.params;
       const currentPage = this.navTemplates.find((nav) => {
@@ -493,7 +511,9 @@ export default {
           caseName: this.caseName,
           caseNumber: this.caseNumber,
           case_id: this.case_id,
-          type: 'consultation'
+          benefire_id: this.user_id,
+          form_type: 'legal_advice',
+          file: this.adviceFile,
         });
         if (result) {
           this.isSubmitingForm = false;

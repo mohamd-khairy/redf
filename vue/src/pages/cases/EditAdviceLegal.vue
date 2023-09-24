@@ -17,217 +17,243 @@
       </v-stepper-header>
       <v-stepper-items>
         <v-stepper-content step="1">
-          <v-card class="mb-12" v-if="!initialLoading">
-            <v-card-text>
-              <v-text-field
-                outlined
-                v-model="caseName"
-                :label="$t('cases.adviceName')"
-                :required="true"
-                :rules="[requiredRule]"
-                dense
-              ></v-text-field>
-              <v-text-field
-                outlined
-                type="number"
-                v-model="caseNumber"
-                :label="$t('cases.adviceName')"
-                :required="true"
-                :rules="[requiredRule]"
-                dense
-              ></v-text-field>
-              <v-checkbox
-                v-model="caseCheck"
-                :label="$t('cases.belongToCase')"
-              ></v-checkbox>
-              <v-select
-                v-if="caseCheck"
-                :items="formRequests"
-                :label="$t('cases.cases')"
-                :item-text="(item) => item.name"
-                :item-value="(item) => item.id"
-                hide-details
-                dense
-                outlined
-                v-model="case_id"
-                clearable
-              >
-              </v-select>
-            </v-card-text>
-          </v-card>
-          <v-btn color="primary" @click="saveAdviceInfo">
-            {{ $t("general.continue") }}
-          </v-btn>
-        </v-stepper-content>
-        <v-stepper-content step="2">
-          <v-card v-if="!initialLoading">
-            <v-tabs v-model="activeTab">
+          <div class="mt-2" v-if="!initialLoading">
+            <div class="d-flex flex-column flex-sm-row">
+              <div class="flex-grow-1 pt-2 pa-sm-2">
+                <v-row dense>
+                  <v-col cols="12">
+                    <v-text-field
+                      outlined
+                      v-model="caseName"
+                      :label="$t('cases.adviceName')"
+                      :required="true"
+                      :rules="[requiredRule]"
+                      dense
+                    ></v-text-field>
+                  </v-col>
+                  <v-col cols="12">
+                    <v-text-field
+                      outlined
+                      type="number"
+                      v-model="caseNumber"
+                      :label="$t('cases.adviceNumber')"
+                      :required="true"
+                      :rules="[requiredRule]"
+                      dense
+                    ></v-text-field>
+                  </v-col>
+                  <v-col cols="12">
+                    <v-file-input outlined dense show-size :v-model="adviceFile" :label="$t('cases.file')"
+                                  @change="(file) => handleAdviceFileUpload(file)" click:clear="handleRemoveFile"
+                                  :error-messages="errors['file']">
+                    </v-file-input>
+                  </v-col>
+                  <v-col cols="12">
+                    <v-select
+                      :items="checkBelongs"
+                      :label="$t('general.belongsTo')"
+                      :item-text="(item) => item.name"
+                      :item-value="(item) => item.value"
+                      dense
+                      outlined
+                      v-model="caseCheck"
+                      clearable
+                      @change="checkBelongsTo"
+                    >
+                    </v-select>
+                  </v-col>
+                  <v-col cols="12">
+                    <v-select
+                      v-if="caseCheck === 1"
+                      :items="formRequests"
+                      :label="$t('cases.cases')"
+                      :item-text="(item) => item.name"
+                      :item-value="(item) => item.id"
+                      dense
+                      outlined
+                      v-model="case_id"
+                      clearable
+                    >
+                    </v-select>
+                  </v-col>
+                  <v-col cols="12">
+                    <v-select
+                      v-if="caseCheck === 2"
+                      :items="beneficiaries"
+                      :label="$t('menu.beneficiaries')"
+                      :item-text="(item) => item.name"
+                      :item-value="(item) => item.id"
+                      dense
+                      outlined
+                      v-model="user_id"
+                      clearable
+                    >
+                    </v-select>
+                  </v-col>
+                </v-row>
+              </div>
+            </div>
+            <v-tabs class="mt-2" v-model="activeTab" v-if="pagesValues && pagesValues[0]?.items?.length > 0">
               <v-tab v-for="(tab, index) in pagesValues" :key="index">{{
-                tab.title
-              }}</v-tab>
+                  tab.title
+                }}</v-tab>
             </v-tabs>
-            <v-card-text>
-              <v-tabs-items v-model="activeTab">
-                <v-tab-item
-                  v-for="(tab, tabIndex) in pagesValues"
-                  :key="tabIndex"
-                >
-                  <v-form>
-                    <v-container>
-                      <v-row dense>
-                        <v-col
-                          v-for="(input, inputIndex) in tab.items"
-                          :key="inputIndex"
-                          :cols="inputWidth(input.width)"
-                        >
-                          <template v-if="input.type === 'text'">
-                            <v-text-field
-                              outlined
-                              v-model="input.value"
-                              :label="getInputLabel(input)"
-                              :required="input.required"
-                              :rules="input.required ? [requiredRule] : []"
-                              :error-messages="errorMessage(input)"
-                              dense
-                            ></v-text-field>
-                          </template>
-                          <template v-else-if="input.type === 'textarea'">
-                            <v-textarea
-                              outlined
-                              dense
-                              v-model="input.value"
-                              :label="getInputLabel(input)"
-                              :required="input.required"
-                              :rules="input.required ? [requiredRule] : []"
-                              :error-messages="errorMessage(input)"
-                            ></v-textarea>
-                          </template>
-                          <template v-else-if="input.type === 'file'">
-                            <v-file-input
-                              outlined
-                              dense
-                              show-size
-                              :label="getInputLabel(input)"
-                              @change="(file) => handleFileUpload(file, input)"
-                              @click:clear="handleFileClear(input)"
-                              :required="input.required"
-                              :rules="input.required ? [requiredRule] : []"
-                              :error-messages="errorMessage(input)"
-                            >
-                            </v-file-input>
-                            <div
-                              class="mt-1 d-flex justify-content-between align-item-center"
-                              v-if="
+            <v-tabs-items v-model="activeTab">
+              <v-tab-item
+                v-for="(tab, tabIndex) in pagesValues"
+                :key="tabIndex"
+              >
+                <v-form>
+                  <v-container>
+                    <v-row dense>
+                      <v-col
+                        v-for="(input, inputIndex) in tab.items"
+                        :key="inputIndex"
+                        :cols="inputWidth(input.width)"
+                      >
+                        <template v-if="input.type === 'text'">
+                          <v-text-field
+                            outlined
+                            v-model="input.value"
+                            :label="getInputLabel(input)"
+                            :required="input.required"
+                            :rules="input.required ? [requiredRule] : []"
+                            :error-messages="errorMessage(input)"
+                            dense
+                          ></v-text-field>
+                        </template>
+                        <template v-else-if="input.type === 'textarea'">
+                          <v-textarea
+                            outlined
+                            dense
+                            v-model="input.value"
+                            :label="getInputLabel(input)"
+                            :required="input.required"
+                            :rules="input.required ? [requiredRule] : []"
+                            :error-messages="errorMessage(input)"
+                          ></v-textarea>
+                        </template>
+                        <template v-else-if="input.type === 'file'">
+                          <v-file-input
+                            outlined
+                            dense
+                            show-size
+                            :label="getInputLabel(input)"
+                            @change="(file) => handleFileUpload(file, input)"
+                            @click:clear="handleFileClear(input)"
+                            :required="input.required"
+                            :rules="input.required ? [requiredRule] : []"
+                            :error-messages="errorMessage(input)"
+                          >
+                          </v-file-input>
+                          <div
+                            class="mt-1 d-flex justify-content-between align-item-center"
+                            v-if="
                                 input.preview && input.preview === input.value
                               "
-                            >
-                              <h6>{{ fileInfo(input.preview).name }}</h6>
-                              <img
-                                v-if="
+                          >
+                            <h6>{{ fileInfo(input.preview).name }}</h6>
+                            <img
+                              v-if="
                                   fileInfo(input.preview).type === 'png' ||
                                   fileInfo(input.preview).type === 'jpg' ||
                                   fileInfo(input.preview).type === 'jpeg'
                                 "
-                                width="50"
-                                height="50"
-                                :src="input.preview"
-                                alt="file preview"
-                              />
-                              <a
-                                v-else-if="
+                              width="50"
+                              height="50"
+                              :src="input.preview"
+                              alt="file preview"
+                            />
+                            <a
+                              v-else-if="
                                   fileInfo(input.preview).type === 'pdf'
                                 "
-                                :href="input.preview"
-                                target="_blank"
-                              >
-                                <v-icon> mdi-file-pdf-box </v-icon>
-                              </a>
-                              <a
-                                v-else-if="
+                              :href="input.preview"
+                              target="_blank"
+                            >
+                              <v-icon> mdi-file-pdf-box </v-icon>
+                            </a>
+                            <a
+                              v-else-if="
                                   fileInfo(input.preview).type === 'doc' ||
                                   fileInfo(input.preview).type === 'docx'
                                 "
-                                :href="input.preview"
-                                target="_blank"
-                              >
-                                <v-icon> mdi-file-word-outline </v-icon>
-                              </a>
-                              <a
-                                v-else-if="
+                              :href="input.preview"
+                              target="_blank"
+                            >
+                              <v-icon> mdi-file-word-outline </v-icon>
+                            </a>
+                            <a
+                              v-else-if="
                                   fileInfo(input.preview).type === 'xls' ||
                                   fileInfo(input.preview).type === 'xlsx'
                                 "
-                                :href="input.preview"
-                                target="_blank"
-                              >
-                                <v-icon> mdi-file-excel </v-icon>
-                              </a>
-                            </div>
-                          </template>
-                          <template v-else-if="input.type === 'select'">
-                            <v-select
-                              v-model="input.value"
-                              :items="input.childList"
-                              item-text="text"
-                              :label="getInputLabel(input)"
-                              :required="input.required"
-                              :rules="input.required ? [requiredRule] : []"
-                              :error-messages="errorMessage(input)"
-                              outlined
-                              dense
-                            ></v-select>
-                          </template>
-                          <template v-else-if="input.type === 'radio'">
-                            <v-radio-group
-                              v-model="input.value"
-                              :label="getInputLabel(input)"
-                              :required="input.required"
-                              :rules="input.required ? [requiredRule] : []"
-                              :error-messages="errorMessage(input)"
+                              :href="input.preview"
+                              target="_blank"
                             >
-                              <v-radio
-                                v-for="(option, optionIndex) in input.childList"
-                                :key="optionIndex"
-                                :label="option.text"
-                                :value="option.text"
-                              ></v-radio>
-                            </v-radio-group>
-                          </template>
-                          <template v-else-if="input.type === 'checkbox'">
-                            <label>
-                              {{ input.label }}
-                            </label>
-                            <v-checkbox
+                              <v-icon> mdi-file-excel </v-icon>
+                            </a>
+                          </div>
+                        </template>
+                        <template v-else-if="input.type === 'select'">
+                          <v-select
+                            v-model="input.value"
+                            :items="input.childList"
+                            item-text="text"
+                            :label="getInputLabel(input)"
+                            :required="input.required"
+                            :rules="input.required ? [requiredRule] : []"
+                            :error-messages="errorMessage(input)"
+                            outlined
+                            dense
+                          ></v-select>
+                        </template>
+                        <template v-else-if="input.type === 'radio'">
+                          <v-radio-group
+                            v-model="input.value"
+                            :label="getInputLabel(input)"
+                            :required="input.required"
+                            :rules="input.required ? [requiredRule] : []"
+                            :error-messages="errorMessage(input)"
+                          >
+                            <v-radio
                               v-for="(option, optionIndex) in input.childList"
-                              v-model="input.value"
+                              :key="optionIndex"
                               :label="option.text"
                               :value="option.text"
-                              :required="input.required"
-                              :rules="input.required ? [requiredRule] : []"
-                              :error-messages="errorMessage(input)"
-                              :class="optionIndex > 0 ? 'mt-0' : ''"
-                            ></v-checkbox>
-                          </template>
-                        </v-col>
-                      </v-row>
-                    </v-container>
-                  </v-form>
-                </v-tab-item>
-              </v-tabs-items>
-            </v-card-text>
-            <v-card-actions class="px-5 pb-4">
-              <v-btn
-                color="primary"
-                :disabled="isSubmitingForm"
-                :loading="isSubmitingForm"
-                @click="saveForm"
-                >{{ $t("general.continue") }}</v-btn
-              >
+                            ></v-radio>
+                          </v-radio-group>
+                        </template>
+                        <template v-else-if="input.type === 'checkbox'">
+                          <label>
+                            {{ input.label }}
+                          </label>
+                          <v-checkbox
+                            v-for="(option, optionIndex) in input.childList"
+                            v-model="input.value"
+                            :label="option.text"
+                            :value="option.text"
+                            :required="input.required"
+                            :rules="input.required ? [requiredRule] : []"
+                            :error-messages="errorMessage(input)"
+                            :class="optionIndex > 0 ? 'mt-0' : ''"
+                          ></v-checkbox>
+                        </template>
+                      </v-col>
+                    </v-row>
+                  </v-container>
+                </v-form>
+              </v-tab-item>
+            </v-tabs-items>
+          </div>
+          <v-card-actions class="px-5 pb-4">
+              <v-btn color="primary" @click="saveForm">
+                {{ $t("general.continue") }}
+              </v-btn>
             </v-card-actions>
-          </v-card>
         </v-stepper-content>
 
-        <v-stepper-content step="3">
+        <v-stepper-content step="2">
           <v-card class="mb-12">
             <v-card-title> </v-card-title>
             <v-card-text>
