@@ -15,43 +15,79 @@
       <v-stepper-items>
         <v-stepper-content step="1">
           <div class="mt-2" v-if="!initialLoading">
-            <div class="mt-2">
-              <v-text-field
-                outlined
-                v-model="caseName"
-                :label="$t('cases.adviceName')"
-                :required="true"
-                :rules="[requiredRule]"
-                dense
-              ></v-text-field>
-              <v-text-field
-                outlined
-                type="number"
-                v-model="caseNumber"
-                :label="$t('cases.adviceNumber')"
-                :required="true"
-                :rules="[requiredRule]"
-                dense
-              ></v-text-field>
-              <v-checkbox
-                v-model="caseCheck"
-                :label="$t('cases.belongToCase')"
-              ></v-checkbox>
-              <v-select
-                v-if="caseCheck"
-                :items="formRequests"
-                :label="$t('cases.cases')"
-                :item-text="(item) => item.name"
-                :item-value="(item) => item.id"
-                hide-details
-                dense
-                outlined
-                v-model="case_id"
-                clearable
-              >
-              </v-select>
+            <div class="d-flex flex-column flex-sm-row">
+              <div class="flex-grow-1 pt-2 pa-sm-2">
+                <v-row dense>
+                  <v-col cols="12">
+                    <v-text-field
+                    outlined
+                    v-model="caseName"
+                    :label="$t('cases.adviceName')"
+                    :required="true"
+                    :rules="[requiredRule]"
+                    dense
+                  ></v-text-field>
+                  </v-col>
+                  <v-col cols="12">
+                    <v-text-field
+                    outlined
+                    type="number"
+                    v-model="caseNumber"
+                    :label="$t('cases.adviceNumber')"
+                    :required="true"
+                    :rules="[requiredRule]"
+                    dense
+                  ></v-text-field>
+                  </v-col>
+    <!--              <v-checkbox-->
+    <!--                v-model="caseCheck"-->
+    <!--                :label="$t('cases.belongToCase')"-->
+    <!--              ></v-checkbox>-->
+                  <v-col cols="12">
+                    <v-select
+                    :items="checkBelongs"
+                    :label="$t('general.belongsTo')"
+                    :item-text="(item) => item.name"
+                    :item-value="(item) => item.value"
+                    dense
+                    outlined
+                    v-model="caseCheck"
+                    clearable
+                  >
+                  </v-select>
+                  </v-col>
+                  <v-col cols="12">
+                    <v-select
+                    v-if="caseCheck === 1"
+                    :items="formRequests"
+                    :label="$t('cases.cases')"
+                    :item-text="(item) => item.name"
+                    :item-value="(item) => item.id"
+                    dense
+                    outlined
+                    v-model="case_id"
+                    clearable
+                    >
+                    </v-select>
+                  </v-col>
+                  <v-col cols="12">
+                    <v-select
+                    v-if="caseCheck === 2"
+                    :items="beneficiaries"
+                    :label="$t('menu.beneficiaries')"
+                    :item-text="(item) => item.name"
+                    :item-value="(item) => item.id"
+                    dense
+                    outlined
+                    v-model="user_id"
+                    clearable
+                    >
+                    </v-select>
+                  </v-col>
+                </v-row>
+              </div>
             </div>
-            <v-tabs class="mt-2" v-model="activeTab">
+            <v-tabs class="mt-2" v-model="activeTab" v-if="pages && pages[0]?.items?.length > 0">
               <v-tab v-for="(tab, index) in pages" :key="index">{{
                   tab.title
                 }}</v-tab>
@@ -270,10 +306,11 @@ export default {
       caseName: "",
       caseNumber: "",
       case_id: "",
+      user_id: "",
       initialLoading: false,
       isLoading: false,
       isSubmitingForm: false,
-      caseCheck: false,
+      caseCheck: '',
       formRequestId: null,
 
       breadcrumbs: [
@@ -304,10 +341,9 @@ export default {
           (value && Boolean(value)) || this.$t("general.fieldRequired"),
       },
       errors: {},
-      status: [
-        { key: "error", value: 0 },
-        { key: "confirmed", value: 1 },
-        { key: "pending", value: 2 },
+      checkBelongs: [
+        { name: this.$t("cases.belongToCase"), value: 1 },
+        { name: this.$t("cases.belongToUser"), value: 2 },
       ],
     };
   },
@@ -319,6 +355,7 @@ export default {
     });
     this.init();
     this.fetchCases()
+    this.fetchBeneficiaries()
   },
   watch: {
     e1(val) {
@@ -329,6 +366,7 @@ export default {
   },
   computed: {
     ...mapState("cases", ["pages", "selectedForm", "courts", "caseTypes",'formRequests']),
+    ...mapState("users", ["beneficiaries"]),
     ...mapState("auth", ["user"]),
     ...mapState("app", ["navTemplates"]),
     ...mapState("departments", ["departments"]),
@@ -337,6 +375,7 @@ export default {
   methods: {
     ...mapActions("app", ["setBreadCrumb"]),
     ...mapActions("departments", ["getDepartments"]),
+    ...mapActions("users", ["getBeneficiaries"]),
     ...mapActions("cases", [
       "getPages",
       "validateFormData",
@@ -347,6 +386,20 @@ export default {
       "getCourts",
       'getFormRequests'
     ]),
+    fetchBeneficiaries() {
+      this.isLoading = true;
+      let data = {
+        pageSize: -1,
+      };
+      this.getBeneficiaries(data)
+        .then(() => {
+          data;
+          this.isLoading = false;
+        })
+        .catch(() => {
+          this.isLoading = false;
+        });
+    },
     fetchCases(){
       let data = {
         template_id: 1,
