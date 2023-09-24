@@ -71,13 +71,15 @@ class TaskController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(TaskRequest $request)
+    public function store(Request $request)
     {
+        return $request->all();
         try {
-
+            // return $request->all();
             $validatedData = $request->validated();
+            return $validatedData['files'];
 
-            unset($validatedData['file']);
+            unset($validatedData['files']);
             // Parse the due_date
             $validatedData['due_date'] = Carbon::createFromFormat('d-m-Y', $validatedData['due_date'])->format('Y-m-d');
             // Create the task
