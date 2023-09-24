@@ -23,7 +23,7 @@
                 hide-details
                 outlined
                 dense
-                v-model="form.user_id"
+                v-model="user_ids"
                 multiple
               >
               </v-select>
@@ -56,13 +56,13 @@ export default {
 
   props: {
     value: Boolean,
-    // eventItem: Object,
+    // item: Object,
     id: Number,
-    // requests: Array,
+    userIds: Array,
   },
   data() {
     return {
-      form: { user_id: null, date: "" },
+      form: { user_id: this.userIds ?? [], date: "" },
       users: [],
     };
   },
@@ -75,11 +75,21 @@ export default {
         this.$emit("input", value);
       },
     },
+    user_ids: {
+      get: function() {
+        return this.userIds
+      },
+      set: function(value) {
+        this.$emit('updateUserIds', value)
+      }
+    }
   },
   watch: {
     requests() {
       // this.refresh()
     },
+  },
+  created() {
   },
   mounted() {
     this.getEmployees();
@@ -112,7 +122,7 @@ export default {
       this.errors = {};
       let data = {
         form_request_id: this.id,
-        user_id: this.form.user_id,
+        user_id: this.user_ids,
       };
       this.assignRequest(data)
         .then((response) => {

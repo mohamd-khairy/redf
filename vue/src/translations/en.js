@@ -485,7 +485,7 @@ export default {
       consultation: "Consultation",
       normal: "Normal",
       another_treatment: "Another Treatment",
-    }
+    },
   },
   cases: {
     caseType: "Cases Type",
@@ -721,7 +721,6 @@ export default {
     notactive: "Not Active",
     assigner: "Assigner",
     new_treatment_added: "New Treatment Added",
-
   },
   reports: {
     buildReport: "Build Report",
@@ -792,6 +791,7 @@ export default {
     confirmDeleteDoc: "Are you sure to delete this Document?",
     confirmDeleteSelectedDoc: "Are you sure to delete the selected Documents?",
     editDoc: "Edit Document",
+    department_id: "Department",
   },
   tasks: {
     tasksList: "Tasks List",
@@ -810,5 +810,6 @@ export default {
     assigned_to: "Assigned To",
     document: "Document",
     due_date: "Due Date",
+    details: "Details",
   },
 };

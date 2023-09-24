@@ -1,5 +1,8 @@
 <template>
-  <v-card class="bg-white stage">
+  <v-card
+    @click="$router.push(`/tasks/edit/${task.id}`)"
+    class="bg-white stage"
+  >
     <div class="d-flex justify-content-between">
       <!-- {{ task }} -->
       <v-card-title class="pa-0 case-title">
@@ -21,25 +24,6 @@
                 <v-icon class="text-error" color="error">mdi-close</v-icon>
                 <span class="action-span">{{ $t("cases.delete") }}</span>
               </a>
-            </v-list-item-title>
-          </v-list-item>
-          <v-list-item>
-            <v-list-item-title>
-              <v-icon>mdi-timeline-text-outline</v-icon>
-              <span class="action-span">{{ $t("cases.view_timeline") }}</span>
-            </v-list-item-title>
-          </v-list-item>
-          <v-list-item>
-            <v-list-item-title>
-              <v-icon>mdi-at</v-icon>
-              <span class="action-span">{{ $t("cases.assign_user") }}</span>
-            </v-list-item-title>
-          </v-list-item>
-          <v-list-item>
-            <v-list-item-title>
-              <v-icon>mdi-pencil-outline</v-icon>
-              <!-- <v-icon>mdi-open-in-new</v-icon> -->
-              <span class="action-span">{{ $t("cases.editCase") }}</span>
             </v-list-item-title>
           </v-list-item>
         </v-list>
@@ -98,8 +82,16 @@
             <span>{{ task.name }}</span>
           </v-tooltip>
         </div>
-        <span class="text-sm text-gray-600">
-          {{ task.due_date.split(" ")[0] }}
+        <span
+          class="text-sm text-gray-600 d-flex justify-content-between align-center"
+          style="gap: 20px"
+        >
+          <div>{{ task.due_date.split(" ")[0] }}</div>
+          <div v-if="task.file">
+            <a :href="task.file.path" target="_blank">
+              <v-icon> mdi-file </v-icon>
+            </a>
+          </div>
         </span>
       </div>
     </v-card-text>

@@ -18,6 +18,7 @@ const state = {
   organizations: [],
   pagesValues: [],
   claimant: [],
+  columns: [],
   selectedForm: {
     name: "",
     id: null,

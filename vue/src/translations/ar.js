@@ -472,7 +472,7 @@ export default {
       consultation: "الإستشارات",
       normal: "عادية",
       another_treatment: "معاملة أخري",
-    }
+    },
   },
   cases: {
     caseType: "نوع القضية",
@@ -600,6 +600,7 @@ export default {
     drone8: "طائرة 8",
   },
   tables: {
+    details: "الوصف",
     caseName: "موضوع القضية",
     case_date: "تاريخ القضية",
     branch: "المحكمة",
@@ -941,6 +942,8 @@ export default {
     requested_from: "مكلفة من",
     form: "النموذج",
     case: "القضية",
+    details: "التفاصيل",
+    department_id: "القسم",
   },
   branches: {
     branches: "المحاكم",
