@@ -49,14 +49,14 @@ class FormSeeder extends Seeder
             'main' => 1,
             'template_id' => 2,
         ]);
-        $form3 = Form::firstOrCreate([
-            'id' => FormEnum::LEGAL_REVIEW,
-            'name' => 'استمارة مراجعة العقد',
-            'description' => 'استمارة مراجعة العقد',
-            'user_id' => 1,
-            'main' => 1,
-            'template_id' => 3,
-        ]);
+        // $form3 = Form::firstOrCreate([
+        //     'id' => FormEnum::LEGAL_REVIEW,
+        //     'name' => 'استمارة مراجعة العقد',
+        //     'description' => 'استمارة مراجعة العقد',
+        //     'user_id' => 1,
+        //     'main' => 1,
+        //     'template_id' => 3,
+        // ]);
         // pages
         $form_page1 = FormPage::create([
             'title' => 'طلب قضية',
@@ -66,10 +66,10 @@ class FormSeeder extends Seeder
             'title' => 'طلب إستشارة ',
             'form_id' => $form2->id
         ]);
-        $form_page3 = FormPage::create([
-            'title' => 'طلب مراجعة العقد',
-            'form_id' => $form3->id
-        ]);
+        // $form_page3 = FormPage::create([
+        //     'title' => 'طلب مراجعة العقد',
+        //     'form_id' => $form3->id
+        // ]);
 
         //
         // FormPageItem::create([
@@ -284,23 +284,52 @@ class FormSeeder extends Seeder
         //     'childList' => json_encode([]),
         //     'form_page_id' => $form_page2->id
         // ]);
-        FormPageItem::create([
-            'label' => 'موضوع الاستشارة القانونية',
-            'type' => 'textarea',
-            'enabled' => 1,
-            'required' => 1,
-            'website_view' => 1,
-            'notes' => '',
-            'comment' => '',
-            'width' => 'col-12',
-            'input_type' => 'text',
-            'height' => '',
-            'length' => '500',
-            'childList' => json_encode([]),
-            'form_page_id' => $form_page2->id
-        ]);
         // FormPageItem::create([
-        //     'label' => 'وصف الاستشارة القانونية',
+        //     'label' => 'موضوع الاستشارة القانونية',
+        //     'type' => 'textarea',
+        //     'enabled' => 1,
+        //     'required' => 1,
+        //     'website_view' => 1,
+        //     'notes' => '',
+        //     'comment' => '',
+        //     'width' => 'col-12',
+        //     'input_type' => 'text',
+        //     'height' => '',
+        //     'length' => '500',
+        //     'childList' => json_encode([]),
+        //     'form_page_id' => $form_page2->id
+        // ]);
+        // // FormPageItem::create([
+        // //     'label' => 'وصف الاستشارة القانونية',
+        // //     'type' => 'textarea',
+        // //     'enabled' => 1,
+        // //     'required' => 0,
+        // //     'website_view' => 1,
+        // //     'notes' => '',
+        // //     'comment' => '',
+        // //     'width' => 'col-12',
+        // //     'input_type' => 'text',
+        // //     'height' => '',
+        // //     'length' => '500',
+        // //     'childList' => json_encode([]),
+        // //     'form_page_id' => $form_page2->id
+        // // ]);
+        // FormPageItem::create([
+        //     'label' => 'ملف مرفق',
+        //     'type' => 'file',
+        //     'enabled' => 1,
+        //     'required' => 0,
+        //     'website_view' => 1,
+        //     'notes' => '',
+        //     'comment' => '',
+        //     'width' => 'col-12',
+        //     'input_type' => 'text',
+        //     'height' => '',
+        //     'childList' => json_encode([]),
+        //     'form_page_id' => $form_page2->id
+        // ]);
+        // FormPageItem::create([
+        //     'label' => 'الغرض من الاستشارة القانونية',
         //     'type' => 'textarea',
         //     'enabled' => 1,
         //     'required' => 0,
@@ -314,64 +343,35 @@ class FormSeeder extends Seeder
         //     'childList' => json_encode([]),
         //     'form_page_id' => $form_page2->id
         // ]);
-        FormPageItem::create([
-            'label' => 'ملف مرفق',
-            'type' => 'file',
-            'enabled' => 1,
-            'required' => 0,
-            'website_view' => 1,
-            'notes' => '',
-            'comment' => '',
-            'width' => 'col-12',
-            'input_type' => 'text',
-            'height' => '',
-            'childList' => json_encode([]),
-            'form_page_id' => $form_page2->id
-        ]);
-        FormPageItem::create([
-            'label' => 'الغرض من الاستشارة القانونية',
-            'type' => 'textarea',
-            'enabled' => 1,
-            'required' => 0,
-            'website_view' => 1,
-            'notes' => '',
-            'comment' => '',
-            'width' => 'col-12',
-            'input_type' => 'text',
-            'height' => '',
-            'length' => '500',
-            'childList' => json_encode([]),
-            'form_page_id' => $form_page2->id
-        ]);
-        FormPageItem::create([
-            'label' => 'استشارة قانونية سرية',
-            'type' => 'select',
-            'enabled' => 1,
-            'required' => 0,
-            'website_view' => 1,
-            'notes' => '',
-            'comment' => '',
-            'width' => 'col-4',
-            'input_type' => 'text',
-            'height' => 'auto',
-            'childList' => $data,
-            'form_page_id' => $form_page2->id
-        ]);
-        FormPageItem::create([
-            'label' => 'ملحوظات',
-            'type' => 'textarea',
-            'enabled' => 1,
-            'required' => 0,
-            'website_view' => 1,
-            'notes' => '',
-            'comment' => '',
-            'width' => 'col-12',
-            'input_type' => 'text',
-            'height' => '',
-            'length' => '500',
-            'childList' => json_encode([]),
-            'form_page_id' => $form_page2->id
-        ]);
+        // FormPageItem::create([
+        //     'label' => 'استشارة قانونية سرية',
+        //     'type' => 'select',
+        //     'enabled' => 1,
+        //     'required' => 0,
+        //     'website_view' => 1,
+        //     'notes' => '',
+        //     'comment' => '',
+        //     'width' => 'col-4',
+        //     'input_type' => 'text',
+        //     'height' => 'auto',
+        //     'childList' => $data,
+        //     'form_page_id' => $form_page2->id
+        // ]);
+        // FormPageItem::create([
+        //     'label' => 'ملحوظات',
+        //     'type' => 'textarea',
+        //     'enabled' => 1,
+        //     'required' => 0,
+        //     'website_view' => 1,
+        //     'notes' => '',
+        //     'comment' => '',
+        //     'width' => 'col-12',
+        //     'input_type' => 'text',
+        //     'height' => '',
+        //     'length' => '500',
+        //     'childList' => json_encode([]),
+        //     'form_page_id' => $form_page2->id
+        // ]);
 
         //
         // FormPageItem::create([
@@ -449,57 +449,57 @@ class FormSeeder extends Seeder
         //     'childList' => json_encode([]),
         //     'form_page_id' => $form_page3->id
         // ]);
-        FormPageItem::create([
-            'label' => 'الغرض من الطلب',
-            'type' => 'radio',
-            'enabled' => 1,
-            'required' => 1,
-            'website_view' => 1,
-            'notes' => '',
-            'comment' => '',
-            'width' => 'col-12',
-            'input_type' => 'text',
-            'height' => '',
-            'length' => '',
-            'childList' => json_encode([
-                [
-                    'text' => 'مراجعة العقد',
-                ],
-                [
-                    'text' => 'تجهيز العقد',
-                ],
-            ]),
-            'form_page_id' => $form_page3->id
-        ]);
-        FormPageItem::create([
-            'label' => 'ملف العقد المرفق',
-            'type' => 'file',
-            'enabled' => 1,
-            'required' => 0,
-            'website_view' => 1,
-            'notes' => '',
-            'comment' => '',
-            'width' => 'col-12',
-            'input_type' => 'text',
-            'height' => '',
-            'length' => '',
-            'childList' => json_encode([]),
-            'form_page_id' => $form_page3->id
-        ]);
-        FormPageItem::create([
-            'label' => 'ملاحظات',
-            'type' => 'textarea',
-            'enabled' => 1,
-            'required' => 0,
-            'website_view' => 1,
-            'notes' => '',
-            'comment' => '',
-            'width' => 'col-12',
-            'input_type' => 'text',
-            'height' => '',
-            'length' => '1000',
-            'childList' => json_encode([]),
-            'form_page_id' => $form_page3->id
-        ]);
+        // FormPageItem::create([
+        //     'label' => 'الغرض من الطلب',
+        //     'type' => 'radio',
+        //     'enabled' => 1,
+        //     'required' => 1,
+        //     'website_view' => 1,
+        //     'notes' => '',
+        //     'comment' => '',
+        //     'width' => 'col-12',
+        //     'input_type' => 'text',
+        //     'height' => '',
+        //     'length' => '',
+        //     'childList' => json_encode([
+        //         [
+        //             'text' => 'مراجعة العقد',
+        //         ],
+        //         [
+        //             'text' => 'تجهيز العقد',
+        //         ],
+        //     ]),
+        //     'form_page_id' => $form_page3->id
+        // ]);
+        // FormPageItem::create([
+        //     'label' => 'ملف العقد المرفق',
+        //     'type' => 'file',
+        //     'enabled' => 1,
+        //     'required' => 0,
+        //     'website_view' => 1,
+        //     'notes' => '',
+        //     'comment' => '',
+        //     'width' => 'col-12',
+        //     'input_type' => 'text',
+        //     'height' => '',
+        //     'length' => '',
+        //     'childList' => json_encode([]),
+        //     'form_page_id' => $form_page3->id
+        // ]);
+        // FormPageItem::create([
+        //     'label' => 'ملاحظات',
+        //     'type' => 'textarea',
+        //     'enabled' => 1,
+        //     'required' => 0,
+        //     'website_view' => 1,
+        //     'notes' => '',
+        //     'comment' => '',
+        //     'width' => 'col-12',
+        //     'input_type' => 'text',
+        //     'height' => '',
+        //     'length' => '1000',
+        //     'childList' => json_encode([]),
+        //     'form_page_id' => $form_page3->id
+        // ]);
     }
 }
