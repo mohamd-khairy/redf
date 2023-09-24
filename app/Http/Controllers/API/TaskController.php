@@ -62,13 +62,15 @@ class TaskController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(TaskRequest $request)
+    public function store(Request $request)
     {
+        return $request->all();
         try {
-
+            // return $request->all();
             $validatedData = $request->validated();
+            return $validatedData['files'];
 
-            unset($validatedData['file']);
+            unset($validatedData['files']);
             // Parse the due_date
             $validatedData['due_date'] = Carbon::createFromFormat('d-m-Y', $validatedData['due_date'])->format('Y-m-d');
             // Create the task
@@ -128,7 +130,7 @@ class TaskController extends Controller
             'form_request_id' => 'sometimes|exists:forms,id',
             'file' => 'nullable|file|mimes:jpg,jpeg,png,pdf,docx',
             'stage_id' => 'nullable|integer',
-         ]);
+        ]);
 
         unset($validatedData['file']);
 
@@ -186,23 +188,23 @@ class TaskController extends Controller
 
         return responseSuccess([], 'Task has been successfully deleted');
     }
-    public function updateTaskStage(Request $request){
+    public function updateTaskStage(Request $request)
+    {
 
         // get todate date
         $ldate = new DateTime('today');
 
         $tasks = Task::whereDate('due_date', '<', $ldate)
-        ->where(function ($query) {
-            $query->where('stage_id', 1)
-                  ->orWhere('stage_id', 2);
-        })
-        ->get();
+            ->where(function ($query) {
+                $query->where('stage_id', 1)
+                    ->orWhere('stage_id', 2);
+            })
+            ->get();
 
         foreach ($tasks as $task) {
             $task->stage_id = 3;
             $task->save();
         }
         return responseSuccess([], 'Task has been successfully updated');
-
     }
 }

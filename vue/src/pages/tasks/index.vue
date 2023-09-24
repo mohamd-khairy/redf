@@ -104,6 +104,7 @@
             <task-card
               v-for="task in column.tasks"
               :progress="(100 / tasks.length) * column.id"
+              :type="column.name"
               :key="task.id"
               :id="`task_${task.id}`"
               @delete-task="deleteItem"

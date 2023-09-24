@@ -90,6 +90,7 @@
             </v-col>
             <v-col cols="6">
               <v-autocomplete
+                v-if="departments.departments"
                 v-model="form.department_id"
                 :items="departments.departments.data"
                 item-text="name"
@@ -286,9 +287,10 @@ export default {
     },
     handleFileUpload(files, input) {
       if (files) {
-        const fileName = files.name.split(".")[0];
-        const fileExtension = file.name.split(".")[1];
+        // const fileName = files.name.split(".")[0];
+        // const fileExtension = files.name.split(".")[1];
         this.form.files = files;
+        console.log(this.form.files);
       }
     },
   },

@@ -30,19 +30,30 @@
       </v-menu>
     </div>
     <v-card-text class="p-0 mt-1">
-      <div class="desc-cont">{{ task.details }}</div>
+      <!-- <div class="desc-cont">{{ task.details }}</div> -->
       <div>
-        <v-chip v-if="progress == 25" color="#f7e5ed" text-color="#db2777">
+        <v-chip
+          v-if="type == 'بحاجة الي المراجعة'"
+          color="#f7e5ed"
+          text-color="#db2777"
+        >
           بحاجة الي المراجعة
         </v-chip>
-        <v-chip v-if="progress == 50" color="#f0e6f8" text-color="#a454ed">
+        <v-chip
+          v-if="type == 'جاري العمل عليها'"
+          color="#f0e6f8"
+          text-color="#a454ed"
+        >
           جاري العمل عليها
         </v-chip>
-        <v-chip v-if="progress == 75" color="#f5efe1" text-color="#ca8a04">
+        <v-chip v-if="type == 'متأخر'" color="#f5efe1" text-color="#ca8a04">
           متأخر
         </v-chip>
-        <v-chip v-if="progress == 100" color="#e6f2ea" text-color="#2FAD5E">
+        <v-chip v-if="type == 'مكتمل'" color="#e6f2ea" text-color="#2FAD5E">
           مكتمل
+        </v-chip>
+        <v-chip v-if="type == 'الارشيف'" color="#e8e6f28a" text-color="#2f47ad">
+          الارشيف
         </v-chip>
         <v-chip class="font-weight-black mx-1" outlined text-color="#606C80">
           #{{ task.id }}
@@ -109,6 +120,10 @@ export default {
     progress: {
       type: Number,
       default: 0,
+    },
+    type: {
+      type: String,
+      default: "",
     },
   },
   computed: {
