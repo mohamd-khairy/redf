@@ -18,7 +18,7 @@
                 <v-card-text class="">
                   <h5 class="card-title-text">اسم المعاملة</h5>
                   <div v-if="treatmentInfo" class="card-body-text">
-                    {{ treatmentInfo.name || "-" }}
+                    {{ treatment.name || "-" }}
                   </div>
                 </v-card-text>
               </v-card>
@@ -28,7 +28,7 @@
                 <v-card-text class="">
                   <h5 class="card-title-text">رقم المعاملة</h5>
                   <div class="card-body-text">
-                    {{ treatmentInfo.treatment_number || "-" }}
+                    {{ treatment.treatment_number || "-" }}
                   </div>
                 </v-card-text>
               </v-card>
@@ -38,7 +38,7 @@
                 <v-card-text class="">
                   <h5 class="card-title-text">تاريخ المعاملة</h5>
                   <div class="card-body-text">
-                    {{ treatmentInfo.date || "-" }}
+                    {{ treatment.date || "-" }}
                   </div>
                 </v-card-text>
               </v-card>
@@ -48,7 +48,7 @@
                 <v-card-text class="">
                   <h5 class="card-title-text">نوع المعاملة</h5>
                   <div class="card-body-text">
-                    {{ treatmentInfo.type || "-" }}
+                    {{ treatment.type || "-" }}
                   </div>
                 </v-card-text>
               </v-card>
@@ -57,14 +57,14 @@
               <v-card outlined :loading="isLoading">
                 <v-card-text class="">
                   <h5 class="card-title-text">الادارة</h5>
-                  <div v-if="treatmentInfo.department" class="card-body-text">
-                    {{ treatmentInfo.department.name || "-" }}
+                  <div v-if="treatment.department" class="card-body-text">
+                    {{ treatment.department.name || "-" }}
                   </div>
                 </v-card-text>
               </v-card>
             </v-col>
           </v-row>
-          <!-- <v-row v-if="treatmentInfo.type == 'preparing_speech'">
+          <!-- <v-row>
             <v-col class="my-1 py-0" cols="12">
               <h2 class="text-h6 font-weight-regular">الوصف</h2>
             </v-col>
@@ -75,8 +75,8 @@
                 </v-card-text>
               </v-card>
             </v-col>
-          </v-row>
-          <v-row v-else class="mt-3">
+          </v-row> -->
+          <!-- <v-row v-else class="mt-3">
             <div class="d-flex justify-center flex-column align-center">
               <svg
                 data-v-cd081d9c=""
@@ -337,7 +337,192 @@
             </div>
           </v-row> -->
         </v-tab-item>
-        <v-tab-item> tab2 </v-tab-item>
+        <v-tab-item>
+          <v-container class="custom-container">
+            <v-row v-if="checkTreatment" dense>
+              <v-col cols="12" md="6">
+                <v-text-field
+                  type="number"
+                  disabled
+                  label="الرقم"
+                  v-model="treatmentForm.number"
+                  outlined
+                  hide-details="auto"
+                  dense
+                ></v-text-field>
+              </v-col>
+              <v-col cols="12" md="6">
+                <v-dialog
+                  ref="dialog"
+                  disabled
+                  v-model="treatmentDateModal"
+                  :return-value.sync="treatmentForm.created_at"
+                  persistent
+                  width="290px"
+                >
+                  <template v-slot:activator="{ on, attrs }">
+                    <v-text-field
+                      disabled
+                      v-model="treatmentForm.created_at"
+                      outlined
+                      hide-details="auto"
+                      dense
+                      label="التاريخ"
+                      prepend-inner-icon="mdi-calendar"
+                      readonly
+                      v-bind="attrs"
+                      v-on="on"
+                    ></v-text-field>
+                  </template>
+                  <v-date-picker v-model="treatmentForm.created_at" scrollable>
+                    <v-spacer></v-spacer>
+                    <v-btn
+                      text
+                      color="primary"
+                      @click="treatmentDateModal = false"
+                    >
+                      Cancel
+                    </v-btn>
+                    <v-btn
+                      text
+                      color="primary"
+                      @click="$refs.dialog.save(treatmentForm.created_at)"
+                    >
+                      OK
+                    </v-btn>
+                  </v-date-picker>
+                </v-dialog>
+              </v-col>
+              <v-col cols="12" md="6">
+                <v-text-field
+                  type="number"
+                  label="رقم المعاملة"
+                  disabled
+                  hide-details="auto"
+                  v-model="treatmentForm.treatment_number"
+                  outlined
+                  dense
+                ></v-text-field>
+              </v-col>
+              <v-col cols="12" md="6">
+                <v-dialog
+                  ref="dialog"
+                  v-model="treatmentCreatedModal"
+                  :return-value.sync="treatmentForm.date"
+                  persistent
+                  width="290px"
+                >
+                  <template v-slot:activator="{ on, attrs }">
+                    <v-text-field
+                      v-model="treatmentForm.date"
+                      outlined
+                      disabled
+                      hide-details="auto"
+                      dense
+                      label="تاريخ المعاملة"
+                      prepend-inner-icon="mdi-calendar"
+                      readonly
+                      v-bind="attrs"
+                      v-on="on"
+                    ></v-text-field>
+                  </template>
+                  <v-date-picker v-model="treatmentForm.date" scrollable>
+                    <v-spacer></v-spacer>
+                    <v-btn
+                      text
+                      color="primary"
+                      @click="treatmentCreatedModal = false"
+                    >
+                      Cancel
+                    </v-btn>
+                    <v-btn
+                      text
+                      color="primary"
+                      @click="$refs.dialog.save(treatmentForm.date)"
+                    >
+                      OK
+                    </v-btn>
+                  </v-date-picker>
+                </v-dialog>
+              </v-col>
+              <v-col cols="12">
+                <v-text-field
+                  type="text"
+                  hide-details="auto"
+                  disabled
+                  label="الادارة"
+                  v-model="treatmentForm.department.name"
+                  outlined
+                  dense
+                ></v-text-field>
+              </v-col>
+              <v-col cols="12">
+                <v-text-field
+                  type="text"
+                  label="الوقائع"
+                  hide-details="auto"
+                  v-model="treatmentForm.facts"
+                  outlined
+                  dense
+                ></v-text-field>
+              </v-col>
+              <v-col cols="12">
+                <v-file-input
+                  small-chips
+                  multiple
+                  outlined
+                  dense
+                  prepend-icon=""
+                  prepend-inner-icon="mdi-paperclip"
+                  label="المستندات"
+                  hide-details="auto"
+                  v-model="treatmentForm.files"
+                ></v-file-input>
+              </v-col>
+
+              <v-col cols="12">
+                <v-textarea
+                  hide-details="auto"
+                  outlined
+                  label="الموضوع"
+                  dense
+                  v-model="treatmentForm.topic"
+                ></v-textarea>
+              </v-col>
+              <v-col cols="12">
+                <v-textarea
+                  hide-details="auto"
+                  outlined
+                  dense
+                  label="الدراسة"
+                  v-model="treatmentForm.study"
+                ></v-textarea>
+              </v-col>
+              <v-col cols="12">
+                <v-textarea
+                  hide-details="auto"
+                  outlined
+                  label="ملاحظات"
+                  dense
+                  v-model="treatmentForm.notes"
+                ></v-textarea>
+              </v-col>
+              <v-col cols="12">
+                <v-textarea
+                  label="معد الدراسة"
+                  hide-details="auto"
+                  outlined
+                  dense
+                  v-model="treatmentForm.study_organizer"
+                ></v-textarea>
+              </v-col>
+            </v-row>
+            <div class="actions-cont mt-3">
+              <v-btn color="primary" @click="saveTreatmentForm"> حفظ </v-btn>
+              <v-btn color="grey" class="mx-1"> الغاء </v-btn>
+            </div>
+          </v-container>
+        </v-tab-item>
       </v-tabs-items>
     </v-row>
     <!-- {{ treatmentInfo }} -->
@@ -346,13 +531,29 @@
 
 <script>
 import { mapActions, mapState } from "vuex";
-import axios from "axios";
+
 export default {
   name: "ShowTreatment",
   data() {
     return {
       isLoading: false,
+      treatmentDateModal: false,
+      treatmentCreatedModal: false,
       treatmentInfo: [],
+      treatmentForm: {
+        number: "",
+        treatment_number: "",
+        created_at: null,
+        date: null,
+        department: null,
+        files: [],
+        facts: "",
+        topic: "",
+        study: "",
+        notes: "",
+        opinion: "",
+        study_organizer: "",
+      },
       activeTab: "",
       breadcrumbs: [
         {
@@ -371,19 +572,38 @@ export default {
   },
   methods: {
     ...mapActions("app", ["setBreadCrumb"]),
-    getTreatmentInfo() {
-      axios.get("treatments/1").then((res) => {
-        this.treatmentInfo = res.data.data;
-        console.log("res", res);
-      });
+    ...mapActions("treatments", ["getTreatment"]),
+    saveTreatmentForm() {
+      console.log(this.treatmentForm);
+    },
+  },
+  computed: {
+    ...mapState("treatments", ["treatment"]),
+    checkTreatment() {
+      const ObjectKeyLength = Object.keys(this.treatment).length;
+
+      if (ObjectKeyLength > 0 && this.treatmentForm.date) {
+        return true;
+      }
+      return false;
     },
   },
   created() {
+    const { id: treatmentId } = this.$route.params;
     this.setBreadCrumb({
       breadcrumbs: this.breadcrumbs,
       pageTitle: "الاستشارات القانونية",
     });
-    this.getTreatmentInfo();
+    this.getTreatment(treatmentId).then((res) => {
+      if (res) {
+        this.treatmentForm.number = this.treatment.id;
+        this.treatmentForm.treatment_number = this.treatment.treatment_number;
+        this.treatmentForm.created_at = this.treatment.created_at.slice(0, 10);
+        this.treatmentForm.date = this.treatment.date;
+        this.treatmentForm.department = this.treatment.department;
+        console.log(this.treatment);
+      }
+    });
   },
 };
 </script>
@@ -425,5 +645,14 @@ export default {
 
 .v-window {
   overflow: unset !important;
+}
+
+.custom-container {
+  max-width: 95%;
+  padding: 19px 30px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background: #fff;
+  margin-top: 30px;
 }
 </style>

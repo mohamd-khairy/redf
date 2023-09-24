@@ -30,6 +30,7 @@ class FormRequest extends Model
         'form_type',
         'case_date',
         'case_type',
+        'benefire_id',
         'specialization_id',
         'organization_id',
         'status_request',

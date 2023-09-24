@@ -30,12 +30,12 @@ class TemplateSeeder extends Seeder
                 'user_id' => 1,
                 'icon' => 'mdi-scale-balance',
             ],
-            [
-                'id' => FormEnum::LEGAL_REVIEW,
-                'name' => 'المراجعة والتدقيق',
-                'user_id' => 1,
-                'icon' => 'mdi-scale-balance',
-            ],
+            // [
+            //     'id' => FormEnum::LEGAL_REVIEW,
+            //     'name' => 'المراجعة والتدقيق',
+            //     'user_id' => 1,
+            //     'icon' => 'mdi-scale-balance',
+            // ],
 
         ];
 

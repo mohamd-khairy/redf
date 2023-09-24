@@ -7,7 +7,7 @@ export default [
       auth: true,
     },
     component: () =>
-      import(/* webpackChunkName: "cases-list" */ "@/pages/cases/index"),
+      import(/* webpackChunkName: "cases-list" */ "@/pages/cases/IndexDynamic"),
   },
   {
     path: "/cases/:id/review-doc",
