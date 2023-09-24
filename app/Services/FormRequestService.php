@@ -152,57 +152,61 @@ class FormRequestService
 
     private function processFormPages($request, FormRequest $formRequest)
     {
-        $pagesInput = $request->input('pages', []);
+        $pagesInput = $request->input('pages', null);
+        if ($pagesInput) {
+            $pages = is_string($pagesInput) ? json_decode($pagesInput, true) : $pagesInput;
+            $pageItems = collect($pages)->flatMap(fn ($page) => $page['items'] ?? []);
 
-        $pages = is_string($pagesInput) ? json_decode($pagesInput, true) : $pagesInput;
-        $pageItems = collect($pages)->flatMap(fn ($page) => $page['items'] ?? []);
+            $pageItems->each(function ($pageItem) use ($formRequest) {
+                $decodedValue = $pageItem['value'];
 
-        $pageItems->each(function ($pageItem) use ($formRequest) {
-            $decodedValue = $pageItem['value'];
+                if ($pageItem['type'] === 'file') {
+                    $file = $pageItem['value'];
+                    $decodedValue = $filePath = UploadService::store($file, 'formPages');
+                    // Create a new file record
+                    $fileRecord = new File([
+                        'name' => 'form file',
+                        'path' => $filePath,
+                        'user_id' => auth()->id(),
+                        'start_date' => now(),
+                        'type' => $formRequest->form_type,
+                        'priority' => 'high',
+                        'status' => 'active',
+                    ]);
+                    $fileRecord->fileable()->associate($formRequest); // Associate the file with the task
+                    $fileRecord->save();
+                }
 
-            if ($pageItem['type'] === 'file') {
-                $file = $pageItem['value'];
-                $decodedValue = $filePath = UploadService::store($file, 'formPages');
-                // Create a new file record
-                $fileRecord = new File([
-                    'name' => 'form file',
-                    'path' => $filePath,
+                FormPageItemFill::create([
+                    'value' => $decodedValue,
+                    'form_page_item_id' => $pageItem['form_page_item_id'],
                     'user_id' => auth()->id(),
-                    'start_date' => now(),
-                    'type' => $formRequest->form_type,
-                    'priority' => 'high',
-                    'status' => 'active',
+                    'form_request_id' => $formRequest->id,
                 ]);
-                $fileRecord->fileable()->associate($formRequest); // Associate the file with the task
-                $fileRecord->save();
-            }
-
-            FormPageItemFill::create([
-                'value' => $decodedValue,
-                'form_page_item_id' => $pageItem['form_page_item_id'],
-                'user_id' => auth()->id(),
-                'form_request_id' => $formRequest->id,
-            ]);
-        });
+            });
+        }
     }
 
     private function processFormFile($file, $formRequest)
     {
-        $filePath = UploadService::store($file, 'formPages');
-        // Create a new file record
-        $fileRecord = new File([
-            'name' => 'لائحه الدعوي',
-            'path' => $filePath,
-            'user_id' => auth()->id(),
-            'start_date' => now(),
-            'type' => $formRequest->form_type,
-            'priority' => 'high',
-            'status' => 'active',
-        ]);
-        $fileRecord->fileable()->associate($formRequest); // Associate the file with the task
-        $fileRecord->save();
+        if ($file) {
+            $filePath = UploadService::store($file, 'formPages');
+            // Create a new file record
+            $fileRecord = new File([
+                'name' => 'لائحه الدعوي',
+                'path' => $filePath,
+                'user_id' => auth()->id(),
+                'start_date' => now(),
+                'type' => $formRequest->form_type,
+                'priority' => 'high',
+                'status' => 'active',
+            ]);
+            $fileRecord->fileable()->associate($formRequest); // Associate the file with the task
+            $fileRecord->save();
 
-        return $filePath;
+            return $filePath;
+        }
+        return null;
     }
 
     public function getFormRequest(PageRequest $request)
@@ -227,6 +231,7 @@ class FormRequestService
             if ($request->has('template_id')) {
                 $query = $query->whereHas('form', fn ($q) => $q->where('template_id', $request->input('template_id')));
             }
+
             $data = app(Pipeline::class)->send($query)->through([SortFilters::class])->thenReturn();
 
             $pageSize = $request->input('pageSize', 15);
@@ -270,6 +275,10 @@ class FormRequestService
 
                 if ($request->form_type == 'case') {
                     $request->update(['status' => StatusEnum::ASSIGNED]);
+                }
+
+                if ($request->form_type == 'legal_advice') {
+                    $request->update(['status' => StatusEnum::WAIT]);
                 }
 
                 if ($request->form_type == 'related_case') {
