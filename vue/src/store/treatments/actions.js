@@ -26,6 +26,28 @@ const actions = {
       return false;
     }
   },
+  async saveTreatment({ commit }, data) {
+    try {
+      const formData = new FormData();
+      for (const key in data) {
+        if (key === "files") {
+          for (let i = 0; i < data.files.length; i++) {
+            formData.append("files[]", data.files[i]);
+          }
+        } else {
+          formData.append(key, data[key]);
+        }
+      }
+      console.log(Object.fromEntries(formData));
+      const response = await axios.post(`treatment-informations`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  },
 };
 
 export default actions;

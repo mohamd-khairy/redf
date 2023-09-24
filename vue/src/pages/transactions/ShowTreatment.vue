@@ -345,7 +345,7 @@
                   type="number"
                   disabled
                   label="الرقم"
-                  v-model="treatmentForm.number"
+                  v-model="treatmentForm.treatment_id"
                   outlined
                   hide-details="auto"
                   dense
@@ -513,6 +513,15 @@
                   hide-details="auto"
                   outlined
                   dense
+                  v-model="treatmentForm.opinion"
+                ></v-textarea>
+              </v-col>
+              <v-col cols="12">
+                <v-textarea
+                  label="معد الدراسة"
+                  hide-details="auto"
+                  outlined
+                  dense
                   v-model="treatmentForm.study_organizer"
                 ></v-textarea>
               </v-col>
@@ -541,7 +550,7 @@ export default {
       treatmentCreatedModal: false,
       treatmentInfo: [],
       treatmentForm: {
-        number: "",
+        treatment_id: "",
         treatment_number: "",
         created_at: null,
         date: null,
@@ -572,9 +581,10 @@ export default {
   },
   methods: {
     ...mapActions("app", ["setBreadCrumb"]),
-    ...mapActions("treatments", ["getTreatment"]),
+    ...mapActions("treatments", ["getTreatment", "saveTreatment"]),
     saveTreatmentForm() {
-      console.log(this.treatmentForm);
+      this.saveTreatment(this.treatmentForm);
+      // console.log(this.treatmentForm);
     },
   },
   computed: {
@@ -596,7 +606,7 @@ export default {
     });
     this.getTreatment(treatmentId).then((res) => {
       if (res) {
-        this.treatmentForm.number = this.treatment.id;
+        this.treatmentForm.treatment_id = this.treatment.id;
         this.treatmentForm.treatment_number = this.treatment.treatment_number;
         this.treatmentForm.created_at = this.treatment.created_at.slice(0, 10);
         this.treatmentForm.date = this.treatment.date;

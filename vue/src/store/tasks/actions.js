@@ -25,10 +25,7 @@ const actions = {
     });
   },
   async updateTask({ state }, formData) {
-    console.log("formData", formData);
-
     const bodyFormData = new FormData();
-
     for (const key in formData) {
       let value = formData[key];
       bodyFormData.set(key, value);
@@ -41,11 +38,19 @@ const actions = {
     });
   },
   async createTask({ commit }, formData) {
+    console.log("form-->", formData);
     const bodyFormData = new FormData();
-
     for (const key in formData) {
       let value = formData[key];
-      bodyFormData.set(key, value);
+      if (key == "files") {
+        bodyFormData.set("files[]", formData[key]);
+        // for (let i = 0; i < formData[key].length; i++) {
+        //   console.log("formData[key][i]", formData[key][i]);
+        //   bodyFormData.set("files[]", formData[key][i]);
+        // }
+      } else {
+        bodyFormData.set(key, value);
+      }
     }
     return await axios.post(`tasks`, bodyFormData, {
       headers: {

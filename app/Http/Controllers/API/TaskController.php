@@ -73,29 +73,12 @@ class TaskController extends Controller
      */
     public function store(Request $request)
     {
-
+        return $request->all();
         try {
-            if ($request->hasFile('filesss')) {
-                foreach ($request->file('filesss') as $uploadedFile) {
-                    dd($uploadedFile);
-                    $filename = $uploadedFile->getClientOriginalName();
-                    $filePath = UploadService::store($uploadedFile, 'tasks');
-                    // Create a new file record for each uploaded file
-                    $fileRecord = new File([
-                        'name' => $filename,
-                        'path' => $filePath,
-                        'user_id' => auth()->id(),
-                        'start_date' => now(),
-                        'type' => 'task',
-                        'priority' => 'high',
-                    ]);
-                    $fileRecord->fileable()->associate($task);
-                    $fileRecord->save();
-                }
-            }
-            // dd($request->filesss);
+            // return $request->all();
             $validatedData = $request->validated();
-            dd($validatedData);
+            return $validatedData['files'];
+
             unset($validatedData['files']);
             // Parse the due_date
             $validatedData['due_date'] = Carbon::createFromFormat('d-m-Y', $validatedData['due_date'])->format('Y-m-d');
