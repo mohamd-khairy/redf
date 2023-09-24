@@ -242,6 +242,7 @@ const actions = {
       organization_id,
       file,
       form_type,
+      benefire_id,
     }
   ) {
     try {
@@ -301,6 +302,9 @@ const actions = {
       }
       if (form_type) {
         bodyFormData.set("form_type", form_type);
+      }
+      if (benefire_id) {
+        bodyFormData.set("benefire_id", benefire_id);
       }
       const result = await axios.post(`store-form-fill`, bodyFormData, {
         headers: {

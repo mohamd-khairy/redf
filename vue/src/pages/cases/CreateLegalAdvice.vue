@@ -511,9 +511,9 @@ export default {
           caseName: this.caseName,
           caseNumber: this.caseNumber,
           case_id: this.case_id,
-          user_id: this.user_id,
+          benefire_id: this.user_id,
           form_type: 'legal_advice',
-          file: this.caseFile,
+          file: this.adviceFile,
         });
         if (result) {
           this.isSubmitingForm = false;
