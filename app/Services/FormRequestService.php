@@ -27,54 +27,16 @@ class FormRequestService
 {
     public function storeFormFill($requestData)
     {
+        return DB::transaction(function () use ($requestData) {
 
-        if($requestData['case_id']){
-            //legal_advice or related case
-            if ($requestData['type'] == 'related_case') {
-                $this->add_application($formRequest);
-                $this->remove_reminder((object)['form_request_id' => $formRequest->id]);
-
-                /*********** add Notifications ********* */
-                sendMsgFormat(Auth::id(), $formRequest->name . ' تم اضافه طلب', ' تم إضافة طلب ( ' . $formRequest->name . ' ) ');
-            } else {
-
-                // legal advice
-                $number = $requestData['case_number'] ?? rand(100000, 999999);
-
-                $formRequest = FormRequest::create([
-                    'form_id' => $requestData['id'],
-                    'user_id' => Auth::id(),
-                    'benefire_id' => $requestData['benefire_id'],
-                    'status' => StatusEnum::PENDING,
-                    'form_type' => $requestData['form_type'],
-                    'form_request_number' => $number,
-                    'name' => $requestData['case_name'] ?? ($requestData['name'] . "($number)")
-                ]);
-                /*********** add action ********* */
-                saveFormRequestAction(
-                    form_request_id: $requestData->case_id,
-                    formable_id: $formRequest->id,
-                    formable_type: FormRequest::class,
-                    msg: ' تم اضافه ' . $formRequest->name
-                );
-            }
-            // Create a new Formable record
-            Formable::firstOrCreate([
-                'formable_id' => $formRequest->id,
-                'form_request_id' => $requestData->case_id,
-                'formable_type' => FormRequest::class,
-            ]);
-
-
-        }else{
-            // case
             $number = $requestData['case_number'] ?? rand(100000, 999999);
             $formRequest = FormRequest::create([
                 'form_id' => $requestData['id'],
-                'branche_id' => $requestData['branche_id'],
-                'specialization_id' => $requestData['specialization_id'],
+                'branche_id' => $requestData['branche_id'] ?? null,
+                'specialization_id' => $requestData['specialization_id'] ?? null,
                 'organization_id' => $requestData['organization_id'] ?? null,
-                'case_type' => $requestData['case_type'],
+                'benefire_id' => $requestData['benefire_id'] ?? null,
+                'case_type' => $requestData['case_type'] ?? null,
                 'user_id' => Auth::id(),
                 'status' => StatusEnum::PENDING,
                 'form_type' => $requestData['type'],
@@ -83,77 +45,68 @@ class FormRequestService
                 'form_request_number' => $number,
                 'name' => $requestData['case_name'] ?? ($requestData['name'] . "($number)")
             ]);
-            sendMsgFormat(Auth::id(), $formRequest->name . ' تم اضافه قضية', ' تم إضافة قضية ( ' . $formRequest->name . ' ) ');
 
-        }
-        //handle file لائحه الدعوي
-        if ($requestData->has('file')) {
-            $formRequest->file = $this->processFormFile($requestData->file, $formRequest);
-            $formRequest->save();
-        }
+            //handle file لائحه الدعوي
+            if ($requestData->has('file')) {
+                $formRequest->file = $this->processFormFile($requestData->file, $formRequest);
+                $formRequest->save();
+            }
 
-          /*********** add action ********* */
-          saveFormRequestAction(
-            form_request_id: $formRequest->id,
-            formable_id: $formRequest->id,
-            formable_type: FormRequest::class,
-            msg: ' تم اضافه ' . $formRequest->name
-        );
+            // save related tables if get case_id
+            if ($requestData->case_id) {
 
-        $this->processFormPages($requestData, $formRequest);
+                // Create a new Formable record
+                Formable::firstOrCreate([
+                    'formable_id' => $formRequest->id,
+                    'form_request_id' => $requestData->case_id,
+                    'formable_type' => FormRequest::class,
+                ]);
 
-        return $formRequest;
+                if ($requestData['type'] == 'related_case') {
 
+                    $this->add_application($formRequest);
+
+                    $this->remove_reminder((object)['form_request_id' => $formRequest->id]);
+
+                } else {
+
+                    /*********** add action ********* */
+                    saveFormRequestAction(
+                        form_request_id: $requestData->case_id,
+                        formable_id: $formRequest->id,
+                        formable_type: FormRequest::class,
+                        msg: ' تم اضافه ' . $formRequest->name
+                    );
+                }
+            }
+
+            /*********** add Notifications ********* */
+            sendMsgFormat(Auth::id(), $formRequest->name . ' تم اضافه ', ' تم إضافة  ( ' . $formRequest->name . ' ) ');
+
+            /*********** add action ********* */
+            saveFormRequestAction(
+                form_request_id: $formRequest->id,
+                formable_id: $formRequest->id,
+                formable_type: FormRequest::class,
+                msg: ' تم اضافه ' . $formRequest->name
+            );
+
+            $this->processFormPages($requestData, $formRequest);
+
+            return $formRequest;
+        });
     }
 
     public function updateFormFill($requestData, $id)
     {
-        if($requestData['case_id']){
-            //legal_advice or related case
-            if ($requestData['type'] == 'related_case') {
-                $this->add_application($formRequest);
-                $this->remove_reminder((object)['form_request_id' => $formRequest->id]);
-
-                /*********** add Notifications ********* */
-                sendMsgFormat(Auth::id(), $formRequest->name . ' تم اضافه طلب', ' تم إضافة طلب ( ' . $formRequest->name . ' ) ');
-            } else {
-                // legal advice
-                $formRequest = FormRequest::findOrFail($id);
-                $updatedData = [
-                    'form_id' => $requestData['id'],
-                    'user_id' => Auth::id(),
-                    'benefire_id' => $requestData['benefire_id'],
-                    'status' => StatusEnum::PENDING,
-                    'form_type' => $requestData['form_type'],
-                    'form_request_number' => $number,
-                    'name' => $requestData['case_name'] ?? ($requestData['name'] . "($number)")
-                ];
-                $formRequest->update($updatedData);
-            }
-
-             /*********** update action ********* */
-             saveFormRequestAction(
-                form_request_id: $requestData->case_id,
-                formable_id: $formRequest->id,
-                formable_type: FormRequest::class,
-                msg: ' تم تحديث ' . $formRequest->name
-            );
-            // Create a new Formable record
-            Formable::firstOrCreate([
-                'formable_id' => $formRequest->id,
-                'form_request_id' => $requestData->case_id,
-                'formable_type' => FormRequest::class,
-            ]);
-
-
-        }else{
-            // case
+        return DB::transaction(function () use ($requestData, $id) {
 
             $formRequest = FormRequest::findOrFail($id);
             $updatedData = [
                 'branche_id' => $requestData['branche_id'],
                 'specialization_id' => $requestData['specialization_id'],
                 'organization_id' => $requestData['organization_id'],
+                'benefire_id' => $requestData['benefire_id'],
                 'case_type' => $requestData['case_type'],
                 'form_type' => $requestData['type'],
                 'case_date' => $requestData['case_date'],
@@ -161,29 +114,6 @@ class FormRequestService
                 'name' => $requestData['case_name'] ?? $formRequest->name
             ];
             $formRequest->update($updatedData);
-
-        }
-        //handle file لائحه الدعوي
-        if ($requestData->has('file')) {
-            $formRequest->file = $this->processFormFile($requestData->file, $formRequest);
-            $formRequest->save();
-        }
-
-          /*********** add action ********* */
-          saveFormRequestAction(
-            form_request_id: $formRequest->id,
-            formable_id: $formRequest->id,
-            formable_type: FormRequest::class,
-            msg: ' تم اضافه ' . $formRequest->name
-        );
-
-        $this->processFormPages($requestData, $formRequest);
-
-        return $formRequest;
-
-        return DB::transaction(function () use ($requestData, $id) {
-
-
 
             // save related tables if get case_id
             if ($requestData->case_id) {
@@ -405,6 +335,7 @@ class FormRequestService
                     'details' => $request->type == 'session' ? 'تم اضافة جلسة' : ($request->details ? $request->details : 'تم اضافه اجراء '),
                     'user_id' => auth()->id(),
                     'date' => $request->date ?? $request->sessionDate,
+                    'type' => $request->type
                 ];
 
                 saveCalendarFromRequest($calendarData);
