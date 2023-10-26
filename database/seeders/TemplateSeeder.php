@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Enums\FormEnum;
 use App\Models\Form;
 use App\Models\Template;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
@@ -18,23 +19,23 @@ class TemplateSeeder extends Seeder
     {
         $data = [
             [
-                'id' => 1,
+                'id' => FormEnum::CASE,
                 'name' => 'القضايا',
                 'user_id' => 1,
                 'icon' => 'mdi-scale-balance',
             ],
             [
-                'id' => 2,
+                'id' => FormEnum::LEGAL_ADVICE,
                 'name' => 'الاستشارات القانونية',
                 'user_id' => 1,
                 'icon' => 'mdi-scale-balance',
             ],
-            [
-                'id' => 3,
-                'name' => 'المراجعة والتدقيق',
-                'user_id' => 1,
-                'icon' => 'mdi-scale-balance',
-            ],
+            // [
+            //     'id' => FormEnum::LEGAL_REVIEW,
+            //     'name' => 'المراجعة والتدقيق',
+            //     'user_id' => 1,
+            //     'icon' => 'mdi-scale-balance',
+            // ],
 
         ];
 

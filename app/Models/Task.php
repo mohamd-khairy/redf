@@ -17,7 +17,40 @@ class Task extends Model
     public $inPermission = true;
 
     protected $fillable = [
-        'name', 'type', 'user_id', 'assigner_id', 'due_date', 'details', 'share_with', 'form_request_id',
+        'name' , 'user_id', 'department_id' , 'status','assigner_id', 'due_date', 'details', 'share_with', 'form_request_id', 'stage_id'
+    ];
+
+    public static $stages =  [
+        [
+            'id' => 1,
+            'name' => 'بحاجة الي المراجعة',
+            'key' => 'new',
+            'tasks' => []
+        ],
+        [
+            'id' => 2,
+            'name' => 'جاري العمل عليها',
+            'key' => 'in_progress',
+            'tasks' => []
+        ],
+        [
+            'id' => 3,
+            'name' => 'متأخر',
+            'key' => 'not_finished',
+            'tasks' => []
+        ],
+        [
+            'id' => 4,
+            'name' => 'مكتمل',
+            'key' => 'finished',
+            'tasks' => []
+        ],
+        [
+            'id' => 5,
+            'name' => 'الارشيف',
+            'key' => 'archieve',
+            'tasks' => []
+        ],
     ];
 
     public function getActivitylogOptions(): LogOptions
@@ -41,8 +74,5 @@ class Task extends Model
         return $this->belongsTo(User::class, 'assigner_id');
     }
 
-    // public function getTypeAttribute($value)
-    // {
-    //     return TaskTypeEnum::all()[$value];
-    // }
+
 }

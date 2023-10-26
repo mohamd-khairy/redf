@@ -27,15 +27,6 @@
               >
               </v-select>
             </v-col>
-            <v-col cols="12">
-              <v-text-field
-                v-model="form.date"
-                type="date"
-                outlined
-                dense
-                :label="$t('general.selectDate')"
-              ></v-text-field>
-            </v-col>
           </v-row>
         </v-card-text>
         <v-divider></v-divider>
@@ -125,7 +116,6 @@ export default {
       let data = {
         form_request_id: requestIds,
         user_id: this.form.user_id,
-        date: this.form.date,
       };
       this.assignRequest(data)
         .then((response) => {

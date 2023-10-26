@@ -40,11 +40,17 @@
           <stat-cards :card="card" />
         </v-col>
       </v-row>
-      <v-card v-if="!loading" class="mt-3">
+      <!-- <v-card v-if="!loading" class="mt-3">
         <v-card-text>
           <calendar @selectedEventId="setEventId" :events="calendarData" />
         </v-card-text>
-      </v-card>
+      </v-card> -->
+      <calendar
+        @expandEvent="expandEvent"
+        v-if="!loading"
+        @selectedEventId="setEventId"
+        :eventsData="calendarData"
+      />
     </div>
     <div id="loading-bg" v-else>
       <!-- <div class="loading-logo">
@@ -210,6 +216,9 @@ export default {
       "getStatCards",
     ]),
     ...mapActions("app", ["setBreadCrumb"]),
+    expandEvent(ev) {
+      console.log(ev);
+    },
     fetchConfig() {
       this.isLoading = true;
 
@@ -223,19 +232,24 @@ export default {
     },
     getCalendar() {
       this.$axios
-        .get("/calenders", {
+        .get("/reminders", {
           params: {
             // pageSize: -1,
           },
         })
         .then((res) => {
-          const { calendars } = res.data.data;
-          this.calendarData = calendars.data.map((c) => ({
-            title: c.details,
-            start: new Date(c.date),
-            id: c.id,
-            actionInfo: c.calendarable,
-          }));
+          // const { calendars } = res.data.data;
+          // this.calendarData = calendars.data.map((c) => ({
+          //   title: c.details,
+          //   start: new Date(c.date),
+          //   id: c.id,
+          //   actionInfo: c.calendarable,
+          // }));
+          this.calendarData = res.data.data.map((action, i) =>
+            i % 2 === 0
+              ? { ...action, expand: true }
+              : { ...action, expand: false }
+          );
           console.log(this.calendarData);
         });
     },

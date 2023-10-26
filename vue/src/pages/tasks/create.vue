@@ -17,10 +17,10 @@
 
             <v-col cols="6">
               <v-select
-                v-model="form.type"
-                :items="types"
-                :label="$t('tasks.types')"
-                :error-messages="errors['types']"
+                v-model="form.status"
+                :items="statuss"
+                :label="$t('tasks.status')"
+                :error-messages="errors['status']"
                 outlined
                 dense
               ></v-select>
@@ -37,33 +37,6 @@
                 dense
               ></v-autocomplete>
             </v-col>
-            <v-col cols="6">
-              <v-autocomplete
-                v-model="form.form_request_id"
-                :items="casesNames"
-                item-text="name"
-                item-value="id"
-                :label="$t('tasks.case')"
-                :error-messages="errors['form_id']"
-                outlined
-                dense
-              ></v-autocomplete>
-            </v-col>
-            <v-col cols="6">
-              <v-file-input
-                outlined
-                dense
-                counter
-                show-size
-                :v-model="form.file"
-                :label="$t('tasks.document')"
-                @change="(file) => handleFileUpload(file)"
-                click:clear="handleRemoveFile"
-                :error-messages="errors['document']"
-              >
-              </v-file-input>
-            </v-col>
-
             <v-col cols="12" sm="6" md="6">
               <v-dialog
                 ref="dialog"
@@ -99,6 +72,85 @@
                 </v-date-picker>
               </v-dialog>
             </v-col>
+
+            <v-col cols="6">
+              <v-file-input
+                outlined
+                dense
+                counter
+                show-size
+                multiple
+                :v-model="form.files"
+                :label="$t('tasks.document')"
+                @change="(files) => handleFileUpload(files)"
+                click:clear="handleRemoveFile"
+                :error-messages="errors['document']"
+              >
+              </v-file-input>
+            </v-col>
+            <v-col cols="6">
+              <v-autocomplete
+                v-if="departments.departments"
+                v-model="form.department_id"
+                :items="departments.departments.data"
+                item-text="name"
+                item-value="id"
+                :label="$t('tasks.department_id')"
+                :error-messages="errors['department_id']"
+                outlined
+                dense
+              ></v-autocomplete>
+            </v-col>
+            <v-col cols="12">
+              <v-textarea
+                v-model="form.details"
+                outlined
+                :error-messages="errors['assigner_id']"
+                dense
+                :label="$t('tasks.details')"
+              ></v-textarea>
+            </v-col>
+            <v-col cols="4">
+              <div class="d-flex align-items-center">
+                <label class="ms-2" for="">{{ $t("general.belongsTo") }}</label>
+                <v-checkbox
+                  class="me-3 mt-0"
+                  v-model="belongsTo"
+                  :label="$t('general.case')"
+                  value="case"
+                ></v-checkbox>
+                <v-checkbox
+                  class="mt-0"
+                  v-model="belongsTo"
+                  :label="$t('general.consultation')"
+                  value="consultation"
+                ></v-checkbox>
+              </div>
+            </v-col>
+            <v-col cols="8" v-if="belongsTo">
+              <v-autocomplete
+                v-if="belongsTo === 'case'"
+                v-model="form.form_request_id"
+                :items="casesNames"
+                item-text="name"
+                item-value="id"
+                :label="$t('tasks.case')"
+                :error-messages="errors['form_id']"
+                outlined
+                dense
+              ></v-autocomplete>
+              <v-autocomplete
+                v-else
+                v-model="form.consultation_id"
+                :items="consultationNames"
+                item-text="name"
+                item-value="id"
+                :label="$t('general.consultation')"
+                :error-messages="errors['consultation_id']"
+                outlined
+                dense
+              ></v-autocomplete>
+            </v-col>
           </v-row>
 
           <div class="d-flex">
@@ -118,12 +170,14 @@
 </template>
 
 <script>
+import axios from "axios";
 import { mapActions, mapState } from "vuex";
 
 export default {
   components: {},
   data() {
     return {
+      belongsTo: null,
       breadcrumbs: [
         {
           text: this.$t("tasks.tasksManagement"),
@@ -145,23 +199,40 @@ export default {
         .toISOString()
         .substr(0, 10),
       form: {
+        department_id: "",
+        details: "",
         name: "",
-        type: "",
+        status: "",
         form_request_id: "",
+        consultation_id: "",
         user_id: null,
-        file: null,
+        files: null,
         assigner_id: null,
         due_date: "",
       },
       dueDateModal: false,
-      types: ["Type 1", "Type 2", "Type 3"],
+      statuss: ["Status 1", "Status 2", "Status 3"],
       errors: {},
       isDateInvalid: false,
+      departments: [],
     };
   },
   computed: {
     ...mapState("auth", ["user"]),
-    ...mapState("tasks", ["users", "documents", "casesNames"]),
+    ...mapState("tasks", [
+      "users",
+      "documents",
+      "casesNames",
+      "consultationNames",
+    ]),
+  },
+  watch: {
+    belongsTo(val) {
+      if (!val) {
+        this.form.form_request_id = "";
+        this.form.consultation_id = "";
+      }
+    },
   },
   created() {
     this.setBreadCrumb({
@@ -169,13 +240,21 @@ export default {
       pageTitle: this.$t("tasks.tasksList"),
     });
     this.open();
+    axios.get("departments").then((res) => {
+      this.departments = res.data.data;
+    });
   },
 
   methods: {
     ...mapActions("app", ["setBreadCrumb"]),
-    ...mapActions("tasks", ["createTask", "getUsers", "getCasesNames"]),
+    ...mapActions("tasks", [
+      "createTask",
+      "getUsers",
+      "getCasesNames",
+      "getConsultationNames",
+    ]),
     handleRemoveFile() {
-      this.form.file = null;
+      this.form.files = null;
     },
     saveTask() {
       this.loading = true;
@@ -198,6 +277,7 @@ export default {
     open() {
       this.getUsers();
       this.getCasesNames();
+      this.getConsultationNames();
     },
     formatDate(date) {
       if (!date) return null;
@@ -205,11 +285,12 @@ export default {
       const [year, month, day] = date.split("-");
       return `${day}-${month}-${year}`;
     },
-    handleFileUpload(file, input) {
-      if (file) {
-        const fileName = file.name.split(".")[0];
-        const fileExtension = file.name.split(".")[1];
-        this.form.file = file;
+    handleFileUpload(files, input) {
+      if (files) {
+        // const fileName = files.name.split(".")[0];
+        // const fileExtension = files.name.split(".")[1];
+        this.form.files = files;
+        console.log(this.form.files);
       }
     },
   },

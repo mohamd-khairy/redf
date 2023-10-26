@@ -1,8 +1,9 @@
 const state = {
   forms: [],
   formRequests: [],
-
+  sessionPlaces: [],
   cards: [],
+  cases: [],
   eventTypes: [],
   statuses: [],
   locations: [],
@@ -13,7 +14,11 @@ const state = {
   pages: [],
   courts: [],
   caseTypes: [],
+  specializations: [],
+  organizations: [],
   pagesValues: [],
+  claimant: [],
+  columns: [],
   selectedForm: {
     name: "",
     id: null,

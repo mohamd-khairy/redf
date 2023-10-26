@@ -25,14 +25,16 @@ class TaskRequest extends FormRequest
     {
         return [
             'name' => 'required|string|max:255',
-            'type' => 'required', // Enum values
+            'status' => 'required', // Enum values
             'user_id' => 'required|exists:users,id',
+            'department_id' => 'required|exists:departments,id',
             'assigner_id' => 'required|exists:users,id',
             'due_date' => 'required|date',
             'details' => 'nullable|string',
             'share_with' => 'nullable|string',
             'form_request_id' => 'nullable|exists:form_requests,id',
-            'file' => 'required|file|mimes:jpg,jpeg,png,pdf,docx',
+            // 'files' => 'required',
+            'stage_id' => 'nullable|integer'
         ];
     }
 }

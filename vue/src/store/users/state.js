@@ -1,6 +1,8 @@
 const state = {
   users: [],
   beneficiaries: [],
+  consultations: [],
+  treatments: [],
   user: {},
   actvs: [],
 }

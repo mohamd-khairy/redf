@@ -18,7 +18,7 @@
                         </v-row>
 
                         <div class="mt-2">
-                            <v-btn :loading="loading" :disabled="loading" @click="updateDepartment" color="primary">
+                            <v-btn :loading="loading" :disabled="loading" @click="updateDepartmentII" color="primary">
                                 {{ $t("general.save") }}
                             </v-btn>
                         </div>
@@ -69,7 +69,7 @@ export default {
             pageTitle: this.$t("departments.updateDepartment")
         });
         axios.get(`departments/${this.$route.params.id}`).then((data) => {
-            console.log(data);
+            this.department = data.data.data
         })
     },
     methods: {
@@ -78,6 +78,7 @@ export default {
         buildForm(data) {
             let keys = Object.keys(data);
             let form = new FormData();
+            form.append("method", "_PUT")
             for (let index = 0; index < keys.length; index++) {
                 const key = keys[index];
                 if (data[key]) {
@@ -86,7 +87,7 @@ export default {
             }
             return form;
         },
-        updateDepartment() {
+        updateDepartmentII() {
             this.loading = true;
             this.errors = {};
             let form = this.buildForm(this.department)

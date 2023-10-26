@@ -1,10 +1,12 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers\API;
 
 use App\Models\Status;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\PageRequest;
+use Throwable;
 
 class StatusController extends Controller
 {
@@ -19,7 +21,7 @@ class StatusController extends Controller
             SortFilters::class,
         ])->thenReturn();
 
-        $data = $data->paginate(request('pageSize', 15));
+        $data = request('pageSize') == -1 ?  $data->get() : $data->paginate(request('pageSize', 15));
 
         return responseSuccess(['status' => $data]);
     }
@@ -37,7 +39,7 @@ class StatusController extends Controller
             $validatedData = $request->validated();
             // Since validation passed, you can directly create the BRANCH.
             $status = Status::create($validatedData);
-            return responseSuccess($branch, 'Status has been successfully created');
+            return responseSuccess($status, 'Status has been successfully created');
         } catch (Throwable $e) {
             // If validation fails, handle the validation errors here.
             return responseFail($e->getMessage());

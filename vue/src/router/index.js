@@ -18,6 +18,8 @@ import OrganizationsRoutes from "./organizations.routes";
 import DocumentsRoutes from "./documents.routes";
 import TasksRoutes from "./tasks.routes";
 import Branches from "./branches.routes";
+import Specialization from "./specializations.routes";
+import Treatments from "./treatments.routes";
 
 import CasesRoutes from "./cases.routes";
 import store from "@/store";
@@ -58,6 +60,8 @@ export const routes = [
   ...DocumentsRoutes,
   ...TasksRoutes,
   ...Branches,
+  ...Specialization,
+  ...Treatments,
 
   {
     path: "/blank",

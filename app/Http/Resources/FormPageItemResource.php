@@ -25,6 +25,7 @@ class FormPageItemResource extends JsonResource
             'enabled' => $this->enabled,
             'required' => $this->required,
             'website_view' => $this->website_view,
+            'key' => $this->key,
             'childList' => is_string($this->childList) ? json_decode($this->childList) : $this->childList,
           ];
     }

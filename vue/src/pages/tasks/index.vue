@@ -1,27 +1,8 @@
 <template>
   <div class="d-flex flex-column flex-grow-1">
-    <v-card>
-      <!-- users list -->
+    <v-card :loading="isLoading">
       <v-row dense class="pa-2 align-center">
-        <v-col cols="6">
-          <v-menu offset-y left>
-            <template v-slot:activator="{ on }">
-              <transition name="slide-fade" mode="out-in">
-                <v-btn v-show="selectedTasks.length > 0" v-on="on">
-                  {{ $t("general.actions") }}
-                  <v-icon right>mdi-menu-down</v-icon>
-                </v-btn>
-              </transition>
-            </template>
-            <v-list dense>
-              <v-list-item @click="deleteAllTasks()">
-                <v-list-item-title>{{
-                  $t("general.delete")
-                }}</v-list-item-title>
-              </v-list-item>
-            </v-list>
-          </v-menu>
-        </v-col>
+        <v-col cols="6"> </v-col>
         <v-col cols="6" class="d-flex text-right align-center">
           <v-text-field
             v-model="searchQuery"
@@ -53,7 +34,7 @@
           <v-btn
             :loading="isLoading"
             icon
-            @click.prevent="open()"
+            @click.prevent="getTasksData()"
             small
             class="ml-2"
           >
@@ -61,80 +42,103 @@
           </v-btn>
         </v-col>
       </v-row>
-      <v-data-table
-        show-select
-        v-model="selectedTasks"
-        :headers="headers"
-        :items="taskItems"
-        :options.sync="options"
-        class="flex-grow-1"
-        :loading="isLoading"
-        :page="page"
-        :pageCount="numberOfPages"
-        :server-items-length="totalTasks"
+      <!-- cases list -->
+
+      <div
+        class="min-h-screen d-flex overflow-x-scroll py-4 px-4 kanban-scroll-container"
+        ref="scrollContainer"
       >
-        <template v-slot:item.id="{ item }">
-          {{ item.id }}
-        </template>
-        <template v-slot:item.name="{ item }">
-          {{ item.name }}
-        </template>
+        <div
+          v-for="(column, i) in tasks"
+          :key="column.id"
+          class="bg-gray-100 px-3 py-3 column-width stage-cont"
+          :class="i > 0 ? 'mr-4' : ''"
+        >
+          <p class="stage-title">
+            <v-chip
+              v-if="column.id == 1"
+              class="ma-2"
+              color="#f7e5ed"
+              text-color="#db2777"
+            >
+              {{ column.tasks.length }}
+            </v-chip>
+            <v-chip
+              v-if="column.id == 2"
+              class="ma-2"
+              color="#f0e6f8"
+              text-color="#a454ed"
+            >
+              {{ column.tasks.length }}
+            </v-chip>
+            <v-chip
+              v-if="column.id == 3"
+              class="ma-2"
+              color="#f5efe1"
+              text-color="#ca8a04"
+            >
+              {{ column.tasks.length }}
+            </v-chip>
+            <v-chip
+              v-if="column.id == 4"
+              class="ma-2"
+              color="#e6f2ea"
+              text-color="#2FAD5E"
+            >
+              {{ column.tasks.length }}
+            </v-chip>
+            {{ column.name }}
+          </p>
 
-        <template v-slot:item.type="{ item }">
-          {{ item.type }}
-        </template>
-
-        <template v-slot:item.user="{ item }">
-          {{ item.user.name }}
-        </template>
-        <template v-slot:item.assigner="{ item }">
-          {{ item.assigner.name }}
-        </template>
-        <template v-slot:item.file="{ item }">
-          <a :href="item.file.path" target="_blank">
-            <v-icon> mdi-file </v-icon>
-          </a>
-        </template>
-        <template v-slot:item.due_date="{ item }">
-          <div>{{ item.due_date | formatDate("lll") }}</div>
-        </template>
-
-        <template v-slot:item.action="{ item }">
-          <div class="actions">
-            <v-btn color="primary" icon :to="`/tasks/edit/${item.id}`">
-              <v-icon>mdi-open-in-new</v-icon>
-            </v-btn>
-            <v-btn color="error" icon @click.prevent="deleteItem(item.id)">
-              <v-icon>mdi-close</v-icon>
-            </v-btn>
-          </div>
-        </template>
-        <template v-slot:no-data>
-          <div class="text-center my-2 primary--text" color="primary">
-            <emptyDataSvg></emptyDataSvg>
-            <div class="dt-no_data">
-              {{ $t("general.no_data_available") }}
-            </div>
-          </div>
-        </template>
-      </v-data-table>
+          <draggable
+            :list="column.tasks"
+            :animation="200"
+            ghost-class="ghost-card"
+            :id="`stage_${column.id}`"
+            group="tasks"
+            :scroll-sensitivity="500"
+            :force-fallback="true"
+            @start="onDragStart"
+            @end="onDragEnd"
+          >
+            <task-card
+              v-for="task in column.tasks"
+              :progress="(100 / tasks.length) * column.id"
+              :type="column.name"
+              :key="task.id"
+              :id="`task_${task.id}`"
+              @delete-task="deleteItem"
+              :task="task"
+              class="mt-3 cursor-move scroll-item"
+              ref="listItem"
+            ></task-card>
+          </draggable>
+        </div>
+      </div>
     </v-card>
   </div>
 </template>
 
 <script>
+import draggable from "vuedraggable";
+import CopyLabel from "../../components/common/CopyLabel";
 import { mapActions, mapState } from "vuex";
 import { ask, makeToast } from "@/helpers";
 import emptyDataSvg from "@/assets/images/illustrations/empty-data.svg";
+import TaskCard from "./TaskCard.vue";
+
 export default {
+  name: "tasks",
   components: {
+    CopyLabel,
     emptyDataSvg,
+    draggable,
+    TaskCard,
   },
   data() {
     return {
-      page: 1,
-      totalTasks: 0,
-      numberOfPages: 0,
+      currentPageId: null,
+      isDragging: false,
       options: {},
       isLoading: false,
       breadcrumbs: [
@@ -143,24 +147,16 @@ export default {
           disabled: false,
           href: "#",
         },
+
         {
           text: this.$t("tasks.tasksList"),
+          to: "/tasks/list",
+          exact: true,
         },
       ],
 
       searchQuery: "",
-      selectedTasks: [],
-      taskItems: [],
-      headers: [
-        { text: this.$t("tables.id"), value: "id" },
-        { text: this.$t("tables.name"), value: "name" },
-        { text: this.$t("tables.type"), value: "type" },
-        { text: this.$t("tasks.requested_from"), value: "user" },
-        { text: this.$t("tasks.assigned_to"), value: "assigner" },
-        { text: this.$t("tasks.document"), value: "file" },
-        { text: this.$t("tasks.due_date"), value: "due_date" },
-        { text: "", sortable: false, align: "right", value: "action" },
-      ],
+      columns: [],
     };
   },
   watch: {
@@ -169,65 +165,67 @@ export default {
         this.open();
       },
     },
+    deep: true,
     searchQuery() {
       this.open();
     },
   },
   computed: {
+    ...mapState("app", ["navTemplates"]),
     ...mapState("tasks", ["tasks"]),
+    calculatedColor(id) {
+      let color = "#D82027";
+      if (this.progress == 1) {
+        color = "#D82027";
+      } else if (this.progress == 2) {
+        color = "#3AD820";
+      } else if (this.progress == 3) {
+        color = "#02A98B";
+      } else if (this.progress == 4) {
+        color = "#005A4E";
+      }
+      return color;
+    },
   },
   created() {
     this.setBreadCrumb({
       breadcrumbs: this.breadcrumbs,
-      pageTitle: this.$t("tasks.tasksList"),
+      pageTitle: "المهام",
     });
+    // this.getTasks();
+    this.getTasksData();
   },
+  mounted() {
+    const scrollContainer = this.$refs.scrollContainer;
 
-  methods: {
-    ...mapActions("app", ["setBreadCrumb"]),
+    if (scrollContainer) {
+      scrollContainer.addEventListener("mousemove", (e) => {
+        if (this.isDragging) {
+          const scrollThreshold = 50; // Adjust this value as needed
+          const { clientX } = e;
+          const containerWidth = scrollContainer.clientWidth;
 
-    ...mapActions("tasks", ["getTasks", "deleteTask", "deleteAll"]),
-    open() {
-      this.isLoading = true;
-      let { page, itemsPerPage } = this.options;
-      const direction = this.options.sortDesc[0] ? "asc" : "desc";
-
-      let data = {
-        search: this.searchQuery,
-        pageSize: itemsPerPage,
-        pageNumber: page,
-        sortDirection: direction,
-        sortColumn: this.options.sortBy[0] ?? "",
-      };
-      this.getTasks(data)
-        .then(() => {
-          this.isLoading = false;
-          if (itemsPerPage != -1) {
-            this.taskItems = this.tasks.data;
-            this.totalTasks = this.tasks.total;
-            this.numberOfPages = this.tasks.last_page;
-          } else {
-            this.taskItems = this.tasks;
-            this.totalTasks = this.tasks.length;
-            this.numberOfPages = 1;
+          if (clientX < scrollThreshold) {
+            this.scrollHorizontally("left");
+          } else if (clientX > containerWidth - scrollThreshold) {
+            this.scrollHorizontally("right");
           }
-        })
-        .catch(() => {
-          this.isLoading = false;
-        });
-    },
+        }
+      });
+    }
+  },
+  methods: {
+    ...mapActions("tasks", ["updateTask", "getTasks", "deleteTask"]),
+    ...mapActions("app", ["setBreadCrumb"]),
     async deleteItem(id) {
-      const { isConfirmed } = await ask(
-        this.$t("tasks.confirmDeleteTask"),
-        "warning"
-      );
-
+      const msg = this.$t("general.delete_confirmation");
+      const { isConfirmed } = await ask(msg, "error");
       if (isConfirmed) {
         this.isLoading = true;
         this.deleteTask(id)
           .then((response) => {
             makeToast("success", response.data.message);
-            this.open();
+            this.getTasksData();
             this.isLoading = false;
           })
           .catch(() => {
@@ -235,37 +233,67 @@ export default {
           });
       }
     },
-    async deleteAllTasks() {
-      let data = {};
-      let ids = [];
-      const { isConfirmed } = await ask(
-        this.$t("tasks.confirmDeleteSelectedTask"),
-        "warning"
-      );
-      if (isConfirmed) {
-        if (this.selectedTasks.length) {
-          this.selectedTasks.forEach((item) => {
-            ids.push(item.id);
-          });
+    async getTasksData() {
+      this.isLoading = true;
+      this.getTasks()
+        .then(() => {
+          this.isLoading = false;
+        })
+        .catch(() => {
+          this.isLoading = false;
+        });
+    },
+
+    initScrollBehavior() {
+      this.$refs.listItem.forEach((item) => {
+        item.addEventListener("dragover", (e) => {
+          e.preventDefault();
+          const mouseY = e.clientY;
+          const itemRect = item.getBoundingClientRect();
+
+          if (mouseY < itemRect.top + 50) {
+            // Scroll up
+            item.scrollTop -= 10;
+          } else if (mouseY > itemRect.bottom - 50) {
+            // Scroll down
+            item.scrollTop += 10;
+          }
+        });
+      });
+    },
+    search() {},
+    onDragStart() {
+      this.isDragging = true;
+    },
+    onDragEnd(event) {
+      this.isDragging = false;
+      console.log("event", event);
+      const stepId = event.to.getAttribute("id").split("_")[1];
+      const taskId = event.clone.getAttribute("id").split("_")[1];
+      console.log("data", stepId, taskId);
+      let data = {
+        id: taskId,
+        stage_id: stepId,
+      };
+      this.updateTask(data);
+    },
+    scrollHorizontally(direction) {
+      const scrollContainer = this.$refs.scrollContainer;
+      const scrollAmount = 10; // Adjust this value as needed
+      const containerWidth = scrollContainer.clientWidth;
+      const scrollLeft = scrollContainer.scrollLeft;
+      const maxScrollLeft = scrollContainer.scrollWidth - containerWidth;
+
+      if (scrollContainer) {
+        console.log("aaaaaaaaa", direction === "left" && scrollLeft > 0);
+        console.log(scrollLeft);
+        if (direction === "left") {
+          scrollContainer.scrollLeft -= scrollAmount;
+        } else if (direction === "right") {
+          scrollContainer.scrollLeft += scrollAmount;
         }
-        data = {
-          ids: ids,
-          action: "delete",
-          value: 1,
-        };
-        this.isLoading = true;
-        this.deleteAll(data)
-          .then((response) => {
-            makeToast("success", response.data.message);
-            this.open();
-            this.isLoading = false;
-          })
-          .catch(() => {
-            this.isLoading = false;
-          });
       }
     },
-    searchTask() {},
   },
 };
 </script>
@@ -274,12 +302,65 @@ export default {
 .slide-fade-enter-active {
   transition: all 0.3s ease;
 }
+
 .slide-fade-leave-active {
   transition: all 0.3s cubic-bezier(1, 0.5, 0.8, 1);
 }
+
 .slide-fade-enter,
 .slide-fade-leave-to {
   transform: translateX(10px);
   opacity: 0;
+}
+</style>
+<style scoped>
+.column-width {
+  min-width: 328px;
+  width: 328px;
+  min-height: 200px;
+}
+/* Unfortunately @apply cannot be setup in codesandbox,
+but you'd use "@apply border opacity-50 border-blue-500 bg-gray-200" here */
+.ghost-card {
+  opacity: 0.5;
+  background: #f7fafc;
+  border: 1px solid #4299e1;
+}
+.overflow-x-scroll {
+  overflow-x: auto;
+}
+.kanban-scroll-container {
+}
+.scroll-item {
+  overflow: auto;
+}
+</style>
+<style>
+.stage-cont {
+  border: 1px solid #eaecf0;
+  border-radius: 8px;
+  background: #f9f9fb;
+}
+.stage-title {
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 21px;
+  letter-spacing: -0.02em;
+  text-align: right;
+}
+.stage {
+  border: 1px solid #fff;
+  border-radius: 4px;
+  padding: 20px;
+}
+.stage:hover {
+  border: 1px dashed #ccc;
+}
+.case-title {
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 24px;
+  letter-spacing: -0.02em;
+  text-align: right;
 }
 </style>

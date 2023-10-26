@@ -2,15 +2,7 @@ import axios from "@/plugins/axios";
 
 const actions = {
   async getTasks({ commit }, data) {
-    const response = await axios.get("tasks", {
-      params: {
-        search: data.search,
-        pageSize: data.pageSize,
-        page: data.pageNumber,
-        sortDirection: data.sortDirection,
-        sortCoulmn: data.sortColumn,
-      },
-    });
+    const response = await axios.get("tasks");
     const { tasks } = response?.data.data;
     commit("SET_TASKS", tasks);
   },
@@ -33,26 +25,32 @@ const actions = {
     });
   },
   async updateTask({ state }, formData) {
-    const { id } = state?.task ?? {};
     const bodyFormData = new FormData();
-
     for (const key in formData) {
       let value = formData[key];
       bodyFormData.set(key, value);
     }
     bodyFormData.set("_method", "PUT");
-    return await axios.post(`tasks/${id}`, bodyFormData, {
+    return await axios.post(`tasks/${formData.id}`, bodyFormData, {
       headers: {
         "Content-Type": "multipart/form-data",
       },
     });
   },
   async createTask({ commit }, formData) {
+    console.log("form-->", formData);
     const bodyFormData = new FormData();
-
     for (const key in formData) {
       let value = formData[key];
-      bodyFormData.set(key, value);
+      if (key == "files") {
+        bodyFormData.set("files[]", formData[key]);
+        // for (let i = 0; i < formData[key].length; i++) {
+        //   console.log("formData[key][i]", formData[key][i]);
+        //   bodyFormData.set("files[]", formData[key][i]);
+        // }
+      } else {
+        bodyFormData.set(key, value);
+      }
     }
     return await axios.post(`tasks`, bodyFormData, {
       headers: {
@@ -75,12 +73,26 @@ const actions = {
   async getCasesNames({ commit }) {
     const response = await axios.get("get-form-Requests", {
       params: {
+        template_id: 1,
         pageSize: -1,
       },
     });
     const resData = response?.data.data;
+
     const casesNames = resData.map((c) => ({ name: c.name, id: c.id }));
     commit("SET_CASES_NAMES", casesNames);
+  },
+  async getConsultationNames({ commit }) {
+    const response = await axios.get("get-form-Requests", {
+      params: {
+        template_id: 2,
+        pageSize: -1,
+      },
+    });
+    const resData = response?.data.data;
+
+    const consultationNames = resData.map((c) => ({ name: c.name, id: c.id }));
+    commit("SET_CONSULTATION_NAMES", consultationNames);
   },
 };
 

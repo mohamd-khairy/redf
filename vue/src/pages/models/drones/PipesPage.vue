@@ -10,30 +10,15 @@
       <v-spacer></v-spacer>
 
       <div class="h-38 d-flex">
-        <v-btn
-          class="primary--text  v-btn--active mx-1"
-          title="Reload"
-          :to="$route.path"
-          elevation="0"
-        >
+        <v-btn class="primary--text  v-btn--active mx-1" title="Reload" :to="$route.path" elevation="0">
           <v-icon>mdi-reload</v-icon>
         </v-btn>
         <div class="date-picker position-relative mx-1">
           <i aria-hidden="true" class="v-icon mdi mdi-calendar"></i>
-          <date-range-picker
-            v-model="dateRange"
-            direction="rtl"
-            @update="changeDatePicker()"
-          >
+          <date-range-picker v-model="dateRange" direction="rtl" @update="changeDatePicker()">
           </date-range-picker>
         </div>
-        <v-switch
-          v-model="listen"
-          hide-details
-          inset
-          :label="$t('menu.live_mode')"
-          class="custom-switch"
-        ></v-switch>
+        <v-switch v-model="listen" hide-details inset :label="$t('menu.live_mode')" class="custom-switch"></v-switch>
       </div>
     </div>
 
@@ -48,37 +33,26 @@
               <v-menu offset-y left>
                 <template v-slot:activator="{ on }">
                   <transition name="slide-fade" mode="out-in">
-                    <v-btn
-                      v-show="
-                        selectedEvents.length > 0 && selectedStatus.value === 1
-                      "
-                      v-on="on"
-                    >
+                    <v-btn v-show="selectedEvents.length > 0 && selectedStatus.value === 1
+                      " v-on="on">
                       {{ $t("general.actions") }}
                       <v-icon right>mdi-menu-down</v-icon>
                     </v-btn>
                   </transition>
                 </template>
                 <v-list dense>
-                  <v-list-item
-                    @click="doAction((action = 'status'), (value = 1))"
-                  >
+                  <v-list-item @click="doAction((action = 'status'), (value = 1))">
                     <v-list-item-title>{{
                       $t("general.verify")
                     }}</v-list-item-title>
                   </v-list-item>
-                  <v-list-item
-                    @click="doAction((action = 'status'), (value = 0))"
-                  >
+                  <v-list-item @click="doAction((action = 'status'), (value = 0))">
                     <v-list-item-title>{{
                       $t("general.disabled")
                     }}</v-list-item-title>
                   </v-list-item>
                   <v-divider></v-divider>
-                  <v-list-item
-                    @click="doAction((action = 'delete'), (value = 1))"
-                    v-can="'delete-event'"
-                  >
+                  <v-list-item @click="doAction((action = 'delete'), (value = 1))" v-can="'delete-event'">
                     <v-list-item-title>{{
                       $t("general.delete")
                     }}</v-list-item-title>
@@ -87,32 +61,12 @@
               </v-menu>
             </v-col>
             <v-col cols="9" class="d-flex text-right align-center">
-              <v-select
-                class=" mx-1"
-                :label="$t('general.status')"
-                dense
-                :items="translatedStatusTypes"
-                item-text="text"
-                item-value="value"
-                hide-details
-                v-model="selectedStatus"
-                return-object
-                solo
-              >
+              <v-select class=" mx-1" :label="$t('general.status')" dense :items="translatedStatusTypes" item-text="text"
+                item-value="value" hide-details v-model="selectedStatus" return-object solo>
               </v-select>
-              <v-select
-                :disabled="items.length === 0"
-                class=" mx-1"
-                :label="$t('general.types')"
-                dense
-                :items="translatedEventTypes"
-                item-text="text"
-                item-value="value"
-                hide-details
-                v-model="selectedType"
-                return-object
-                solo
-              ></v-select>
+              <v-select :disabled="items.length === 0" class=" mx-1" :label="$t('general.types')" dense
+                :items="translatedEventTypes" item-text="text" item-value="value" hide-details v-model="selectedType"
+                return-object solo></v-select>
               <!--          <v-select-->
               <!--            :disabled="items.length === 0"-->
               <!--            class=" mx-1"-->
@@ -126,46 +80,22 @@
               <!--            return-object-->
               <!--            solo-->
               <!--          ></v-select>-->
-              <v-text-field
-                :disabled="items.length === 0"
-                v-model="searchQuery"
-                append-icon="mdi-magnify"
-                class="flex-grow-1  mx-1"
-                hide-details
-                dense
-                solo
-                clearable
-                :placeholder="$t('general.search')"
-                @keyup.enter="searchEvent(searchQuery)"
-              ></v-text-field>
+              <v-text-field :disabled="items.length === 0" v-model="searchQuery" append-icon="mdi-magnify"
+                class="flex-grow-1  mx-1" hide-details dense solo clearable :placeholder="$t('general.search')"
+                @keyup.enter="searchEvent(searchQuery)"></v-text-field>
 
-              <v-btn
-                :disabled="items.length === 0"
-                class="primary--text  v-btn--active mx-1"
-                title="Gallery"
-                @click="openAllCapturedImage"
-                elevation="0"
-              >
+              <v-btn :disabled="items.length === 0" class="primary--text  v-btn--active mx-1" title="Gallery"
+                @click="openAllCapturedImage" elevation="0">
                 <v-icon>mdi-image-multiple</v-icon>
               </v-btn>
 
-              <v-btn
-                :disabled="items.length === 0"
-                class="primary--text  v-btn--active mx-1"
-                title="Notes"
-                @click="openNotes"
-                elevation="0"
-              >
+              <v-btn :disabled="items.length === 0" class="primary--text  v-btn--active mx-1" title="Notes"
+                @click="openNotes" elevation="0">
                 <v-icon>mdi-note-text-outline</v-icon>
               </v-btn>
 
-              <v-btn
-                :disabled="items.length === 0"
-                class="primary--text  v-btn--active mx-1"
-                title="Export"
-                @click="downloadExcel"
-                elevation="0"
-              >
+              <v-btn :disabled="items.length === 0" class="primary--text  v-btn--active mx-1" title="Export"
+                @click="downloadExcel" elevation="0">
                 <v-icon>mdi-download-box-outline</v-icon>
               </v-btn>
               <!--          <v-btn-->
@@ -174,36 +104,18 @@
               <!--          >-->
               <!--            <v-icon>mdi-cog-outline</v-icon>-->
               <!--          </v-btn>-->
-              <v-btn
-                :loading="isLoading"
-                icon
-                small
-                class="mx-1"
-                @click.prevent="open()"
-              >
+              <v-btn :loading="isLoading" icon small class="mx-1" @click.prevent="open()">
                 <v-icon>mdi-refresh</v-icon>
               </v-btn>
             </v-col>
           </v-row>
 
-          <v-data-table
-            v-model="selectedEvents"
-            show-select
-            :headers="headers"
-            :items="items"
-            :options.sync="options"
-            :sort-by.sync="sortBy"
-            :sort-desc.sync="sortDesc"
-            :search="searchQuery"
-            class="flex-grow-1 cursor-pointer"
-            @click:row="openCapturedImage"
-            :page="page"
-            :pageCount="numberOfPages"
-            :server-items-length="total"
+          <v-data-table v-model="selectedEvents" show-select :headers="headers" :items="items" :options.sync="options"
+            :sort-by.sync="sortBy" :sort-desc.sync="sortDesc" :search="searchQuery" class="flex-grow-1 cursor-pointer"
+            @click:row="openCapturedImage" :page="page" :pageCount="numberOfPages" :server-items-length="total"
             :footer-props="{
-              'items-per-page-options': [5, 10, 15]
-            }"
-          >
+              'items-per-page-options': [5, 10, 15, 25, 50, 100]
+            }">
             <template v-slot:item.id="{ item }">
               <div class="font-weight-bold">{{ item.id }}</div>
             </template>
@@ -228,58 +140,22 @@
             <template v-slot:item.type="{ item }">
               <div class="font-weight-bold d-flex align-center text-no-wrap">
                 <div v-for="(type, key) in item.types">
-                  <v-chip
-                    class="ma-1"
-                    v-if="type === 'vehicles'"
-                    color="deep-purple"
-                    text-color="white"
-                    small
-                  >
+                  <v-chip class="ma-1" v-if="type === 'vehicles'" color="deep-purple" text-color="white" small>
                     {{ $t("general." + type) }}
                   </v-chip>
-                  <v-chip
-                    class="ma-1"
-                    v-else-if="type === 'people'"
-                    color="warning"
-                    text-color="white"
-                    small
-                  >
+                  <v-chip class="ma-1" v-else-if="type === 'people'" color="warning" text-color="white" small>
                     {{ $t("general." + type) }}
                   </v-chip>
-                  <v-chip
-                    class="ma-1"
-                    v-else-if="type === 'smoke'"
-                    color="success"
-                    text-color="white"
-                    small
-                  >
+                  <v-chip class="ma-1" v-else-if="type === 'smoke'" color="success" text-color="white" small>
                     {{ $t("general." + type) }}
                   </v-chip>
-                  <v-chip
-                    class="ma-1"
-                    v-else-if="type === 'fire'"
-                    color="red"
-                    text-color="white"
-                    small
-                  >
+                  <v-chip class="ma-1" v-else-if="type === 'fire'" color="red" text-color="white" small>
                     {{ $t("general." + type) }}
                   </v-chip>
-                  <v-chip
-                    class="ma-1"
-                    v-else-if="type === 'leakage'"
-                    color="primary"
-                    text-color="white"
-                    small
-                  >
+                  <v-chip class="ma-1" v-else-if="type === 'leakage'" color="primary" text-color="white" small>
                     {{ $t("general." + type) }}
                   </v-chip>
-                  <v-chip
-                    class="ma-1"
-                    v-else
-                    color="green"
-                    text-color="white"
-                    small
-                  >
+                  <v-chip class="ma-1" v-else color="green" text-color="white" small>
                     {{ type }}
                   </v-chip>
                 </div>
@@ -292,10 +168,7 @@
                   <v-icon small color="warning">mdi-circle-medium</v-icon>
                   <span>{{ $t("general.pending") }}</span>
                 </div>
-                <div
-                  v-else-if="item.status.key === 'confirmed'"
-                  class="success--text"
-                >
+                <div v-else-if="item.status.key === 'confirmed'" class="success--text">
                   <v-icon small color="success">mdi-circle-medium</v-icon>
                   <span>{{ $t("general.confirmed") }}</span>
                 </div>
@@ -325,23 +198,13 @@
         </v-card>
       </v-col>
     </v-row>
-    <change-status-dialog
-      v-model="dialog"
-      :id="eventId"
-      :eventItem="eventItem"
-      :statuses="statuses"
-    ></change-status-dialog>
+    <change-status-dialog v-model="dialog" :id="eventId" :eventItem="eventItem"
+      :statuses="statuses"></change-status-dialog>
 
     <!-- Captured Image-->
-    <div
-      id="captured_images"
-      class="model-aside"
-      :class="{ open: CapturedImageOpened }"
-    >
+    <div id="captured_images" class="model-aside" :class="{ open: CapturedImageOpened }">
       <v-card>
-        <v-card-title
-          class="d-flex justify-space-between align-center border-bottom"
-        >
+        <v-card-title class="d-flex justify-space-between align-center border-bottom">
           {{ $t("general.capturedImage") }}
           <!-- <span class="cursor-pointer" @click="closeCapturedImage">
             X
@@ -360,11 +223,7 @@
                   <v-col cols="12">
                     <div class="image-cover position-relative">
                       <div class="event-img">
-                        <canvas
-                          id="canvas"
-                          style="max-width: 100%"
-                          class="mx-auto"
-                        ></canvas>
+                        <canvas id="canvas" style="max-width: 100%" class="mx-auto"></canvas>
                       </div>
                     </div>
                   </v-col>
@@ -398,30 +257,16 @@
                       <div>
                         <h6 class="">Status</h6>
 
-                        <v-chip
-                          class="mt-1"
-                          v-if="eventStatus === 'pending'"
-                          color="orange"
-                        >
-                          <v-icon small color="warning"
-                            >mdi-circle-medium</v-icon
-                          >
+                        <v-chip class="mt-1" v-if="eventStatus === 'pending'" color="orange">
+                          <v-icon small color="warning">mdi-circle-medium</v-icon>
                           {{ $t("general.pending") }}
                         </v-chip>
-                        <v-chip
-                          v-else-if="eventStatus === 'confirmed'"
-                          class="mt-1"
-                          color="green"
-                        >
-                          <v-icon small color="green lighten-4"
-                            >mdi-circle-medium</v-icon
-                          >
+                        <v-chip v-else-if="eventStatus === 'confirmed'" class="mt-1" color="green">
+                          <v-icon small color="green lighten-4">mdi-circle-medium</v-icon>
                           {{ $t("general.confirmed") }}
                         </v-chip>
                         <v-chip class="mt-1" v-else color="red">
-                          <v-icon small color="red lighten-4"
-                            >mdi-circle-medium</v-icon
-                          >
+                          <v-icon small color="red lighten-4">mdi-circle-medium</v-icon>
                           {{ $t("general.error") }}
                         </v-chip>
                       </div>
@@ -432,11 +277,7 @@
                       <div>
                         <h6 class="">Management</h6>
                         <div class="modal-action" @click.stop="dialog = true">
-                          <v-btn
-                            color="primary"
-                            class="mt-1"
-                            @click="changeStatus(eventOpened)"
-                          >
+                          <v-btn color="primary" class="mt-1" @click="changeStatus(eventOpened)">
                             {{ $t("general.changeStatus") }}
                           </v-btn>
                         </div>
@@ -455,15 +296,9 @@
     </div>
 
     <!-- All Captured Images-->
-    <div
-      id="all_captured_images"
-      class="model-aside"
-      :class="{ open: AllCapturedImageOpened }"
-    >
+    <div id="all_captured_images" class="model-aside" :class="{ open: AllCapturedImageOpened }">
       <v-card>
-        <v-card-title
-          class="d-flex justify-space-between align-center border-bottom"
-        >
+        <v-card-title class="d-flex justify-space-between align-center border-bottom">
           {{ $t("general.capturedImages") }}
           <v-btn color="primary" icon @click="closeAllCapturedImage">
             <v-icon>
@@ -480,8 +315,7 @@
                     <img :src="item.image" alt="" />
                     <div class="overlay-layer bg-dark bg-opacity-10">
                       <v-btn color="primary">
-                        {{ $t("general.screenshot") }} {{ key + 1 }}</v-btn
-                      >
+                        {{ $t("general.screenshot") }} {{ key + 1 }}</v-btn>
                     </div>
                   </div>
                 </div>
@@ -496,15 +330,9 @@
     </div>
 
     <!-- Settings-->
-    <div
-      id="captured_images_settings"
-      class="model-aside"
-      :class="{ open: ImageSettingsOpened }"
-    >
+    <div id="captured_images_settings" class="model-aside" :class="{ open: ImageSettingsOpened }">
       <v-card>
-        <v-card-title
-          class="d-flex justify-space-between align-center border-bottom"
-        >
+        <v-card-title class="d-flex justify-space-between align-center border-bottom">
           {{ $t("general.settings") }}
           <span class="cursor-pointer" @click="CloseImageSettings">
             X
@@ -516,38 +344,20 @@
               <div class="row ma-0">
                 <div class="col-md-12 px-0 py-3 border-bottom">
                   <h3 class="mb-2">{{ $t("general.controlSetting") }}</h3>
-                  <v-text-field
-                    value=""
-                    type="date"
-                    :label="$t('general.selectDate')"
-                  ></v-text-field>
+                  <v-text-field value="" type="date" :label="$t('general.selectDate')"></v-text-field>
                   <div class="d-flex align-center">
-                    <v-switch
-                      class="mr-2"
-                      :label="$t('general.notification')"
-                    ></v-switch>
+                    <v-switch class="mr-2" :label="$t('general.notification')"></v-switch>
                     <v-switch :label="$t('general.screenshots')"></v-switch>
                   </div>
                 </div>
                 <div class="col-md-12 px-0 py-3">
                   <h3 class="mb-2">{{ $t("general.export") }}</h3>
-                  <v-text-field
-                    value=""
-                    type="date"
-                    label="Select Date"
-                  ></v-text-field>
+                  <v-text-field value="" type="date" label="Select Date"></v-text-field>
                   <div class="d-flex align-center">
-                    <v-switch
-                      class="mr-2"
-                      :label="$t('general.notification')"
-                    ></v-switch>
+                    <v-switch class="mr-2" :label="$t('general.notification')"></v-switch>
                     <v-switch :label="$t('general.screenshots')"></v-switch>
                   </div>
-                  <v-select
-                    v-model="defaultSelected"
-                    :items="filter"
-                    :label="$t('general.selectDate')"
-                  ></v-select>
+                  <v-select v-model="defaultSelected" :items="filter" :label="$t('general.selectDate')"></v-select>
                 </div>
               </div>
 
@@ -789,7 +599,7 @@ export default {
       this.open();
     }
   },
-  mounted() {},
+  mounted() { },
   unmounted() {
     this.stopEcho();
   },
@@ -858,7 +668,7 @@ export default {
       let { id } = this.$route.params;
       this.$router.push("/models/notes/" + id);
     },
-    searchEvent() {},
+    searchEvent() { },
     changeDatePicker() {
       this.open();
       this.$refs.statComponent.cardsData(this.dateRange);
@@ -1180,24 +990,30 @@ export default {
   height: 300px;
   background-size: 100% 100%;
 }
+
 .slide-fade-enter-active {
   transition: all 0.3s ease;
 }
+
 .slide-fade-leave-active {
   transition: all 0.3s cubic-bezier(1, 0.5, 0.8, 1);
 }
+
 .slide-fade-enter,
 .slide-fade-leave-to {
   transform: translateX(10px);
   opacity: 0;
 }
+
 .custom-switch {
   margin: 0;
   padding: 0;
   align-items: center;
 }
+
 .vue-daterange-picker {
   margin: 0;
 }
+
 ////
 </style>

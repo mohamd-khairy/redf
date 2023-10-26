@@ -4,12 +4,16 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class File extends Model
 {
     use HasFactory;
-    protected $fillable = ['name', 'path', 'fileable_type', 'fileable_id'];
+    use SoftDeletes;
 
+    protected $fillable = ['name', 'path', 'fileable_type', 'fileable_id', 'priority', 'start_date', 'end_date', 'type', 'user_id', 'status'];
+
+    protected $appends = ['file'];
 
     public function fileable()
     {
@@ -21,7 +25,12 @@ class File extends Model
         if ($value) {
             return url('storage/' . $value);
         }
-        
+
         return null;
+    }
+
+    public function getFileAttribute()
+    {
+        return $this->attributes['path'] ? 'storage/' . $this->attributes['path'] : null;
     }
 }

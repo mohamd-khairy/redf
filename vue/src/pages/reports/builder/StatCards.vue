@@ -17,10 +17,10 @@
           </v-icon>
         </v-avatar>
         <div class="d-flex flex-column">
-          <span class="text-h5 font-weight-medium">{{
+          <span class="text-h4 font-weight-medium">{{
             card.requests_count
           }}</span>
-          <span class="text-caption">
+          <span class="text-caption text-h4">
             {{ card.name }}
           </span>
         </div>

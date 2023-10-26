@@ -156,6 +156,7 @@ export default {
     checkout: "Checkout",
   },
   menu: {
+    specializations: "Specializations",
     search: 'Search (press "ctrl + /" to focus)',
     dashboard: "Dashboard",
     departments: "Departments",
@@ -229,6 +230,7 @@ export default {
     cases: "Cases",
     legal_advice: "Legal Advice",
     tasks: "Tasks",
+    transactions: "Transactions",
     documents: "Documents",
     beneficiaries: "Beneficiaries",
     log: "Log",
@@ -468,6 +470,22 @@ export default {
       employee: "Employee",
       governorate: "Governorate",
     },
+    user_photo: "User Photo",
+  },
+  transactions: {
+    new_transaction: "Add Treatment",
+    name: "Treatment Name",
+    number: "Treatment Number",
+    date: "Treatment Date",
+    type: "Type",
+    department: "Department",
+    consultations: "Consultations",
+    types: {
+      preparing_speech: "Preparing Speech",
+      consultation: "Consultation",
+      normal: "Normal",
+      another_treatment: "Another Treatment",
+    },
   },
   cases: {
     caseType: "Cases Type",
@@ -487,11 +505,9 @@ export default {
     percentageLose: "Percentage Lose Case",
     action: "Action",
     courtDate: "Court Date",
-    adviceActions:"Advice Actions",
-
+    adviceActions: "Advice Actions",
 
     createCase: "Create case",
-
   },
   charts: {
     Station1: "Station 1",
@@ -507,6 +523,8 @@ export default {
     drone4: "Drone 4",
   },
   tables: {
+    case_date: "Case Date",
+    branch: "Branch",
     name: "name",
     display_name: "display name",
     file: "file",
@@ -555,6 +573,8 @@ export default {
     subject_id: "Subject ID",
     template: "Template",
     causer_id: "Causer ID",
+    specialization: "Specialization",
+    sub_status: "Sub Status",
   },
   texts: {
     editor: "Editor",
@@ -600,6 +620,8 @@ export default {
     ResponseToCustomerFeedback: "Response to Customer Feedback",
   },
   general: {
+    name: "Name",
+    number: "Number",
     edit: "Edit",
     count: "Count",
     notice: "Notice",
@@ -696,7 +718,9 @@ export default {
     pending: "Pending",
     processing: "Processing",
     active: "Active",
+    notactive: "Not Active",
     assigner: "Assigner",
+    new_treatment_added: "New Treatment Added",
   },
   reports: {
     buildReport: "Build Report",
@@ -767,6 +791,7 @@ export default {
     confirmDeleteDoc: "Are you sure to delete this Document?",
     confirmDeleteSelectedDoc: "Are you sure to delete the selected Documents?",
     editDoc: "Edit Document",
+    department_id: "Department",
   },
   tasks: {
     tasksList: "Tasks List",
@@ -785,5 +810,6 @@ export default {
     assigned_to: "Assigned To",
     document: "Document",
     due_date: "Due Date",
+    details: "Details",
   },
 };

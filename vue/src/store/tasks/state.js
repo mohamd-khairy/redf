@@ -4,6 +4,7 @@ const state = {
   users: [],
   documents: [],
   casesNames: [],
+  consultationNames: [],
 };
 
 export default state;

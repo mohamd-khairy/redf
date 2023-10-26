@@ -17,10 +17,10 @@
 
             <v-col cols="6">
               <v-select
-                v-model="form.type"
-                :items="types"
-                :label="$t('tasks.types')"
-                :error-messages="errors['types']"
+                v-model="form.status"
+                :items="statuss"
+                :label="$t('tasks.status')"
+                :error-messages="errors['status']"
                 outlined
                 dense
               ></v-select>
@@ -106,6 +106,15 @@
                 </v-date-picker>
               </v-dialog>
             </v-col>
+            <v-col cols="12">
+              <v-textarea
+                v-model="form.details"
+                outlined
+                :error-messages="errors['assigner_id']"
+                dense
+                :label="$t('tasks.details')"
+              ></v-textarea>
+            </v-col>
           </v-row>
 
           <div class="d-flex">
@@ -152,8 +161,9 @@ export default {
         .toISOString()
         .substr(0, 10),
       form: {
+        details: "",
         name: "",
-        type: "",
+        status: "",
         form_request_id: "",
         user_id: null,
         file: null,
@@ -161,7 +171,7 @@ export default {
         due_date: "",
       },
       dueDateModal: false,
-      types: ["Type 1", "Type 2", "Type 3"],
+      statuss: ["Status 1", "Status 2", "Status 3"],
       errors: {},
       isDateInvalid: false,
       uploadedFile: null,
@@ -211,8 +221,9 @@ export default {
         .then(() => {
           this.loading = false;
           const {
+            details,
             name,
-            type,
+            status,
             file,
             form_request_id,
             assigner_id,
@@ -222,8 +233,9 @@ export default {
           this.uploadedFile = file;
           (this.dueDate = new Date(due_date).toISOString().substr(0, 10)),
             (this.form = {
+              details,
               name,
-              type,
+              status,
               file: null,
               form_request_id,
               user_id,

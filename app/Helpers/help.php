@@ -5,6 +5,7 @@ use App\Models\Setting;
 use App\Models\Calendar;
 use Illuminate\Support\Str;
 use App\Models\FormRequestAction;
+use App\Notifications\UserNotify;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Storage;
@@ -190,15 +191,35 @@ if (!function_exists('saveCalendarFromRequest')) {
 }
 
 if (!function_exists('saveFormRequestAction')) {
-    function saveFormRequestAction(array $data)
+    function saveFormRequestAction(array $data = null, $formable_type = null, $form_request_id = null, $formable_id = null, $msg = null)
     {
+        if (!$data) {
+            $data =  [
+                'form_request_id' => $form_request_id,
+                'formable_id' => $formable_id,
+                'formable_type' => $formable_type,
+                'msg' => $msg,
+            ];
+        }
         $validatedData = validator($data, [
             'formable_type' => 'nullable|string',
             'form_request_id' => 'required|integer',
             'formable_id' => 'nullable|integer',
             'msg' => 'required|string',
-
         ])->validate();
+
         return FormRequestAction::create($validatedData);
+    }
+}
+
+if (!function_exists('sendMsgFormat')) {
+    function sendMsgFormat($user_id,$msg,$title=null)
+    {
+         $data = [
+            'title' =>  $title,
+            'msg' =>  $msg,
+            ];
+        $user = User::find($user_id);
+        return  $user->notify(new UserNotify($data));
     }
 }

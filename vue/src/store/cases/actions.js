@@ -15,6 +15,8 @@ const actions = {
     const response = await axios.get(`get-form-Requests`, {
       params: {
         template_id: data.template_id,
+        form_type: data.form_type,
+        type: "case",
         search: data.search,
         pageSize: data.pageSize,
         page: data.pageNumber,
@@ -24,6 +26,22 @@ const actions = {
     });
     const formRequests = response?.data.data;
     commit("SET_formRequests", formRequests);
+  },
+  async getCases({ commit }, data) {
+    const response = await axios.get(`get-form-Requests`, {
+      params: {
+        template_id: data.template_id,
+        form_type: data.form_type,
+        type: "case",
+        search: data.search,
+        pageSize: data.pageSize,
+        page: data.pageNumber,
+        sortDirection: data.sortDirection,
+        sortCoulmn: data.sortColumn,
+      },
+    });
+    const cases = response?.data.data;
+    commit("SET_CASES", cases);
   },
   async deleteForm({ commit }, id) {
     return await axios.delete(`delete-form-Requests/${id}`);
@@ -157,7 +175,7 @@ const actions = {
   },
   async getPagesValues({ commit }, formId) {
     const response = await axios.get(`get-form-Requests/${formId}`);
-    console.log("pages", response?.data.data);
+
     let pageTabs = response?.data.data.form.pages;
     const inputValues = response?.data.data.form_page_item_fill;
     const selectedFormName = response?.data.data.form.name;
@@ -210,7 +228,23 @@ const actions = {
       return false;
     }
   },
-  async savePages({ state }, { caseName, caseNumber, case_id }) {
+  async savePages(
+    { state },
+    {
+      caseName,
+      caseNumber,
+      case_id,
+      branch_id,
+      caseDate,
+      type,
+      case_type,
+      specialization_id,
+      organization_id,
+      file,
+      form_type,
+      benefire_id,
+    }
+  ) {
     try {
       const customFormData = {
         id: state.selectedForm.id,
@@ -236,10 +270,41 @@ const actions = {
         let value = customFormData[key];
         bodyFormData.set(key, JSON.stringify(value));
       }
-      bodyFormData.set("case_name", caseName);
-      bodyFormData.set("case_number", caseNumber);
+      if (caseName) {
+        bodyFormData.set("case_name", caseName);
+      }
+      if (caseNumber) {
+        bodyFormData.set("case_number", caseNumber);
+      }
+      if (caseDate) {
+        bodyFormData.set("case_date", caseDate);
+      }
       if (case_id) {
         bodyFormData.set("case_id", case_id);
+      }
+      if (branch_id) {
+        bodyFormData.set("branche_id", branch_id);
+      }
+      if (type) {
+        bodyFormData.set("type", type);
+      }
+      if (case_type) {
+        bodyFormData.set("case_type", case_type);
+      }
+      if (specialization_id) {
+        bodyFormData.set("specialization_id", specialization_id);
+      }
+      if (organization_id) {
+        bodyFormData.set("organization_id", organization_id);
+      }
+      if (file) {
+        bodyFormData.set("file", file);
+      }
+      if (form_type) {
+        bodyFormData.set("form_type", form_type);
+      }
+      if (benefire_id) {
+        bodyFormData.set("benefire_id", benefire_id);
       }
       const result = await axios.post(`store-form-fill`, bodyFormData, {
         headers: {
@@ -252,7 +317,22 @@ const actions = {
       return false;
     }
   },
-  async updatePages({ state }, { caseName, caseNumber, formId }) {
+  async updatePages(
+    { state },
+    {
+      caseName,
+      caseNumber,
+      case_id,
+      formId,
+      branch_id,
+      caseDate,
+      type,
+      case_type,
+      specialization_id,
+      organization_id,
+      file
+    }
+  ) {
     try {
       const customFormData = {
         id: state.selectedForm.id,
@@ -280,9 +360,36 @@ const actions = {
         bodyFormData.set(key, JSON.stringify(value));
         bodyFormData.set("_method", "PUT");
       }
-
-      bodyFormData.set("case_name", caseName);
-      bodyFormData.set("case_number", caseNumber);
+      if (caseName) {
+        bodyFormData.set("case_name", caseName);
+      }
+      if (caseNumber) {
+        bodyFormData.set("case_number", caseNumber);
+      }
+      if (caseDate) {
+        bodyFormData.set("case_date", caseDate);
+      }
+      if (case_id) {
+        bodyFormData.set("case_id", case_id);
+      }
+      if (branch_id) {
+        bodyFormData.set("branche_id", branch_id);
+      }
+      if (type) {
+        bodyFormData.set("type", type);
+      }
+      if (case_type) {
+        bodyFormData.set("case_type", case_type);
+      }
+      if (specialization_id) {
+        bodyFormData.set("specialization_id", specialization_id);
+      }
+      if (organization_id) {
+        bodyFormData.set("organization_id", organization_id);
+      }
+      if (file) {
+        bodyFormData.set("file", file);
+      }
       const response = await axios.post(
         `update-form-fill/${formId}`,
         bodyFormData,
@@ -298,19 +405,217 @@ const actions = {
       return false;
     }
   },
+  async updateBackPages(
+    { state },
+    { caseName, caseNumber, formId, branch_id, caseDate, type,case_id }
+  ) {
+    try {
+      const customFormData = {
+        id: state.selectedForm.id,
+
+        name: state.selectedForm.name,
+        pages: state.pages.map((page) => ({
+          id: page.id,
+          title: page.title,
+          items: page.items
+            .filter((input) => input.value)
+            .map((input) => {
+              return {
+                form_page_item_id: input.id,
+                value: input.value,
+                type: input.type,
+              };
+            }),
+        })),
+      };
+
+      const bodyFormData = new FormData();
+
+      for (const key in customFormData) {
+        let value = customFormData[key];
+        bodyFormData.set(key, JSON.stringify(value));
+        bodyFormData.set("_method", "PUT");
+      }
+      if (caseName) {
+        bodyFormData.set("case_name", caseName);
+      }
+      if (caseNumber) {
+        bodyFormData.set("case_number", caseNumber);
+      }
+      if (caseDate) {
+        bodyFormData.set("case_date", caseDate);
+      }
+      if (branch_id) {
+        bodyFormData.set("branche_id", branch_id);
+      }
+      if (type) {
+        bodyFormData.set("type", type);
+      }
+      if (case_id) {
+        bodyFormData.set("case_id", case_id);
+      }
+      const response = await axios.post(
+        `update-form-fill/${formId}`,
+        bodyFormData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+      return true;
+    } catch (error) {
+      console.error("Error saving form data:", error);
+      return false;
+    }
+  },
+  async saveRelatedPages({ state }, { case_id }) {
+    try {
+      const customFormData = {
+        id: state.selectedForm.id,
+        name: state.selectedForm.name,
+        pages: state.pages.map((page) => ({
+          id: page.id,
+          title: page.title,
+          items: page.items
+            .filter((input) => input.value)
+            .map((input) => {
+              return {
+                form_page_item_id: input.id,
+                value: input.value,
+                type: input.type,
+              };
+            }),
+        })),
+      };
+
+      const bodyFormData = new FormData();
+
+      for (const key in customFormData) {
+        let value = customFormData[key];
+        bodyFormData.set(key, JSON.stringify(value));
+      }
+      bodyFormData.set("case_id", case_id);
+      const result = await axios.post(
+        `store-related-case-form-fill`,
+        bodyFormData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+      return result;
+    } catch (error) {
+      console.error("Error saving form data:", error);
+      return false;
+    }
+  },
+  async updateRelatedPages({ state }, { formId }) {
+    try {
+      const customFormData = {
+        id: state.selectedForm.id,
+
+        name: state.selectedForm.name,
+        pages: state.pagesValues.map((page) => ({
+          id: page.id,
+          title: page.title,
+          items: page.items
+            .filter((input) => input.value)
+            .map((input) => {
+              return {
+                form_page_item_id: input.id,
+                value: input.value,
+                type: input.type,
+              };
+            }),
+        })),
+      };
+
+      const bodyFormData = new FormData();
+
+      for (const key in customFormData) {
+        let value = customFormData[key];
+        bodyFormData.set(key, JSON.stringify(value));
+        bodyFormData.set("_method", "PUT");
+      }
+      const response = await axios.post(
+        `update-related-case-form-fill/${formId}`,
+        bodyFormData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+      return true;
+    } catch (error) {
+      console.error("Error saving form data:", error);
+      return false;
+    }
+  },
   async getCourts({ commit }) {
     const response = await axios.get(`lookup`);
-    console.log(response);
+
     const { court_types } = response?.data.data;
     const { case_types } = response?.data.data;
+    const { specialization } = response?.data.data;
+    const { branches } = response?.data.data;
+    const { organizations } = response?.data.data;
     commit("SET_CORTS", court_types);
+    commit("SET_SESSION_PLACES", branches);
     commit("SET_CASE_TYPES", case_types);
+    commit("SET_specializations", specialization);
+    commit("SET_organizations", organizations);
+  },
+  async retrieveClaimant({ commit }, { form_request_id }) {
+    const response = await axios.get(`retrieve-claimant`, {
+      params: {
+        form_request_id,
+      },
+    });
+    const claimant = response?.data?.data || [];
+
+    commit("SET_CLAIMANT", claimant);
   },
   async getCasePreview({ commit }, id) {
     const response = await axios.get(`action-preview/${id}`);
     const { formRequestActions } = response?.data?.data;
     return formRequestActions;
   },
+  async changeStatus({ commit }, { status, formId }) {
+    try {
+      const response = await axios.post(`change-status`, {
+        status: status,
+        form_request_id: formId,
+      });
+      if (response) {
+        return true;
+      }
+    } catch (error) {
+      return false;
+    }
+  },
+  async updateFormRequestInfo({ commit }, data) {
+    return await axios.put(`update-form-request-information/${data.id}`, data);
+  },
+
+  async getApplications({ commit }, data) {
+    const response = await axios.get(`get-all-applications`,{
+      params: {
+        form_id: data.id,
+        search: data.search,
+        pageSize: data.pageSize,
+        page: data.pageNumber,
+        sortDirection: data.sortDirection,
+        sortCoulmn: data.sortColumn,
+      },
+    });
+    const columns = response?.data.data.data;
+    commit("SET_COLUMNS", columns);
+    return response;
+  },
+
 };
 
 export default actions;

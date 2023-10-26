@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers\API;
 
+use DateTime;
 use Throwable;
 use Carbon\Carbon;
 use App\Models\File;
@@ -36,16 +37,32 @@ class TaskController extends Controller
      */
     public function index(PageRequest $request)
     {
-        $tasks = Task::with('user:id,name', 'assigner:id,name', 'file');
+        try {
 
-        $data = app(Pipeline::class)->send($tasks)->through([
-            SearchFilters::class,
-            SortFilters::class,
-        ])->thenReturn();
+            $this->updateTaskStage();
 
-        $data = request('pageSize') == -1 ?  $data->get() : $data->paginate(request('pageSize', 15));
+            $tasks = Task::with('user:id,name,avatar', 'assigner:id,name,avatar', 'file');
 
-        return responseSuccess(['tasks' => $data]);
+            $data = app(Pipeline::class)->send($tasks)->through([
+                SearchFilters::class,
+                SortFilters::class,
+            ])->thenReturn();
+
+            $data = request('pageSize') == -1 ?  $data->get() : $data->paginate(request('pageSize', 200));
+
+            $data = $data->groupBy('stage_id');
+
+            $data =  collect(Task::$stages)->map(function ($stage) use ($data) {
+                $stage['tasks'] = isset($data[$stage['id']]) ? $data[$stage['id']] : [];
+                return $stage;
+            });
+
+            return responseSuccess(['tasks' => $data]);
+
+            //code...
+        } catch (\Throwable $th) {
+            //throw $th;
+        }
     }
 
     /**
@@ -54,38 +71,48 @@ class TaskController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(TaskRequest $request)
+    public function store(Request $request)
     {
-
+        return $request->all();
         try {
+            // return $request->all();
             $validatedData = $request->validated();
-            unset($validatedData['file']);
+            return $validatedData['files'];
+
+            unset($validatedData['files']);
             // Parse the due_date
-            $validatedData['due_date'] = Carbon::createFromFormat('d-m-Y', $validatedData['due_date'])
-                ->format('Y-m-d');
+            $validatedData['due_date'] = Carbon::createFromFormat('d-m-Y', $validatedData['due_date'])->format('Y-m-d');
             // Create the task
             $task = Task::create($validatedData);
             // Handle the file upload
-            if ($request->hasFile('file')) {
-                $file = $request->file('file');
-                $filename = $file->getClientOriginalName();
-                $filePath = UploadService::store($file, 'tasks');
-                // Create a new file record
-                $fileRecord = new File([
-                    'name' => $filename,
-                    'path' => $filePath,
-                ]);
-                $fileRecord->fileable()->associate($task); // Associate the file with the task
-                $fileRecord->save();
+
+            if ($request->hasFile('files')) {
+                foreach ($request->file('files') as $uploadedFile) {
+                    dd($uploadedFile);
+                    $filename = $uploadedFile->getClientOriginalName();
+                    $filePath = UploadService::store($uploadedFile, 'tasks');
+                    // Create a new file record for each uploaded file
+                    $fileRecord = new File([
+                        'name' => $filename,
+                        'path' => $filePath,
+                        'user_id' => auth()->id(),
+                        'start_date' => now(),
+                        'type' => 'task',
+                        'priority' => 'high',
+                    ]);
+                    $fileRecord->fileable()->associate($task);
+                    $fileRecord->save();
+                }
             }
 
-            $actionData = [
-                'form_request_id' => $request->form_request_id,
-                'formable_id' => $request->form_request_id,
-                'formable_type' => FormRequest::class,
-                 'msg' =>  'تم اسناد المهمه الي قضيه جديده',
-            ];
-            saveFormRequestAction($actionData);
+            if ($request->form_request_id) {
+                saveFormRequestAction(
+                    form_request_id: $request->form_request_id,
+                    formable_id: $request->form_request_id,
+                    formable_type: FormRequest::class,
+                    msg: 'تم اسناد المهمه الي قضيه '
+                );
+            }
             return responseSuccess($task, 'Task has been successfully created');
         } catch (Throwable $e) {
             return responseFail($e->getMessage());
@@ -103,14 +130,16 @@ class TaskController extends Controller
     {
         $validatedData = $request->validate([
             'name' => 'sometimes|string|max:255',
-            'type' => 'sometimes', // Enum values
+            'status' => 'sometimes', // Enum values
             'user_id' => 'sometimes|exists:users,id',
             'assigner_id' => 'sometimes|exists:users,id',
+            'department_id' => 'sometimes|exists:departments,id',
             'due_date' => 'sometimes|date',
             'details' => 'sometimes|string',
             'share_with' => 'sometimes|string',
             'form_request_id' => 'sometimes|exists:forms,id',
             'file' => 'nullable|file|mimes:jpg,jpeg,png,pdf,docx',
+            'stage_id' => 'nullable|integer',
         ]);
 
         unset($validatedData['file']);
@@ -135,6 +164,10 @@ class TaskController extends Controller
             $fileRecord = new File([
                 'name' => $filename,
                 'path' => $filePath,
+                'user_id' => auth()->id(),
+                'start_date' => now(),
+                'type' => 'task',
+                'priority' => 'high'
             ]);
 
             // Associate the new file with the updated task
@@ -164,5 +197,20 @@ class TaskController extends Controller
         $task->delete();
 
         return responseSuccess([], 'Task has been successfully deleted');
+    }
+
+    public function updateTaskStage()
+    {
+        // get todate date
+        $ldate = new DateTime('today');
+
+        $tasks = Task::whereDate('due_date', '<', $ldate)
+            ->where(function ($query) {
+                $query->where('stage_id', 1)
+                    ->orWhere('stage_id', 2);
+            })
+            ->update(['stage_id' => 3]);
+
+        return responseSuccess([], 'Task has been successfully updated');
     }
 }

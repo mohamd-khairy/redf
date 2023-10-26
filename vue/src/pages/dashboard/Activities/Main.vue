@@ -7,7 +7,7 @@
                     <v-menu offset-y left>
                         <template v-slot:activator="{ on }">
                             <transition name="slide-fade" mode="out-in">
-                                <v-btn v-show="selectedtemplates.length > 0" v-on="on">
+                                <v-btn v-show="selectedTemplates.length > 0" v-on="on">
                                     {{ $t("general.actions") }}
                                     <v-icon right>mdi-menu-down</v-icon>
                                 </v-btn>
@@ -44,7 +44,7 @@
                     </v-btn>
                 </v-col>
             </v-row>
-            <v-data-table show-select v-model="selectedtemplates" :headers="headers" :items="templateItems"
+            <v-data-table show-select v-model="selectedTemplates" :headers="headers" :items="templateItems"
                 :options.sync="options" class="flex-grow-1" :loading="isLoading" :page="page" :pageCount="numberOfPages"
                 :server-items-length="totalItems">
                 <template v-slot:item.id="{ item }">
@@ -158,7 +158,7 @@ export default {
         };
     },
     watch: {
-        selectedTemplates(val) { },
+        // selectedTemplates(val) { },
         options: {
             handler() {
                 this.open();
@@ -213,7 +213,7 @@ export default {
                 });
         },
 
-        async deleteAlltemplates() {
+        async deleteAllTemplates() {
             let data = {};
             let ids = [];
             const { isConfirmed } = await ask("Are you sure to delete it?", "info");

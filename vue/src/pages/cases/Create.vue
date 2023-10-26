@@ -1,15 +1,20 @@
 <template>
-  <div>
+  <div style="width: 100%">
     <v-stepper v-model="e1">
       <v-stepper-header>
         <v-stepper-step :complete="e1 > 1" step="1">
-          {{ $t("general.create") + " " + selectedTitle }}
+          {{ $t("cases.selectCase") }}
         </v-stepper-step>
+        <!-- <v-divider></v-divider>
+        <v-stepper-step :complete="e1 > 2" step="2">
+          {{ $t("general.info") + " " + selectedTitle }}
+        </v-stepper-step> -->
+
         <v-divider></v-divider>
+
         <v-stepper-step :complete="e1 > 2" step="2">
           {{ $t("general.info") + " " + selectedTitle }}
         </v-stepper-step>
-
         <v-divider></v-divider>
 
         <v-stepper-step step="3">
@@ -19,124 +24,147 @@
 
       <v-stepper-items>
         <v-stepper-content step="1">
-          <div class="mt-2">
-            <v-text-field
-              class="mb-2"
-              v-model="caseName"
-              :label="$t('cases.name')"
-              outlined
-              :required="true"
-              :error-messages="stepOneValidation(caseName)"
-              dense
-              :rules="[requiredRule]"
-            ></v-text-field>
-            <v-text-field
-              outlined
-              type="number"
-              class="mb-2"
-              v-model="caseNumber"
-              @keydown="handleInput"
-              :label="$t('cases.number')"
-              :required="true"
-              :rules="[requiredRule]"
-              :error-messages="stepOneValidation(caseNumber)"
-              dense
-            ></v-text-field>
+          <div class="mt-2" v-if="!initialLoading">
+            <div class="mt-2">
+              <div class="d-flex">
+                <v-select
+                  :items="cases"
+                  :label="$t('cases.belongToCase')"
+                  item-text="name"
+                  item-value="id"
+                  hide-details
+                  dense
+                  outlined
+                  v-model="caseId"
+                  clearable
+                  :required="true"
+                  :error-messages="stepOneValidation(caseId)"
+                  :rules="[requiredRule]"
+                >
+                </v-select>
+
+                <v-spacer></v-spacer>
+                <v-btn
+                  v-if="caseId"
+                  color="primary"
+                  outlined
+                  @click="openCaseInfoDialog(caseId)"
+                  >{{ $t("cases.view_info") }}</v-btn
+                >
+              </div>
+            </div>
           </div>
-          <v-card-actions class="px-2">
+          <v-card-actions class="mt-2">
             <v-btn color="primary" @click="saveCaseInfo">
               {{ $t("general.continue") }}
             </v-btn>
+            <!-- <v-btn color="grey" @click="stepBack" class="ms-2">
+              {{ $t("general.back") }}
+            </v-btn> -->
           </v-card-actions>
         </v-stepper-content>
         <v-stepper-content step="2">
           <div class="mt-2" v-if="!initialLoading">
-            <v-tabs v-model="activeTab">
-              <v-tab v-for="(tab, index) in pages" :key="index">{{
-                tab.title
-              }}</v-tab>
-            </v-tabs>
-            <v-tabs-items v-model="activeTab">
-              <v-tab-item v-for="(tab, tabIndex) in pages" :key="tabIndex">
-                <v-form>
-                  <v-container>
-                    <v-row dense>
-                      <v-col
-                        v-for="(input, inputIndex) in tab.items"
-                        :key="inputIndex"
-                        :cols="inputWidth(input.width)"
-                      >
-                        <template v-if="input.type === 'text'">
-                          <v-text-field
-                            outlined
-                            v-model="input.value"
-                            :label="getInputLabel(input)"
-                            :rules="input.required ? [requiredRule] : []"
-                            :required="input.required"
-                            :error-messages="errorMessage(input)"
-                            dense
-                          ></v-text-field>
-                        </template>
-                        <template v-else-if="input.type === 'textarea'">
-                          <v-textarea
-                            outlined
-                            dense
-                            v-model="input.value"
-                            :label="getInputLabel(input)"
-                            :required="input.required"
-                            :rules="input.required ? [requiredRule] : []"
-                            :error-messages="errorMessage(input)"
-                          ></v-textarea>
-                        </template>
-                        <template v-else-if="input.type === 'file'">
-                          <v-file-input
-                            outlined
-                            dense
-                            counter
-                            show-size
-                            :label="getInputLabel(input)"
-                            @change="(file) => handleFileUpload(file, input)"
-                            :required="input.required"
-                            :rules="input.required ? [requiredRule] : []"
-                            :error-messages="errorMessage(input)"
+            <v-card-text>
+              <div class="mt-2" v-if="!initialLoading">
+                <v-tabs
+                  v-model="activeTab"
+                  v-if="pages && pages[0]?.items?.length > 0"
+                >
+                  <v-tab v-for="(tab, index) in pages" :key="index">{{
+                    tab.title
+                  }}</v-tab>
+                </v-tabs>
+                <v-tabs-items v-model="activeTab">
+                  <v-tab-item v-for="(tab, tabIndex) in pages" :key="tabIndex">
+                    <v-form>
+                      <v-container>
+                        <v-row dense>
+                          <v-col
+                            v-for="(input, inputIndex) in tab.items"
+                            :key="inputIndex"
+                            :cols="inputWidth(input.width)"
                           >
-                          </v-file-input>
-                        </template>
-                        <template v-else-if="input.type === 'select'">
-                          <v-select
-                            v-model="input.value"
-                            :items="input.childList"
-                            item-text="text"
-                            :label="getInputLabel(input)"
-                            :required="input.required"
-                            :rules="input.required ? [requiredRule] : []"
-                            :error-messages="errorMessage(input)"
-                            outlined
-                            dense
-                          ></v-select>
-                        </template>
-                        <template v-else-if="input.type === 'radio'">
-                          <v-radio-group
-                            v-model="input.selectedOption"
-                            :label="getInputLabel(input)"
-                            :required="input.required"
-                            :rules="input.required ? [requiredRule] : []"
-                            :error-messages="errorMessage(input)"
-                          >
-                            <v-radio
-                              v-for="(option, optionIndex) in input.childList"
-                              :key="optionIndex"
-                              :label="option.text"
-                              :value="option.text"
-                            ></v-radio>
-                          </v-radio-group>
-                        </template>
-                      </v-col>
-                    </v-row>
-                  </v-container>
-                </v-form>
-              </v-tab-item>
-            </v-tabs-items>
+                            <template v-if="input.type === 'text'">
+                              <v-text-field
+                                outlined
+                                v-model="input.value"
+                                :label="getInputLabel(input)"
+                                :rules="input.required ? [requiredRule] : []"
+                                :required="input.required"
+                                :error-messages="errorMessage(input)"
+                                dense
+                              ></v-text-field>
+                            </template>
+                            <template v-else-if="input.type === 'textarea'">
+                              <v-textarea
+                                outlined
+                                dense
+                                v-model="input.value"
+                                :label="getInputLabel(input)"
+                                :required="input.required"
+                                :rules="input.required ? [requiredRule] : []"
+                                :error-messages="errorMessage(input)"
+                              ></v-textarea>
+                            </template>
+                            <template v-else-if="input.type === 'file'">
+                              <v-file-input
+                                outlined
+                                dense
+                                counter
+                                show-size
+                                accept=".doc, .docx"
+                                :label="getInputLabel(input)"
+                                @change="
+                                  (file) => handleFileUpload(file, input)
+                                "
+                                :required="input.required"
+                                :rules="input.required ? [requiredRule] : []"
+                                :error-messages="errorMessage(input)"
+                              >
+                              </v-file-input>
+                            </template>
+                            <template v-else-if="input.type === 'select'">
+                              <v-select
+                                v-model="input.value"
+                                :items="input.childList"
+                                item-text="text"
+                                :label="getInputLabel(input)"
+                                :required="input.required"
+                                :rules="input.required ? [requiredRule] : []"
+                                :error-messages="errorMessage(input)"
+                                outlined
+                                dense
+                              ></v-select>
+                            </template>
+                            <template v-else-if="input.type === 'radio'">
+                              <v-radio-group
+                                v-model="input.selectedOption"
+                                :label="getInputLabel(input)"
+                                :required="input.required"
+                                :rules="input.required ? [requiredRule] : []"
+                                :error-messages="errorMessage(input)"
+                              >
+                                <v-radio
+                                  v-for="(
+                                    option, optionIndex
+                                  ) in input.childList"
+                                  :key="optionIndex"
+                                  :label="option.text"
+                                  :value="option.text"
+                                ></v-radio>
+                              </v-radio-group>
+                            </template>
+                          </v-col>
+                        </v-row>
+                      </v-container>
+                    </v-form>
+                  </v-tab-item>
+                </v-tabs-items>
+              </div>
+
+              <!-- <second-form></second-form> -->
+            </v-card-text>
           </div>
           <v-card-actions>
             <v-btn color="primary" @click="saveForm">
@@ -147,156 +175,91 @@
             </v-btn>
           </v-card-actions>
         </v-stepper-content>
-
         <v-stepper-content step="3">
-          <div class="d-flex flex-column flex-sm-row">
-            <div class="flex-grow-1 pt-2 pa-sm-2">
-              <v-row dense>
-                <v-col cols="6">
-                  <v-text-field
-                    type="number"
-                    v-model="caseAction.amount"
-                    :label="$t('cases.amount')"
-                    outlined
-                    dense
-                  >
-                    <template v-slot:append>
-                      <v-icon> mdi-cash </v-icon>
-                    </template>
-                  </v-text-field>
-                </v-col>
-                <v-col cols="6">
-                  <v-text-field
-                    type="number"
-                    v-model="caseAction.percentage"
-                    :label="$t('cases.percentageLose')"
-                    dense
-                    outlined
-                  >
-                    <template v-slot:append>
-                      <v-icon> mdi-percent </v-icon>
-                    </template>
-                  </v-text-field>
-                </v-col>
-                <v-col cols="6">
-                  <v-select
-                    :items="caseTypes"
-                    item-text="title"
-                    item-value="value"
-                    :label="$t('tables.status')"
-                    dense
-                    outlined
-                    required="true"
-                    :rules="[rules.required]"
-                    :error-messages="stepOneValidation(caseAction.status)"
-                    v-model="caseAction.status"
-                  >
-                  </v-select>
-                </v-col>
-                <v-col cols="12" sm="6">
-                  <v-dialog
-                    ref="dateDialog"
-                    v-model="dateDialog"
-                    :return-value.sync="caseAction.date"
-                    persistent
-                    width="290px"
-                  >
-                    <template v-slot:activator="{ on, attrs }">
-                      <v-text-field
-                        v-model="caseAction.date"
-                        :label="$t('tables.date')"
-                        prepend-icon="mdi-calendar"
-                        readonly
-                        v-bind="attrs"
-                        v-on="on"
-                        dense
-                        required="true"
-                        :rules="[rules.required]"
-                        :error-messages="stepOneValidation(caseAction.date)"
-                        outlined
-                      ></v-text-field>
-                    </template>
-                    <v-date-picker v-model="caseAction.date" scrollable>
-                      <v-spacer></v-spacer>
-                      <v-btn text color="primary" @click="modal = false">
-                        Cancel
-                      </v-btn>
-                      <v-btn
-                        text
-                        color="primary"
-                        @click="$refs.dateDialog.save(caseAction.date)"
-                      >
-                        OK
-                      </v-btn>
-                    </v-date-picker>
-                  </v-dialog>
-                </v-col>
+          <iframe
+            v-if="uploadedFileType === 'pdf'"
+            :src="docUrl"
+            width="100%"
+            height="500"
+          ></iframe>
+          <div v-else id="filePreview-container"></div>
 
-                <v-col cols="12">
-                  <v-select
-                    :items="courts"
-                    :label="$t('tables.court')"
-                    item-text="title"
-                    item-value="value"
-                    dense
-                    outlined
-                    v-model="caseAction.court"
-                  >
-                  </v-select>
-                </v-col>
-                <v-col cols="12">
-                  <v-textarea
-                    :label="$t('cases.action')"
-                    value=""
-                    v-model="caseAction.details"
-                    dense
-                    outlined
-                  ></v-textarea>
-                </v-col>
-              </v-row>
-            </div>
-          </div>
-          <v-card-actions>
-            <v-btn @click="storeFormInformation" color="primary">
-              {{ $t("general.save") }}
-            </v-btn>
+<!--          <v-card-actions class="mt-2">-->
+<!--            <v-btn color="primary" @click="updateCaseStatus('ACCEPT')">-->
+<!--              {{ $t("general.acceptRequest") }}-->
+<!--            </v-btn>-->
+<!--            <v-btn color="primary" @click="updateCaseStatus('RETURN')">-->
+<!--              {{ $t("general.returnRequest") }}-->
+<!--            </v-btn>-->
+<!--            <v-btn color="primary" @click="updateCaseStatus('REFUSE')">-->
+<!--              {{ $t("general.refuseRequest") }}-->
+<!--            </v-btn>-->
 
-            <v-btn color="grey" @click="stepBack" class="ms-2">
-              {{ $t("general.back") }}
-            </v-btn>
-          </v-card-actions>
+<!--&lt;!&ndash;            <v-btn color="grey" @click="stepBack" class="ms-2">&ndash;&gt;-->
+<!--&lt;!&ndash;              {{ $t("general.back") }}&ndash;&gt;-->
+<!--&lt;!&ndash;            </v-btn>&ndash;&gt;-->
+<!--          </v-card-actions>-->
         </v-stepper-content>
       </v-stepper-items>
     </v-stepper>
 
     <add-user-dialog v-model="dialog"></add-user-dialog>
+    <CaseInfoDialog
+      :dialogVisible="caseInfoDialog"
+      :case-id="caseId"
+      v-if="caseInfoDialog"
+      @closeInfoDialog="caseInfoDialog = false"
+    />
   </div>
 </template>
 
 <script>
 import { mapActions, mapState } from "vuex";
+import AppealForm from "./AppealForm.vue";
+import secondForm from "./secondForm.vue";
 import AddUserDialog from "../../components/cases/AddUserDialog";
+import CaseInfoDialog from "../../components/cases/CaseInfoDialog.vue";
 import { makeToast } from "@/helpers";
+import axios from "@/plugins/axios";
+import AppealFormPreview from "./AppealFormPreview.vue";
+import * as docx from "docx-preview";
 
 export default {
   name: "Create",
-  components: { AddUserDialog },
+  components: {
+    AddUserDialog,
+    CaseInfoDialog,
+    AppealForm,
+    secondForm,
+    AppealFormPreview,
+  },
   data() {
     return {
+      fileUploaded: null,
+      uploadedFileType: null,
       e1: 1,
+      docUrl: "",
       selectedTitle: "",
+      caseClaimant: null,
       dateDialog: false,
       caseNumber: "",
       caseName: "",
+      caseId: null,
+      caseInfoDialog: false,
       initialLoading: false,
       isLoading: false,
       isSubmitingForm: false,
       users: [],
       formRequestId: null,
-
+      caseCheck: false,
       breadcrumbs: [
         {
-          text: this.$t("menu.requests"),
+          text: this.$t("menu.cases_child"),
+          disabled: false,
+          href: "#",
+        },
+        {
+          text: this.$t("cases.formTypes"),
           disabled: false,
           href: "#",
         },
@@ -350,6 +313,7 @@ export default {
     this.init();
     this.fetchUsers();
     this.fetchDepartments();
+    this.fetchCases();
 
     this.$root.$on("userCreated", () => {
       this.fetchUsers();
@@ -357,13 +321,31 @@ export default {
   },
   watch: {
     e1(val) {
-      if (val === 4) {
-        this.getCourts();
+      if (val === 3) {
+        if (this.uploadedFileType === "pdf") {
+          this.getPagesValues(this.formRequestId).then((data) => {
+            const url = data.form_page_item_fill[1].value;
+            this.docUrl = url;
+          });
+        } else {
+          docx
+            .renderAsync(
+              this.fileUploaded,
+              document.getElementById("filePreview-container")
+            )
+            .then((x) => console.log("docx: finished"));
+        }
       }
     },
   },
   computed: {
-    ...mapState("cases", ["pages", "selectedForm", "courts", "caseTypes"]),
+    ...mapState("cases", [
+      "pages",
+      "selectedForm",
+      "courts",
+      "caseTypes",
+      "cases",
+    ]),
     ...mapState("auth", ["user"]),
     ...mapState("app", ["navTemplates"]),
     ...mapState("departments", ["departments"]),
@@ -418,12 +400,63 @@ export default {
     ...mapActions("cases", [
       "getPages",
       "validateFormData",
-      "savePages",
+      "saveRelatedPages",
+      "updateRelatedPages",
       "userDepartment",
       "saveRequestSide",
       "saveFormInformation",
       "getCourts",
+      "getCases",
+      "savePages",
+      "updateBackPages",
+      "getPagesValues",
+      "changeStatus",
     ]),
+    async updateCaseStatus(status) {
+      const res = await this.changeStatus({
+        status,
+        formId: this.formRequestId,
+      });
+      if (res) {
+        this.$router.push({ path: `/cases/1/request-review` });
+      }
+    },
+    openCaseInfoDialog(id) {
+      this.getCaseTimeline(id);
+      this.caseInfoDialog = true;
+    },
+    async getCaseTimeline(id) {
+      try {
+        this.loading = true;
+        const response = await this.$axios.get(`get-form-Requests/${id}`);
+
+        const { form_request_side, form_request_number, name } =
+          response?.data?.data;
+
+        this.formRequestSide = form_request_side;
+        this.caseName = name;
+        this.caseNumber = form_request_number;
+
+        this.caseClaimant = {
+          id: form_request_side.claimant.id,
+          name: form_request_side.claimant.name,
+        };
+      } catch (error) {
+        console.log(error);
+      } finally {
+        this.loading = false;
+      }
+    },
+    fetchCases() {
+      let data = {
+        template_id: 1,
+        pageSize: -1,
+      };
+
+      this.getCases(data)
+        .then(() => {})
+        .catch(() => {});
+    },
     addDate(index) {
       this.caseAction.dates.push({ caseDate: "" });
     },
@@ -514,7 +547,7 @@ export default {
         return nav.id === +currentFormId;
       });
       if (currentPage) {
-        this.breadcrumbs.push({
+        this.breadcrumbs.unshift({
           text: currentPage.title,
           disabled: false,
           href: `/cases/${currentFormId}`,
@@ -526,7 +559,7 @@ export default {
       this.selectedTitle = this.$t(this.selectedForm.name);
       this.setBreadCrumb({
         breadcrumbs: this.breadcrumbs,
-        pageTitle: this.$t("cases.casesList"),
+        pageTitle: this.$t("cases.cases"),
       });
     },
     init() {
@@ -545,8 +578,12 @@ export default {
     },
     handleFileUpload(file, input) {
       if (file) {
+        this.fileUploaded = file;
         const fileName = file.name.split(".")[0];
+
         const fileExtension = file.name.split(".")[1];
+
+        this.uploadedFileType = fileExtension.toLowerCase();
         input["file_name"] = fileName + "." + fileExtension;
         const reader = new FileReader();
         reader.readAsDataURL(file);
@@ -573,24 +610,44 @@ export default {
       const msg = this.$t("general.required_input");
       return this.stepOneErrors && !value ? [msg] : [];
     },
-    saveCaseInfo() {
-      if (!this.caseName || !this.caseNumber) {
+    async saveCaseInfo() {
+      if (!this.caseId) {
         this.stepOneErrors = true;
+        this.showErrors = true;
         return;
       }
+      // this.getCaseTimeline(this.caseId);
+      this.showErrors = false;
       this.stepOneErrors = false;
       this.e1 = 2;
     },
     async saveForm() {
       this.isSubmitingForm = true;
-      if (await this.validateFormData()) {
-        const result = await this.savePages({
-          caseName: this.caseName,
-          caseNumber: this.caseNumber,
-        });
+      if ((await this.validateFormData()) && this.caseId) {
+        let result = null;
+        if (!this.formRequestId) {
+          result = await this.savePages({
+            caseName: null,
+            caseNumber: null,
+            caseDate: null,
+            type: "related_case",
+            case_id: this.caseId,
+          });
+        } else {
+          result = await this.updateBackPages({
+            caseName: null,
+            caseNumber: null,
+            caseDate: null,
+            type: "related_case",
+            formId: this.formRequestId,
+            case_id: this.caseId,
+          });
+        }
+
         if (result) {
           this.isSubmitingForm = false;
-          this.formRequestId = result.data?.data?.formRequest?.id;
+          this.formRequestId =
+            this.formRequestId || result.data?.data?.formRequest?.id;
           this.showErrors = false;
           this.e1 = 3;
           // makeToast("success", response.data.message);
@@ -599,11 +656,56 @@ export default {
         }
       } else {
         this.showErrors = true;
+        this.stepOneErrors = true;
         this.isSubmitingForm = false;
 
         console.log("some fields is required");
       }
     },
+    // async updatePages({ state }, { formId }) {
+    //   try {
+    //     const customFormData = {
+    //       id: state.selectedForm.id,
+
+    //       name: state.selectedForm.name,
+    //       pages: state.pagesValues.map((page) => ({
+    //         id: page.id,
+    //         title: page.title,
+    //         items: page.items
+    //           .filter((input) => input.value)
+    //           .map((input) => {
+    //             return {
+    //               form_page_item_id: input.id,
+    //               value: input.value,
+    //               type: input.type,
+    //             };
+    //           }),
+    //       })),
+    //     };
+
+    //     const bodyFormData = new FormData();
+
+    //     for (const key in customFormData) {
+    //       let value = customFormData[key];
+    //       bodyFormData.set(key, JSON.stringify(value));
+    //       bodyFormData.set("_method", "PUT");
+    //     }
+    //     const response = await axios.post(
+    //       `update-form-fill/${formId}`,
+    //       bodyFormData,
+    //       {
+    //         headers: {
+    //           "Content-Type": "multipart/form-data",
+    //         },
+    //       }
+    //     );
+    //     return true;
+    //   } catch (error) {
+    //     console.error("Error saving form data:", error);
+    //     return false;
+    //   }
+    // },
+
     async storeRequestSide() {
       this.isLoading = true;
       let data = {
@@ -652,6 +754,53 @@ export default {
       //   this.isSubmitingForm = false;
       //   console.log("some fields is required");
       // }
+    },
+    exportHTML() {
+      var header =
+        "<html dir='rtl' xmlns:o='urn:schemas-microsoft-com:office:office' " +
+        "xmlns:w='urn:schemas-microsoft-com:office:word' " +
+        "xmlns='http://www.w3.org/TR/REC-html40'>" +
+        "<head><meta charset='utf-8'><title>Export HTML to Word Document with JavaScript</title></head><body>";
+      var footer = "</body></html>";
+      var sourceHTML =
+        header + document.getElementById("source-html").innerHTML + footer;
+
+      var source =
+        "data:application/vnd.ms-word;charset=utf-8," +
+        encodeURIComponent(sourceHTML);
+      var fileDownload = document.createElement("a");
+      document.body.appendChild(fileDownload);
+      fileDownload.href = source;
+      fileDownload.download = "document.doc";
+      fileDownload.click();
+      document.body.removeChild(fileDownload);
+    },
+    exportFile() {
+      this.$axios
+        .get(this.docUrl)
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+          }
+          return response.blob();
+        })
+        .then((blob) => {
+          // Create a temporary link element
+          const a = document.createElement("a");
+          a.href = window.URL.createObjectURL(blob);
+          a.download = "yourfile.ext"; // Specify the file name here
+          document.body.appendChild(a);
+          a.style.display = "none";
+
+          // Trigger the download
+          a.click();
+
+          // Clean up the temporary link element
+          document.body.removeChild(a);
+        })
+        .catch((error) => {
+          console.error("Error downloading file:", error);
+        });
     },
   },
 };

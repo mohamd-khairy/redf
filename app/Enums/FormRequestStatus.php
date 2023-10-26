@@ -1,11 +1,14 @@
 <?php
+
 namespace App\Enums;
+
+use ArchTech\Enums\InvokableCases;
 
 enum FormRequestStatus: string
 {
-    case PENDING = 'PENDING';
-    case ASSIGNED = 'ASSIGNED';
-    case PROCESSING = 'PROCESSING';
-    case CLOSED = 'CLOSED';
-    // صدور حكم و  تحت التنفيذ و تحت المعالجه
+    use InvokableCases;
+
+    case ACCEPT = 'تم قبول الطلب';
+    case RETURN = 'تم اعاده الطلب للمراجعه';
+    case REFUSE = 'تم رفض الطلب';
 }
